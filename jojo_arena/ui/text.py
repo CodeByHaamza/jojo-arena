@@ -43,3 +43,106 @@ LEAVE_FIGHT = "QUITTER LE COMBAT"
 REMATCH = "REVANCHE"
 SETTINGS = "RÉGLAGES"
 TO_TITLE = "RETOUR AU TITRE"
+MOVE_LIST = "LISTE DES COUPS"
+CHANGE_FIGHTERS = "CHANGER DE PERSOS"
+MAIN_MENU = "MENU PRINCIPAL"
+
+# Main menu
+MENU_STORY = "HISTOIRE"
+MENU_ARCADE = "ARCADE"
+MENU_VERSUS = "COMBAT LOCAL"
+MENU_VS_CPU = "CONTRE L'IA"
+MENU_TRAINING = "ENTRAÎNEMENT"
+MENU_ONLINE = "EN LIGNE"
+MENU_OPTIONS = "OPTIONS"
+DESC_STORY = "Les grands combats de la saga, partie après partie."
+DESC_ARCADE = "Une série de combats contre l'ordinateur, jusqu'au boss final."
+DESC_VERSUS = "Deux joueurs sur la même machine, au clavier ou à la manette."
+DESC_VS_CPU = "Affronte l'ordinateur, du plus calme au plus coriace."
+DESC_TRAINING = "Apprends tes coups contre un mannequin : vie et jauge infinies."
+DESC_ONLINE = "Affronte d'autres joueurs en ligne."
+DESC_OPTIONS = "Contrôles et affichage."
+DESC_QUIT = "À bientôt !"
+SOON = "BIENTÔT"
+SOON_TOAST = "BIENTÔT DISPONIBLE !"
+
+# Character select
+PICK_P1 = "J1 : CHOISIS TON PERSONNAGE"
+PICK_P2 = "J2 : CHOISIS TON PERSONNAGE"
+PICK_DUMMY = "CHOISIS LE PERSONNAGE DU MANNEQUIN"
+DUMMY = "MANNEQUIN"
+READY = "PRÊT !"
+WAITING = "EN ATTENTE DE J1"
+LOCKED_NAME = "???"
+HP = "VIE {hp}"
+STAND_LABEL = "STAND"
+HINT_CONFIRM = "CHOISIR"
+HINT_INFO = "LISTE DES COUPS"
+HINT_BACK = "RETOUR"
+HINT_PAGE = "PAGE"
+HINT_CLOSE = "FERMER"
+
+# Move list
+DIRECTION = "DIRECTION"
+PAGE_SUPER = "SUPER"
+PAGE_BASICS = "BASES"
+PAGE_TECH = "TECHNIQUES"
+BAR = "BARRE"
+BARS_ONE = "1 BARRE"
+BARS_MANY = "{n} BARRES"
+SYS_MOVE = "DÉPLACEMENT"
+SYS_MOVE_INFO = "Huit directions"
+SYS_STAND = "STAND"
+SYS_STAND_INFO = "Sortir ou rentrer {stand} : les coups changent"
+SYS_STYLE_INFO = "Changer de style de combat : les coups changent"
+SYS_GUARD = "GARDE"
+SYS_GUARD_INFO = "Maintenir : bloque les coups de face. La jauge bleue s'use"
+SYS_DASH = "DASH"
+SYS_DASH_INFO = "Invincible au début. Esquive au dernier moment : STYLISH !"
+SYS_POSE = "POSE"
+SYS_POSE_INFO = "Maintenir : remplit la jauge Heart Heat"
+SYS_SUPER_INFO = "Avec 2 barres, la même touche lance la GHA"
+SYS_FLASH = "FLASH CANCEL"
+SYS_FLASH_INFO = "Garde pendant un coup : l'annule ({cost})"
+SYS_CLASH = "CLASH"
+SYS_CLASH_KEYS = "ATTAQUES"
+SYS_CLASH_INFO = "Deux coups au même instant : martèle les attaques !"
+SYS_GUARD_BREAK = "GUARD BREAK"
+SYS_GUARD_BREAK_INFO = "Jauge de garde vide : sonné un instant"
+SYS_RESOLVE = "RÉSOLUTION"
+SYS_RESOLVE_INFO = "Sous {threshold} % de vie : +{bonus} % de dégâts, la garde ne coûte plus de vie"
+
+# Training
+TRAINING = "ENTRAÎNEMENT"
+DUMMY_MODE = "MANNEQUIN"
+DUMMY_STAND = "IMMOBILE"
+DUMMY_GUARD = "GARDE"
+DUMMY_PLAYER = "JOUÉ PAR J2"
+LIFE = "VIE"
+HH_GAUGE = "JAUGE HH"
+INFINITE = "INFINIE"
+NORMAL = "NORMALE"
+RESET_POSITIONS = "REPLACER"
+COMBO_HITS = "{n} COUPS"
+COMBO_DAMAGE = "{n} DÉGÂTS"
+TRAINING_HINT = "{key} : RÉGLAGES"
+
+# Options
+OPTIONS_TITLE = "OPTIONS"
+FULLSCREEN = "PLEIN ÉCRAN"
+YES = "OUI"
+NO = "NON"
+BINDINGS_ACTION = "ACTION"
+ACTION_NAMES = {
+    "move": "DÉPLACEMENT",
+    "light": "COUP LÉGER",
+    "heavy": "COUP LOURD",
+    "special": "SPÉCIAL",
+    "stand": "STAND",
+    "dash": "DASH",
+    "guard": "GARDE",
+    "heart_heat": "HEART HEAT",
+    "pose": "POSE",
+    "pause": "PAUSE",
+}
+VS = "VS"

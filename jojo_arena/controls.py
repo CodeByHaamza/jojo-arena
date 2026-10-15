@@ -124,6 +124,7 @@ MENU_KEYBOARD = {
     "confirm": ["Return", "KP_Enter", "Space", "J"],
     "back": ["Escape", "Backspace"],
     "pause": ["Escape"],
+    "info": ["Tab", "I"],  # character details / move list
 }
 MENU_GAMEPAD = {
     "up": ["dpad_up"],
@@ -133,6 +134,7 @@ MENU_GAMEPAD = {
     "confirm": ["a", "start"],
     "back": ["b"],
     "pause": ["start"],
+    "info": ["y"],
 }
 
 DEFAULT_ACTIVE = "keyboard_gamepad"

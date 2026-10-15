@@ -68,6 +68,10 @@ _RAW = {
     "<": "...# ..#. .#.. #... .#.. ..#. ...#",
     ">": "#... .#.. ..#. ...# ..#. .#.. #...",
     "∞": "....... ....... .##.##. #..#..# .##.##. ....... .......",
+    "←": "..... ..#.. .#... ##### .#... ..#.. .....",
+    "→": "..... ..#.. ...#. ##### ...#. ..#.. .....",
+    "↑": "..#.. .###. #.#.# ..#.. ..#.. ..#.. ..#..",
+    "↓": "..#.. ..#.. ..#.. ..#.. #.#.# .###. ..#..",
 }
 
 # Accented capitals: the accent goes in the row above the letter.
@@ -117,6 +121,22 @@ def text_width(text: str, scale: int = 1) -> int:
         return 0
     width = sum(len(_glyph(c)[0]) for c in text) + SPACING * (len(text) - 1)
     return width * scale
+
+
+def wrap(text: str, max_width: int, scale: int = 1) -> list[str]:
+    """Split text into lines no wider than `max_width` pixels, at spaces."""
+    lines: list[str] = []
+    line = ""
+    for word in text.split():
+        candidate = f"{line} {word}" if line else word
+        if line and text_width(candidate, scale) > max_width:
+            lines.append(line)
+            line = word
+        else:
+            line = candidate
+    if line:
+        lines.append(line)
+    return lines
 
 
 @lru_cache(maxsize=1024)

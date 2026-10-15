@@ -1,0 +1,181 @@
+"""Move list: every move of a character with its input, name and a short explanation.
+
+Built from the kit data (labels and infos in characters/<id>.toml) and from the
+player's controls, so the keys shown are the ones this player really uses.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+import pygame
+
+from jojo_arena.characters import FighterDef
+from jojo_arena.combat.rules import Rules
+from jojo_arena.controls import PlayerControls
+from jojo_arena.engine import font
+from jojo_arena.engine.actions import InputFrame
+from jojo_arena.engine.input import InputManager
+from jojo_arena.engine.sprites import shade
+from jojo_arena.ui import text
+from jojo_arena.ui.labels import action_label, device_label, menu_key, move_label
+from jojo_arena.ui.widgets import (
+    BORDER,
+    DIM,
+    GOLD,
+    WHITE,
+    draw_caps,
+    draw_hints,
+    draw_wrapped,
+    veil,
+)
+
+STANCE_SLOTS = ("light", "heavy", "special", "special_alt")
+NAME_X = 128
+TOP = 64
+
+
+@dataclass(frozen=True)
+class MoveEntry:
+    keys: tuple[str, ...]  # key caps, pressed together (none for passive rules)
+    name: str
+    info: str = ""
+
+
+@dataclass(frozen=True)
+class MovePage:
+    title: str
+    entries: tuple[MoveEntry, ...]
+    note: str = ""  # shown under the entries
+
+
+def _bars(amount: float) -> str:
+    """A Heart Heat cost in bars: "1/2 BARRE", "1 BARRE", "2 BARRES"."""
+    if amount < 1:
+        return f"1/{round(1 / amount)} {text.BAR}"
+    if amount == 1:
+        return text.BARS_ONE
+    return text.BARS_MANY.format(n=round(amount))
+
+
+def build_pages(
+    fdef: FighterDef, player: PlayerControls, rules: Rules, inputs: InputManager | None = None
+) -> list[MovePage]:
+    kit = fdef.kit
+
+    def key(action: str) -> str:
+        return action_label(player, action, inputs)
+
+    pages: list[MovePage] = []
+    for stance_name, stance in kit.stances.items():
+        entries = []
+        for slot in STANCE_SLOTS:
+            move = stance.moves.get(slot)
+            if move is None:
+                continue
+            keys = (text.DIRECTION, key("special")) if slot == "special_alt" else (key(slot),)
+            entries.append(MoveEntry(keys, move.label or slot.upper(), move.info))
+        if entries:
+            title = kit.stance_labels.get(stance_name, stance_name.upper())
+            pages.append(MovePage(title, tuple(entries)))
+
+    supers = []
+    for slot, cost in (("hha", rules.hha_cost), ("gha", rules.gha_cost)):
+        move = kit.shared_moves.get(slot)
+        if move is not None:
+            info = f"{_bars(cost / rules.hh_bar)} - {move.info}" if move.info else ""
+            supers.append(MoveEntry((key("heart_heat"),), move.label or slot.upper(), info))
+    if supers:
+        note = text.SYS_SUPER_INFO if len(supers) == 2 else ""
+        pages.append(MovePage(text.PAGE_SUPER, tuple(supers), note))
+
+    stand_info = text.SYS_STYLE_INFO
+    if fdef.stand_name:
+        stand_info = text.SYS_STAND_INFO.format(stand=fdef.stand_name)
+    basics = [
+        MoveEntry((move_label(player),), text.SYS_MOVE, text.SYS_MOVE_INFO),
+        MoveEntry((key("guard"),), text.SYS_GUARD, text.SYS_GUARD_INFO),
+        MoveEntry((key("dash"),), text.SYS_DASH, text.SYS_DASH_INFO),
+        MoveEntry((key("pose"),), text.SYS_POSE, text.SYS_POSE_INFO),
+    ]
+    if len(kit.stances) > 1:
+        basics.insert(1, MoveEntry((key("stand"),), text.SYS_STAND, stand_info))
+    pages.append(MovePage(text.PAGE_BASICS, tuple(basics)))
+
+    flash = text.SYS_FLASH_INFO.format(cost=_bars(rules.flash_cancel_cost / rules.hh_bar))
+    resolve = text.SYS_RESOLVE_INFO.format(
+        threshold=round(rules.resolve_threshold * 100),
+        bonus=round(rules.resolve_damage_bonus * 100),
+    )
+    technique = [
+        MoveEntry((key("guard"),), text.SYS_FLASH, flash),
+        MoveEntry((text.SYS_CLASH_KEYS,), text.SYS_CLASH, text.SYS_CLASH_INFO),
+        MoveEntry((), text.SYS_GUARD_BREAK, text.SYS_GUARD_BREAK_INFO),
+        MoveEntry((), text.SYS_RESOLVE, resolve),
+    ]
+    pages.append(MovePage(text.PAGE_TECH, tuple(technique)))
+    return pages
+
+
+class MoveListPanel:
+    """Full-screen move list over whatever is behind. Left/right turns the pages."""
+
+    def __init__(
+        self,
+        fdef: FighterDef,
+        player: PlayerControls,
+        rules: Rules,
+        player_name: str = "J1",
+        inputs: InputManager | None = None,
+    ) -> None:
+        self.fdef = fdef
+        self.pages = build_pages(fdef, player, rules, inputs)
+        self.page = 0
+        self.owner = f"{player_name} - {device_label(player)}"
+        self.hints = [
+            ("←→", text.HINT_PAGE),
+            (menu_key("back", inputs), text.HINT_CLOSE),
+        ]
+
+    def handle(self, frame: InputFrame) -> bool:
+        """Read one step of menu input. Returns False once the panel is closed."""
+        step = int(frame.was_pressed("right")) - int(frame.was_pressed("left"))
+        if step:
+            self.page = (self.page + step) % len(self.pages)
+        closing = ("back", "info", "pause", "confirm")
+        return not any(frame.was_pressed(action) for action in closing)
+
+    def draw(self, surface: pygame.Surface) -> None:
+        width, height = surface.get_size()
+        surface.blit(veil((width, height), (8, 6, 18, 242)), (0, 0))
+        fdef = self.fdef
+        name_scale = 2 if font.text_width(fdef.name, 2) < 280 else 1
+        font.draw(surface, fdef.name, (16, 8), shade(fdef.color, 50), scale=name_scale)
+        if fdef.stand_name:
+            font.draw(surface, f"{text.STAND_LABEL} : {fdef.stand_name}", (16, 29), fdef.aura)
+        font.draw(surface, text.MOVE_LIST, (width - 16, 8), GOLD, align="right")
+        font.draw(surface, self.owner, (width - 16, 20), DIM, align="right")
+
+        # Tabs
+        x = 16
+        for i, page in enumerate(self.pages):
+            current = i == self.page
+            color = GOLD if current else DIM
+            rect = font.draw(surface, page.title, (x, 44), color)
+            if current:
+                surface.fill(GOLD, (rect.x, rect.bottom + 1, rect.width, 2))
+            x = rect.right + 12
+        surface.fill(BORDER, (16, 58, width - 32, 1))
+
+        y = TOP
+        for entry in self.pages[self.page].entries:
+            draw_caps(surface, entry.keys, (16, y - 1))
+            font.draw(surface, entry.name, (NAME_X, y), WHITE)
+            y += 11
+            if entry.info:
+                y = draw_wrapped(surface, entry.info, (NAME_X, y), width - NAME_X - 16)
+            y += 7
+        note = self.pages[self.page].note
+        if note:
+            draw_wrapped(surface, note, (16, y + 2), width - 32, GOLD)
+        draw_hints(surface, self.hints, (width // 2, height - 16))

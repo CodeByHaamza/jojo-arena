@@ -199,7 +199,7 @@ class Hud:
                 title = text.ROUND_N.format(n=rounds.round_number)
             if rounds.phase_f < intro_f // 6:
                 return  # brief pause before the announcement pops
-        elif rounds.phase == Phase.FIGHT and rounds.phase_f < GO_F:
+        elif rounds.phase == Phase.FIGHT and rounds.phase_f < GO_F and not rounds.training:
             title, color = text.GO, GOLD
         elif rounds.phase == Phase.ROUND_OVER and rounds.result is not None:
             result = rounds.result
@@ -207,7 +207,9 @@ class Hud:
                 result.reason
             ]
             color = LIFE_LOW if result.reason != "time" else WHITE
-            if result.draw:
+            if rounds.training:
+                subtitle = None  # no score in training
+            elif result.draw:
                 subtitle = text.DRAW
             else:
                 subtitle = text.ROUND_WINNER.format(name=self.defs[result.winners[0]].name)

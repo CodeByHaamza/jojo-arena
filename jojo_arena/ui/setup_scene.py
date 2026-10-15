@@ -1,46 +1,47 @@
-"""Fight settings before a local match: fighters, rounds to win and control preset."""
+"""VS screen before a local fight: both fighters face off; rounds to win and controls."""
 
 from __future__ import annotations
 
 import pygame
 
-from jojo_arena.characters import load_roster
+from jojo_arena.characters import get_fighter
 from jojo_arena.combat.rounds import ROUNDS_TO_WIN_CHOICES
 from jojo_arena.context import GameContext
 from jojo_arena.engine import font
 from jojo_arena.engine.scene import Scene
+from jojo_arena.engine.sprites import shade
 from jojo_arena.ui import text
 from jojo_arena.ui.backdrop import MenuBackdrop
+from jojo_arena.ui.labels import menu_key
 from jojo_arena.ui.menu import Menu, MenuItem
+from jojo_arena.ui.portraits import FighterLook
+from jojo_arena.ui.widgets import DIM, GOLD, P1_COLOR, P2_COLOR, draw_box, draw_hints
 
-GOLD = (255, 214, 90)
-DIM = (150, 144, 170)
 WARNING = (240, 90, 90)
 DEFAULT_ROUNDS_TO_WIN = 3
 DEFAULT_FIGHTERS = ("jotaro_p3", "kakyoin")
+FEET_Y = 178
+FEET_X = (78, 402)
 
 
 class SetupScene(Scene):
     def __init__(
         self,
         ctx: GameContext,
-        rounds_to_win: int = DEFAULT_ROUNDS_TO_WIN,
         fighter_ids: tuple[str, str] = DEFAULT_FIGHTERS,
+        rounds_to_win: int = DEFAULT_ROUNDS_TO_WIN,
     ) -> None:
         super().__init__()
         self.ctx = ctx
+        self.fighter_ids = fighter_ids
+        self.defs = [get_fighter(i) for i in fighter_ids]
+        self.looks = [FighterLook(f) for f in self.defs]
         self.backdrop = MenuBackdrop()
-        self.roster = load_roster()
-        ids = [f.id for f in self.roster]
-        names = [f.name for f in self.roster]
-        picks = [ids.index(i) if i in ids else n for n, i in enumerate(fighter_ids)]
         self.preset_keys = list(ctx.controls.presets)
         rounds = [str(n) for n in ROUNDS_TO_WIN_CHOICES]
         labels = [ctx.controls.presets[k].label for k in self.preset_keys]
         self.menu = Menu(
             [
-                MenuItem("p1", text.P1, names, picks[0]),
-                MenuItem("p2", text.P2, names, picks[1]),
                 MenuItem("rounds", text.ROUNDS_TO_WIN, rounds, rounds.index(str(rounds_to_win))),
                 MenuItem(
                     "controls", text.CONTROLS, labels, self.preset_keys.index(ctx.controls.active)
@@ -49,19 +50,16 @@ class SetupScene(Scene):
                 MenuItem("back", text.BACK),
             ]
         )
-        self.menu.cursor = 4  # straight on "fight"
+        self.menu.select("fight")
         self.tick = 0
+        self.hints = [
+            (menu_key("confirm", ctx.inputs), text.HINT_CONFIRM),
+            (menu_key("back", ctx.inputs), text.HINT_BACK),
+        ]
 
     @property
     def rounds_to_win(self) -> int:
         return int(self.menu.item("rounds").value)
-
-    @property
-    def fighter_ids(self) -> tuple[str, str]:
-        return (
-            self.roster[self.menu.item("p1").index].id,
-            self.roster[self.menu.item("p2").index].id,
-        )
 
     def update(self) -> None:
         self.tick += 1
@@ -79,16 +77,32 @@ class SetupScene(Scene):
                 FightScene(self.ctx, rounds_to_win=self.rounds_to_win, fighter_ids=self.fighter_ids)
             )
         elif (kind == "confirm" and key == "back") or kind == "back":
-            from jojo_arena.ui.title_scene import TitleScene
+            # Back to the character select, player 2 choosing again.
+            from jojo_arena.ui.select_scene import CharacterSelectScene
 
-            self.ctx.scenes.switch(TitleScene(self.ctx))
+            p1, p2 = self.fighter_ids
+            self.ctx.scenes.switch(CharacterSelectScene(self.ctx, "versus", picks=(p1,), cursor=p2))
 
     def draw(self, surface: pygame.Surface) -> None:
         self.backdrop.draw(surface, self.tick)
-        center = surface.get_width() // 2
-        font.draw(surface, text.SETUP_TITLE, (center, 40), GOLD, scale=3, align="center")
-        self.menu.draw(surface, center, 92, spacing=15)
+        width, height = surface.get_size()
+        center = width // 2
+        font.draw(surface, text.SETUP_TITLE, (center, 8), GOLD, scale=2, align="center")
+        for side, (look, fdef) in enumerate(zip(self.looks, self.defs, strict=True)):
+            x = FEET_X[side]
+            look.draw(surface, (x, FEET_Y), self.tick, scale=2, flip=side == 1)
+            color = P1_COLOR if side == 0 else P2_COLOR
+            font.draw(surface, f"J{side + 1}", (x, 40), color, scale=2, align="center")
+            font.draw(surface, fdef.name, (x, FEET_Y + 8), shade(fdef.color, 60), align="center")
+            if fdef.stand_name:
+                font.draw(surface, fdef.stand_name, (x, FEET_Y + 19), fdef.aura, align="center")
+        font.draw(surface, text.VS, (center, 50), GOLD, scale=4, align="center")
+        box = pygame.Rect(0, 0, 236, 70)
+        box.midtop = (center, 104)
+        draw_box(surface, box)
+        self.menu.draw(surface, center, box.y + 9, spacing=15)
         preset = self.ctx.controls.active_preset
         if preset.pads_needed() > len(self.ctx.inputs.pads):
-            font.draw(surface, text.PADS_MISSING, (center, 210), WARNING, align="center")
-        font.draw(surface, text.CONTROLS_FILE_HINT, (center, 240), DIM, align="center")
+            font.draw(surface, text.PADS_MISSING, (center, 222), WARNING, align="center")
+        font.draw(surface, text.CONTROLS_FILE_HINT, (center, 236), DIM, align="center")
+        draw_hints(surface, self.hints, (center, height - 14))

@@ -6,7 +6,7 @@ Fan game **gratuit, open source et non commercial** : un arena fighter 1v1 en te
 
 ## État du projet
 
-Prototype jouable de la **Vague 0** (moteur) : combat local J1 contre J2 sur l'arène du Caire. Jotaro, Kakyoin, DIO et Polnareff (Partie 3) ont leur apparence et leur Stand visible, mais combattent encore avec les coups du mannequin générique en attendant leur kit (Vague 1). Le game design complet est dans [docs/GDD.md](docs/GDD.md).
+Prototype jouable : le moteur (**Vague 0**) et quatre persos de la Partie 3 (**Vague 1**) : Jotaro, Kakyoin, DIO et Polnareff, chacun avec son Stand et ses coups. Deux modes sont jouables, **Entraînement** et **Combat local** ; Histoire, Arcade, Contre l'IA et En ligne sont annoncés dans le menu et arriveront plus tard. Le game design complet est dans [docs/GDD.md](docs/GDD.md).
 
 Ce qui marche déjà :
 
@@ -16,16 +16,21 @@ Ce qui marche déjà :
 - jauge Heart Heat à 3 barres, HHA (1 barre), Flash Cancel (½ barre), Pose, Résolution ;
 - clash : deux attaques simultanées, on martèle pour gagner le duel ;
 - recul, rebond sur les murs, étals et caisses cassables ;
-- touche Stand : bascule entre deux jeux d'attaques, avec une aura ;
+- touche Stand : le Stand apparaît à côté de son manieur et change les coups ; un coup sur le Stand blesse son manieur ;
+- coups propres à chaque perso : arrêt du temps (Jotaro, DIO), couteaux, saisie qui draine la vie, fils piégés, Emerald Splash, Armor Off, GHA (2 barres) ;
 - rounds (1, 3 ou 5 gagnants), timer de 99 s, mort subite en cas d'égalité ;
-- clavier et manette (Xbox, DualShock 4, DualSense), touches modifiables.
+- clavier et manette (Xbox, DualShock 4, DualSense), touches modifiables ;
+- menus : écran titre, menu principal, sélection des persos (fiche, Stand, rôle), écran VS, pause, options ;
+- liste des coups de chaque perso, avec les vraies touches du joueur (sélection des persos et pause) ;
+- entraînement : mannequin immobile, en garde ou joué par J2, vie et jauge infinies, compteur de combo et de dégâts.
 
 ## Jouer
 
 Télécharge `JoJoArena.exe` dans la dernière [Release](../../releases) et lance-le. Rien à installer.
 
 - **F11** ou **Alt+Entrée** : plein écran.
-- **Échap** (ou Start) : pause.
+- **Échap** (ou Start) : pause. En entraînement, la pause contient les réglages (mannequin, vie, jauge, replacer).
+- **Tab** (ou Y) sur la sélection des persos : liste des coups du perso survolé. Elle est aussi dans la pause.
 
 ### Contrôles par défaut
 
@@ -40,11 +45,11 @@ Les touches sont liées à leur **position** sur le clavier : ZQSD en AZERTY cor
 | Stand on/off | I | RB / R1 | R | 8 |
 | Dash / esquive | Espace | A / Croix | V | 0 |
 | Garde (Flash Cancel pendant une attaque) | Maj gauche | LB / L1 | C | 1 |
-| Heart Heat (HHA) | O | RT / R2 | T | 9 |
+| Heart Heat (HHA ; GHA avec 2 barres) | O | RT / R2 | T | 9 |
 | Pose | P | Select / Touchpad | Y | 7 |
 | Power Up (pas encore utilisé) | U | LT / L2 | B | 3 |
 
-Choisis la configuration (J1 clavier + J2 manette, clavier partagé, deux manettes) dans l'écran **Combat local**.
+Choisis la configuration (J1 clavier + J2 manette, clavier partagé, deux manettes) dans **Options** ou sur l'écran VS du **Combat local**. Options affiche aussi le tableau des touches des deux joueurs.
 
 Pour changer les touches, modifie `controls.json` dans `%APPDATA%\JoJoArena\` puis relance le jeu. Le fichier explique les noms de touches. Supprime-le pour revenir aux réglages par défaut.
 
@@ -69,7 +74,9 @@ Options utiles :
 | --- | --- |
 | `--demo` | combat joué par l'ordinateur des deux côtés |
 | `--scene fight --rounds 1` | va droit au combat, en 1 round gagnant |
-| `--p1 jotaro_p3 --p2 mannequin_red` | choisit les persos (avec `--scene fight` ou `--demo`) |
+| `--scene training --p1 dio_p3 --p2 kakyoin` | va droit à l'entraînement avec ces persos |
+| `--scene menu`, `select`, `setup`, `options` | ouvre directement un écran (`--mode training` pour la sélection de l'entraînement) |
+| `--p1 jotaro_p3 --p2 mannequin_red` | choisit les persos (avec `--scene fight`, `training`, `setup` ou `--demo`) |
 | `--fullscreen` | démarre en plein écran |
 | `--frames 300 --screenshot capture.png` | joue 300 images puis enregistre l'image 480 × 270 (tests rapides) |
 

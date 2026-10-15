@@ -10,17 +10,22 @@ from jojo_arena.combat.rounds import Phase, Rounds
 from jojo_arena.combat.rules import load_rules
 from jojo_arena.context import GameContext
 from jojo_arena.engine import font
+from jojo_arena.engine.actions import InputFrame
 from jojo_arena.engine.scene import Scene
 from jojo_arena.stages import load_stage
 from jojo_arena.ui import text
 from jojo_arena.ui.fight_view import FightView
 from jojo_arena.ui.hud import Hud
 from jojo_arena.ui.menu import Menu, MenuItem
+from jojo_arena.ui.movelist import MoveListPanel
+from jojo_arena.ui.widgets import GOLD, draw_box, veil
 
 RESULT_MENU_AFTER_F = 120  # let the victory sink in before offering a rematch
 
 
 class FightScene(Scene):
+    mode = "versus"  # which character select and menu entry this fight comes from
+
     def __init__(
         self,
         ctx: GameContext,
@@ -43,7 +48,8 @@ class FightScene(Scene):
         self.hud = Hud(self.fighter_defs, [view.height for view in self.view.fighter_views])
         self.pause_menu: Menu | None = None
         self.result_menu: Menu | None = None
-        self._veil: pygame.Surface | None = None
+        self.move_list: MoveListPanel | None = None
+        self.paused_by = 0  # the player who paused: the move list shows their character
         self._new_rounds()
 
     def _new_rounds(self) -> None:
@@ -55,23 +61,21 @@ class FightScene(Scene):
     # Update -----------------------------------------------------------------------------
 
     def update(self) -> None:
+        if self.move_list is not None:
+            if not self.move_list.handle(self.ctx.read_menu()):
+                self.move_list = None
+            return
         if self.pause_menu is not None:
             self._update_pause()
             return
         if self.result_menu is not None:
             self._update_result()
             return
-        match = self.rounds.match
-        frames = []
-        for i, source in enumerate(self.sources):
-            frame = source.read(self.ctx.inputs)
-            bot = self.bots[i]
-            if bot is not None:
-                me = match.fighters[i]
-                frame = bot.think(me, match.opponent(me))
-            frames.append(frame)
-        if not self.demo and any(f.was_pressed("pause") for f in frames):
-            self._open_pause()
+        frames = self._read_frames()
+        pauser = next((i for i, f in enumerate(frames) if f.was_pressed("pause")), None)
+        if not self.demo and pauser is not None:
+            self.paused_by = pauser
+            self.pause_menu = Menu(self._pause_items())
             return
         events = self.rounds.step((frames[0], frames[1]))
         self.view.on_events(events)
@@ -85,61 +89,103 @@ class FightScene(Scene):
                 self.result_menu = Menu(
                     [
                         MenuItem("rematch", text.REMATCH),
-                        MenuItem("settings", text.SETTINGS),
-                        MenuItem("title", text.TO_TITLE),
+                        MenuItem("change", text.CHANGE_FIGHTERS),
+                        MenuItem("menu", text.MAIN_MENU),
                     ]
                 )
 
-    def _open_pause(self) -> None:
-        self.pause_menu = Menu(
-            [
-                MenuItem("resume", text.RESUME),
-                MenuItem("restart", text.RESTART),
-                MenuItem("leave", text.LEAVE_FIGHT),
-            ]
-        )
+    def _read_frames(self) -> list[InputFrame]:
+        match = self.rounds.match
+        frames = []
+        for i, source in enumerate(self.sources):
+            frame = source.read(self.ctx.inputs)
+            bot = self.bots[i]
+            if bot is not None:
+                me = match.fighters[i]
+                frame = bot.think(me, match.opponent(me))
+            frames.append(frame)
+        return frames
+
+    def _pause_items(self) -> list[MenuItem]:
+        return [
+            MenuItem("resume", text.RESUME),
+            MenuItem("moves", text.MOVE_LIST),
+            MenuItem("restart", text.RESTART),
+            MenuItem("change", text.CHANGE_FIGHTERS),
+            MenuItem("menu", text.MAIN_MENU),
+        ]
 
     def _update_pause(self) -> None:
         frame = self.ctx.read_menu()
         action = self.pause_menu.handle(frame)
         if action in (("confirm", "resume"), ("back", "")) or frame.was_pressed("pause"):
             self.pause_menu = None
-        elif action == ("confirm", "restart"):
+        elif action is not None:
+            self._pause_action(*action)
+
+    def _pause_action(self, kind: str, key: str) -> None:
+        if kind != "confirm":
+            return
+        if key == "moves":
+            self._open_move_list(self.paused_by)
+        elif key == "restart":
             self._new_rounds()
-        elif action == ("confirm", "leave"):
-            self._go_to_title()
+        elif key == "change":
+            self._change_fighters()
+        elif key == "menu":
+            self._go_to_menu()
 
     def _update_result(self) -> None:
         action = self.result_menu.handle(self.ctx.read_menu())
         if action == ("confirm", "rematch"):
             self._new_rounds()
-        elif action == ("confirm", "settings"):
-            from jojo_arena.ui.setup_scene import SetupScene
+        elif action == ("confirm", "change"):
+            self._change_fighters()
+        elif action == ("confirm", "menu"):
+            self._go_to_menu()
 
-            self.ctx.scenes.switch(SetupScene(self.ctx, self.rounds_to_win, self.fighter_ids))
-        elif action == ("confirm", "title"):
-            self._go_to_title()
+    def _open_move_list(self, index: int) -> None:
+        player = self.ctx.controls.active_preset.players[index]
+        self.move_list = MoveListPanel(
+            self.fighter_defs[index], player, self.rules, f"J{index + 1}", self.ctx.inputs
+        )
 
-    def _go_to_title(self) -> None:
-        from jojo_arena.ui.title_scene import TitleScene
+    def _change_fighters(self) -> None:
+        from jojo_arena.ui.select_scene import CharacterSelectScene
 
-        self.ctx.scenes.switch(TitleScene(self.ctx))
+        self.ctx.scenes.switch(
+            CharacterSelectScene(self.ctx, self.mode, cursor=self.fighter_ids[0])
+        )
+
+    def _go_to_menu(self) -> None:
+        from jojo_arena.ui.main_menu import MainMenuScene
+
+        self.ctx.scenes.switch(MainMenuScene(self.ctx, cursor=self.mode))
 
     # Draw -------------------------------------------------------------------------------
 
     def draw(self, surface: pygame.Surface) -> None:
         self.view.draw(surface, self.rounds.match)
-        self.hud.draw(surface, self.rounds, announcements=self.pause_menu is None)
+        menus_open = self.pause_menu is not None or self.move_list is not None
+        self.hud.draw(surface, self.rounds, announcements=not menus_open)
+        if not menus_open:
+            self.draw_overlay(surface)
         center = surface.get_width() // 2
         if self.pause_menu is not None:
-            surface.blit(self._dim(surface.get_size()), (0, 0))
-            font.draw(surface, text.PAUSE, (center, 80), (255, 214, 90), scale=3, align="center")
-            self.pause_menu.draw(surface, center, 130, spacing=16)
+            surface.blit(veil(surface.get_size(), (10, 8, 24, 160)), (0, 0))
+            items = len(self.pause_menu.items)
+            box = pygame.Rect(0, 0, 230, 46 + items * 15)
+            box.center = (center, surface.get_height() // 2)
+            draw_box(surface, box)
+            font.draw(surface, text.PAUSE, (center, box.y + 8), GOLD, scale=2, align="center")
+            self.pause_menu.draw(surface, center, box.y + 36, spacing=15)
         elif self.result_menu is not None:
-            self.result_menu.draw(surface, center, 170, spacing=16)
+            box = pygame.Rect(0, 0, 200, 56)
+            box.midtop = (center, 160)
+            draw_box(surface, box)
+            self.result_menu.draw(surface, center, box.y + 9, spacing=15)
+        if self.move_list is not None:
+            self.move_list.draw(surface)
 
-    def _dim(self, size: tuple[int, int]) -> pygame.Surface:
-        if self._veil is None or self._veil.get_size() != size:
-            self._veil = pygame.Surface(size, pygame.SRCALPHA)
-            self._veil.fill((10, 8, 24, 160))
-        return self._veil
+    def draw_overlay(self, surface: pygame.Surface) -> None:
+        """Extra layer over the HUD, for fight variants (training)."""

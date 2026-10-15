@@ -17,6 +17,7 @@ from jojo_arena.engine.scene import Scene, SceneManager
 WINDOW_TITLE = "JoJo Arena"
 INTERNAL_SIZE = (480, 270)
 LOGIC_HZ = 60
+SCENES = ["title", "menu", "select", "training", "setup", "fight", "options", "test-pattern"]
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -34,7 +35,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--scene",
         default="title",
-        choices=["title", "setup", "fight", "test-pattern"],
+        choices=SCENES,
         help="first screen (default: title)",
     )
     parser.add_argument(
@@ -43,8 +44,18 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--rounds", type=int, default=3, choices=[1, 3, 5], help="rounds to win (--scene fight)"
     )
-    parser.add_argument("--p1", default="jotaro_p3", help="player 1 fighter id (--scene fight)")
-    parser.add_argument("--p2", default="kakyoin", help="player 2 fighter id (--scene fight)")
+    parser.add_argument(
+        "--p1", default="jotaro_p3", help="player 1 fighter id (--scene fight/training/setup)"
+    )
+    parser.add_argument(
+        "--p2", default="kakyoin", help="player 2 fighter id (--scene fight/training/setup)"
+    )
+    parser.add_argument(
+        "--mode",
+        default="versus",
+        choices=["versus", "training"],
+        help="character select flavour (--scene select)",
+    )
     return parser.parse_args(argv)
 
 
@@ -112,10 +123,26 @@ def build_first_scene(ctx: GameContext, args: argparse.Namespace) -> Scene:
             fighter_ids=(args.p1, args.p2),
             bots=(args.demo, args.demo),
         )
+    if args.scene == "training":
+        from jojo_arena.ui.training_scene import TrainingScene
+
+        return TrainingScene(ctx, fighter_ids=(args.p1, args.p2))
     if args.scene == "setup":
         from jojo_arena.ui.setup_scene import SetupScene
 
-        return SetupScene(ctx)
+        return SetupScene(ctx, fighter_ids=(args.p1, args.p2), rounds_to_win=args.rounds)
+    if args.scene == "menu":
+        from jojo_arena.ui.main_menu import MainMenuScene
+
+        return MainMenuScene(ctx)
+    if args.scene == "select":
+        from jojo_arena.ui.select_scene import CharacterSelectScene
+
+        return CharacterSelectScene(ctx, mode=args.mode)
+    if args.scene == "options":
+        from jojo_arena.ui.options_scene import OptionsScene
+
+        return OptionsScene(ctx)
     if args.scene == "test-pattern":
         from jojo_arena.ui.test_pattern import TestPatternScene
 

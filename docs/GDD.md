@@ -376,6 +376,8 @@ Un perso est « fini » quand il a : son kit codé et testé contre 3 autres per
 - Temps arrêté : les coups reçus infligent leurs dégâts tout de suite, l'impact (recul, stun) arrive à la reprise ; un perso figé en garde reste en garde ; le timer du round s'arrête.
 - Stand sorti : il a un corps qui peut être touché (derrière son manieur, devant lui quand il frappe) ; un coup sur le Stand blesse le manieur.
 - Le Power Up de Jotaro (+1 s de time stop) attend la jauge d'Éveil (pas encore codée).
+- Menu principal du prototype : Entraînement et Combat local jouables ; Histoire, Arcade, Contre l'IA et En ligne affichés « Bientôt ».
+- Entraînement : pas d'IA. Mannequin immobile, en garde ou joué par J2 ; vie infinie (rechargée une fois le combo fini) et jauge Heart Heat infinie, désactivables ; un K.O. replace les deux persos sans score ; compteur de coups et de dégâts.
 
 ## Sources
 

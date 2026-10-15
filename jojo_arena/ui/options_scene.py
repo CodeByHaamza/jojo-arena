@@ -1,0 +1,87 @@
+"""Options: control preset, fullscreen, and a table of the keys of both players."""
+
+from __future__ import annotations
+
+import pygame
+
+from jojo_arena.context import GameContext
+from jojo_arena.engine import font
+from jojo_arena.engine.scene import Scene
+from jojo_arena.ui import text
+from jojo_arena.ui.backdrop import MenuBackdrop
+from jojo_arena.ui.labels import action_label, device_label, menu_key, move_label
+from jojo_arena.ui.menu import Menu, MenuItem
+from jojo_arena.ui.widgets import DIM, GOLD, P1_COLOR, P2_COLOR, WHITE, draw_box, draw_hints
+
+WARNING = (240, 90, 90)
+TABLE = pygame.Rect(70, 92, 340, 136)
+COLUMNS = (TABLE.x + 10, TABLE.x + 190, TABLE.x + 282)  # action, J1, J2 (centers for J1/J2)
+
+
+class OptionsScene(Scene):
+    def __init__(self, ctx: GameContext) -> None:
+        super().__init__()
+        self.ctx = ctx
+        self.backdrop = MenuBackdrop()
+        self.preset_keys = list(ctx.controls.presets)
+        labels = [ctx.controls.presets[k].label for k in self.preset_keys]
+        self.menu = Menu(
+            [
+                MenuItem(
+                    "controls", text.CONTROLS, labels, self.preset_keys.index(ctx.controls.active)
+                ),
+                MenuItem("fullscreen", text.FULLSCREEN, [text.NO, text.YES]),
+                MenuItem("back", text.BACK),
+            ]
+        )
+        self.tick = 0
+        self.hints = [(menu_key("back", ctx.inputs), text.HINT_BACK)]
+
+    def update(self) -> None:
+        self.tick += 1
+        # F11 may have changed the window since the last step.
+        self.menu.item("fullscreen").index = int(self.ctx.display.fullscreen)
+        action = self.menu.handle(self.ctx.read_menu())
+        if action is None:
+            return
+        kind, key = action
+        if kind == "change" and key == "controls":
+            self.ctx.controls.active = self.preset_keys[self.menu.item("controls").index]
+            self.ctx.save_controls()
+        elif kind == "change" and key == "fullscreen":
+            if bool(self.menu.item("fullscreen").index) != self.ctx.display.fullscreen:
+                self.ctx.display.toggle_fullscreen()
+        elif kind == "back" or (kind == "confirm" and key == "back"):
+            from jojo_arena.ui.main_menu import MainMenuScene
+
+            self.ctx.scenes.switch(MainMenuScene(self.ctx, cursor="options"))
+
+    def draw(self, surface: pygame.Surface) -> None:
+        self.backdrop.draw(surface, self.tick)
+        width, height = surface.get_size()
+        font.draw(surface, text.OPTIONS_TITLE, (width // 2, 10), GOLD, scale=3, align="center")
+        self.menu.draw(surface, width // 2, 44, spacing=14)
+
+        preset = self.ctx.controls.active_preset
+        draw_box(surface, TABLE)
+        y = TABLE.y + 6
+        font.draw(surface, text.BINDINGS_ACTION, (COLUMNS[0], y), GOLD)
+        for i, (player, color) in enumerate(zip(preset.players, (P1_COLOR, P2_COLOR), strict=True)):
+            label = f"J{i + 1} {device_label(player)}"
+            font.draw(surface, label, (COLUMNS[1 + i], y), color, align="center")
+        y += 13
+        for action, name in text.ACTION_NAMES.items():
+            font.draw(surface, name, (COLUMNS[0], y), DIM)
+            for i, player in enumerate(preset.players):
+                if action == "move":
+                    key = move_label(player)
+                else:
+                    key = action_label(player, action, self.ctx.inputs)
+                font.draw(surface, key, (COLUMNS[1 + i], y), WHITE, align="center")
+            y += 11
+
+        if preset.pads_needed() > len(self.ctx.inputs.pads):
+            font.draw(surface, text.PADS_MISSING, (width // 2, 232), WARNING, align="center")
+        else:
+            font.draw(surface, text.CONTROLS_FILE_HINT, (width // 2, 232), DIM, align="center")
+        draw_hints(surface, self.hints, (width // 2, height - 14))
