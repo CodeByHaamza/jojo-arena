@@ -31,6 +31,15 @@ STAND_FLOAT = 6  # Stands hover this many pixels above the ground
 
 # When a sheet lacks an animation, show the closest one that exists.
 ANIM_FALLBACKS = {
+    "kick": "light",
+    "kick_high": "kick",
+    "uppercut": "heavy",
+    "headbutt": "heavy",
+    "sweep": "kick",
+    "leap": "dash",
+    "counter": "guard",
+    "grab": "special",
+    "tackle": "dash",
     "special_alt": "special",
     "gha": "hha",
     "special": "heavy",

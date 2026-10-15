@@ -48,7 +48,8 @@ def test_every_look_builds_a_complete_sheet(look_path):
     look = load_look(look_path)
     sheet, spec = build_sheet(look)
     size = look.cell
-    assert sheet.get_size() == (5 * size, 10 * len(DIRECTIONS) * size)
+    rows = len(animations("down")) * len(DIRECTIONS)
+    assert sheet.get_size() == (5 * size, rows * size)
     rows = 0
     for name, (_, _, _, frames) in animations("down").items():
         for d, _view in enumerate(DIRECTIONS):
