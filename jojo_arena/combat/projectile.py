@@ -18,12 +18,23 @@ class Projectile:
     defn: ProjectileDef
     life: int
     alive: bool = True
+    # Thrown in stopped time: flies this many more steps, then hangs in the air until
+    # time moves again (None = normal flight).
+    stop_after: int | None = None
 
     @property
     def radius(self) -> float:
         return self.defn.radius
 
+    @property
+    def hanging(self) -> bool:
+        return self.stop_after == 0
+
     def update(self, arena: Arena) -> list[Event]:
+        if self.stop_after is not None:
+            if self.stop_after <= 0:
+                return []
+            self.stop_after -= 1
         self.pos = self.pos + self.velocity
         self.life -= 1
         if self.life <= 0:

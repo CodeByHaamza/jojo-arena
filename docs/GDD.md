@@ -370,6 +370,12 @@ Un perso est « fini » quand il a : son kit codé et testé contre 3 autres per
 - Vague 0 : inclut aussi le Flash Cancel, la Pose et la Résolution.
 - Touches liées par position physique (ZQSD en AZERTY = WASD en QWERTY). Preset « deux joueurs sur un clavier » : J1 sur ZQSD + F G H R T Y C V B, J2 sur les flèches + pavé numérique. Tout reste rebindable.
 - Prototype : l'arène tient entière dans l'écran, pas de caméra qui défile.
+- Spéciale + une direction tenue = la variante de la spéciale (ex. Star Finger, couteaux en éventail, fils de Kakyoin, Armor Off).
+- Touche Heart Heat : GHA si 2 barres sont pleines, sinon HHA.
+- Kits Vague 1, Stand sorti : coup lourd = rafale (Ora, Muda, Hora) ; spéciale neutre = arrêt du temps pour Jotaro (3 s, recharge 20 s) et DIO (5 s, recharge 25 s).
+- Temps arrêté : les coups reçus infligent leurs dégâts tout de suite, l'impact (recul, stun) arrive à la reprise ; un perso figé en garde reste en garde ; le timer du round s'arrête.
+- Stand sorti : il a un corps qui peut être touché (derrière son manieur, devant lui quand il frappe) ; un coup sur le Stand blesse le manieur.
+- Le Power Up de Jotaro (+1 s de time stop) attend la jauge d'Éveil (pas encore codée).
 
 ## Sources
 

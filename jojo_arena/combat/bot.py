@@ -39,6 +39,7 @@ class SimpleBot:
                 self.guard_f = rng.randint(15, 40)
         if distance > 140 and self.pose_f == 0 and rng.random() < 0.004:
             self.pose_f = rng.randint(40, 90)
+        wants_stand = me.style.params.get("stand_body") and not me.aura_active
         if self.pose_f and distance > 70:
             self.pose_f -= 1
             held.add("pose")
@@ -47,7 +48,9 @@ class SimpleBot:
             self.guard_f -= 1
             held.add("guard")
             move = (0.0, 0.0)
-        elif me.hh >= 100 and distance < 40 and rng.random() < 0.05:
+        elif wants_stand and rng.random() < 0.03:
+            presses["stand"] = 1
+        elif me.hh >= 100 and distance < 50 and rng.random() < 0.05:
             presses["heart_heat"] = 1
         elif distance > 100 and rng.random() < 0.006:
             presses["stand"] = 1
@@ -58,6 +61,10 @@ class SimpleBot:
                 presses["light"] = 1
             elif roll < 0.13:
                 presses["heavy"] = 1
-        elif distance > 120 and rng.random() < 0.02:
+            elif roll < 0.14:
+                presses["special"] = 1
+        elif distance > 90 and rng.random() < 0.025:
             presses["special"] = 1
+            if rng.random() < 0.5:
+                move = (0.0, 0.0)  # standing still: the plain special, not the variant
         return InputFrame(quantize_8(*move, 0.1), frozenset(held), presses)

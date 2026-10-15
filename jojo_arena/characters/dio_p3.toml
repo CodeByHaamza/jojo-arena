@@ -1,0 +1,152 @@
+# DIO (Part 3) - The World. GDD: "Stand · Hit & run": knives at range, fast strikes.
+# Knife fans; in stopped time (~5 s) thrown knives hang around the opponent like a trap.
+# Blood-draining grab. Great Heat Attack: Road Roller in stopped time.
+
+name = "DIO (P3)"
+max_hp = 1000
+walk_speed = 100
+style = { type = "stance_toggle", off = "base", on = "stand", stand_body = true }
+
+# DIO alone ------------------------------------------------------------------------------
+
+[stances.base.moves.light]
+startup_f = 4
+active_f = 3
+recovery_f = 10
+damage = 30
+reach = 14
+radius = 10
+hitstun_f = 19
+knockback = 90
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy"]
+
+# Vampire grab: cannot be blocked, drains blood (heals half the damage).
+[stances.base.moves.heavy]
+startup_f = 9
+active_f = 3
+recovery_f = 24
+damage = 70
+reach = 13
+radius = 9
+hitstun_f = 34
+knockback = 160
+hitstop_f = 8
+unblockable = true
+drain = 0.5
+clashable = false
+
+# Three knives in a fan.
+[stances.base.moves.special]
+startup_f = 10
+active_f = 1
+recovery_f = 16
+
+[stances.base.moves.special.projectile]
+speed = 330
+radius = 3
+damage = 20
+lifetime_s = 0.9
+hitstun_f = 12
+knockback = 60
+hitstop_f = 2
+count = 3
+spread_deg = 24
+
+# The World out ------------------------------------------------------------------------
+
+[stances.stand]
+walk_speed_mult = 0.92
+
+# Muda!
+[stances.stand.moves.light]
+startup_f = 5
+active_f = 3
+recovery_f = 9
+damage = 40
+reach = 22
+radius = 12
+hitstun_f = 20
+knockback = 110
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy"]
+
+# Muda Muda Muda rush.
+[stances.stand.moves.heavy]
+startup_f = 10
+active_f = 30
+recovery_f = 18
+hits = 6
+hit_every_f = 5
+damage = 17
+reach = 24
+radius = 13
+hitstun_f = 14
+knockback = 30
+last_knockback = 400
+last_wall_bounce = true
+hitstop_f = 2
+anim = "light"
+
+# The World: time stops for 5 seconds.
+[stances.stand.moves.special]
+startup_f = 20
+active_f = 1
+recovery_f = 10
+time_stop_s = 5.0
+cooldown_s = 25
+anim = "pose"
+
+# A wide fan of five knives.
+[stances.stand.moves.special_alt]
+startup_f = 12
+active_f = 1
+recovery_f = 18
+
+[stances.stand.moves.special_alt.projectile]
+speed = 360
+radius = 3
+damage = 20
+lifetime_s = 1.0
+hitstun_f = 12
+knockback = 60
+hitstop_f = 2
+count = 5
+spread_deg = 40
+
+# Super moves ----------------------------------------------------------------------------
+
+# Heart Heat Attack (1 bar): a crushing kick from The World.
+[moves.hha]
+startup_f = 18
+active_f = 5
+recovery_f = 26
+invincible_f = 18
+damage = 155
+reach = 20
+radius = 16
+hitstun_f = 36
+knockback = 460
+hitstop_f = 12
+wall_bounce = true
+clashable = false
+anim = "heavy"
+
+# Great Heat Attack (2 bars): Road Roller! Time stops, then a road roller drops on the
+# spot where the opponent stood.
+[moves.gha]
+time_stop_s = 2.5
+time_stop_at = "start"
+startup_f = 50
+active_f = 4
+recovery_f = 30
+invincible_f = 50
+at_target = true
+damage = 220
+radius = 26
+hitstun_f = 40
+knockback = 460
+hitstop_f = 14
+wall_bounce = true
+clashable = false
+anim = "special"

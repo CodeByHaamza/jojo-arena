@@ -1,0 +1,148 @@
+# Jotaro Kujo (Part 3) - Star Platinum. GDD: "Stand · Brawler burst": very short range,
+# devastating damage and speed. Ora rush, Star Finger, time stop (~3 s, long cooldown).
+# Frames (_f) are at 60 per second; speeds and knockback in pixels per second.
+#
+# Inputs: light / heavy / special; special while holding a direction = special_alt.
+# Stand key: Star Platinum out (stance "stand") or back (stance "base").
+
+name = "Jotaro Kujo (P3)"
+max_hp = 1000
+walk_speed = 92
+style = { type = "stance_toggle", off = "base", on = "stand", stand_body = true }
+
+# Jotaro alone ---------------------------------------------------------------------------
+
+[stances.base.moves.light]
+startup_f = 5
+active_f = 3
+recovery_f = 10
+damage = 32
+reach = 14
+radius = 10
+hitstun_f = 20
+knockback = 90
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy"]
+
+[stances.base.moves.heavy]
+startup_f = 14
+active_f = 4
+recovery_f = 20
+damage = 85
+reach = 16
+radius = 12
+hitstun_f = 28
+knockback = 360
+hitstop_f = 8
+wall_bounce = true
+
+# Shoulder charge.
+[stances.base.moves.special]
+startup_f = 10
+active_f = 8
+recovery_f = 18
+lunge = 260
+damage = 60
+reach = 12
+radius = 11
+hitstun_f = 24
+knockback = 300
+hitstop_f = 6
+anim = "heavy"
+
+# Star Platinum out --------------------------------------------------------------------
+
+[stances.stand]
+walk_speed_mult = 0.9
+
+# Ora!
+[stances.stand.moves.light]
+startup_f = 5
+active_f = 3
+recovery_f = 9
+damage = 42
+reach = 22
+radius = 12
+hitstun_f = 20
+knockback = 110
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy"]
+
+# Ora Ora Ora rush: 6 hits, the last one sends flying.
+[stances.stand.moves.heavy]
+startup_f = 10
+active_f = 30
+recovery_f = 18
+hits = 6
+hit_every_f = 5
+damage = 18
+reach = 24
+radius = 13
+hitstun_f = 14
+knockback = 30
+last_knockback = 420
+last_wall_bounce = true
+hitstop_f = 2
+anim = "light"
+
+# Star Platinum: The World - stops time for 3 seconds.
+[stances.stand.moves.special]
+startup_f = 18
+active_f = 1
+recovery_f = 10
+time_stop_s = 3.0
+cooldown_s = 20
+anim = "pose"
+
+# Star Finger: the finger stretches to mid range.
+[stances.stand.moves.special_alt]
+startup_f = 12
+active_f = 4
+recovery_f = 20
+damage = 70
+reach = 38
+radius = 6
+hitstun_f = 24
+knockback = 220
+hitstop_f = 6
+anim = "light"
+
+# Super moves (same with or without the Stand) ------------------------------------------
+
+# Heart Heat Attack (1 bar): a full-power Star Platinum punch.
+[moves.hha]
+startup_f = 18
+active_f = 5
+recovery_f = 26
+invincible_f = 18
+damage = 160
+reach = 20
+radius = 16
+hitstun_f = 36
+knockback = 460
+hitstop_f = 12
+wall_bounce = true
+clashable = false
+anim = "heavy"
+
+# Great Heat Attack (2 bars): time stops, then a final Ora Ora rush.
+[moves.gha]
+time_stop_s = 2.0
+time_stop_at = "start"
+startup_f = 20
+active_f = 40
+recovery_f = 24
+invincible_f = 20
+lunge = 200
+hits = 8
+hit_every_f = 5
+damage = 25
+reach = 22
+radius = 14
+hitstun_f = 16
+knockback = 20
+last_knockback = 520
+last_wall_bounce = true
+hitstop_f = 2
+clashable = false
+anim = "light"

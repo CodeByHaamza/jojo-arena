@@ -54,6 +54,7 @@ class Rules:
     hh_stylish_gain: float
     hh_pose_per_f: float
     hha_cost: float
+    gha_cost: float
     super_freeze_f: int
     flash_cancel_cost: float
     flash_cancel_freeze_f: int
@@ -72,13 +73,30 @@ class Rules:
     ko_slowmo_f: int
     sudden_death_hp: int
     carry_heart_heat: bool
+    stand_hurt_radius: float
+    stand_front: float
+    stand_back: float
+    stand_side: float
+    time_stop_flash_f: int
+    time_stop_resist_first_f: int
+    time_stop_resist_growth_f: int
+    time_stop_projectile_flight_f: int
 
     @classmethod
     def from_data(cls, data: dict) -> Rules:
         body, knock, wall = data["body"], data["knockback"], data["wall_bounce"]
         guard, dash, hh, clash = data["guard"], data["dash"], data["heart_heat"], data["clash"]
-        rnd = data["round"]
+        rnd, stand, stop = data["round"], data["stand"], data["time_stop"]
         return cls(
+            gha_cost=hh["gha_cost"],
+            stand_hurt_radius=stand["hurt_radius"],
+            stand_front=stand["front"],
+            stand_back=stand["back"],
+            stand_side=stand["side"],
+            time_stop_flash_f=seconds_to_frames(stop["flash_s"]),
+            time_stop_resist_first_f=seconds_to_frames(stop["resist_first_s"]),
+            time_stop_resist_growth_f=seconds_to_frames(stop["resist_growth_s"]),
+            time_stop_projectile_flight_f=stop["projectile_flight_f"],
             round_timer_f=seconds_to_frames(rnd["timer_s"]),
             round_intro_f=seconds_to_frames(rnd["intro_s"]),
             round_outro_f=seconds_to_frames(rnd["outro_s"]),

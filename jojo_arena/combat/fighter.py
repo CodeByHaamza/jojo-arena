@@ -7,7 +7,7 @@ from enum import StrEnum
 
 from jojo_arena.combat.arena import Arena
 from jojo_arena.combat.events import Event
-from jojo_arena.combat.kit import ATTACK_SLOTS, Kit, MoveDef
+from jojo_arena.combat.kit import ATTACK_SLOTS, BuffDef, Kit, MoveDef
 from jojo_arena.combat.rules import HZ, Rules
 from jojo_arena.combat.styles import make_style
 from jojo_arena.engine.actions import InputFrame
@@ -36,6 +36,7 @@ ACTIONABLE = frozenset({State.IDLE, State.WALK})
 GUARDING = frozenset({State.GUARD, State.BLOCKSTUN})
 # "guard" is buffered only for Flash Cancel; holding it is read directly.
 BUFFERED_ACTIONS = (*ATTACK_SLOTS, "dash", "heart_heat", "stand", "guard")
+SUPER_MOVES = ("hha", "gha")
 
 
 @dataclass
@@ -45,9 +46,12 @@ class Attack:
     move: MoveDef
     aim: Vec2
     serial: int
+    target: Vec2 = field(default_factory=Vec2)  # where the opponent stood at the start
     frame: int = 0
     connected: bool = False
-    fired: bool = False  # projectile already spawned
+    hits_done: int = 0
+    fired: bool = False  # projectile or trap already released
+    stopped_time: bool = False  # time stop already triggered
     props_hit: set[int] = field(default_factory=set)
 
     @property
@@ -80,6 +84,20 @@ class Attack:
     def done(self) -> bool:
         return self.frame >= self.move.total_f
 
+    @property
+    def last_hit(self) -> bool:
+        """The next hit to land is the final one of the move."""
+        return self.hits_done + 1 >= self.move.hits
+
+
+@dataclass
+class PendingHit:
+    """A hit taken in stopped time: the damage is dealt, the impact waits for time to move."""
+
+    hitstun_f: int
+    knockback: Vec2
+    wall_bounce: bool
+
 
 class Fighter:
     def __init__(self, index: int, kit: Kit, rules: Rules, pos: Vec2, facing: Vec2) -> None:
@@ -92,7 +110,8 @@ class Fighter:
         self.walk_dir = Vec2()
         self.max_hp = kit.max_hp
         self.hp = kit.max_hp
-        self.stance = next(iter(kit.stances))
+        self.base_stance = next(iter(kit.stances))
+        self.stance = self.base_stance
         self.state = State.IDLE
         self.state_f = 0
         self.attack: Attack | None = None
@@ -109,6 +128,12 @@ class Fighter:
         self.style = make_style(kit.style, kit.style_params)
         self.switch_target = self.stance
         self.resolve_announced = False
+        self.cooldowns: dict[MoveDef, int] = {}
+        self.disarmed_f = 0
+        self.buff: BuffDef | None = None
+        self.buff_f = 0
+        self.frozen = False  # caught in someone else's stopped time
+        self.pending_hits: list[PendingHit] = []
 
     # Queries ----------------------------------------------------------------------------
 
@@ -136,6 +161,38 @@ class Fighter:
     def aura_active(self) -> bool:
         return self.style.aura_active(self)
 
+    @property
+    def stand_out(self) -> bool:
+        """The Stand is out with a body that can be hit (style setting `stand_body`)."""
+        return self.aura_active and bool(self.style.params.get("stand_body"))
+
+    def stand_spot(self) -> Vec2:
+        """Where the Stand floats: in front of its user to strike, just behind otherwise."""
+        if self.state in (State.ATTACK, State.CLASH):
+            return self.pos + self.facing * self.rules.stand_front
+        beside = Vec2(-self.facing.y, self.facing.x)
+        return self.pos - self.facing * self.rules.stand_back + beside * self.rules.stand_side
+
+    def stand_pos(self) -> Vec2 | None:
+        """The Stand's position while it is out with a body, else None."""
+        return self.stand_spot() if self.stand_out else None
+
+    def hurtboxes(self) -> list[tuple[Vec2, float]]:
+        """Circles where this fighter can be hit: the body, and the Stand while it is out."""
+        boxes = [(self.pos, self.rules.hurt_radius)]
+        stand = self.stand_pos()
+        if stand is not None:
+            boxes.append((stand, self.rules.stand_hurt_radius))
+        return boxes
+
+    @property
+    def damage_dealt_mult(self) -> float:
+        return self.buff.damage_dealt_mult if self.buff else 1.0
+
+    @property
+    def damage_taken_mult(self) -> float:
+        return self.buff.damage_taken_mult if self.buff else 1.0
+
     def gain_hh(self, amount: float) -> None:
         self.hh = min(self.rules.hh_max, self.hh + amount)
 
@@ -157,7 +214,8 @@ class Fighter:
 
     def walk_speed(self) -> float:
         base = self.kit.walk_speed or self.rules.walk_speed
-        return base * self.kit.stances[self.stance].walk_speed_mult
+        speed = base * self.kit.stances[self.stance].walk_speed_mult
+        return speed * (self.buff.speed_mult if self.buff else 1.0)
 
     def aim_at(self, target: Vec2) -> Vec2:
         direction = (target - self.pos).normalized()
@@ -165,12 +223,37 @@ class Fighter:
 
     def hitbox(self) -> tuple[Vec2, float] | None:
         """Ground-plane circle of the current attack, while it can hit."""
-        if self.attack is None or not self.attack.active or self.attack.connected:
+        if self.frozen or self.attack is None or not self.attack.active:
+            return None
+        if self.attack.connected:
             return None
         move = self.attack.move
         if move.radius <= 0:
             return None
+        if move.at_target:
+            return self.attack.target, move.radius
         return self.pos + self.attack.aim * move.reach, move.radius
+
+    def move_for(self, slot: str, frame: InputFrame | None = None) -> MoveDef | None:
+        """The move an input starts now: depends on stance, disarm, held direction and
+        cooldowns. None if nothing can come out."""
+        stance = self.stance
+        if self.disarmed_f > 0 and slot in ATTACK_SLOTS:
+            stance = self.base_stance  # the Stand's weapon is gone for a moment
+        move = None
+        if slot == "special" and frame is not None and frame.move != (0.0, 0.0):
+            move = self.kit.stances[stance].moves.get("special_alt")
+        move = move or self.kit.move(stance, slot)
+        if move is not None and self.cooldowns.get(move, 0) > 0:
+            return None
+        return move
+
+    def time_stop_ready(self) -> bool | None:
+        """For the HUD: None if this kit cannot stop time, else whether it can right now."""
+        moves = [m for m in self.kit.all_moves() if m.time_stop_f > 0 and m.name not in SUPER_MOVES]
+        if not moves:
+            return None
+        return any(self.cooldowns.get(m, 0) == 0 for m in moves)
 
     # Per-step logic ---------------------------------------------------------------------
 
@@ -206,7 +289,7 @@ class Fighter:
                 return [Event("flash_cancel", self.pos, self.index)]
             if self.attack.connected:
                 slot = self._take_buffered(self.attack.move.cancel_on_hit)
-                if slot and (move := self.kit.move(self.stance, slot)):
+                if slot and (move := self.move_for(slot, frame)):
                     self.start_attack(move, target)
             return []
         if self.state == State.POSE:
@@ -248,13 +331,16 @@ class Fighter:
         """
         if self._try_dash(frame, target):
             return []
-        hha = self.kit.move(self.stance, "hha")
-        if "heart_heat" in self.buffer and hha is not None and self.hh >= self.rules.hha_cost:
-            del self.buffer["heart_heat"]
-            self.hh -= self.rules.hha_cost
-            self.start_attack(hha, target)
-            return [Event("hha", self.pos, self.index)]
-        if self._try_attack(target):
+        if "heart_heat" in self.buffer:
+            # The Heart Heat key: Great Heat Attack with 2 bars, Heart Heat Attack with 1.
+            for slot, cost in (("gha", self.rules.gha_cost), ("hha", self.rules.hha_cost)):
+                move = self.kit.move(self.stance, slot)
+                if move is not None and self.hh >= cost:
+                    del self.buffer["heart_heat"]
+                    self.hh -= cost
+                    self.start_attack(move, target)
+                    return [Event(slot, self.pos, self.index)]
+        if self._try_attack(frame, target):
             return []
         if self._take_buffered(("stand",)) and self.style.on_pressed(self):
             return [Event("stance_switch", self.pos, self.index)]
@@ -262,7 +348,7 @@ class Fighter:
 
     def _try_flash_cancel(self) -> bool:
         """Spend half a bar to drop the current attack instantly (combos, feints)."""
-        if "guard" not in self.buffer or self.attack.move.name == "hha":
+        if "guard" not in self.buffer or self.attack.move.name in SUPER_MOVES:
             return False
         if self.hh < self.rules.flash_cancel_cost:
             return False
@@ -281,11 +367,12 @@ class Fighter:
         self.switch_target = target
         self.set_state(State.SWITCH)
 
-    def _try_attack(self, target: Vec2) -> bool:
-        slot = self._take_buffered(ATTACK_SLOTS)
-        if slot and (move := self.kit.move(self.stance, slot)):
-            self.start_attack(move, target)
-            return True
+    def _try_attack(self, frame: InputFrame, target: Vec2) -> bool:
+        for slot in ATTACK_SLOTS:
+            if slot in self.buffer and (move := self.move_for(slot, frame)):
+                del self.buffer[slot]
+                self.start_attack(move, target)
+                return True
         return False
 
     def _try_dash(self, frame: InputFrame, target: Vec2) -> bool:
@@ -310,7 +397,12 @@ class Fighter:
         self.facing = aim
         self._serial += 1
         self.set_state(State.ATTACK)
-        self.attack = Attack(move, aim, self._serial)
+        self.attack = Attack(move, aim, self._serial, target=target.copy())
+        if move.cooldown_f:
+            self.cooldowns[move] = move.cooldown_f
+        if move.buff:
+            self.buff = self.kit.buffs[move.buff]
+            self.buff_f = self.buff.duration_f
 
     def integrate(self, arena: Arena) -> list[Event]:
         """Move the body for this step and resolve walls, props and wall bounces."""
@@ -346,9 +438,23 @@ class Fighter:
         elif self.state == State.DASH and self.state_f < self.rules.dash_duration_f:
             step = self.dash_dir * self.rules.dash_speed
             self.pos, _, _ = arena.constrain(self.pos + step, radius)
+        elif self._lunging():
+            step = self.attack.aim * self.attack.move.lunge
+            self.pos, _, _ = arena.constrain(self.pos + step, radius)
         elif self.walk_dir.length_sq():
             self.pos, _, _ = arena.constrain(self.pos + self.walk_dir * self.walk_speed(), radius)
         return events
+
+    def _lunging(self) -> bool:
+        """Moves with a lunge carry the body forward until they first connect."""
+        attack = self.attack
+        return (
+            self.state == State.ATTACK
+            and attack is not None
+            and attack.move.lunge > 0
+            and attack.phase < 2
+            and attack.hits_done == 0
+        )
 
     def advance(self) -> None:
         """End-of-step timers."""
@@ -356,7 +462,17 @@ class Fighter:
         rules = self.rules
         if self.state == State.ATTACK and self.attack is not None:
             self.attack.frame += 1
-            if self.attack.done:
+            attack, move = self.attack, self.attack.move
+            # Rushes: the hitbox re-arms at a steady beat until all hits are used.
+            if (
+                attack.connected
+                and attack.active
+                and attack.hits_done < move.hits
+                and move.hit_every_f
+                and attack.active_offset % move.hit_every_f == 0
+            ):
+                attack.connected = False
+            if attack.done:
                 self.set_state(State.IDLE)
         elif self.state == State.DASH:
             if self.state_f >= rules.dash_duration_f + rules.dash_recovery_f:
@@ -382,6 +498,14 @@ class Fighter:
                 self.guard_gauge = min(
                     rules.guard_gauge_max, self.guard_gauge + rules.guard_regen_per_f
                 )
+        for move in [m for m, left in self.cooldowns.items() if left > 0]:
+            self.cooldowns[move] -= 1
+        if self.disarmed_f > 0:
+            self.disarmed_f -= 1
+        if self.buff is not None:
+            self.buff_f -= 1
+            if self.buff_f <= 0:
+                self.buff = None
 
     # Taking damage ----------------------------------------------------------------------
 
@@ -391,6 +515,11 @@ class Fighter:
             self.set_state(State.KO)
 
     def take_hit(self, damage: int, hitstun_f: int, knockback: Vec2, wall_bounce: bool) -> None:
+        if self.frozen:
+            # Stopped time: the damage is dealt now, the impact lands when time moves again.
+            self.hurt(damage)
+            self.pending_hits.append(PendingHit(hitstun_f, knockback, wall_bounce))
+            return
         self.velocity = knockback
         self.wall_bounce_armed = wall_bounce
         self.buffer.clear()
@@ -399,9 +528,29 @@ class Fighter:
             self.stun_f = hitstun_f
             self.set_state(State.HITSTUN)
 
+    def release_pending_hits(self) -> bool:
+        """Time moves again: all the hits taken in stopped time land at once."""
+        if not self.pending_hits:
+            return False
+        hits, self.pending_hits = self.pending_hits, []
+        knockback = Vec2()
+        for hit in hits:
+            knockback = knockback + hit.knockback
+        if self.alive:
+            self.take_hit(
+                0,
+                max(h.hitstun_f for h in hits),
+                knockback,
+                any(h.wall_bounce for h in hits),
+            )
+        else:
+            self.velocity = knockback
+        return True
+
     def take_block(self, chip: int, gauge_damage: float, blockstun_f: int, pushback: Vec2) -> bool:
         """Absorb a blocked hit. Returns True when it breaks the guard."""
-        self.velocity = pushback
+        if not self.frozen:
+            self.velocity = pushback
         self.guard_regen_wait = self.rules.guard_regen_delay_f
         self.guard_gauge = max(0.0, self.guard_gauge - gauge_damage)
         self.hurt(chip)

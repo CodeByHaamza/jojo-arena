@@ -38,6 +38,7 @@ block_gain_ratio = 0.5        # gains are halved when the hit is blocked
 stylish_gain = 15
 pose_gain_per_s = 20
 hha_cost = 100                # Heart Heat Attack: 1 bar
+gha_cost = 200                # Great Heat Attack: 2 bars (same key, used when 2 bars are full)
 super_freeze_s = 0.4          # everything stops while the HHA flashes
 flash_cancel_cost = 50        # half a bar
 flash_cancel_freeze_f = 6
@@ -66,6 +67,19 @@ tie_knockback = 240           # draw: both are pushed back, no damage
 
 [stance]
 switch_f = 12                 # time to bring the Stand out or call it back
+
+[stand]
+# A Stand that is out has a body: a hit on it hurts its user (GDD "Stand touché").
+hurt_radius = 9
+front = 13                    # px in front of its user when it strikes
+back = 8                      # px behind its user the rest of the time...
+side = 6                      # ...and slightly to the side
+
+[time_stop]
+flash_s = 0.35                # everything holds while the time stop is announced
+resist_first_s = 1.0          # a time stopper caught in the other's time stop can move this long...
+resist_growth_s = 0.5         # ...plus this much more each time it happens again in the match
+projectile_flight_f = 8       # projectiles thrown in stopped time fly this long, then hang in the air
 
 [wall_bounce]
 min_speed = 150       # px/s; slower bodies just stop against the wall

@@ -9,6 +9,7 @@ from jojo_arena.combat.rules import per_frame
 from jojo_arena.engine.data import load_toml, seconds_to_frames
 
 # Input slots that start a move; the stance decides which move each slot maps to.
+# "special" pressed while a direction is held uses the "special_alt" move if there is one.
 ATTACK_SLOTS = ("light", "heavy", "special")
 
 
@@ -22,6 +23,10 @@ class ProjectileDef:
     knockback: float  # px/frame
     hitstop_f: int
     blockstun_f: int = 0  # 0 = derived from hitstun (rules)
+    count: int = 1  # several projectiles at once...
+    spread_deg: float = 0.0  # ...fanned out over this angle
+    origin: str = "self"  # "self", or "ring": around the target, flying inward
+    ring_radius: float = 0.0
 
     @classmethod
     def from_data(cls, data: dict) -> ProjectileDef:
@@ -34,6 +39,52 @@ class ProjectileDef:
             knockback=per_frame(data.get("knockback", 0)),
             hitstop_f=data.get("hitstop_f", 3),
             blockstun_f=data.get("blockstun_f", 0),
+            count=data.get("count", 1),
+            spread_deg=data.get("spread_deg", 0.0),
+            origin=data.get("origin", "self"),
+            ring_radius=data.get("ring_radius", 0.0),
+        )
+
+
+@dataclass(frozen=True)
+class TrapDef:
+    """Something laid on the ground that fires on its own when the opponent comes close."""
+
+    distance: float  # laid this far in front of the user
+    radius: float  # trigger radius
+    lifetime_f: int
+    max_count: int  # the oldest disappears when one more is laid
+    projectile: ProjectileDef  # what it fires at the opponent when triggered
+
+    @classmethod
+    def from_data(cls, data: dict) -> TrapDef:
+        return cls(
+            distance=data.get("distance", 20),
+            radius=data["radius"],
+            lifetime_f=seconds_to_frames(data["lifetime_s"]),
+            max_count=data.get("max_count", 3),
+            projectile=ProjectileDef.from_data(data["projectile"]),
+        )
+
+
+@dataclass(frozen=True)
+class BuffDef:
+    """A temporary state started by a move (e.g. dropping armor for speed)."""
+
+    duration_f: int
+    speed_mult: float = 1.0
+    damage_dealt_mult: float = 1.0
+    damage_taken_mult: float = 1.0
+    afterimages: bool = False
+
+    @classmethod
+    def from_data(cls, data: dict) -> BuffDef:
+        return cls(
+            duration_f=seconds_to_frames(data["duration_s"]),
+            speed_mult=data.get("speed_mult", 1.0),
+            damage_dealt_mult=data.get("damage_dealt_mult", 1.0),
+            damage_taken_mult=data.get("damage_taken_mult", 1.0),
+            afterimages=data.get("afterimages", False),
         )
 
 
@@ -56,6 +107,20 @@ class MoveDef:
     projectile: ProjectileDef | None = None
     invincible_f: int = 0  # first frames of the move that cannot be hit
     clashable: bool = True  # can start a clash against another clashable attack
+    hits: int = 1  # rush: the hitbox can hit this many times...
+    hit_every_f: int = 0  # ...once every this many frames
+    last_knockback: float | None = None  # px/frame, for the last hit of a rush
+    last_wall_bounce: bool = False
+    lunge: float = 0.0  # px/frame forward during startup and active frames
+    at_target: bool = False  # the hitbox lands where the opponent stood at the start
+    unblockable: bool = False  # grabs
+    drain: float = 0.0  # share of the damage dealt that heals the attacker
+    cooldown_f: int = 0  # cannot be used again for this long
+    time_stop_f: int = 0  # stops time for this long...
+    time_stop_at: str = "active"  # ...from the first "active" frame, or from the "start"
+    trap: TrapDef | None = None
+    disarm_f: int = 0  # the Stand's own moves are unavailable this long afterwards
+    buff: str = ""  # name of a buff (kit [buffs]) started by this move
 
     @property
     def total_f(self) -> int:
@@ -64,6 +129,8 @@ class MoveDef:
     @classmethod
     def from_data(cls, name: str, data: dict) -> MoveDef:
         projectile = data.get("projectile")
+        trap = data.get("trap")
+        last_knockback = data.get("last_knockback")
         return cls(
             name=name,
             startup_f=data["startup_f"],
@@ -82,6 +149,20 @@ class MoveDef:
             projectile=ProjectileDef.from_data(projectile) if projectile else None,
             invincible_f=data.get("invincible_f", 0),
             clashable=data.get("clashable", data.get("radius", 0) > 0),
+            hits=data.get("hits", 1),
+            hit_every_f=data.get("hit_every_f", 0),
+            last_knockback=per_frame(last_knockback) if last_knockback is not None else None,
+            last_wall_bounce=data.get("last_wall_bounce", False),
+            lunge=per_frame(data.get("lunge", 0)),
+            at_target=data.get("at_target", False),
+            unblockable=data.get("unblockable", False),
+            drain=data.get("drain", 0.0),
+            cooldown_f=seconds_to_frames(data.get("cooldown_s", 0)),
+            time_stop_f=seconds_to_frames(data.get("time_stop_s", 0)),
+            time_stop_at=data.get("time_stop_at", "active"),
+            trap=TrapDef.from_data(trap) if trap else None,
+            disarm_f=seconds_to_frames(data.get("disarm_s", 0)),
+            buff=data.get("buff", ""),
         )
 
 
@@ -101,9 +182,21 @@ class Kit:
     style_params: dict = field(default_factory=dict)
     stances: dict[str, Stance] = field(default_factory=dict)
     shared_moves: dict[str, MoveDef] = field(default_factory=dict)  # same in every stance
+    buffs: dict[str, BuffDef] = field(default_factory=dict)
 
     def move(self, stance: str, slot: str) -> MoveDef | None:
         return self.stances[stance].moves.get(slot) or self.shared_moves.get(slot)
+
+    def all_moves(self) -> list[MoveDef]:
+        moves = list(self.shared_moves.values())
+        for stance in self.stances.values():
+            moves += stance.moves.values()
+        return moves
+
+    @property
+    def time_stopper(self) -> bool:
+        """Can stop time (matters when caught in another time stopper's stopped time)."""
+        return any(move.time_stop_f > 0 for move in self.all_moves())
 
 
 def load_kit(path: Path) -> Kit:
@@ -116,6 +209,10 @@ def load_kit(path: Path) -> Kit:
         for name, stance in data["stances"].items()
     }
     shared = {slot: MoveDef.from_data(slot, m) for slot, m in data.get("moves", {}).items()}
+    buffs = {name: BuffDef.from_data(b) for name, b in data.get("buffs", {}).items()}
+    for move in [*shared.values(), *(m for s in stances.values() for m in s.moves.values())]:
+        if move.buff and move.buff not in buffs:
+            raise ValueError(f"{path.name}: move '{move.name}' uses unknown buff '{move.buff}'")
     walk = data.get("walk_speed")
     style = data.get("style", "none")
     style_name, style_params = (style, {}) if isinstance(style, str) else (style["type"], style)
@@ -128,4 +225,5 @@ def load_kit(path: Path) -> Kit:
         style_params=style_params,
         stances=stances,
         shared_moves=shared,
+        buffs=buffs,
     )

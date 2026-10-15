@@ -1,0 +1,162 @@
+# Noriaki Kakyoin (Part 3) - Hierophant Green. GDD: "Stand · Trapper": mid range,
+# preparation. Emerald Splash, invisible threads laid in the arena (touched = automatic
+# volley). Great Heat Attack: 20 Metre Radius Emerald Splash.
+
+name = "Noriaki Kakyoin"
+max_hp = 950
+walk_speed = 96
+style = { type = "stance_toggle", off = "base", on = "stand", stand_body = true }
+
+# Kakyoin alone --------------------------------------------------------------------------
+
+[stances.base.moves.light]
+startup_f = 5
+active_f = 3
+recovery_f = 10
+damage = 30
+reach = 15
+radius = 10
+hitstun_f = 19
+knockback = 90
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy"]
+
+[stances.base.moves.heavy]
+startup_f = 14
+active_f = 4
+recovery_f = 20
+damage = 75
+reach = 16
+radius = 12
+hitstun_f = 27
+knockback = 340
+hitstop_f = 8
+wall_bounce = true
+
+# A small Emerald Splash.
+[stances.base.moves.special]
+startup_f = 12
+active_f = 1
+recovery_f = 18
+
+[stances.base.moves.special.projectile]
+speed = 280
+radius = 3
+damage = 14
+lifetime_s = 1.0
+hitstun_f = 12
+knockback = 40
+hitstop_f = 2
+count = 3
+spread_deg = 20
+
+# Hierophant Green out ---------------------------------------------------------------------
+
+[stances.stand]
+walk_speed_mult = 0.95
+
+# Tentacle lash, reaching far.
+[stances.stand.moves.light]
+startup_f = 7
+active_f = 4
+recovery_f = 12
+damage = 32
+reach = 30
+radius = 8
+hitstun_f = 20
+knockback = 120
+hitstop_f = 4
+cancel_on_hit = ["heavy"]
+
+[stances.stand.moves.heavy]
+startup_f = 14
+active_f = 5
+recovery_f = 20
+damage = 60
+reach = 40
+radius = 9
+hitstun_f = 26
+knockback = 300
+hitstop_f = 7
+wall_bounce = true
+
+# Emerald Splash!
+[stances.stand.moves.special]
+startup_f = 14
+active_f = 1
+recovery_f = 20
+
+[stances.stand.moves.special.projectile]
+speed = 300
+radius = 3
+damage = 14
+lifetime_s = 1.1
+hitstun_f = 12
+knockback = 50
+hitstop_f = 2
+count = 6
+spread_deg = 36
+
+# Lay a web of threads: when the opponent touches it, it fires emeralds on its own.
+[stances.stand.moves.special_alt]
+startup_f = 10
+active_f = 1
+recovery_f = 14
+anim = "special"
+
+[stances.stand.moves.special_alt.trap]
+distance = 22
+radius = 14
+lifetime_s = 15
+max_count = 3
+
+[stances.stand.moves.special_alt.trap.projectile]
+speed = 340
+radius = 3
+damage = 14
+lifetime_s = 0.8
+hitstun_f = 14
+knockback = 60
+hitstop_f = 2
+count = 4
+spread_deg = 30
+
+# Super moves ----------------------------------------------------------------------------
+
+# Heart Heat Attack (1 bar): Hierophant Green bursts out around Kakyoin.
+[moves.hha]
+startup_f = 20
+active_f = 6
+recovery_f = 26
+invincible_f = 20
+damage = 150
+reach = 0
+radius = 40
+hitstun_f = 36
+knockback = 420
+hitstop_f = 12
+wall_bounce = true
+clashable = false
+anim = "special"
+
+# Great Heat Attack (2 bars): 20 Metre Radius Emerald Splash - emeralds close in from
+# every side.
+[moves.gha]
+startup_f = 30
+active_f = 1
+recovery_f = 30
+invincible_f = 30
+clashable = false
+anim = "special"
+
+[moves.gha.projectile]
+speed = 260
+radius = 3
+damage = 16
+lifetime_s = 0.6
+hitstun_f = 14
+knockback = 50
+hitstop_f = 2
+count = 16
+origin = "ring"
+ring_radius = 95

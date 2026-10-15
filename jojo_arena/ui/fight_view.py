@@ -93,7 +93,9 @@ class FighterView:
         else:
             anim = STATE_ANIMS.get(fighter.state, "idle")
         name, spec = self.resolve(sprites, anim)
-        if fighter.state == State.CLASH:
+        attack = fighter.attack
+        rushing = attack is not None and attack.move.hits > 1 and attack.active
+        if fighter.state == State.CLASH or rushing:
             # Rapid-fire punches, alternating between the two "extended" frames.
             index = min(spec.frames - 1, 1 + (fighter.state_f // 3) % 2)
         else:
@@ -117,18 +119,11 @@ class FighterView:
             return t if coming_out else 1 - t
         return 1.0 if fighter.aura_active else 0.0
 
-    def stand_ground(self, fighter: Fighter) -> Vec2:
-        """Where the Stand floats: just behind its user, or in front of them to strike."""
-        if fighter.state in (State.ATTACK, State.CLASH):
-            return fighter.pos + fighter.facing * 13
-        beside = Vec2(-fighter.facing.y, fighter.facing.x)
-        return fighter.pos - fighter.facing * 8 + beside * 6
-
     def draw_stand(self, surface: pygame.Surface, fighter: Fighter, tick: int) -> None:
         presence = self.stand_presence(fighter)
         if presence <= 0:
             return
-        pos = self.stand_ground(fighter)
+        pos = fighter.stand_spot()  # same spot the simulation uses for hits on the Stand
         lift = STAND_FLOAT + round(math.sin(tick * 0.08) * 1.5)
         chest = pos + Vec2(0, -self.stand.chest - lift)
         aura = tuple(round(c * 0.45 * presence) for c in self.fighter_def.aura)
@@ -171,14 +166,21 @@ class FighterView:
         _, flip = sprite_direction(fighter.facing.x, fighter.facing.y)
         if flip:
             ax = image.get_width() - 1 - ax
-        if fighter.invincible:
-            # Afterimages trailing behind an invincible dash.
+        trail = None
+        if fighter.invincible and fighter.state == State.DASH:
+            trail = fighter.dash_dir * fighter.rules.dash_speed
+        elif fighter.buff is not None and fighter.buff.afterimages:
+            if fighter.walk_dir.length_sq():
+                trail = fighter.walk_dir * fighter.walk_speed()
+            elif fighter.state == State.ATTACK:
+                trail = fighter.facing * 1.5
+        if trail is not None:
+            # Afterimages trailing behind a dash, or behind a body moving too fast to see.
             ghost = image.copy()
             ghost.fill((*self.fighter_def.aura, 0), special_flags=pygame.BLEND_RGB_MAX)
             ghost.set_alpha(70)
-            step = fighter.dash_dir * fighter.rules.dash_speed
             for back in (6, 3):
-                pos = fighter.pos - step * back
+                pos = fighter.pos - trail * back
                 surface.blit(ghost, (round(pos.x) - ax, round(pos.y) - ay))
         surface.blit(image, (round(fighter.pos.x) - ax, round(fighter.pos.y) - ay))
         if fighter.aura_active:
@@ -215,6 +217,7 @@ class FightView:
         self.sparks: list[Spark] = []
         self.shake = 0
         self.flash = 0  # white screen flash frames left
+        self.waves: list[list] = []  # time stop shockwaves: [center, age]
         self.tick = 0
         self._overlays: dict[tuple, pygame.Surface] = {}
 
@@ -260,10 +263,26 @@ class FightView:
             elif event.kind in ("clash_win", "clash_tie"):
                 self.sparks.append(Spark(pos, 24, 24, (255, 230, 150), 28, 12))
                 self.shake = max(self.shake, 12)
+            elif event.kind == "time_stop":
+                self.waves.append([event.pos + self.chest(event.fighter), 0])
+                self.shake = max(self.shake, 10)
+            elif event.kind == "time_resume":
+                self.flash = 8
+            elif event.kind == "delayed_hits":
+                self.sparks.append(Spark(pos, 26, 26, (255, 220, 160), 30, 12))
+                self.shake = max(self.shake, 14)
+            elif event.kind == "trap_triggered":
+                aura = self.fighter_defs[event.fighter].aura
+                self.sparks.append(Spark(event.pos + Vec2(0, -8), 12, 12, aura, 12, 6))
+            elif event.kind == "drain":
+                self.sparks.append(Spark(pos, 16, 16, (230, 40, 60), 12, 6))
             elif event.kind == "ko":
                 self.shake = max(self.shake, 14)
 
     def update(self) -> None:
+        for wave in self.waves:
+            wave[1] += 1
+        self.waves = [w for w in self.waves if w[1] < 40]
         self.tick += 1
         for spark in self.sparks:
             spark.life -= 1
@@ -284,12 +303,16 @@ class FightView:
             blit_shadow(surface, (fighter.pos.x, fighter.pos.y), *shadow)
         for projectile in match.projectiles:
             blit_shadow(surface, (projectile.pos.x, projectile.pos.y), 8, 3)
+        for trap in match.traps:
+            self._draw_trap(surface, trap)
+        for fighter in match.fighters:
+            self._draw_falling_strike(surface, fighter)
         drawables = [(o.rect.bottom, 0, o) for o in match.arena.obstacles if not o.broken]
         drawables += [(f.pos.y, 1, f) for f in match.fighters]
         for fighter in match.fighters:
             view = self.fighter_views[fighter.index]
             if view.stand_presence(fighter) > 0:
-                drawables.append((view.stand_ground(fighter).y, 2, fighter))
+                drawables.append((fighter.stand_spot().y, 2, fighter))
         for _, kind, item in sorted(drawables, key=lambda d: (d[0], d[1])):
             if kind == 0:
                 self.renderer.draw_obstacle(surface, item)
@@ -314,8 +337,18 @@ class FightView:
             self.fighter_views[user.index].draw(surface, user, self.tick)
         for spark in self.sparks:
             self._draw_spark(surface, spark)
+        for center, age in self.waves:
+            # The time stop shockwave: a ring sweeping out over the arena.
+            radius = 8 + age * 9
+            ring = (255, 255, 255) if age % 4 < 2 else (180, 160, 255)
+            pygame.draw.circle(surface, ring, center.as_ints(), radius, 2)
         if match.clash is not None:
             self._draw_clash(surface, match)
+        if match.time_stop is not None and match.super_freeze == 0:
+            # Stopped time: the whole picture turns to its negative.
+            negative = surface.copy()
+            surface.fill((255, 255, 255))
+            surface.blit(negative, (0, 0), special_flags=pygame.BLEND_RGB_SUB)
         if match.slowmo:
             surface.blit(self._overlay(surface.get_size(), (40, 30, 90, 50)), (0, 0))
         if self.flash:
@@ -333,6 +366,37 @@ class FightView:
             overlay.fill(rgba)
             self._overlays[key] = overlay
         return self._overlays[key]
+
+    def _draw_trap(self, surface: pygame.Surface, trap) -> None:
+        """Threads laid on the ground: faint lines in the owner's color, a slight shimmer."""
+        aura = self.fighter_defs[trap.owner].aura
+        dim = tuple(c // 3 for c in aura)
+        r = trap.defn.radius
+        center = trap.pos
+        for i in range(3):
+            a = i * math.pi / 3 + 0.3
+            start = center + Vec2.from_angle(a, r)
+            end = center - Vec2.from_angle(a, r)
+            pygame.draw.line(surface, dim, start.as_ints(), end.as_ints())
+        if (self.tick // 20) % 3 == 0:
+            surface.set_at(center.as_ints(), aura)
+
+    def _draw_falling_strike(self, surface: pygame.Surface, fighter: Fighter) -> None:
+        """A heavy object dropping on a spot (moves that land on the target): its shadow
+        grows on the floor while it falls."""
+        attack = fighter.attack
+        if attack is None or not attack.move.at_target or attack.phase != 0:
+            return
+        progress = attack.frame / max(1, attack.move.startup_f)
+        target = attack.target
+        size = round(attack.move.radius * 2 * (0.3 + 0.7 * progress))
+        blit_shadow(surface, (target.x, target.y), size, max(3, size // 3))
+        height = 120 * (1 - progress)
+        block = pygame.Rect(0, 0, 30, 18)
+        block.midbottom = (round(target.x), round(target.y - height))
+        surface.fill(OUTLINE, block.inflate(2, 2))
+        surface.fill((90, 96, 108), block)
+        surface.fill((140, 146, 160), (block.x, block.y, block.w, 4))
 
     def _draw_clash(self, surface: pygame.Surface, match: Match) -> None:
         clash = match.clash

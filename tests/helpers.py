@@ -31,6 +31,23 @@ def make_match(p1=(150, 100), p2=(180, 100), obstacles=(), bounds=OPEN_BOUNDS) -
     return Match((kit, kit), load_rules(), arena)
 
 
+def make_duel(p1_id: str, p2_id: str, p1=(150, 100), p2=(180, 100)) -> Match:
+    """A match between two roster fighters in an empty arena."""
+    arena = Arena(OPEN_BOUNDS, (Vec2(*p1), Vec2(*p2)), [])
+    kits = (get_fighter(p1_id).kit, get_fighter(p2_id).kit)
+    return Match(kits, load_rules(), arena)
+
+
+def run_until(match: Match, condition, limit: int = 600, p1=NONE, p2=NONE) -> list:
+    """Step with the given inputs held until `condition(match)` is true."""
+    events = []
+    for _ in range(limit):
+        if condition(match):
+            return events
+        events += match.step((p1, p2))
+    raise AssertionError("condition never met")
+
+
 def crate(x, y, w=12, h=11, hp=40) -> Obstacle:
     return Obstacle("crate", Rect(x, y, w, h), hp)
 

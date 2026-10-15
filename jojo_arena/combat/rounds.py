@@ -106,7 +106,7 @@ class Rounds:
 
     def _step_fight(self, inputs: tuple[InputFrame, InputFrame]) -> list[Event]:
         match = self.match
-        cinematic = match.clash is not None or match.super_freeze > 0
+        cinematic = match.cinematic  # clash, super flash or stopped time: the clock waits
         events = match.step(inputs)
         if not self.sudden_death and not cinematic:
             self.timer_f = max(0, self.timer_f - 1)

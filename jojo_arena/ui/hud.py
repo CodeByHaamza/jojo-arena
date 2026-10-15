@@ -90,6 +90,12 @@ class Hud:
         for callout in self.callouts:
             x, y = callout.pos.as_ints()
             font.draw(surface, callout.label, (x, y), callout.color, align="center")
+        stop = rounds.match.time_stop
+        if stop is not None and rounds.match.super_freeze == 0:
+            font.draw(surface, text.TIME_STOPPED, (SCREEN_W // 2, 36), GOLD, align="center")
+            width = round(80 * stop.frames_left / max(1, stop.duration_f))
+            surface.fill(OUTLINE, (SCREEN_W // 2 - 41, 47, 82, 4))
+            surface.fill(GOLD, (SCREEN_W // 2 - 40, 48, width, 2))
         if rounds.match.clash is not None and (self.tick // 8) % 2 == 0:
             pos = rounds.match.clash.pos
             y = round(pos.y) - max(self.heights) - 30
@@ -166,10 +172,16 @@ class Hud:
         font.draw(
             surface, str(full), (count_x, HH_Y - 2), WHITE, align="left" if i == 0 else "right"
         )
+        label_x = 8 if i == 0 else SCREEN_W - 8
+        align = "left" if i == 0 else "right"
         if fighter.aura_active:
-            label_x = 8 if i == 0 else SCREEN_W - 8
-            align = "left" if i == 0 else "right"
             font.draw(surface, text.STANCE_ON, (label_x, HH_Y - 11), shade(aura, 40), align=align)
+        ready = fighter.time_stop_ready()
+        if ready is not None:
+            # Time stoppers: is the time stop available, or still recharging?
+            color = GOLD if ready else (90, 86, 104)
+            stop_x = label_x + (40 if i == 0 else -40)
+            font.draw(surface, text.TIME_STOP_READY, (stop_x, HH_Y - 11), color, align=align)
 
     def _draw_timer(self, surface: pygame.Surface, rounds: Rounds) -> None:
         seconds = rounds.timer_seconds
