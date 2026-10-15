@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import math
 import random
 
 import pygame
 
 from jojo_arena.combat.arena import Arena, Obstacle
+from jojo_arena.engine.effects import blit_glow, radial_glow
 from jojo_arena.stages.base import StageDef
 
 OUTLINE = (23, 18, 31)
@@ -42,7 +44,15 @@ class CairoNightRenderer:
         self._draw_markings(surface)
         surface.blit(self._build_frame(), (0, 0))
         self._draw_curb(surface)
+        for lamp in self.stage.lanterns:
+            self._draw_lantern(surface, lamp.as_ints())
         return surface
+
+    def _draw_lantern(self, surface: pygame.Surface, pos: tuple[int, int]) -> None:
+        x, y = pos
+        surface.fill(OUTLINE, (x - 3, y - 4, 7, 8))
+        surface.fill(self.palette["lantern"], (x - 2, y - 3, 5, 6))
+        surface.fill((255, 236, 190), (x - 1, y - 2, 2, 2))
 
     def _draw_cobbles(self, surface: pygame.Surface) -> None:
         pal = self.palette
@@ -122,6 +132,15 @@ class CairoNightRenderer:
 
     def draw_background(self, surface: pygame.Surface) -> None:
         surface.blit(self.background, (0, 0))
+
+    def draw_lights(self, surface: pygame.Surface, tick: int) -> None:
+        """Warm lantern light, added on top of the whole scene."""
+        lantern = self.palette["lantern"]
+        for i, lamp in enumerate(self.stage.lanterns):
+            # Slow, deterministic flicker, out of phase between lanterns.
+            flicker = 0.30 + 0.04 * math.sin(tick * 0.11 + i * 1.7)
+            color = tuple(round(c * flicker) for c in lantern)
+            blit_glow(surface, radial_glow(40, color), lamp.as_ints())
 
     def draw_floor_details(self, surface: pygame.Surface, arena: Arena) -> None:
         """Debris of broken props, drawn flat on the floor under everything else."""

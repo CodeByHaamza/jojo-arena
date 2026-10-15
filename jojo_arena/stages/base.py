@@ -25,6 +25,7 @@ class StageDef:
     spawns: tuple[Vec2, Vec2]
     props: tuple[PropDef, ...]
     palette: dict
+    lanterns: tuple[Vec2, ...] = ()
 
     def build_arena(self) -> Arena:
         obstacles = [Obstacle(p.kind, p.rect, p.hp) for p in self.props]
@@ -40,4 +41,7 @@ def load_stage_def(path: Path, stage_id: str) -> StageDef:
         PropDef(p["kind"], Rect(*p["rect"]), p.get("hp", kinds.get(p["kind"], {}).get("hp", 0)))
         for p in data.get("props", [])
     )
-    return StageDef(stage_id, data["name"], bounds, spawns, props, data.get("palette", {}))
+    lanterns = tuple(Vec2(*lamp["pos"]) for lamp in data.get("lanterns", []))
+    return StageDef(
+        stage_id, data["name"], bounds, spawns, props, data.get("palette", {}), lanterns
+    )

@@ -46,6 +46,19 @@ rect = [348, 216, 12, 11]
 kind = "crate"
 rect = [234, 222, 12, 11]
 
+# Street lanterns on the walls: warm additive light pools.
+[[lanterns]]
+pos = [120, 37]
+
+[[lanterns]]
+pos = [240, 37]
+
+[[lanterns]]
+pos = [360, 37]
+
+[[lanterns]]
+pos = [240, 255]
+
 [palette]
 frame = [17, 21, 42]
 frame_dark = [11, 14, 30]
