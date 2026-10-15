@@ -23,6 +23,7 @@ class FighterDef:
     color: Color
     aura: Color
     palette: dict[str, list[Color]]
+    stand_sprite: str = ""  # sheet of the Stand shown while it is out (if any)
 
 
 def load_roster() -> list[FighterDef]:
@@ -46,6 +47,7 @@ def load_roster() -> list[FighterDef]:
                 color=parse_color(entry["color"]),
                 aura=parse_color(entry.get("aura", entry["color"])),
                 palette=palette,
+                stand_sprite=entry.get("stand_sprite", ""),
             )
         )
     return roster

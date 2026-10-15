@@ -4,6 +4,7 @@
 #             game draws a simple shape in `color` instead.
 #   palette = colors that replace the sheet's key colors (see the sheet's [recolor]).
 #             Only the mannequin uses it; character sheets have their final colors.
+#   stand_sprite = sheet of the Stand, shown beside the fighter while it is out.
 # Character sheets are generated from characters/looks/<id>.toml by tools/make_sprites.py.
 # Until a character has its own kit, it fights with the mannequin's moves.
 
@@ -12,6 +13,7 @@ id = "jotaro_p3"
 name = "JOTARO KUJO"
 kit = "mannequin"
 sprite = "jotaro_p3/jotaro_p3"
+stand_sprite = "star_platinum/star_platinum"
 color = "#5a6ad0"
 aura = "#9b7bff"
 
@@ -20,6 +22,7 @@ id = "kakyoin"
 name = "NORIAKI KAKYOIN"
 kit = "mannequin"
 sprite = "kakyoin/kakyoin"
+stand_sprite = "hierophant_green/hierophant_green"
 color = "#5fae55"
 aura = "#59f08c"
 

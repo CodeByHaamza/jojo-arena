@@ -25,6 +25,8 @@ from jojo_arena.paths import SPRITES_DIR
 from jojo_arena.stages.base import StageDef
 
 OUTLINE = (23, 18, 31)
+STAND_ALPHA = 215  # Stands look a little spectral
+STAND_FLOAT = 6  # Stands hover this many pixels above the ground
 
 # When a sheet lacks an animation, show the closest one that exists.
 ANIM_FALLBACKS = {
@@ -69,32 +71,75 @@ class FighterView:
         self.chest = Vec2(0, -self.sprites.chest)
         self.height = self.sprites.height
         self.shadow = (round(14 + self.height * 0.25), 7)
+        self.stand: SheetSprites | None = None
+        if fighter_def.stand_sprite:
+            base = SPRITES_DIR / fighter_def.stand_sprite
+            self.stand = SheetSprites.load(base.with_suffix(".png"), base.with_suffix(".toml"))
 
-    def resolve(self, anim: str) -> tuple[str, AnimSpec]:
+    @staticmethod
+    def resolve(sprites, anim: str) -> tuple[str, AnimSpec]:
         name = anim
-        while self.sprites.spec(name) is None and name in ANIM_FALLBACKS:
+        while sprites.spec(name) is None and name in ANIM_FALLBACKS:
             name = ANIM_FALLBACKS[name]
-        return name, self.sprites.spec(name) or AnimSpec(name, 1)
+        return name, sprites.spec(name) or AnimSpec(name, 1)
 
-    def current_frame(self, fighter: Fighter) -> pygame.Surface:
+    def current_frame(self, fighter: Fighter, sprites=None) -> pygame.Surface:
+        """The fighter's frame; with `sprites`, the same animation from another sheet."""
+        sprites = sprites or self.sprites
         phase = None
         if fighter.state == State.ATTACK and fighter.attack is not None:
             anim = fighter.attack.move.anim
             phase = fighter.attack.phase_info()
         else:
             anim = STATE_ANIMS.get(fighter.state, "idle")
-        name, spec = self.resolve(anim)
+        name, spec = self.resolve(sprites, anim)
         if fighter.state == State.CLASH:
             # Rapid-fire punches, alternating between the two "extended" frames.
             index = min(spec.frames - 1, 1 + (fighter.state_f // 3) % 2)
         else:
             index = frame_index(spec, fighter.state_f, phase)
         direction, flip = sprite_direction(fighter.facing.x, fighter.facing.y)
-        image = self.sprites.frame(name, direction, flip, index)
+        image = sprites.frame(name, direction, flip, index)
         if fighter.state in (State.HITSTUN, State.GUARD_BROKEN) and fighter.state_f < 3:
             image = image.copy()
             image.fill((255, 255, 255, 0), special_flags=pygame.BLEND_RGB_MAX)
         return image
+
+    # The Stand ---------------------------------------------------------------------------
+
+    def stand_presence(self, fighter: Fighter) -> float:
+        """0 = no Stand on screen, 1 = fully out (it fades in and out while switching)."""
+        if self.stand is None:
+            return 0.0
+        if fighter.state == State.SWITCH:
+            t = fighter.state_f / max(1, fighter.rules.stance_switch_f)
+            coming_out = fighter.switch_target != next(iter(fighter.kit.stances))
+            return t if coming_out else 1 - t
+        return 1.0 if fighter.aura_active else 0.0
+
+    def stand_ground(self, fighter: Fighter) -> Vec2:
+        """Where the Stand floats: just behind its user, or in front of them to strike."""
+        if fighter.state in (State.ATTACK, State.CLASH):
+            return fighter.pos + fighter.facing * 13
+        beside = Vec2(-fighter.facing.y, fighter.facing.x)
+        return fighter.pos - fighter.facing * 8 + beside * 6
+
+    def draw_stand(self, surface: pygame.Surface, fighter: Fighter, tick: int) -> None:
+        presence = self.stand_presence(fighter)
+        if presence <= 0:
+            return
+        pos = self.stand_ground(fighter)
+        lift = STAND_FLOAT + round(math.sin(tick * 0.08) * 1.5)
+        chest = pos + Vec2(0, -self.stand.chest - lift)
+        aura = tuple(round(c * 0.45 * presence) for c in self.fighter_def.aura)
+        blit_glow(surface, radial_glow(26, aura), chest)
+        image = self.current_frame(fighter, self.stand).copy()
+        image.set_alpha(round(STAND_ALPHA * presence))
+        ax, ay = self.stand.anchor
+        _, flip = sprite_direction(fighter.facing.x, fighter.facing.y)
+        if flip:
+            ax = image.get_width() - 1 - ax
+        surface.blit(image, (round(pos.x) - ax, round(pos.y) - ay - lift))
 
     def draw_aura(self, surface: pygame.Surface, fighter: Fighter, tick: int) -> None:
         """Additive light behind the body: Stand aura, stance switch, Résolution."""
@@ -104,7 +149,11 @@ class FighterView:
             pulse = 0.75 + 0.15 * math.sin(tick * 0.2)
             if fighter.state == State.SWITCH:
                 pulse = 0.4 + 0.6 * fighter.state_f / max(1, fighter.rules.stance_switch_f)
-            blit_glow(surface, radial_glow(30, tuple(round(c * pulse) for c in aura)), body)
+            # With a visible Stand the user's own aura stays discreet.
+            radius = 18 if self.stand is not None else 30
+            if self.stand is not None:
+                pulse *= 0.5
+            blit_glow(surface, radial_glow(radius, tuple(round(c * pulse) for c in aura)), body)
         if fighter.state == State.POSE:
             for i in range(4):
                 rise = (tick * 0.6 + i * 9) % 36
@@ -237,11 +286,17 @@ class FightView:
             blit_shadow(surface, (projectile.pos.x, projectile.pos.y), 8, 3)
         drawables = [(o.rect.bottom, 0, o) for o in match.arena.obstacles if not o.broken]
         drawables += [(f.pos.y, 1, f) for f in match.fighters]
+        for fighter in match.fighters:
+            view = self.fighter_views[fighter.index]
+            if view.stand_presence(fighter) > 0:
+                drawables.append((view.stand_ground(fighter).y, 2, fighter))
         for _, kind, item in sorted(drawables, key=lambda d: (d[0], d[1])):
             if kind == 0:
                 self.renderer.draw_obstacle(surface, item)
-            else:
+            elif kind == 1:
                 self.fighter_views[item.index].draw(surface, item, self.tick)
+            else:
+                self.fighter_views[item.index].draw_stand(surface, item, self.tick)
         for projectile in match.projectiles:
             self._draw_projectile(surface, projectile)
         self.renderer.draw_lights(surface, self.tick)

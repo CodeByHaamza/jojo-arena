@@ -87,6 +87,7 @@ def test_generated_sheets_are_up_to_date():
 
 def test_every_roster_sprite_exists_and_loads():
     for fighter in load_roster():
-        base = SPRITES_DIR / fighter.sprite
-        sheet = SheetSprites.load(base.with_suffix(".png"), base.with_suffix(".toml"), None)
-        assert sheet is not None, fighter.id
+        for sprite in filter(None, (fighter.sprite, fighter.stand_sprite)):
+            base = SPRITES_DIR / sprite
+            sheet = SheetSprites.load(base.with_suffix(".png"), base.with_suffix(".toml"), None)
+            assert sheet is not None, f"{fighter.id}: {sprite}"
