@@ -10,6 +10,7 @@ Ce qui est fait, ce qui est en cours et ce qui vient ensuite. Le détail du game
 - [x] **Menus** : écran titre, menu principal (modes « Bientôt »), sélection des persos, écran VS, pause, options, liste des coups.
 - [x] **Entraînement** : mannequin immobile, en garde ou joué par J2 ; vie et jauge infinies ; compteur de combo.
 - [x] Couteaux, émeraudes et lame dessinés en vrai ; Star Finger qui s'allonge jusqu'à mi-distance.
+- [x] Duel de rafales : écran de face-à-face aux couleurs des persos, 5 s à marteler.
 - [x] Onomatopées façon JoJo (ゴゴゴ, ドン, バーン…), cris des persos (ORA, MUDA, ZA WARUDO…), éclairs, ondes de choc, poussière.
 - [x] Outillage : Makefile, hook avant commit, CI (lint, tests, combats aléatoires, captures de tous les écrans), `.exe` de test à chaque push sur `main`, Release sur tag.
 
@@ -17,9 +18,9 @@ Ce qui est fait, ce qui est en cours et ce qui vient ensuite. Le détail du game
 
 Chaque perso doit avoir un ressenti unique, et chaque coup qui touche doit être satisfaisant.
 
-1. [ ] **Rafales spectaculaires** : nuée de poings, le Stand avance en poussant, dernier coup qui projette. Rafale contre rafale : duel à marteler (QTE) mis en scène.
-2. [ ] **Poses iconiques** propres à chaque perso, avec les ゴゴゴゴ.
-3. [ ] **Nouvelles mécaniques de coups**, réutilisables par tous les kits :
+1. [x] **Rafales spectaculaires** : nuée de poings, le Stand avance en poussant, dernier coup qui projette. Rafale contre rafale : duel à marteler (QTE) mis en scène.
+2. [x] **Poses iconiques** propres à chaque perso, avec les ゴゴゴゴ.
+3. [x] **Nouvelles mécaniques de coups**, réutilisables par tous les kits :
    - enchaînements (léger, léger, léger donnent trois coups différents) ;
    - contre ;
    - bond sur l'adversaire ;
@@ -27,8 +28,8 @@ Chaque perso doit avoir un ressenti unique, et chaque coup qui touche doit être
    - casse-garde ;
    - coups qui attirent ;
    - Stand qui surgit le temps d'un coup.
-4. [ ] **Nouveaux kits** pour les quatre persos (le tableau est dans la réponse du 15/10, à reporter dans le GDD une fois validé).
-5. [ ] **Visée libre** (souris pour le clavier, stick droit pour la manette) : le **grappin** de Kakyoin vise un point choisi au curseur.
+4. [x] **Nouveaux kits** pour les quatre persos (détail dans les décisions du GDD).
+5. [x] **Visée libre** (souris pour le clavier, stick droit pour la manette) : le **grappin** de Kakyoin vise un point choisi au curseur.
 6. [ ] **Mode contrôle de Hierophant Green**, comme dans le GDD :
    - piloter HG loin de Kakyoin ;
    - fouet, Emerald Splash et fils depuis HG ;
@@ -40,7 +41,7 @@ Chaque perso doit avoir un ressenti unique, et chaque coup qui touche doit être
    - **Kakyoin, Emerald Splash 20 mètres** : courte cinématique où HG parcourt l'arène en posant ses fils. Les tentacules couvrent ensuite toute l'arène comme une toile d'araignée : la toucher déclenche des Emerald Splash automatiques, pendant que Kakyoin continue de se battre.
    - **Jotaro** : temps arrêté, ORA en gros plan, et le temps reprend sur l'impact.
    - **Polnareff** : les clones d'Armor Off frappent de tous les côtés.
-9. [ ] **Équilibrage** :
+9. [x] **Équilibrage, premier passage** :
    - baisse des dégâts sur les longs combos ;
    - dégâts réduits pendant le temps arrêté ;
    - saisie de DIO moins abusive.

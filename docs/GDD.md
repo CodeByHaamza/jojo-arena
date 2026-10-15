@@ -378,6 +378,15 @@ Un perso est « fini » quand il a : son kit codé et testé contre 3 autres per
 - Le Power Up de Jotaro (+1 s de time stop) attend la jauge d'Éveil (pas encore codée).
 - Menu principal du prototype : Entraînement et Combat local jouables ; Histoire, Arcade, Contre l'IA et En ligne affichés « Bientôt ».
 - Duel de rafales : l'écran quitte l'arène pour un face-à-face. Chaque moitié prend la couleur du perso et de son Stand (Jotaro violet, DIO jaune, Polnareff gris), les cris (ORA, MUDA…) fusent en arrière-plan. Une rafale qui touche un perso en train de lancer la sienne déclenche le duel, même un peu à contretemps. Polnareff fait ses rafales à l'épée seule (estocs) et crie aussi ORA.
+- Enchaînements : la même touche, appuyée quand le coup touche, donne le coup suivant (léger, léger, léger : trois coups différents). Les longs combos font moins mal : à partir du 3e coup, −12 % par coup, jusqu'à 45 % (une rafale compte pour un coup). Les coups portés en temps arrêté font 80 % des dégâts, sauf les ultimes.
+- Nouvelles mécaniques de coups, pour tous les kits : contre, bond (vers l'adversaire ou vers le point visé), coups blindés, casse-garde, coups qui attirent, Stand qui surgit le temps d'un coup.
+- Visée libre : la souris pour le joueur au clavier (si elle a bougé dans les 3 dernières secondes), le stick droit à la manette ; sinon la direction tenue.
+- Kits Vague 1, sans Stand, chaque perso a son identité :
+  - Jotaro : direct, crochet, uppercut ; coup de tête casse-garde ; charge d'épaule blindée ; « Yare yare daze » (contre : Star Platinum surgit et frappe).
+  - DIO : griffe, griffe croisée, coup de pied vampire ; saisie qui draine (plus lente : punie si elle rate) ; couteaux ; bond de vampire.
+  - Kakyoin : coup de pied, pied retourné ; balayage circulaire ; émeraudes à tête chercheuse ; grappin vers le point visé.
+  - Polnareff : savate, chassé, fouetté ; coup de pied sauté ; éclair de Chariot (estoc lointain) ; fierté (+20 % de dégâts 5 s).
+- Avec le Stand : chaînes de trois coups (ORA, ORA ORA, ORAAA ; MUDA… ; estoc, taille, triple estoc), tentacule de Hierophant qui ramène l'adversaire.
 - Entraînement : pas d'IA. Mannequin immobile, en garde ou joué par J2 ; vie infinie (rechargée une fois le combo fini) et jauge Heart Heat infinie, désactivables ; un K.O. replace les deux persos sans score ; compteur de coups et de dégâts.
 
 ## Sources

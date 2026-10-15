@@ -10,11 +10,13 @@ Prototype jouable : le moteur (**Vague 0**) et quatre persos de la Partie 3 (**V
 
 Ce qui marche déjà :
 
-- attaques légère, lourde et spéciale (projectile), combos par annulation sur coup réussi ;
+- attaques légère, lourde et spéciale, enchaînements de trois coups sur la même touche, baisse des dégâts sur les longs combos ;
+- coups variés : contres, bonds, coups blindés, casse-garde, tentacule qui attire, grappin visé à la souris ou au stick droit ;
 - garde (−80 % de dégâts), jauge de garde et Guard Break ;
 - dash avec invincibilité, Stylish Evade (esquive au dernier moment : ralenti) ;
 - jauge Heart Heat à 3 barres, HHA (1 barre), Flash Cancel (½ barre), Pose, Résolution ;
-- clash : deux attaques simultanées, on martèle pour gagner le duel ;
+- clash : deux attaques simultanées, on martèle pour gagner le duel ; rafale contre rafale, l'écran passe en face-à-face (5 s) ;
+- onomatopées façon JoJo (ゴゴゴ, ドン, ORA, MUDA…), poses iconiques, effets d'impact ;
 - recul, rebond sur les murs, étals et caisses cassables ;
 - touche Stand : le Stand apparaît à côté de son manieur et change les coups ; un coup sur le Stand blesse son manieur ;
 - coups propres à chaque perso : arrêt du temps (Jotaro, DIO), couteaux, saisie qui draine la vie, fils piégés, Emerald Splash, Armor Off, GHA (2 barres) ;
