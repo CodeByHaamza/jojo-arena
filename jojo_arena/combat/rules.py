@@ -66,12 +66,25 @@ class Rules:
     clash_loser_knockback: float  # px/frame
     clash_loser_hitstun_f: int
     clash_tie_knockback: float  # px/frame
+    round_timer_f: int
+    round_intro_f: int
+    round_outro_f: int
+    ko_slowmo_f: int
+    sudden_death_hp: int
+    carry_heart_heat: bool
 
     @classmethod
     def from_data(cls, data: dict) -> Rules:
         body, knock, wall = data["body"], data["knockback"], data["wall_bounce"]
         guard, dash, hh, clash = data["guard"], data["dash"], data["heart_heat"], data["clash"]
+        rnd = data["round"]
         return cls(
+            round_timer_f=seconds_to_frames(rnd["timer_s"]),
+            round_intro_f=seconds_to_frames(rnd["intro_s"]),
+            round_outro_f=seconds_to_frames(rnd["outro_s"]),
+            ko_slowmo_f=seconds_to_frames(rnd["ko_slowmo_s"]),
+            sudden_death_hp=rnd["sudden_death_hp"],
+            carry_heart_heat=rnd["carry_heart_heat"],
             clash_window_f=clash["window_f"],
             clash_duration_f=seconds_to_frames(clash["duration_s"]),
             clash_loser_damage=clash["loser_damage"],

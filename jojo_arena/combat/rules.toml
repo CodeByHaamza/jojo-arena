@@ -46,6 +46,14 @@ flash_cancel_freeze_f = 6
 threshold = 0.25              # under 25 % life...
 damage_bonus = 0.15           # ...+15 % damage, and blocked hits deal no chip damage
 
+[round]
+timer_s = 99
+intro_s = 2.0                 # "ROUND 1" then "FIGHT!", nobody can move
+outro_s = 3.0                 # KO / time up shown before the next round
+ko_slowmo_s = 1.0             # the knockout plays in slow motion
+sudden_death_hp = 1           # tie for the win: both start with this much life, no timer
+carry_heart_heat = true       # the Heart Heat gauge is kept from one round to the next
+
 [clash]
 # Two attacks becoming active within window_f frames of each other, and touching,
 # start a clash: both players mash attack buttons, the one who mashed less loses.
