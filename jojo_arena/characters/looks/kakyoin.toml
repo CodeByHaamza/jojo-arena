@@ -40,6 +40,7 @@ eyes = "eyes"
 eye_style = "wide"
 brows = true
 nose = true
+ear = true
 
 # Red hair swept up and back, locks over the nape, and the long wavy curl
 # hanging beside the face.

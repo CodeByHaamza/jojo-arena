@@ -66,11 +66,12 @@ def hair(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     elif sk.view == "up":
         main = {q for q in disc(*at(0, -0.3), volume) if rel(q)[1] < 5.5}
     else:
-        main = {
-            q
-            for q in disc(*at(-0.4, -0.6), volume)
-            if (rel(q)[1] < -2.5 or rel(q)[0] < -1.5) and rel(q)[1] < 5.5
-        }
+        # Profile: top, back, and the side of the head down to the ear (temple and
+        # sideburn), so only the face stays bare.
+        def covered(x: float, y: float) -> bool:
+            return y < -2.5 or (x < 1.8 and y < 1.0) or (0 <= x < 2.2 and y < 3.5) or x < -1.5
+
+        main = {q for q in disc(*at(-0.4, -0.6), volume) if covered(*rel(q)) and rel(q)[1] < 5.5}
     parts = [Part(mat, main, z=54, highlight=shine)]
 
     if style == "long":

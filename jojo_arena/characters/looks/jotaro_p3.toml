@@ -23,8 +23,8 @@ foot_r = 2.6
 
 [palette]
 skin = "#e9b48c"
-hair = "#1d1f33"
-uniform = "#252c52"      # cap, long coat and trousers
+hair = "#1c1c24"
+uniform = "#26262f"      # cap, long coat and trousers: black, a touch of blue-gray
 shirt = "#3f7a3c"
 lining = "#c9b48a"       # inside of the coat
 belt = "#b06a32"
@@ -46,6 +46,7 @@ eyes = "eyes"
 eye_style = "wide"
 brows = true
 nose = true
+ear = true
 
 [[parts]]
 type = "hair"

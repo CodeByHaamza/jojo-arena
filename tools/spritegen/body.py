@@ -8,7 +8,7 @@ Drawing order (z) per view. Costume parts slot in between these values:
 from __future__ import annotations
 
 from .look import Look
-from .raster import OUTLINE, Part, capsule, disc
+from .raster import OUTLINE, Part, capsule, disc, rect
 from .skeleton import Skeleton
 
 
@@ -61,10 +61,11 @@ def body_parts(sk: Skeleton, look: Look) -> list[Part]:
 
 
 def face_parts(sk: Skeleton, look: Look) -> list[Part]:
-    """Eyes, and optional brows, mouth and nose. Nothing from the back.
+    """Eyes, and optional brows, mouth, nose and ears. Nothing from the back.
 
     face.eyes = "outline" or a palette color (the iris);
-    face.eye_style = dot (1 pixel), tall (1x2) or wide (2x2: eyelid over iris).
+    face.eye_style = dot (1 pixel), tall (1x2) or wide (2x2: eyelid over iris);
+    face.brows, face.mouth, face.nose (profile), face.ear = true to add them.
     """
     if sk.view == "up":
         return []
@@ -113,6 +114,18 @@ def face_parts(sk: Skeleton, look: Look) -> list[Part]:
         parts.append(Part(look.body["head"], mouth, z=52, tone=0))
     if face.get("nose") and nose:
         parts.append(Part(look.body["head"], nose, z=49))
+    if face.get("ear"):
+        skin = look.body["head"]
+        if sk.view == "right":
+            # In profile the ear sits on top of the hair, mid-head.
+            parts.append(Part(skin, rect(*sk.at(-0.6, 0.3), *sk.at(0.6, 2.8)), z=54.3))
+        else:
+            # From the front, two small bumps on the sides of the head.
+            ear = rect(
+                sk.head[0] - r - 0.6, sk.head[1] + 0.1 * r, sk.head[0] - r, sk.head[1] + 0.4 * r
+            )
+            mirror = {(round(2 * sk.head[0]) - 1 - x, y) for x, y in ear}
+            parts.append(Part(skin, ear | mirror, z=49.5))
     return parts
 
 
