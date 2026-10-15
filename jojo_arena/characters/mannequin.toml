@@ -4,7 +4,12 @@
 
 name = "Mannequin"
 max_hp = 1000
-style = "none"
+
+# The Stand key switches between two movesets. "stand" hits harder and further,
+# but walking is a bit slower.
+style = { type = "stance_toggle", off = "base", on = "stand" }
+
+# Stand called back -------------------------------------------------------------------
 
 [stances.base.moves.light]
 startup_f = 5
@@ -43,3 +48,63 @@ lifetime_s = 1.5
 hitstun_f = 18
 knockback = 140
 hitstop_f = 4
+
+# Stand out ----------------------------------------------------------------------------
+
+[stances.stand]
+walk_speed_mult = 0.9
+
+[stances.stand.moves.light]
+startup_f = 6
+active_f = 3
+recovery_f = 10
+damage = 45
+reach = 22
+radius = 12
+hitstun_f = 20
+knockback = 110
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy"]
+
+[stances.stand.moves.heavy]
+startup_f = 16
+active_f = 5
+recovery_f = 22
+damage = 115
+reach = 24
+radius = 14
+hitstun_f = 30
+knockback = 420
+hitstop_f = 10
+wall_bounce = true
+
+[stances.stand.moves.special]
+startup_f = 16
+active_f = 1
+recovery_f = 22
+
+[stances.stand.moves.special.projectile]
+speed = 270
+radius = 7
+damage = 70
+lifetime_s = 1.2
+hitstun_f = 22
+knockback = 200
+hitstop_f = 6
+
+# Same in both stances -------------------------------------------------------------------
+
+# Heart Heat Attack (1 bar): a burst all around, invincible while it charges.
+[moves.hha]
+startup_f = 20
+active_f = 6
+recovery_f = 26
+invincible_f = 20
+damage = 160
+reach = 0
+radius = 40
+hitstun_f = 36
+knockback = 420
+hitstop_f = 12
+wall_bounce = true
+anim = "special"

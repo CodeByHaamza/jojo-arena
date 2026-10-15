@@ -40,6 +40,7 @@ ANIM_FALLBACKS = {
     "ko": "hurt",
     "dash": "walk",
     "walk": "idle",
+    "switch": "pose",
 }
 STATE_ANIMS = {
     State.IDLE: "idle",
@@ -48,6 +49,8 @@ STATE_ANIMS = {
     State.BLOCKSTUN: "guard",
     State.GUARD_BROKEN: "hurt",
     State.DASH: "dash",
+    State.POSE: "pose",
+    State.SWITCH: "switch",
     State.HITSTUN: "hurt",
     State.KO: "ko",
 }
@@ -86,7 +89,27 @@ class FighterView:
             image.fill((255, 255, 255, 0), special_flags=pygame.BLEND_RGB_MAX)
         return image
 
+    def draw_aura(self, surface: pygame.Surface, fighter: Fighter, tick: int) -> None:
+        """Additive light behind the body: Stand aura, stance switch, Résolution."""
+        body = fighter.pos + CHEST
+        aura = self.fighter_def.aura
+        if fighter.aura_active or fighter.state == State.SWITCH:
+            pulse = 0.75 + 0.15 * math.sin(tick * 0.2)
+            if fighter.state == State.SWITCH:
+                pulse = 0.4 + 0.6 * fighter.state_f / max(1, fighter.rules.stance_switch_f)
+            blit_glow(surface, radial_glow(30, tuple(round(c * pulse) for c in aura)), body)
+        if fighter.state == State.POSE:
+            for i in range(4):
+                rise = (tick * 0.6 + i * 9) % 36
+                x = fighter.pos.x + math.sin(i * 2.1 + tick * 0.05) * 10
+                glow = radial_glow(3, tuple(round(c * (1 - rise / 36)) for c in aura))
+                blit_glow(surface, glow, (x, fighter.pos.y - 6 - rise))
+        if fighter.in_resolve:
+            pulse = 0.25 + 0.15 * math.sin(tick * 0.25)
+            blit_glow(surface, radial_glow(14, (round(255 * pulse), 20, 20)), fighter.pos)
+
     def draw(self, surface: pygame.Surface, fighter: Fighter, tick: int) -> None:
+        self.draw_aura(surface, fighter, tick)
         image = self.current_frame(fighter)
         ax, ay = self.sprites.anchor
         _, flip = sprite_direction(fighter.facing.x, fighter.facing.y)
@@ -102,6 +125,10 @@ class FighterView:
                 pos = fighter.pos - step * back
                 surface.blit(ghost, (round(pos.x) - ax, round(pos.y) - ay))
         surface.blit(image, (round(fighter.pos.x) - ax, round(fighter.pos.y) - ay))
+        if fighter.aura_active:
+            # A faint second pass over the body so the aura also tints the sprite.
+            tint = tuple(round(c * 0.18) for c in self.fighter_def.aura)
+            blit_glow(surface, radial_glow(18, tint), fighter.pos + CHEST)
         if fighter.state == State.GUARD_BROKEN:
             # Dizzy stars circling over the head.
             for i in range(3):
@@ -131,8 +158,9 @@ class FightView:
         self.fighter_defs = fighter_defs
         self.sparks: list[Spark] = []
         self.shake = 0
+        self.flash = 0  # white screen flash frames left
         self.tick = 0
-        self._tint: pygame.Surface | None = None
+        self._overlays: dict[tuple, pygame.Surface] = {}
 
     # Reacting to the simulation ------------------------------------------------------
 
@@ -157,6 +185,12 @@ class FightView:
                 self.shake = max(self.shake, 10)
             elif event.kind == "stylish":
                 self.sparks.append(Spark(pos, 24, 24, (255, 200, 60), 18, 8))
+            elif event.kind == "flash_cancel":
+                self.sparks.append(Spark(pos, 12, 12, (255, 255, 255), 20, 12))
+                self.flash = 6
+            elif event.kind == "hha":
+                aura = self.fighter_defs[event.fighter].aura
+                self.sparks.append(Spark(pos, 30, 30, aura, 30, 12))
             elif event.kind == "ko":
                 self.shake = max(self.shake, 14)
 
@@ -168,6 +202,8 @@ class FightView:
         self.sparks = [s for s in self.sparks if s.life > 0]
         if self.shake:
             self.shake -= 1
+        if self.flash:
+            self.flash -= 1
 
     # Drawing ---------------------------------------------------------------------------
 
@@ -192,18 +228,32 @@ class FightView:
             if fighter.state in (State.GUARD, State.BLOCKSTUN):
                 shield = fighter.pos + fighter.facing * 10 + CHEST
                 blit_glow(surface, radial_glow(10, (30, 50, 90)), shield)
+        if match.super_user is not None:
+            # Heart Heat flash: the world goes dark, only the user stays lit.
+            surface.blit(self._overlay(surface.get_size(), (8, 4, 20, 150)), (0, 0))
+            user = match.fighters[match.super_user]
+            aura = self.fighter_defs[user.index].aura
+            blit_glow(surface, radial_glow(40, tuple(c // 2 for c in aura)), user.pos + CHEST)
+            self.fighter_views[user.index].draw(surface, user, self.tick)
         for spark in self.sparks:
             self._draw_spark(surface, spark)
         if match.slowmo:
-            surface.blit(self._slowmo_tint(surface.get_size()), (0, 0))
+            surface.blit(self._overlay(surface.get_size(), (40, 30, 90, 50)), (0, 0))
+        if self.flash:
+            surface.blit(
+                self._overlay(surface.get_size(), (255, 255, 255, 20 * self.flash)), (0, 0)
+            )
         if self.shake:
             surface.scroll(1 if self.shake % 2 else -1, 1 if self.shake % 4 < 2 else 0)
 
-    def _slowmo_tint(self, size: tuple[int, int]) -> pygame.Surface:
-        if self._tint is None or self._tint.get_size() != size:
-            self._tint = pygame.Surface(size, pygame.SRCALPHA)
-            self._tint.fill((40, 30, 90, 50))
-        return self._tint
+    def _overlay(self, size: tuple[int, int], rgba: tuple[int, int, int, int]) -> pygame.Surface:
+        """Full-screen translucent color, cached per size and color."""
+        key = (size, rgba)
+        if key not in self._overlays:
+            overlay = pygame.Surface(size, pygame.SRCALPHA)
+            overlay.fill(rgba)
+            self._overlays[key] = overlay
+        return self._overlays[key]
 
     def _draw_projectile(self, surface: pygame.Surface, projectile) -> None:
         color = self.fighter_defs[projectile.owner].aura

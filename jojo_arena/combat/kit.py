@@ -54,6 +54,7 @@ class MoveDef:
     cancel_on_hit: tuple[str, ...] = ()
     anim: str = ""
     projectile: ProjectileDef | None = None
+    invincible_f: int = 0  # first frames of the move that cannot be hit
 
     @property
     def total_f(self) -> int:
@@ -78,6 +79,7 @@ class MoveDef:
             cancel_on_hit=tuple(data.get("cancel_on_hit", ())),
             anim=data.get("anim", name),
             projectile=ProjectileDef.from_data(projectile) if projectile else None,
+            invincible_f=data.get("invincible_f", 0),
         )
 
 
@@ -94,10 +96,12 @@ class Kit:
     max_hp: int
     walk_speed: float | None  # px/frame, None = rules default
     style: str
+    style_params: dict = field(default_factory=dict)
     stances: dict[str, Stance] = field(default_factory=dict)
+    shared_moves: dict[str, MoveDef] = field(default_factory=dict)  # same in every stance
 
     def move(self, stance: str, slot: str) -> MoveDef | None:
-        return self.stances[stance].moves.get(slot)
+        return self.stances[stance].moves.get(slot) or self.shared_moves.get(slot)
 
 
 def load_kit(path: Path) -> Kit:
@@ -109,12 +113,17 @@ def load_kit(path: Path) -> Kit:
         )
         for name, stance in data["stances"].items()
     }
+    shared = {slot: MoveDef.from_data(slot, m) for slot, m in data.get("moves", {}).items()}
     walk = data.get("walk_speed")
+    style = data.get("style", "none")
+    style_name, style_params = (style, {}) if isinstance(style, str) else (style["type"], style)
     return Kit(
         id=path.stem,
         name=data["name"],
         max_hp=data.get("max_hp", 1000),
         walk_speed=per_frame(walk) if walk else None,
-        style=data.get("style", "none"),
+        style=style_name,
+        style_params=style_params,
         stances=stances,
+        shared_moves=shared,
     )

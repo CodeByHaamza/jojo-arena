@@ -81,13 +81,14 @@ def test_guard_gauge_regenerates_after_a_delay():
     assert fighter.guard_gauge == pytest.approx(75)  # 25 per second
 
 
-def test_chip_damage_can_finish_a_round():
+def test_blocked_hits_cannot_finish_a_round():
+    # Under 25 % life (Résolution) the guard takes no chip damage at all.
     match = make_match()
     run_held(match, 2, p2=hold("guard"))
     match.fighters[1].hp = 5
     events = guard_then(match, 20, p1=press("light"))
-    assert match.fighters[1].state == State.KO
-    assert "ko" in kinds(events)
+    assert match.fighters[1].hp == 5
+    assert "block" in kinds(events)
 
 
 def test_dash_moves_fast_then_recovers():

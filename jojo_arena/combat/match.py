@@ -44,6 +44,8 @@ class Match:
         self.projectiles: list[Projectile] = []
         self.hitstop = 0
         self.slowmo = 0  # steps left at half speed (Stylish Evade)
+        self.super_freeze = 0  # steps left of the Heart Heat Attack flash
+        self.super_user: int | None = None
         self.tick = 0
 
     def opponent(self, fighter: Fighter) -> Fighter:
@@ -55,6 +57,11 @@ class Match:
         self.tick += 1
         for fighter, frame in zip(self.fighters, inputs, strict=True):
             fighter.remember_presses(frame)
+        if self.super_freeze > 0:
+            self.super_freeze -= 1
+            if self.super_freeze == 0:
+                self.super_user = None
+            return []
         if self.slowmo > 0:
             self.slowmo -= 1
             if self.slowmo % 2:
@@ -65,7 +72,13 @@ class Match:
             return []
         events: list[Event] = []
         for fighter, frame in zip(self.fighters, inputs, strict=True):
-            fighter.control(frame, self.opponent(fighter).pos)
+            for event in fighter.control(frame, self.opponent(fighter).pos):
+                if event.kind == "hha":
+                    self.super_freeze = self.rules.super_freeze_f
+                    self.super_user = fighter.index
+                elif event.kind == "flash_cancel":
+                    self.hitstop = max(self.hitstop, self.rules.flash_cancel_freeze_f)
+                events.append(event)
         for fighter in self.fighters:
             events += fighter.integrate(self.arena)
         self._separate_bodies()
@@ -75,6 +88,9 @@ class Match:
         events += self._resolve_projectile_hits()
         for fighter in self.fighters:
             fighter.advance()
+            if fighter.in_resolve and not fighter.resolve_announced:
+                fighter.resolve_announced = True
+                events.append(Event("resolve", fighter.pos, fighter.index))
         for obstacle in self.arena.obstacles:
             obstacle.tick()
         return events
@@ -183,11 +199,13 @@ class Match:
         # even though the first one interrupts the second attacker's move.
         for attacker, attack, defender, center in hits:
             move = attack.move
+            # Moves centered on the body (reach 0) push away from the attacker.
+            direction = attack.aim if move.reach > 0 else (defender.pos - attacker.pos)
             strike = Strike(
                 damage=move.damage,
                 hitstun_f=move.hitstun_f,
                 blockstun_f=move.blockstun_f or round(move.hitstun_f * self.rules.blockstun_ratio),
-                knockback=attack.aim * move.knockback,
+                knockback=direction.normalized() * move.knockback,
                 wall_bounce=move.wall_bounce,
                 hitstop_f=move.hitstop_f,
                 source=attacker.pos,
@@ -207,25 +225,33 @@ class Match:
         if defender.invincible:
             if defender.in_stylish_window():
                 defender.evaded = True
+                defender.gain_hh(rules.hh_stylish_gain)
                 self.slowmo = rules.stylish_slowmo_f
                 return False, [Event("stylish", defender.pos, defender.index)]
             return False, []
+        damage = strike.damage
+        if attacker.in_resolve:
+            damage = round(damage * (1 + rules.resolve_damage_bonus))
         if defender.guards_against(strike.source):
-            chip = round(strike.damage * (1 - rules.guard_damage_reduction))
+            chip = 0 if defender.in_resolve else round(damage * (1 - rules.guard_damage_reduction))
             broke = defender.take_block(
                 chip,
-                strike.damage * rules.guard_gauge_per_damage,
+                damage * rules.guard_gauge_per_damage,
                 strike.blockstun_f,
                 strike.knockback * rules.block_pushback_ratio,
             )
+            attacker.gain_hh(damage * rules.hh_per_damage_dealt * rules.hh_block_ratio)
+            defender.gain_hh(damage * rules.hh_per_damage_taken * rules.hh_block_ratio)
             self.hitstop = max(self.hitstop, strike.hitstop_f // 2)
             events = [Event("guard_break" if broke else "block", strike.where, defender.index)]
             if defender.state == State.KO:
                 events.append(Event("ko", defender.pos, defender.index))
             return True, events
-        defender.take_hit(strike.damage, strike.hitstun_f, strike.knockback, strike.wall_bounce)
+        defender.take_hit(damage, strike.hitstun_f, strike.knockback, strike.wall_bounce)
+        attacker.gain_hh(damage * rules.hh_per_damage_dealt)
+        defender.gain_hh(damage * rules.hh_per_damage_taken)
         self.hitstop = max(self.hitstop, strike.hitstop_f)
-        events = [Event("hit", strike.where, defender.index, strike.damage)]
+        events = [Event("hit", strike.where, defender.index, damage)]
         if defender.state == State.KO:
             events.append(Event("ko", defender.pos, defender.index))
         return True, events

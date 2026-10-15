@@ -9,6 +9,7 @@ from jojo_arena.combat.arena import Arena
 from jojo_arena.combat.events import Event
 from jojo_arena.combat.kit import ATTACK_SLOTS, Kit, MoveDef
 from jojo_arena.combat.rules import HZ, Rules
+from jojo_arena.combat.styles import make_style
 from jojo_arena.engine.actions import InputFrame
 from jojo_arena.engine.geometry import Vec2
 
@@ -24,13 +25,16 @@ class State(StrEnum):
     BLOCKSTUN = "blockstun"
     GUARD_BROKEN = "guard_broken"
     DASH = "dash"
+    POSE = "pose"
+    SWITCH = "switch"  # changing stance (bringing the Stand out or back)
     HITSTUN = "hitstun"
     KO = "ko"
 
 
 ACTIONABLE = frozenset({State.IDLE, State.WALK})
 GUARDING = frozenset({State.GUARD, State.BLOCKSTUN})
-BUFFERED_ACTIONS = (*ATTACK_SLOTS, "dash")
+# "guard" is buffered only for Flash Cancel; holding it is read directly.
+BUFFERED_ACTIONS = (*ATTACK_SLOTS, "dash", "heart_heat", "stand", "guard")
 
 
 @dataclass
@@ -95,6 +99,10 @@ class Fighter:
         self.guard_held = False
         self.dash_dir = Vec2()
         self.evaded = False  # this dash already earned a Stylish Evade
+        self.hh = 0.0  # Heart Heat gauge
+        self.style = make_style(kit.style, kit.style_params)
+        self.switch_target = self.stance
+        self.resolve_announced = False
 
     # Queries ----------------------------------------------------------------------------
 
@@ -107,7 +115,23 @@ class Fighter:
 
     @property
     def invincible(self) -> bool:
-        return self.state == State.DASH and self.state_f < self.rules.dash_invincible_f
+        if self.state == State.DASH:
+            return self.state_f < self.rules.dash_invincible_f
+        if self.state == State.ATTACK and self.attack is not None:
+            return self.attack.frame < self.attack.move.invincible_f
+        return False
+
+    @property
+    def in_resolve(self) -> bool:
+        """Résolution: low on life, hits harder and takes no chip damage."""
+        return 0 < self.hp < self.max_hp * self.rules.resolve_threshold
+
+    @property
+    def aura_active(self) -> bool:
+        return self.style.aura_active(self)
+
+    def gain_hh(self, amount: float) -> None:
+        self.hh = min(self.rules.hh_max, self.hh + amount)
 
     def in_stylish_window(self) -> bool:
         return (
@@ -167,30 +191,40 @@ class Fighter:
                 return action
         return None
 
-    def control(self, frame: InputFrame, target: Vec2) -> None:
+    def control(self, frame: InputFrame, target: Vec2) -> list[Event]:
         """Turn this step's input into actions. Only called while the fight is running."""
         self.walk_dir = Vec2()
         self.guard_held = frame.is_held("guard")
-        if self.state == State.ATTACK and self.attack and self.attack.connected:
-            slot = self._take_buffered(self.attack.move.cancel_on_hit)
-            if slot and (move := self.kit.move(self.stance, slot)):
-                self.start_attack(move, target)
-            return
+        if self.state == State.ATTACK and self.attack is not None:
+            if self._try_flash_cancel():
+                return [Event("flash_cancel", self.pos, self.index)]
+            if self.attack.connected:
+                slot = self._take_buffered(self.attack.move.cancel_on_hit)
+                if slot and (move := self.kit.move(self.stance, slot)):
+                    self.start_attack(move, target)
+            return []
+        if self.state == State.POSE:
+            if frame.is_held("pose"):
+                return []
+            self.set_state(State.IDLE)
         if self.state == State.GUARD:
             self.facing = self.aim_at(target)
-            if self._try_dash(frame, target) or self._try_attack(target):
-                return
-            if not self.guard_held:
+            events = self._try_actions(frame, target)
+            if events is None and not self.guard_held:
                 self.set_state(State.IDLE)
-            return
+            return events or []
         if not self.can_act():
-            return
-        if self._try_dash(frame, target) or self._try_attack(target):
-            return
+            return []
+        events = self._try_actions(frame, target)
+        if events is not None:
+            return events
         if self.guard_held:
             self.facing = self.aim_at(target)
             self.set_state(State.GUARD)
-            return
+            return []
+        if frame.is_held("pose"):
+            self.set_state(State.POSE)
+            return []
         move_dir = Vec2(*frame.move)
         if move_dir.length_sq():
             self.walk_dir = move_dir
@@ -199,6 +233,41 @@ class Fighter:
                 self.set_state(State.WALK)
         elif self.state != State.IDLE:
             self.set_state(State.IDLE)
+        return []
+
+    def _try_actions(self, frame: InputFrame, target: Vec2) -> list[Event] | None:
+        """Buffered actions possible from neutral or guard, by priority.
+
+        Returns the events of the action started, or None if nothing started.
+        """
+        if self._try_dash(frame, target):
+            return []
+        hha = self.kit.move(self.stance, "hha")
+        if "heart_heat" in self.buffer and hha is not None and self.hh >= self.rules.hha_cost:
+            del self.buffer["heart_heat"]
+            self.hh -= self.rules.hha_cost
+            self.start_attack(hha, target)
+            return [Event("hha", self.pos, self.index)]
+        if self._try_attack(target):
+            return []
+        if self._take_buffered(("stand",)) and self.style.on_pressed(self):
+            return [Event("stance_switch", self.pos, self.index)]
+        return None
+
+    def _try_flash_cancel(self) -> bool:
+        """Spend half a bar to drop the current attack instantly (combos, feints)."""
+        if "guard" not in self.buffer or self.attack.move.name == "hha":
+            return False
+        if self.hh < self.rules.flash_cancel_cost:
+            return False
+        del self.buffer["guard"]
+        self.hh -= self.rules.flash_cancel_cost
+        self.set_state(State.IDLE)
+        return True
+
+    def begin_stance_switch(self, target: str) -> None:
+        self.switch_target = target
+        self.set_state(State.SWITCH)
 
     def _try_attack(self, target: Vec2) -> bool:
         slot = self._take_buffered(ATTACK_SLOTS)
@@ -223,6 +292,8 @@ class Fighter:
         return True
 
     def start_attack(self, move: MoveDef, target: Vec2) -> None:
+        # A guard press made before the attack must not Flash Cancel it right away.
+        self.buffer.pop("guard", None)
         aim = self.aim_at(target)
         self.facing = aim
         self._serial += 1
@@ -278,6 +349,12 @@ class Fighter:
         elif self.state == State.DASH:
             if self.state_f >= rules.dash_duration_f + rules.dash_recovery_f:
                 self.set_state(State.IDLE)
+        elif self.state == State.SWITCH:
+            if self.state_f >= rules.stance_switch_f:
+                self.stance = self.switch_target
+                self.set_state(State.IDLE)
+        elif self.state == State.POSE:
+            self.gain_hh(rules.hh_pose_per_f)
         elif self.state in (State.HITSTUN, State.BLOCKSTUN, State.GUARD_BROKEN):
             self.stun_f -= 1
             if self.stun_f <= 0:

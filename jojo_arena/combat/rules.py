@@ -46,12 +46,40 @@ class Rules:
     dash_recovery_f: int
     stylish_window_f: int
     stylish_slowmo_f: int
+    hh_bar: float
+    hh_max: float
+    hh_per_damage_dealt: float
+    hh_per_damage_taken: float
+    hh_block_ratio: float
+    hh_stylish_gain: float
+    hh_pose_per_f: float
+    hha_cost: float
+    super_freeze_f: int
+    flash_cancel_cost: float
+    flash_cancel_freeze_f: int
+    resolve_threshold: float
+    resolve_damage_bonus: float
+    stance_switch_f: int
 
     @classmethod
     def from_data(cls, data: dict) -> Rules:
         body, knock, wall = data["body"], data["knockback"], data["wall_bounce"]
-        guard, dash = data["guard"], data["dash"]
+        guard, dash, hh = data["guard"], data["dash"], data["heart_heat"]
         return cls(
+            hh_bar=hh["bar_size"],
+            hh_max=hh["bar_size"] * hh["bars"],
+            hh_per_damage_dealt=hh["gain_per_damage_dealt"],
+            hh_per_damage_taken=hh["gain_per_damage_taken"],
+            hh_block_ratio=hh["block_gain_ratio"],
+            hh_stylish_gain=hh["stylish_gain"],
+            hh_pose_per_f=hh["pose_gain_per_s"] / HZ,
+            hha_cost=hh["hha_cost"],
+            super_freeze_f=seconds_to_frames(hh["super_freeze_s"]),
+            flash_cancel_cost=hh["flash_cancel_cost"],
+            flash_cancel_freeze_f=hh["flash_cancel_freeze_f"],
+            resolve_threshold=data["resolve"]["threshold"],
+            resolve_damage_bonus=data["resolve"]["damage_bonus"],
+            stance_switch_f=data["stance"]["switch_f"],
             body_radius=body["radius"],
             hurt_radius=body["hurt_radius"],
             walk_speed=per_frame(body["walk_speed"]),
