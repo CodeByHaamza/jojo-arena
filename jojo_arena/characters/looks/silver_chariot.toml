@@ -1,0 +1,76 @@
+# Silver Chariot (Polnareff's Stand, Part 3): look file for tools/make_sprites.py.
+# A slender silver knight: helmet with a crest and a dark visor, shoulder plates,
+# and its rapier.
+
+name = "Silver Chariot"
+
+# Slim and quick.
+[build]
+head_r = 5.3
+neck = 1.2
+torso = 13
+legs = 17.5
+arms = 14.5
+shoulders = 8.2
+hips = 3.0
+torso_r = 5.4
+arm_r = 2.0
+leg_r = 2.2
+hand_r = 2.1
+foot_r = 2.3
+
+[palette]
+armor = "#c9cdda"
+trim = "#7a7f96"
+visor = "#2c3040"
+plume = "#b45a86"
+blade = "#eef3ff"
+eyes = "#8fe0ff"
+
+[body]
+head = "armor"
+torso = "armor"
+arms = "armor"
+hands = "trim"
+legs = "armor"
+feet = "trim"
+
+[face]
+eyes = "eyes"
+eye_style = "wide"
+
+# Helmet with a crest along the top.
+[[parts]]
+type = "hair"
+material = "armor"
+style = "crest"
+crest_color = "plume"
+height = 4
+volume = 7.6
+
+[[parts]]
+type = "mask"
+material = "visor"
+top = -1.5
+
+[[parts]]
+type = "pauldrons"
+material = "armor"
+rim = "trim"
+size = 3.8
+
+# Plate seams: straight lines.
+[[parts]]
+type = "body_lines"
+material = "trim"
+amp = 0
+
+[[parts]]
+type = "belt"
+material = "trim"
+
+[[parts]]
+type = "sword"
+material = "blade"
+length = 16
+guard = "trim"

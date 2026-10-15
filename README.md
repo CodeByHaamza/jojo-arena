@@ -6,7 +6,7 @@ Fan game **gratuit, open source et non commercial** : un arena fighter 1v1 en te
 
 ## État du projet
 
-Prototype jouable de la **Vague 0** (moteur) : combat local J1 contre J2 sur l'arène du Caire. Jotaro Kujo et Noriaki Kakyoin (Partie 3) ont leur apparence, mais combattent encore avec les coups du mannequin générique en attendant leur kit (Vague 1). Le game design complet est dans [docs/GDD.md](docs/GDD.md).
+Prototype jouable de la **Vague 0** (moteur) : combat local J1 contre J2 sur l'arène du Caire. Jotaro, Kakyoin, DIO et Polnareff (Partie 3) ont leur apparence et leur Stand visible, mais combattent encore avec les coups du mannequin générique en attendant leur kit (Vague 1). Le game design complet est dans [docs/GDD.md](docs/GDD.md).
 
 Ce qui marche déjà :
 
@@ -129,14 +129,20 @@ Les sprites des persos sont **générés à partir d'une fiche de données**, sa
 - `[body]` : la couleur de chaque partie du corps (tête, torse, bras = manches, jambes = pantalon…).
 - `[face]` : couleur des yeux, style (`dot`, `tall`, `wide` avec paupière), sourcils, bouche, nez de profil.
 - `[[parts]]` : les pièces de costume :
-  - `hair` : styles `short`, `long`, `tower`, `spiky`, `swept` ; mèches sur la nuque ; mèche `curl` ondulée ou frange `fringe` ;
+  - `hair` : styles `short`, `long`, `tower`, `spiky`, `swept`, `crest` (crête de casque) ; mèches sur la nuque ; mèche `curl` ondulée ou frange `fringe` ;
   - `cap` : hauteur, bandeau, un ou deux insignes, mèches effilochées sous la casquette ;
-  - `headband` ;
+  - `headband` : avec une pierre au milieu en option ;
+  - `mask` : un visage d'une autre couleur que la tête (casque, visière) ;
   - `coat` : longueur, ouvert ou fermé, évasement, col, épingles de col, boutons, doublure, boutons de manche ;
   - `belt` : une ou deux, rivets, boucle ;
   - `chain` : longueur ;
   - `emblem` : cœur, rond ou losange, sur la poitrine ou les genoux ;
-  - `earring` : simple ou en cerise.
+  - `earring` : simple ou en cerise ;
+  - `scarf`, `pauldrons` (épaulettes), `gloves` (longs gants, clous), `loincloth` (pagne) ;
+  - `body_lines` (lignes ondulées sur le corps), `veins` (veines), `tendrils` (filaments qui se déroulent des jambes) ;
+  - `sword` : une lame tenue en main.
+
+Les Stands se font de la même façon (`star_platinum.toml`, `hierophant_green.toml`, `the_world.toml`, `silver_chariot.toml`). Dans `roster.toml`, la clé `stand_sprite` d'un perso indique la planche de son Stand : en combat, quand on appuie sur la touche Stand, il apparaît derrière son manieur et passe devant lui pour frapper.
 
 Après une modification, régénère la planche :
 

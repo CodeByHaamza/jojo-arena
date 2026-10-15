@@ -1,0 +1,63 @@
+# Jean Pierre Polnareff (Part 3): look file for tools/make_sprites.py.
+# Tall silver flat-top hair, black sleeveless top, light trousers with a belt,
+# heart earrings.
+
+name = "Jean Pierre Polnareff"
+
+# Tall and athletic.
+[build]
+head_r = 5.6
+neck = 1.2
+torso = 13.5
+legs = 17.5
+arms = 14.5
+shoulders = 8.6
+hips = 3.3
+torso_r = 5.8
+arm_r = 2.2
+leg_r = 2.4
+hand_r = 2.2
+foot_r = 2.4
+
+[palette]
+skin = "#f0c6a4"
+hair = "#e9e7ef"
+top = "#25232d"
+trousers = "#e6dfcf"
+belt = "#6b4a32"
+gold = "#e8c040"
+heart = "#e86a9a"
+shoes = "#4a3426"
+eyes = "#3a6aa0"
+
+[body]
+head = "skin"
+torso = "top"
+arms = "skin"
+hands = "skin"
+legs = "trousers"
+feet = "shoes"
+
+[face]
+eyes = "eyes"
+eye_style = "wide"
+brows = true
+nose = true
+ear = true
+
+# The famous tall flat-top.
+[[parts]]
+type = "hair"
+material = "hair"
+style = "tower"
+height = 11
+volume = 7.8
+
+[[parts]]
+type = "belt"
+material = "belt"
+buckle = "gold"
+
+[[parts]]
+type = "earring"
+material = "heart"

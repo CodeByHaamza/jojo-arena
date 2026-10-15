@@ -45,9 +45,10 @@ def _mirror(sk: Skeleton, pixels: set[Pixel]) -> set[Pixel]:
 
 
 def hair(sk: Skeleton, p: dict, look: Look) -> list[Part]:
-    """style: short | long | tower | spiky | swept (volume swept up and back).
+    """style: short | long | tower | spiky | swept (volume swept up and back) | crest
+    (a fin on top of a helmet; crest_color).
 
-    Options (head units): volume, length (long), height (tower), back_length (locks over
+    Options (head units): volume, length (long), height (tower, crest), back_length (locks over
     the nape); bangs = curl | fringe, bangs_side = left | right (seen from the front),
     bangs_length, bangs_width and bangs_spread (curl: distance from the face).
     """
@@ -112,6 +113,16 @@ def hair(sk: Skeleton, p: dict, look: Look) -> list[Part]:
             crest |= polygon([at(-2, -8), at(4, -12.5), at(9.5, -11), at(7, -6)])
             crest |= polygon([at(-6.5, -6), at(-4, -11), at(0, -9)])
         parts.append(Part(mat, crest, z=54.5, highlight=points([at(-2, -10)])))
+    elif style == "crest":
+        # A fin or plume along the top of the head (helmets). crest_color sets its color.
+        h = p.get("height", 4)
+        if sk.view == "right":
+            fin = polygon(
+                [at(2.5, -6.5), at(-5, -6), at(-6.5, -8.5 - h * 0.5), at(0, -10 - h * 0.7)]
+            )
+        else:
+            fin = polygon([at(-1.3, -5), at(1.3, -5), at(0.9, -11 - h), at(-0.9, -11 - h)])
+        parts.append(Part(p.get("crest_color", mat), fin, z=55))
 
     back_length = p.get("back_length", 0)
     if back_length and style != "long":
@@ -756,6 +767,38 @@ def tendrils(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     return [Part(p["material"], strands, z=34 if sk.view == "right" else 9.5, tone=1)]
 
 
+def sword(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """A thin blade held in the screen-right (profile: near) hand, along the forearm.
+
+    Options: length (px), guard (color of the hand guard). The tip is kept inside the
+    sprite cell, so the blade looks shorter when the arm is stretched far out.
+    """
+    shoulder, hand = sk.shoulders[1], sk.hands[1]
+    dx, dy = hand[0] - shoulder[0], hand[1] - shoulder[1]
+    norm = max(1e-6, math.hypot(dx, dy))
+    ux, uy = dx / norm, dy / norm
+    length = p.get("length", 14)
+    low, high = 2, look.cell - 3  # leave room for the outline around the tip
+    for axis_pos, axis_dir in ((hand[0], ux), (hand[1], uy)):
+        if axis_dir > 0:
+            length = min(length, (high - axis_pos) / axis_dir)
+        elif axis_dir < 0:
+            length = min(length, (axis_pos - low) / -axis_dir)
+    length = max(0.0, length)
+    tip = (hand[0] + ux * length, hand[1] + uy * length)
+    steps = max(1, round(length * 2))
+    blade = points([_lerp(hand, tip, i / steps) for i in range(steps + 1)])
+    z = {"down": 59.5, "up": 14.5, "right": 61.5}[sk.view]
+    parts = [Part(p["material"], blade, z=z, tone=2)]
+    guard = p.get("guard")
+    if guard:
+        bar = points(
+            [(hand[0] + uy * s + ux * 2, hand[1] - ux * s + uy * 2) for s in (-1.5, 0, 1.5)]
+        )
+        parts.append(Part(guard, bar, z=z + 0.1, tone=1))
+    return parts
+
+
 PART_TYPES: dict[str, Callable[[Skeleton, dict, Look], list[Part]]] = {
     "hair": hair,
     "cap": cap,
@@ -774,4 +817,5 @@ PART_TYPES: dict[str, Callable[[Skeleton, dict, Look], list[Part]]] = {
     "body_lines": body_lines,
     "veins": veins,
     "tendrils": tendrils,
+    "sword": sword,
 }

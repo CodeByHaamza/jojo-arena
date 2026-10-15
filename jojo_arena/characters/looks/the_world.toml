@@ -1,0 +1,71 @@
+# The World (DIO's Stand, Part 3): look file for tools/make_sprites.py.
+# Golden muscular body with dark teal details, pale mask-like face, heart knee pads.
+
+name = "The World"
+
+# Muscular, built like Star Platinum.
+[build]
+head_r = 5.8
+neck = 0.8
+torso = 14.5
+legs = 17
+arms = 15.5
+shoulders = 9.6
+hips = 3.8
+torso_r = 7.0
+arm_r = 2.9
+leg_r = 2.9
+hand_r = 2.9
+foot_r = 2.7
+
+[palette]
+gold = "#e8c23e"
+teal = "#2e6f72"
+mask = "#efe4c4"
+eyes = "#ff5a4a"
+
+[body]
+head = "gold"
+torso = "gold"
+arms = "gold"
+hands = "teal"
+legs = "gold"
+feet = "teal"
+
+[face]
+eyes = "eyes"
+eye_style = "wide"
+
+# Helmet-like top of the head and a pale face.
+[[parts]]
+type = "hair"
+material = "teal"
+style = "short"
+volume = 7.6
+
+[[parts]]
+type = "mask"
+material = "mask"
+top = -2.5
+
+[[parts]]
+type = "body_lines"
+material = "teal"
+amp = 0.4
+period = 8
+
+[[parts]]
+type = "gloves"
+material = "teal"
+length = 0.25
+
+[[parts]]
+type = "belt"
+material = "teal"
+buckle = "gold"
+
+[[parts]]
+type = "emblem"
+material = "teal"
+shape = "heart"
+on = "knees"

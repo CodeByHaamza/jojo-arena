@@ -27,6 +27,24 @@ color = "#5fae55"
 aura = "#59f08c"
 
 [[fighters]]
+id = "dio_p3"
+name = "DIO"
+kit = "mannequin"
+sprite = "dio_p3/dio_p3"
+stand_sprite = "the_world/the_world"
+color = "#e8b83a"
+aura = "#ffd84a"
+
+[[fighters]]
+id = "polnareff"
+name = "JEAN PIERRE POLNAREFF"
+kit = "mannequin"
+sprite = "polnareff/polnareff"
+stand_sprite = "silver_chariot/silver_chariot"
+color = "#b8bcd0"
+aura = "#d8e4ff"
+
+[[fighters]]
 id = "mannequin_red"
 name = "MANNEQUIN ROUGE"
 kit = "mannequin"
