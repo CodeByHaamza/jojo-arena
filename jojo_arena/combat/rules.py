@@ -60,12 +60,24 @@ class Rules:
     resolve_threshold: float
     resolve_damage_bonus: float
     stance_switch_f: int
+    clash_window_f: int
+    clash_duration_f: int
+    clash_loser_damage: int
+    clash_loser_knockback: float  # px/frame
+    clash_loser_hitstun_f: int
+    clash_tie_knockback: float  # px/frame
 
     @classmethod
     def from_data(cls, data: dict) -> Rules:
         body, knock, wall = data["body"], data["knockback"], data["wall_bounce"]
-        guard, dash, hh = data["guard"], data["dash"], data["heart_heat"]
+        guard, dash, hh, clash = data["guard"], data["dash"], data["heart_heat"], data["clash"]
         return cls(
+            clash_window_f=clash["window_f"],
+            clash_duration_f=seconds_to_frames(clash["duration_s"]),
+            clash_loser_damage=clash["loser_damage"],
+            clash_loser_knockback=per_frame(clash["loser_knockback"]),
+            clash_loser_hitstun_f=clash["loser_hitstun_f"],
+            clash_tie_knockback=per_frame(clash["tie_knockback"]),
             hh_bar=hh["bar_size"],
             hh_max=hh["bar_size"] * hh["bars"],
             hh_per_damage_dealt=hh["gain_per_damage_dealt"],

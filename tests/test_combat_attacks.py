@@ -139,12 +139,6 @@ def test_ko_when_life_runs_out():
     assert match.fighters[1].state == State.KO  # a KO'd fighter does nothing
 
 
-def test_simultaneous_hits_trade():
-    match = make_match()
-    run(match, 30, p1=press("light"), p2=press("light"))
-    assert all(f.hp == f.max_hp - LIGHT for f in match.fighters)
-
-
 def test_same_inputs_same_fight():
     script = [press("light"), walk(1, 0), NONE, press("heavy"), press("special")] * 20
 

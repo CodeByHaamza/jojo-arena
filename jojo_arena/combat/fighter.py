@@ -27,6 +27,7 @@ class State(StrEnum):
     DASH = "dash"
     POSE = "pose"
     SWITCH = "switch"  # changing stance (bringing the Stand out or back)
+    CLASH = "clash"
     HITSTUN = "hitstun"
     KO = "ko"
 
@@ -69,6 +70,11 @@ class Attack:
     @property
     def active(self) -> bool:
         return self.phase == 1
+
+    @property
+    def active_offset(self) -> int:
+        """Frames since the move became active (negative while still in startup)."""
+        return self.frame - self.move.startup_f
 
     @property
     def done(self) -> bool:
@@ -264,6 +270,12 @@ class Fighter:
         self.hh -= self.rules.flash_cancel_cost
         self.set_state(State.IDLE)
         return True
+
+    def enter_clash(self, facing: Vec2) -> None:
+        self.velocity = Vec2()
+        self.buffer.clear()
+        self.facing = facing
+        self.set_state(State.CLASH)
 
     def begin_stance_switch(self, target: str) -> None:
         self.switch_target = target

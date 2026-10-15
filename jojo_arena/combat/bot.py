@@ -20,6 +20,8 @@ class SimpleBot:
 
     def think(self, me: Fighter, foe: Fighter) -> InputFrame:
         rng = self.rng
+        if me.state == State.CLASH:
+            return InputFrame(press_counts={"light": 1} if rng.random() < 0.45 else {})
         offset = foe.pos - me.pos
         distance = offset.length()
         presses: dict[str, int] = {}

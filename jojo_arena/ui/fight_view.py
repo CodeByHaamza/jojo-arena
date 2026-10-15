@@ -51,6 +51,7 @@ STATE_ANIMS = {
     State.DASH: "dash",
     State.POSE: "pose",
     State.SWITCH: "switch",
+    State.CLASH: "light",
     State.HITSTUN: "hurt",
     State.KO: "ko",
 }
@@ -81,7 +82,11 @@ class FighterView:
         else:
             anim = STATE_ANIMS.get(fighter.state, "idle")
         name, spec = self.resolve(anim)
-        index = frame_index(spec, fighter.state_f, phase)
+        if fighter.state == State.CLASH:
+            # Rapid-fire punches, alternating between the two "extended" frames.
+            index = min(spec.frames - 1, 1 + (fighter.state_f // 3) % 2)
+        else:
+            index = frame_index(spec, fighter.state_f, phase)
         direction, flip = sprite_direction(fighter.facing.x, fighter.facing.y)
         image = self.sprites.frame(name, direction, flip, index)
         if fighter.state in (State.HITSTUN, State.GUARD_BROKEN) and fighter.state_f < 3:
@@ -191,6 +196,12 @@ class FightView:
             elif event.kind == "hha":
                 aura = self.fighter_defs[event.fighter].aura
                 self.sparks.append(Spark(pos, 30, 30, aura, 30, 12))
+            elif event.kind == "clash_start":
+                self.sparks.append(Spark(pos, 20, 20, (255, 255, 255), 24, 10))
+                self.shake = max(self.shake, 8)
+            elif event.kind in ("clash_win", "clash_tie"):
+                self.sparks.append(Spark(pos, 24, 24, (255, 230, 150), 28, 12))
+                self.shake = max(self.shake, 12)
             elif event.kind == "ko":
                 self.shake = max(self.shake, 14)
 
@@ -237,6 +248,8 @@ class FightView:
             self.fighter_views[user.index].draw(surface, user, self.tick)
         for spark in self.sparks:
             self._draw_spark(surface, spark)
+        if match.clash is not None:
+            self._draw_clash(surface, match)
         if match.slowmo:
             surface.blit(self._overlay(surface.get_size(), (40, 30, 90, 50)), (0, 0))
         if self.flash:
@@ -254,6 +267,32 @@ class FightView:
             overlay.fill(rgba)
             self._overlays[key] = overlay
         return self._overlays[key]
+
+    def _draw_clash(self, surface: pygame.Surface, match: Match) -> None:
+        clash = match.clash
+        center = clash.pos + CHEST
+        # Flickering impact light where the two attacks meet.
+        flicker = 0.6 + 0.4 * ((self.tick // 2) % 2)
+        blit_glow(surface, radial_glow(22, tuple(round(255 * flicker) for _ in range(3))), center)
+        for i in range(8):
+            a = self.tick * 0.5 + i * math.pi / 4
+            end = center + Vec2.from_angle(a, 10 + (i * 7 + self.tick) % 9)
+            pygame.draw.line(surface, (255, 250, 220), center.as_ints(), end.as_ints())
+        # Duel bar: each side pushes the split point toward the other.
+        width, height = 120, 6
+        bar = pygame.Rect(0, 0, width, height)
+        bar.center = (round(center.x), round(center.y) - 34)
+        bar.clamp_ip(surface.get_rect().inflate(-8, -8))
+        # balance -1 = player 1 winning: their color fills toward the right.
+        split = bar.x + round(width / 2 * (1 - clash.balance))
+        colors = [self.fighter_defs[i].color for i in range(2)]
+        surface.fill(OUTLINE, bar.inflate(4, 4))
+        surface.fill(colors[0], (bar.x, bar.y, split - bar.x, height))
+        surface.fill(colors[1], (split, bar.y, bar.right - split, height))
+        surface.fill((255, 255, 255), (split - 1, bar.y - 2, 2, height + 4))
+        # Time left, as a thin line under the bar.
+        left = round(width * clash.frames_left / clash.duration_f)
+        surface.fill((255, 255, 255), (bar.x, bar.bottom + 3, left, 1))
 
     def _draw_projectile(self, surface: pygame.Surface, projectile) -> None:
         color = self.fighter_defs[projectile.owner].aura

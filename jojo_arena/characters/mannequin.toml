@@ -107,4 +107,5 @@ hitstun_f = 36
 knockback = 420
 hitstop_f = 12
 wall_bounce = true
+clashable = false
 anim = "special"

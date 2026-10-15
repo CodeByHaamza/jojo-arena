@@ -55,6 +55,7 @@ class MoveDef:
     anim: str = ""
     projectile: ProjectileDef | None = None
     invincible_f: int = 0  # first frames of the move that cannot be hit
+    clashable: bool = True  # can start a clash against another clashable attack
 
     @property
     def total_f(self) -> int:
@@ -80,6 +81,7 @@ class MoveDef:
             anim=data.get("anim", name),
             projectile=ProjectileDef.from_data(projectile) if projectile else None,
             invincible_f=data.get("invincible_f", 0),
+            clashable=data.get("clashable", data.get("radius", 0) > 0),
         )
 
 

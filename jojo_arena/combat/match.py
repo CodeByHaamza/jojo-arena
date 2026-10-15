@@ -10,6 +10,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from jojo_arena.combat.arena import Arena
+from jojo_arena.combat.clash import Clash
 from jojo_arena.combat.events import Event
 from jojo_arena.combat.fighter import Fighter, State
 from jojo_arena.combat.kit import Kit
@@ -46,6 +47,7 @@ class Match:
         self.slowmo = 0  # steps left at half speed (Stylish Evade)
         self.super_freeze = 0  # steps left of the Heart Heat Attack flash
         self.super_user: int | None = None
+        self.clash: Clash | None = None
         self.tick = 0
 
     def opponent(self, fighter: Fighter) -> Fighter:
@@ -57,6 +59,8 @@ class Match:
         self.tick += 1
         for fighter, frame in zip(self.fighters, inputs, strict=True):
             fighter.remember_presses(frame)
+        if self.clash is not None:
+            return self._update_clash(inputs)
         if self.super_freeze > 0:
             self.super_freeze -= 1
             if self.super_freeze == 0:
@@ -176,6 +180,9 @@ class Match:
     # Melee ------------------------------------------------------------------------------
 
     def _resolve_melee(self) -> list[Event]:
+        clash_pos = self._detect_clash()
+        if clash_pos is not None:
+            return self._start_clash(clash_pos)
         events: list[Event] = []
         hits = []
         for attacker in self.fighters:
@@ -215,6 +222,73 @@ class Match:
             events += strike_events
             if landed:
                 attack.connected = True
+        return events
+
+    # Clash -------------------------------------------------------------------------------
+
+    def _detect_clash(self) -> Vec2 | None:
+        """Where two attacks meet "at the same instant", or None."""
+        window = self.rules.clash_window_f
+        for attacker in self.fighters:
+            hitbox = attacker.hitbox()
+            if hitbox is None or not attacker.attack.move.clashable:
+                continue
+            defender = self.opponent(attacker)
+            other = defender.attack
+            if defender.state != State.ATTACK or other is None:
+                continue
+            if not other.move.clashable or other.connected:
+                continue
+            if abs(attacker.attack.active_offset - other.active_offset) > window:
+                continue
+            center, radius = hitbox
+            touches = circles_overlap(center, radius, defender.pos, self.rules.hurt_radius)
+            other_box = defender.hitbox()
+            if other_box is not None:
+                touches = touches or circles_overlap(center, radius, *other_box)
+            if touches:
+                return center
+        return None
+
+    def _start_clash(self, pos: Vec2) -> list[Event]:
+        duration = self.rules.clash_duration_f
+        self.clash = Clash(pos, duration, duration)
+        for fighter in self.fighters:
+            fighter.enter_clash(fighter.aim_at(self.opponent(fighter).pos))
+        return [Event("clash_start", pos)]
+
+    def _update_clash(self, inputs: tuple[InputFrame, InputFrame]) -> list[Event]:
+        clash = self.clash
+        clash.count(inputs)
+        clash.frames_left -= 1
+        if not clash.over:
+            return []
+        self.clash = None
+        rules = self.rules
+        for fighter in self.fighters:
+            fighter.buffer.clear()  # mashing must not turn into attacks afterwards
+        winner = clash.winner()
+        if winner is None:
+            for fighter in self.fighters:
+                away = (fighter.pos - self.opponent(fighter).pos).normalized()
+                fighter.take_hit(0, 12, away * rules.clash_tie_knockback, False)
+            return [Event("clash_tie", clash.pos)]
+        champion, loser = self.fighters[winner], self.fighters[1 - winner]
+        damage = rules.clash_loser_damage
+        direction = (loser.pos - champion.pos).normalized()
+        loser.take_hit(
+            damage, rules.clash_loser_hitstun_f, direction * rules.clash_loser_knockback, True
+        )
+        champion.set_state(State.IDLE)
+        champion.gain_hh(damage * rules.hh_per_damage_dealt)
+        loser.gain_hh(damage * rules.hh_per_damage_taken)
+        self.hitstop = max(self.hitstop, 12)
+        events = [
+            Event("clash_win", clash.pos, champion.index),
+            Event("hit", clash.pos, loser.index, damage),
+        ]
+        if loser.state == State.KO:
+            events.append(Event("ko", loser.pos, loser.index))
         return events
 
     # Resolving one strike -----------------------------------------------------------------
