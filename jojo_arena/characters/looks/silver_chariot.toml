@@ -1,6 +1,7 @@
 # Silver Chariot (Polnareff's Stand, Part 3): look file for tools/make_sprites.py.
-# A slender silver knight: helmet with a crest and a dark visor, shoulder plates,
-# and its rapier.
+# A slender robotic knight in polished silver plate: helmet with a ridge, a jewel on
+# the forehead and pointed guards over the cheeks and jaw; heavy shoulder plates and
+# pointed elbow guards; a rapier with a basket hilt.
 
 name = "Silver Chariot"
 
@@ -20,12 +21,12 @@ hand_r = 2.1
 foot_r = 2.3
 
 [palette]
-armor = "#c9cdda"
-trim = "#7a7f96"
+armor = "#cfd4e2"
+trim = "#8a90a8"
 visor = "#2c3040"
-plume = "#b45a86"
+gem = "#58c8e8"
 blade = "#eef3ff"
-eyes = "#8fe0ff"
+eyes = "#9fe6ff"
 
 [body]
 head = "armor"
@@ -39,13 +40,12 @@ feet = "trim"
 eyes = "eyes"
 eye_style = "wide"
 
-# Helmet with a crest along the top.
+# Helmet: a ridge along the top, a dark visor, the forehead jewel, cheek guards.
 [[parts]]
 type = "hair"
 material = "armor"
 style = "crest"
-crest_color = "plume"
-height = 4
+height = 2.5
 volume = 7.6
 
 [[parts]]
@@ -54,10 +54,31 @@ material = "visor"
 top = -1.5
 
 [[parts]]
+type = "headband"
+material = "armor"
+gem = "gem"
+
+[[parts]]
+type = "cheek_guards"
+material = "armor"
+
+[[parts]]
 type = "pauldrons"
 material = "armor"
 rim = "trim"
-size = 3.8
+size = 4.6
+
+[[parts]]
+type = "emblem"
+material = "trim"
+shape = "diamond"
+on = "elbows"
+
+[[parts]]
+type = "emblem"
+material = "trim"
+shape = "circle"
+on = "knees"
 
 # Plate seams: straight lines.
 [[parts]]
@@ -73,4 +94,4 @@ material = "trim"
 type = "sword"
 material = "blade"
 length = 16
-guard = "trim"
+basket = "trim"

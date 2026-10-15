@@ -138,9 +138,13 @@ Les sprites des persos sont **générés à partir d'une fiche de données**, sa
   - `chain` : longueur ;
   - `emblem` : cœur, rond ou losange, sur la poitrine ou les genoux ;
   - `earring` : simple ou en cerise ;
-  - `scarf`, `pauldrons` (épaulettes), `gloves` (longs gants, clous), `loincloth` (pagne) ;
+  - `scarf`, `pauldrons` (épaulettes), `gloves` (longs gants, clous, annelés), `loincloth` (pagne) ;
+  - `top` (haut ajusté, épaules nues, une bretelle), `boots` (bottes, bouts pointus, annelées) ;
+  - `helmet` (casque à pointe en V, tuyau entre les oreilles), `tanks` (bouteilles dans le dos), `cheek_guards` (protections de joues) ;
   - `body_lines` (lignes ondulées sur le corps), `veins` (veines), `tendrils` (filaments qui se déroulent des jambes) ;
-  - `sword` : une lame tenue en main.
+  - `sword` : une lame tenue en main, avec garde simple ou en panier.
+
+  `emblem` se place aussi sur les coudes, la ceinture ou sous le menton ; `headband` peut porter une pierre en cœur ; `earring` existe en cœur brisé ; `belt` peut avoir des poches.
 
 Les Stands se font de la même façon (`star_platinum.toml`, `hierophant_green.toml`, `the_world.toml`, `silver_chariot.toml`). Dans `roster.toml`, la clé `stand_sprite` d'un perso indique la planche de son Stand : en combat, quand on appuie sur la touche Stand, il apparaît derrière son manieur et passe devant lui pour frapper.
 

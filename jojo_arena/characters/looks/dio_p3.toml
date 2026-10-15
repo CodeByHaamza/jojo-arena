@@ -1,34 +1,35 @@
 # DIO (Part 3): look file for tools/make_sprites.py.
-# Blond hair, pale skin, short yellow jacket with a high collar over a black top,
-# bare arms with black wristbands, yellow trousers with green heart knee pads,
-# gold headband.
+# Long golden hair, green heart-shaped band on the forehead, gold earring, a golden
+# jacket over a fitted black tank top, bare muscular arms with black wristbands,
+# trousers with green heart knee pads, pointed shoes (crakows).
 
 name = "DIO (P3)"
 
-# Tall, lean and strong.
+# Tall and heavily muscled.
 [build]
 head_r = 5.8
 neck = 1.0
 torso = 14
 legs = 17.5
 arms = 15
-shoulders = 8.8
-hips = 3.4
-torso_r = 6.0
-arm_r = 2.3
-leg_r = 2.5
-hand_r = 2.3
+shoulders = 9.4
+hips = 3.5
+torso_r = 6.5
+arm_r = 2.6
+leg_r = 2.6
+hand_r = 2.5
 foot_r = 2.5
 
 [palette]
 skin = "#f3d4bc"
-hair = "#f7e07a"         # pale blond, lighter than the clothes
+hair = "#f5d86a"         # golden blond, lighter than the clothes
+band = "#2f7a4a"
+heart = "#5cc87e"
 jacket = "#d9952b"       # deeper gold, so hair and jacket stay apart
 top = "#24222c"
 trousers = "#d6a032"
-heart = "#4cbf72"
 gold = "#f0c84a"
-shoes = "#2a2430"
+shoes = "#3a2a1e"
 eyes = "#b8402e"
 
 [body]
@@ -45,19 +46,25 @@ eye_style = "wide"
 brows = true
 nose = true
 
-# Thick blond hair down to the jaw, with a fringe.
+# Long, thick golden hair falling past the shoulders, with a fringe.
 [[parts]]
 type = "hair"
 material = "hair"
 style = "long"
-length = 5
-volume = 8.4
+length = 10
+volume = 8.8
 bangs = "fringe"
 
+# Green band with the heart on the forehead.
 [[parts]]
 type = "headband"
-material = "gold"
+material = "band"
 gem = "heart"
+gem_shape = "heart"
+
+[[parts]]
+type = "earring"
+material = "gold"
 
 # Short open jacket: it stops just below the waist.
 [[parts]]
@@ -78,3 +85,10 @@ type = "emblem"
 material = "heart"
 shape = "heart"
 on = "knees"
+
+# Crakows: shoes with long pointed toes.
+[[parts]]
+type = "boots"
+material = "shoes"
+length = 0.12
+pointed = true

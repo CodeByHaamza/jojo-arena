@@ -1,5 +1,7 @@
 # The World (DIO's Stand, Part 3): look file for tools/make_sprites.py.
-# Golden muscular body with dark teal details, pale mask-like face, heart knee pads.
+# Golden, hugely muscled body; a V-shaped helmet leaning forward; a hose linking the
+# ears behind the head; two air tanks on the back with straps; pale ribbed tubes on
+# the shoulders, forearms and shins; hearts on the knees, elbows, belt and under the chin.
 
 name = "The World"
 
@@ -19,53 +21,75 @@ hand_r = 2.9
 foot_r = 2.7
 
 [palette]
-gold = "#e8c23e"
-teal = "#2e6f72"
-mask = "#efe4c4"
-eyes = "#ff5a4a"
+gold = "#e9c43c"
+deep = "#c99622"         # helmet and hearts
+rib = "#efe2b0"          # pale ribbed tubes and tanks
+eyes = "#e05a4a"
 
 [body]
 head = "gold"
 torso = "gold"
 arms = "gold"
-hands = "teal"
+hands = "gold"
 legs = "gold"
-feet = "teal"
+feet = "gold"
 
 [face]
 eyes = "eyes"
 eye_style = "wide"
-
-# Helmet-like top of the head and a pale face.
-[[parts]]
-type = "hair"
-material = "teal"
-style = "short"
-volume = 7.6
+nose = true
 
 [[parts]]
-type = "mask"
-material = "mask"
-top = -2.5
+type = "helmet"
+material = "deep"
+tube = "rib"
 
 [[parts]]
-type = "body_lines"
-material = "teal"
-amp = 0.4
-period = 8
+type = "tanks"
+material = "rib"
+straps = "deep"
+
+[[parts]]
+type = "pauldrons"
+material = "rib"
+size = 4.2
 
 [[parts]]
 type = "gloves"
-material = "teal"
-length = 0.25
+material = "rib"
+length = 0.4
+ribbed = true
+
+[[parts]]
+type = "boots"
+material = "rib"
+length = 0.45
+ribbed = true
 
 [[parts]]
 type = "belt"
-material = "teal"
-buckle = "gold"
+material = "deep"
 
 [[parts]]
 type = "emblem"
-material = "teal"
+material = "deep"
 shape = "heart"
 on = "knees"
+
+[[parts]]
+type = "emblem"
+material = "deep"
+shape = "heart"
+on = "elbows"
+
+[[parts]]
+type = "emblem"
+material = "deep"
+shape = "heart"
+on = "belt"
+
+[[parts]]
+type = "emblem"
+material = "deep"
+shape = "heart"
+on = "chin"

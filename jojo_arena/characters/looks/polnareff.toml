@@ -1,63 +1,77 @@
 # Jean Pierre Polnareff (Part 3): look file for tools/make_sprites.py.
-# Tall silver flat-top hair, black sleeveless top, light trousers with a belt,
-# heart earrings.
+# Tall silver-grey flat-top with long strands falling behind, no eyebrows, broken-heart
+# earrings, a fitted black top with one strap to the left shoulder (shoulders bare),
+# light trousers with a belt and pouches, black wristbands.
 
 name = "Jean Pierre Polnareff"
 
-# Tall and athletic.
+# Tall, broad and strong.
 [build]
 head_r = 5.6
 neck = 1.2
 torso = 13.5
 legs = 17.5
 arms = 14.5
-shoulders = 8.6
-hips = 3.3
-torso_r = 5.8
-arm_r = 2.2
-leg_r = 2.4
-hand_r = 2.2
+shoulders = 9.2
+hips = 3.4
+torso_r = 6.2
+arm_r = 2.5
+leg_r = 2.5
+hand_r = 2.4
 foot_r = 2.4
 
 [palette]
-skin = "#f0c6a4"
-hair = "#e9e7ef"
-top = "#25232d"
-trousers = "#e6dfcf"
-belt = "#6b4a32"
-gold = "#e8c040"
-heart = "#e86a9a"
-shoes = "#4a3426"
-eyes = "#3a6aa0"
+skin = "#efc7a6"
+hair = "#c9cdd8"         # silver-grey
+top = "#24222c"
+trousers = "#d6dce8"     # pale grey-blue
+belt = "#4a3a34"
+pouch = "#e6c03a"
+heart = "#c8394a"
+shoes = "#3a3040"
+eyes = "#3a6ab0"
 
 [body]
 head = "skin"
-torso = "top"
+torso = "skin"
 arms = "skin"
 hands = "skin"
 legs = "trousers"
 feet = "shoes"
 
+# No eyebrows.
 [face]
 eyes = "eyes"
 eye_style = "wide"
-brows = true
 nose = true
 ear = true
 
-# The famous tall flat-top.
+# The famous tall flat-top, with long strands falling down the back.
 [[parts]]
 type = "hair"
 material = "hair"
 style = "tower"
 height = 11
 volume = 7.8
+back_length = 7
+
+[[parts]]
+type = "top"
+material = "top"
+neckline = 4
+strap = "left"
 
 [[parts]]
 type = "belt"
 material = "belt"
-buckle = "gold"
+pouches = "pouch"
 
 [[parts]]
 type = "earring"
 material = "heart"
+style = "heart"
+
+[[parts]]
+type = "gloves"
+material = "top"
+length = 0.15

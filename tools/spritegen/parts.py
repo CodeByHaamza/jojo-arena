@@ -272,12 +272,24 @@ def _ragged_back(sk: Skeleton) -> set[Pixel]:
 
 
 def headband(sk: Skeleton, p: dict, look: Look) -> list[Part]:
-    """Band around the forehead. Option: gem (color of an oval stone at the front)."""
+    """Band around the forehead. Options: gem (color of a stone at the front),
+    gem_shape (oval | heart)."""
     band = {q for q in disc(*sk.at(0, 0), 7.4 * sk.k) if -5.5 <= _rel(sk, q)[1] <= -3.5}
     parts = [Part(p["material"], band, z=55.5)]
     gem = p.get("gem")
     if gem and sk.view == "down":
-        stone = polygon([sk.at(-1.3, -6.6), sk.at(1.3, -6.6), sk.at(1.3, -2.5), sk.at(-1.3, -2.5)])
+        if p.get("gem_shape", "oval") == "heart":
+            cx, cy = (round(v) for v in sk.at(0, -4.5))
+            pattern = [".#.#.", "#####", ".###.", "..#.."]
+            stone = {
+                (cx - 2 + dx, cy - 2 + dy)
+                for dy, row in enumerate(pattern)
+                for dx, cell in enumerate(row)
+                if cell == "#"
+            }
+        else:
+            corners = [sk.at(-1.3, -6.6), sk.at(1.3, -6.6), sk.at(1.3, -2.5), sk.at(-1.3, -2.5)]
+            stone = polygon(corners)
         parts.append(Part(gem, stone, z=55.6, highlight={min(stone)}))
     elif gem and sk.view == "right":
         parts.append(Part(gem, points([sk.at(6.6, -5), sk.at(6.6, -4)]), z=55.6, tone=2))
@@ -423,7 +435,8 @@ def coat(sk: Skeleton, p: dict, look: Look) -> list[Part]:
 def belt(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     """Belt at the waist; count = 2 adds a second, slanted one.
 
-    Options: buckle (color), studs (color of rivets along the belt).
+    Options: buckle (color), studs (color of rivets along the belt), pouches (color of
+    two pouches hanging on the sides).
     """
     mat = p["material"]
     (ta, tb, tr) = sk.torso
@@ -441,6 +454,14 @@ def belt(sk: Skeleton, p: dict, look: Look) -> list[Part]:
         parts.append(Part(studs, dots, z=30.65, tone=2))
     if p.get("buckle") and sk.view == "down":
         parts.append(Part(p["buckle"], rect(cx - 1, y, cx, y + 1), z=30.7, tone=2))
+    pouches = p.get("pouches")
+    if pouches:
+        if sk.view == "right":
+            bags = rect(cx + tr - 3, y, cx + tr - 1, y + 3)
+        else:
+            bags = rect(cx - tr + 0.5, y, cx - tr + 2.5, y + 3)
+            bags |= {(round(2 * cx) - 1 - x, yy) for x, yy in bags}
+        parts.append(Part(pouches, bags, z=30.75))
     return parts
 
 
@@ -473,17 +494,30 @@ SHAPES = {
 
 
 def emblem(sk: Skeleton, p: dict, look: Look) -> list[Part]:
-    """A small 3x3 motif. on: knees | chest. shape: heart | circle | diamond."""
+    """A small 3x3 motif. on: knees | elbows | chest | belt (one on each side) | chin.
+    shape: heart | circle | diamond."""
     shape = SHAPES[p.get("shape", "heart")]
     spots: list[tuple[float, float, float]] = []  # x, y, z
     where = p.get("on", "chest")
+    side = sk.view == "right"
+    limbs = [1] if side else [0, 1]
     if where == "knees" and sk.view != "up":
-        legs = [1] if sk.view == "right" else [0, 1]
-        for i in legs:
+        for i in limbs:
             (px, py), (fx, fy) = sk.hips[i], sk.feet[i]
-            spots.append(((px + fx) / 2, (py + fy) / 2, 35.5 if sk.view == "right" else 10.5))
+            spots.append(((px + fx) / 2, (py + fy) / 2, 35.5 if side else 10.5))
+    elif where == "elbows":
+        for i in limbs:
+            (sx, sy), (hx, hy) = sk.shoulders[i], sk.hands[i]
+            spots.append(((sx + hx) / 2, (sy + hy) / 2, 60.7 if side else 20.7))
     elif where == "chest" and sk.view == "down":
         spots.append((sk.center_x, sk.torso[0][1] + 1, 34))
+    elif where == "belt" and sk.view != "up":
+        tr = sk.torso[2]
+        xs = [sk.center_x + tr - 1.5] if side else [sk.center_x - tr + 2, sk.center_x + tr - 2]
+        spots += [(x, sk.hip_y - 1, 30.8) for x in xs]
+    elif where == "chin" and sk.view != "up":
+        x, y = sk.at(2.5 if side else 0, 0)
+        spots.append((x, y + sk.head_r + 1.5, 49.7))
     parts = []
     for x, y, z in spots:
         pixels = {
@@ -497,14 +531,27 @@ def emblem(sk: Skeleton, p: dict, look: Look) -> list[Part]:
 
 
 def earring(sk: Skeleton, p: dict, look: Look) -> list[Part]:
-    """style: stud (small drop) | cherry (a little ball hanging from a wire)."""
+    """style: stud (small drop) | cherry (a little ball hanging from a wire) |
+    heart (a hanging heart, cracked in the middle)."""
     mat = p["material"]
     at = sk.at
     ears = [at(-1, 3)] if sk.view == "right" else [at(-7, 2), at(6.5, 2)]
     parts = []
     for x, y in ears:
         x, y = round(x), round(y)
-        if p.get("style", "stud") == "cherry":
+        style = p.get("style", "stud")
+        if style == "heart":
+            left = x < sk.head[0]
+            ox = x - 2 if left else x
+            heart = {
+                (ox + dx, y + 1 + dy)
+                for dy, row in enumerate(SHAPES["heart"])
+                for dx, cell in enumerate(row)
+                if cell == "#"
+            }
+            parts.append(Part(mat, heart, z=58, highlight={min(heart)}))
+            parts.append(Part(mat, {(ox + 1, y + 2)}, z=58.1, tone=0))  # the crack
+        elif style == "cherry":
             parts.append(Part("", {(x, y), (x, y + 1)}, z=58, flat=OUTLINE))
             ball = rect(x - 1, y + 2, x, y + 3) if x < sk.head[0] else rect(x, y + 2, x + 1, y + 3)
             corner = min(ball)
@@ -629,7 +676,8 @@ def pauldrons(sk: Skeleton, p: dict, look: Look) -> list[Part]:
 def gloves(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     """Long gloves up the forearms (give the hands the glove color in [body]).
 
-    Options: length (share of the arm covered, from the hand), studs (knuckle studs color).
+    Options: length (share of the arm covered, from the hand), studs (knuckle studs color),
+    ribbed (true: dark rings across, like segmented tubes).
     """
     mat = p["material"]
     length = p.get("length", 0.5)
@@ -644,7 +692,10 @@ def gloves(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     parts = []
     for shoulder, hand, z, r in arms:
         start = _lerp(hand, shoulder, length)
-        parts.append(Part(mat, capsule(*start, *hand, r * 1.15), z=z))
+        sleeve = capsule(*start, *hand, r * 1.15)
+        parts.append(Part(mat, sleeve, z=z))
+        if p.get("ribbed"):
+            parts.append(Part(mat, _rings(sleeve, start, hand), z=z + 0.01, tone=0))
     studs = p.get("studs")
     if studs and sk.view != "up":
         knuckles: set[Pixel] = set()
@@ -796,7 +847,152 @@ def sword(sk: Skeleton, p: dict, look: Look) -> list[Part]:
             [(hand[0] + uy * s + ux * 2, hand[1] - ux * s + uy * 2) for s in (-1.5, 0, 1.5)]
         )
         parts.append(Part(guard, bar, z=z + 0.1, tone=1))
+    basket = p.get("basket")
+    if basket:
+        # A basket hilt: a cage of metal around the fist.
+        r = sk.build.hand_r
+        cage = disc(*hand, r + 1.3) - disc(*hand, r + 0.2)
+        parts.append(Part(basket, cage, z=z + 0.6))
     return parts
+
+
+def _rings(pixels: set[Pixel], a: Point, b: Point, spacing: int = 2) -> set[Pixel]:
+    """Pixels of a limb piece lying on rings across its length (a ribbed tube)."""
+    length = max(1e-6, math.hypot(b[0] - a[0], b[1] - a[1]))
+    ux, uy = (b[0] - a[0]) / length, (b[1] - a[1]) / length
+    rings = set()
+    for q in pixels:
+        x, y = _center(q)
+        along = (x - a[0]) * ux + (y - a[1]) * uy
+        if round(along) % spacing == 0:
+            rings.add(q)
+    return rings
+
+
+def boots(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """Covers over the feet and lower legs. Options: length (share of the leg, from the
+    foot), pointed (long pointed toes), ribbed (dark rings across)."""
+    mat = p["material"]
+    length = p.get("length", 0.3)
+    b = sk.build
+    if sk.view == "right":
+        legs = [
+            (sk.hips[0], sk.feet[0], 8.5, b.leg_r * 0.96),
+            (sk.hips[1], sk.feet[1], 36.5, b.leg_r),
+        ]
+    else:
+        legs = [(sk.hips[i], sk.feet[i], 11.5, b.leg_r) for i in (0, 1)]
+    parts = []
+    for hip, foot, z, r in legs:
+        start = _lerp(foot, hip, length)
+        offset = 1 if sk.view == "right" else 0
+        cover = capsule(*start, *foot, r * 1.12) | disc(
+            foot[0] + offset, foot[1] + 1, b.foot_r * 1.08
+        )
+        if p.get("pointed") and sk.view == "right":
+            fx, fy = foot[0] + offset, foot[1] + 1
+            cover |= polygon([(fx, fy - 1.5), (fx + b.foot_r + 4.5, fy + 1.5), (fx, fy + 2)])
+        parts.append(Part(mat, cover, z=z))
+        if p.get("ribbed"):
+            parts.append(Part(mat, _rings(cover, start, foot), z=z + 0.01, tone=0))
+    return parts
+
+
+def top(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """A fitted top from the chest down, shoulders bare.
+
+    Options: neckline (px below the shoulder line), strap (left | right: a single strap
+    up to the wearer's shoulder on that side).
+    """
+    mat = p["material"]
+    (ta, tb, tr) = sk.torso
+    neck = sk.shoulder_y + p.get("neckline", 3)
+    cover = {q for q in capsule(*ta, *tb, tr) if q[1] >= neck}
+    strap = p.get("strap")
+    if strap and sk.view != "right":
+        # The wearer's left is the screen's right from the front, the screen's left from behind.
+        wearer_left = (strap == "left") == (sk.view == "down")
+        i = 1 if wearer_left else 0
+        sx, sy = sk.shoulders[i]
+        sign = 1 if i == 1 else -1
+        cover |= capsule(sk.center_x + sign * 1.5, neck + 1, sx - sign * 1.5, sy, 1.1)
+    return [Part(mat, cover, z=30.45)]
+
+
+def helmet(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """A helmet over the top of the head with a V point coming down over the forehead
+    (leaning forward in profile). Option: tube (color of a hose linking the ears behind
+    the head)."""
+    mat = p["material"]
+    at = sk.at
+    k = sk.k
+
+    def rel(q: Pixel) -> Point:
+        return _rel(sk, q)
+
+    if sk.view == "down":
+        shell = {q for q in disc(*at(0, -0.8), 8.0 * k) if rel(q)[1] < -2.0}
+        shell |= polygon([at(-6.5, -2.6), at(6.5, -2.6), at(0, 1.2)])
+    elif sk.view == "up":
+        shell = {q for q in disc(*at(0, -0.5), 8.0 * k) if rel(q)[1] < 3.0}
+    else:
+        shell = {
+            q
+            for q in disc(*at(-0.5, -0.8), 8.0 * k)
+            if rel(q)[1] < -2.0 or (rel(q)[0] < -2.5 and rel(q)[1] < 3.0)
+        }
+        shell |= polygon([at(1.5, -6.5), at(9.5, -2.8), at(5, -1.4), at(1.5, -2.2)])
+    parts = [Part(mat, shell, z=56, highlight=points([at(-4, -7)]) & shell)]
+    tube = p.get("tube")
+    if tube:
+        if sk.view == "up":
+            path = [at(-7 + 14 * t / 8, 1 + 3.5 * math.sin(math.pi * t / 8)) for t in range(9)]
+            hose: set[Pixel] = set()
+            for a, b in zip(path, path[1:], strict=False):
+                hose |= capsule(*a, *b, 0.9 * k)
+        elif sk.view == "down":
+            ends = rect(*at(-8.2, 0.5), *at(-6.8, 2.5))
+            hose = ends | _mirror(sk, ends)
+        else:
+            hose = disc(*at(-0.5, 1.5), 1.8 * k) - disc(*at(-0.5, 1.5), 0.7 * k)
+        parts.append(Part(tube, hose, z=56.5))
+    return parts
+
+
+def tanks(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """Two cylinders strapped on the back (air tanks). Option: straps (color)."""
+    mat = p["material"]
+    shoulder, cx, tr = sk.shoulder_y, sk.center_x, sk.torso[2]
+    top_y, bottom_y = shoulder + 1, shoulder + 0.55 * sk.build.torso
+    parts = []
+    if sk.view == "up":
+        for sign in (-1, 1):
+            x = cx + sign * 2.6
+            cylinder = capsule(x, top_y, x, bottom_y, 2.1)
+            parts.append(Part(mat, cylinder, z=31.5, highlight={min(cylinder)}))
+    elif sk.view == "right":
+        x = cx - tr - 1.2
+        parts.append(Part(mat, capsule(x, top_y, x, bottom_y, 2.1), z=29))
+    straps = p.get("straps")
+    if straps and sk.view != "right":
+        bands = set()
+        for sign in (-1, 1):
+            bands |= capsule(cx + sign * 3.5, shoulder - 1, cx + sign * 3, shoulder + 6, 0.6)
+        parts.append(Part(straps, bands, z=31.6 if sk.view == "up" else 30.6, tone=1))
+    return parts
+
+
+def cheek_guards(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """Pointed guards over the cheeks and jaw (helmets)."""
+    at = sk.at
+    if sk.view == "up":
+        return []
+    if sk.view == "down":
+        left = polygon([at(-7, 0.5), at(-4.6, 2), at(-6.6, 5.5)])
+        guards = left | _mirror(sk, left)
+    else:
+        guards = polygon([at(3, 3), at(9, 4.8), at(3.5, 6.2)])
+    return [Part(p["material"], guards, z=53)]
 
 
 PART_TYPES: dict[str, Callable[[Skeleton, dict, Look], list[Part]]] = {
@@ -818,4 +1014,9 @@ PART_TYPES: dict[str, Callable[[Skeleton, dict, Look], list[Part]]] = {
     "veins": veins,
     "tendrils": tendrils,
     "sword": sword,
+    "boots": boots,
+    "top": top,
+    "helmet": helmet,
+    "tanks": tanks,
+    "cheek_guards": cheek_guards,
 }
