@@ -1,0 +1,99 @@
+# Star Platinum (Jotaro's Stand, Part 3): look file for tools/make_sprites.py.
+# Purple skin, long black hair, metal headband, red scarf, shoulder pads with a gold
+# rim, long black studded gloves, white loincloth, wavy gold lines along the body.
+
+name = "Star Platinum"
+
+# Taller and far more muscular than Jotaro.
+[build]
+head_r = 6.0
+neck = 0.8
+torso = 14.5
+legs = 17
+arms = 15.5
+shoulders = 10
+hips = 3.8
+torso_r = 7.2
+arm_r = 3.0
+leg_r = 3.0
+hand_r = 3.0
+foot_r = 2.8
+
+[palette]
+skin = "#9468c8"
+hair = "#1f1a2a"
+metal = "#c8cad8"
+gold = "#eab83c"
+scarf = "#d63a32"
+glove = "#2b2733"
+cloth = "#ece6f2"
+pad = "#8b5a3c"
+rope = "#b9a6dc"
+eyes = "#8fe0f0"
+
+[body]
+head = "skin"
+torso = "skin"
+arms = "skin"
+hands = "glove"
+legs = "skin"
+feet = "glove"
+
+[face]
+eyes = "eyes"
+eye_style = "wide"
+brows = true
+nose = true
+
+# Wild spiky hair, with a long mane flowing down the back.
+[[parts]]
+type = "hair"
+material = "hair"
+style = "spiky"
+volume = 8.4
+back_length = 12
+
+# Three-part metal headband with an oval stone in the middle.
+[[parts]]
+type = "headband"
+material = "metal"
+gem = "metal"
+
+[[parts]]
+type = "scarf"
+material = "scarf"
+
+[[parts]]
+type = "pauldrons"
+material = "pad"
+rim = "gold"
+size = 4.6
+
+[[parts]]
+type = "gloves"
+material = "glove"
+length = 0.42
+studs = "gold"
+
+[[parts]]
+type = "body_lines"
+material = "gold"
+amp = 0.5
+period = 7
+
+[[parts]]
+type = "belt"
+material = "rope"
+buckle = "gold"
+
+[[parts]]
+type = "loincloth"
+material = "cloth"
+length = 0.55
+
+# Knee guards.
+[[parts]]
+type = "emblem"
+material = "gold"
+shape = "circle"
+on = "knees"

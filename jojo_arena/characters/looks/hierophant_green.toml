@@ -1,0 +1,69 @@
+# Hierophant Green (Kakyoin's Stand, Part 3): look file for tools/make_sprites.py.
+# Green body veined like a melon, pale cream armor plates (helmet, shoulders,
+# forearms, legs), glowing eyes, strands unravelling from the legs.
+
+name = "Hierophant Green"
+
+# Tall, thin and lanky.
+[build]
+head_r = 5.2
+neck = 1.4
+torso = 13
+legs = 17.5
+arms = 15
+shoulders = 7.6
+hips = 3.0
+torso_r = 5.0
+arm_r = 1.8
+leg_r = 2.1
+hand_r = 2.0
+foot_r = 2.2
+
+[palette]
+body = "#2f9a5c"
+plate = "#dfe6b4"
+vein = "#1a5c38"
+glow = "#e0ff6a"
+
+[body]
+head = "plate"
+torso = "body"
+arms = "body"
+hands = "plate"
+legs = "plate"
+feet = "plate"
+
+[face]
+eyes = "glow"
+eye_style = "wide"
+
+# Green face under the cream helmet.
+[[parts]]
+type = "mask"
+material = "body"
+top = -2.0
+
+[[parts]]
+type = "veins"
+material = "vein"
+density = 7
+
+[[parts]]
+type = "pauldrons"
+material = "plate"
+size = 3.6
+
+[[parts]]
+type = "gloves"
+material = "plate"
+length = 0.5
+
+[[parts]]
+type = "belt"
+material = "plate"
+
+[[parts]]
+type = "tendrils"
+material = "body"
+count = 2
+length = 7

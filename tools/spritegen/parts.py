@@ -16,6 +16,8 @@ hair 54-55, headbands 55.5, headwear 56-57, bangs and earrings 57-58.
 
 from __future__ import annotations
 
+import math
+import random
 from collections.abc import Callable
 
 from .look import Look
@@ -259,8 +261,29 @@ def _ragged_back(sk: Skeleton) -> set[Pixel]:
 
 
 def headband(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """Band around the forehead. Option: gem (color of an oval stone at the front)."""
     band = {q for q in disc(*sk.at(0, 0), 7.4 * sk.k) if -5.5 <= _rel(sk, q)[1] <= -3.5}
-    return [Part(p["material"], band, z=55.5)]
+    parts = [Part(p["material"], band, z=55.5)]
+    gem = p.get("gem")
+    if gem and sk.view == "down":
+        stone = polygon([sk.at(-1.3, -6.6), sk.at(1.3, -6.6), sk.at(1.3, -2.5), sk.at(-1.3, -2.5)])
+        parts.append(Part(gem, stone, z=55.6, highlight={min(stone)}))
+    elif gem and sk.view == "right":
+        parts.append(Part(gem, points([sk.at(6.6, -5), sk.at(6.6, -4)]), z=55.6, tone=2))
+    return parts
+
+
+def mask(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """The face in another color than the head (helmet, mask). Option: top (head units)."""
+    if sk.view == "up":
+        return []
+    top = p.get("top", -2.5)
+    head = disc(*sk.at(0, 0), sk.head_r)
+    if sk.view == "down":
+        area = {q for q in head if _rel(sk, q)[1] > top and abs(_rel(sk, q)[0]) < 5.2}
+    else:
+        area = {q for q in head if _rel(sk, q)[1] > top and _rel(sk, q)[0] > 0.5}
+    return [Part(p["material"], area, z=51)]
 
 
 # Clothes -----------------------------------------------------------------------------
@@ -489,14 +512,266 @@ def seam(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     return [Part(p["material"], {(x, y) for y in range(round(top), round(bottom))}, z=51)]
 
 
+# Body gear ---------------------------------------------------------------------------
+
+
+def _lerp(a: Point, b: Point, t: float) -> Point:
+    return a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t
+
+
+def _wavy(a: Point, b: Point, amp: float = 0.8, period: float = 4.0) -> set[Pixel]:
+    """A one-pixel line from a to b, waving sideways."""
+    length = max(1e-6, math.hypot(b[0] - a[0], b[1] - a[1]))
+    nx, ny = -(b[1] - a[1]) / length, (b[0] - a[0]) / length
+    steps = max(2, int(length * 2))
+    line = []
+    for i in range(steps + 1):
+        t = i / steps
+        off = amp * math.sin(t * length / period * 2 * math.pi)
+        x, y = _lerp(a, b, t)
+        line.append((x + nx * off, y + ny * off))
+    return points(line)
+
+
+def scarf(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """Short scarf wrapped around the neck, hanging in a point on the chest; in profile a
+    tail flies behind."""
+    mat = p["material"]
+    hx, r, shoulder, cx = sk.head[0], sk.head_r, sk.shoulder_y, sk.center_x
+    if sk.view == "down":
+        wrap = polygon(
+            [
+                (hx - 1.15 * r, shoulder - 3.5),
+                (hx + 1.15 * r, shoulder - 3.5),
+                (hx + 1.25 * r, shoulder + 0.5),
+                (cx + 2.5, shoulder + 3.5),
+                (cx, shoulder + 5.5),
+                (cx - 2.5, shoulder + 3.5),
+                (hx - 1.25 * r, shoulder + 0.5),
+            ]
+        )
+        return [Part(mat, wrap, z=49.6)]
+    if sk.view == "up":
+        wrap = polygon(
+            [
+                (hx - 1.15 * r, shoulder - 3.5),
+                (hx + 1.15 * r, shoulder - 3.5),
+                (hx + 1.2 * r, shoulder + 0.5),
+                (hx - 1.2 * r, shoulder + 0.5),
+            ]
+        )
+        wrap |= polygon(
+            [
+                (cx - 2.5, shoulder),
+                (cx + 2.5, shoulder),
+                (cx + 1, shoulder + 5),
+                (cx - 1, shoulder + 5),
+            ]
+        )
+        return [Part(mat, wrap, z=51.2)]
+    wrap = polygon(
+        [
+            (hx - 0.95 * r, shoulder - 4),
+            (hx + 0.55 * r, shoulder - 3),
+            (hx + 0.7 * r, shoulder + 1.5),
+            (hx - 0.9 * r, shoulder + 1.5),
+        ]
+    )
+    wrap |= polygon(
+        [
+            (hx - 0.8 * r, shoulder - 3),
+            (hx - r - 6, shoulder - 1),
+            (hx - r - 5, shoulder + 2.5),
+            (hx - 0.8 * r, shoulder + 1),
+        ]
+    )
+    return [Part(mat, wrap, z=51.2)]
+
+
+def pauldrons(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """Rounded shoulder pads. Options: size (px), rim (color of their lower edge)."""
+    mat = p["material"]
+    size = p.get("size", 4.2)
+    rim = p.get("rim")
+    shoulder = sk.shoulder_y
+    if sk.view == "right":
+        far, near = sk.shoulders
+        pads = [((far[0] - 0.5, shoulder + 1), 5.5), ((near[0], shoulder + 1), 60.2)]
+    else:
+        (lx, _), (rx, _) = sk.shoulders
+        pads = [((lx - 0.8, shoulder + 0.5), 33.0), ((rx + 0.8, shoulder + 0.5), 33.0)]
+    parts = []
+    for (x, y), z in pads:
+        dome = {q for q in disc(x, y, size) if _center(q)[1] < y + size * 0.55}
+        shine = points([(x - size * 0.4, y - size * 0.5)]) & dome
+        parts.append(Part(mat, dome, z=z, highlight=shine))
+        if rim:
+            lowest: dict[int, int] = {}
+            for qx, qy in dome:
+                lowest[qx] = max(lowest.get(qx, qy), qy)
+            edge = {(qx, qy) for qx, qy in dome if qy >= lowest[qx] - 1}
+            parts.append(Part(rim, edge, z=z + 0.05, tone=2))
+            parts.append(Part(rim, points([(x, y - 0.5)]), z=z + 0.06, tone=1))  # spiral boss
+    return parts
+
+
+def gloves(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """Long gloves up the forearms (give the hands the glove color in [body]).
+
+    Options: length (share of the arm covered, from the hand), studs (knuckle studs color).
+    """
+    mat = p["material"]
+    length = p.get("length", 0.5)
+    b = sk.build
+    if sk.view == "right":
+        arms = [
+            (sk.shoulders[0], sk.hands[0], 5.5, b.arm_r * 0.95),
+            (sk.shoulders[1], sk.hands[1], 60.5, b.arm_r * 1.05),
+        ]
+    else:
+        arms = [(sk.shoulders[i], sk.hands[i], 20.5, b.arm_r) for i in (0, 1)]
+    parts = []
+    for shoulder, hand, z, r in arms:
+        start = _lerp(hand, shoulder, length)
+        parts.append(Part(mat, capsule(*start, *hand, r * 1.15), z=z))
+    studs = p.get("studs")
+    if studs and sk.view != "up":
+        knuckles: set[Pixel] = set()
+        if sk.view == "down":
+            for x, y in sk.hands:
+                knuckles |= points([(x - 1, y + 1), (x, y + 1), (x + 1, y + 1)])
+        else:
+            x, y = sk.hands[1]
+            knuckles |= points([(x + 1, y - 1), (x + 1, y), (x + 1, y + 1)])
+        parts.append(Part(studs, knuckles, z=62, tone=2))
+    return parts
+
+
+def loincloth(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """Cloth flaps hanging from the waist, front and back. Option: length (share of legs)."""
+    mat = p["material"]
+    length = p.get("length", 0.5) * sk.build.legs
+    top = sk.hip_y - 2.5
+    cx, tr = sk.center_x, sk.torso[2]
+    if sk.view == "right":
+        w = tr * 0.95
+        front = polygon(
+            [(cx + 0.5, top), (cx + w, top), (cx + w + 1.5, top + length), (cx + 1, top + length)]
+        )
+        back = polygon(
+            [(cx - w, top), (cx - 0.5, top), (cx - 1, top + length), (cx - w - 1.5, top + length)]
+        )
+        return [Part(mat, front | back, z=37.5)]
+    half = tr * 0.75
+    flap = polygon(
+        [
+            (cx - half, top),
+            (cx + half, top),
+            (cx + half - 1, top + length),
+            (cx - half + 1, top + length),
+        ]
+    )
+    fold = {q for q in flap if q[0] == round(cx - 0.5) and q[1] > top + 2}
+    return [Part(mat, flap, z=30.4), Part(mat, fold, z=30.45, tone=0)]
+
+
+def body_lines(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """Wavy lines from the shoulders over the chest and down the arms and legs.
+
+    Options: amp (how far the line waves, px), period (length of one wave, px).
+    """
+    mat = p["material"]
+    amp, period = p.get("amp", 0.8), p.get("period", 4.0)
+
+    def line(a: Point, b: Point) -> set[Pixel]:
+        return _wavy(a, b, amp=amp, period=period)
+
+    cx, shoulder, hip = sk.center_x, sk.shoulder_y, sk.hip_y
+    if sk.view == "right":
+        (ta, tb, tr) = sk.torso
+        near_sh, near_hand = sk.shoulders[1], sk.hands[1]
+        near_hip, near_foot = sk.hips[1], sk.feet[1]
+        torso_line = line((ta[0] + tr - 1.5, shoulder + 2), (tb[0] + tr - 1.5, hip - 1))
+        leg_line = line((near_hip[0] + 1, near_hip[1] + 1), (near_foot[0] + 1, near_foot[1] - 2))
+        return [
+            Part(mat, torso_line, z=30.3, tone=2),
+            Part(mat, line(near_sh, _lerp(near_sh, near_hand, 0.6)), z=60.3, tone=2),
+            Part(mat, leg_line, z=35.3, tone=2),
+        ]
+    parts = []
+    for i, sign in ((0, -1), (1, 1)):
+        sh, hand = sk.shoulders[i], sk.hands[i]
+        if sk.view == "down":
+            chest = (cx + sign * 2, shoulder + 6)
+            torso_line = line((sh[0] - sign * 3.5, shoulder + 1), chest)
+            torso_line |= line(chest, (cx + sign * 1.5, hip - 2))
+            parts.append(Part(mat, torso_line, z=30.3, tone=2))
+        parts.append(Part(mat, line(sh, _lerp(sh, hand, 0.6)), z=20.3, tone=2))
+        leg_top, foot = sk.hips[i], sk.feet[i]
+        leg_line = line((leg_top[0] + sign, leg_top[1] + 1), (foot[0] + sign, foot[1] - 2))
+        parts.append(Part(mat, leg_line, z=10.3, tone=2))
+    return parts
+
+
+def veins(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """A net of thin dark lines over the torso and arms. Option: density (torso lines)."""
+    mat = p["material"]
+    rng = random.Random(7)  # same pattern every frame, placed relative to the body
+    (ta, tb, tr) = sk.torso
+    torso = capsule(*ta, *tb, tr)
+    lines: set[Pixel] = set()
+    for _ in range(p.get("density", 6)):
+        t = rng.uniform(0.05, 0.85)
+        start = (_lerp(ta, tb, t)[0] + rng.uniform(-0.8, 0.8) * tr, _lerp(ta, tb, t)[1])
+        end = (
+            start[0] + rng.uniform(-0.7, 0.7) * tr,
+            start[1] + rng.uniform(0.15, 0.35) * (tb[1] - ta[1]),
+        )
+        lines |= _wavy(start, end, amp=0.7, period=3)
+    parts = [Part(mat, lines & torso, z=30.2, tone=0)]
+    arms = [1] if sk.view == "right" else [0, 1]
+    for i in arms:
+        sh, hand = sk.shoulders[i], sk.hands[i]
+        arm = capsule(*sh, *hand, sk.build.arm_r)
+        z = 60.2 if sk.view == "right" else 20.2
+        parts.append(
+            Part(mat, _wavy(sh, _lerp(sh, hand, 0.8), amp=0.6, period=3) & arm, z=z, tone=0)
+        )
+    return parts
+
+
+def tendrils(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """Thin strands unravelling from the lower legs. Options: count (per leg), length (px)."""
+    count = p.get("count", 2)
+    length = p.get("length", 7)
+    strands: set[Pixel] = set()
+    legs = [1] if sk.view == "right" else [0, 1]
+    for i in legs:
+        hip, foot = sk.hips[i], sk.feet[i]
+        outward = -1 if (sk.view == "right" or i == 0) else 1
+        for j in range(count):
+            start = _lerp(hip, foot, 0.55 + 0.2 * j)
+            end = (start[0] + outward * (length - j * 1.5), start[1] + 2 + j * 1.5)
+            strands |= _wavy(start, end, amp=0.8, period=3)
+    return [Part(p["material"], strands, z=34 if sk.view == "right" else 9.5, tone=1)]
+
+
 PART_TYPES: dict[str, Callable[[Skeleton, dict, Look], list[Part]]] = {
     "hair": hair,
     "cap": cap,
     "headband": headband,
+    "mask": mask,
     "coat": coat,
     "belt": belt,
     "chain": chain,
     "emblem": emblem,
     "earring": earring,
     "seam": seam,
+    "scarf": scarf,
+    "pauldrons": pauldrons,
+    "gloves": gloves,
+    "loincloth": loincloth,
+    "body_lines": body_lines,
+    "veins": veins,
+    "tendrils": tendrils,
 }
