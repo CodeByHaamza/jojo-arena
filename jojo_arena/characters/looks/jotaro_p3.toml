@@ -1,0 +1,61 @@
+# Jotaro Kujo (Part 3): look file for tools/make_sprites.py.
+# Change a color or a setting, then run:  python tools/make_sprites.py jotaro_p3
+#
+# Colors: one hex color = its shades are computed (dark, light, highlight);
+# or give the four tones yourself: ["#dark", "#base", "#light", "#highlight"].
+
+name = "Jotaro Kujo (P3)"
+
+[palette]
+skin = "#e7ae88"
+hair = "#26222f"
+uniform = "#2d3160"      # cap, long coat and trousers
+shirt = "#3b3946"
+belt = "#7a5232"
+shoes = "#5a3b2a"
+gold = "#f0c23c"
+
+# Which color each body segment uses (arms = sleeves, legs = trousers).
+[body]
+head = "skin"
+torso = "shirt"
+arms = "uniform"
+hands = "skin"
+legs = "uniform"
+feet = "shoes"
+
+[face]
+eyes = "outline"
+brows = true
+
+[[parts]]
+type = "hair"
+material = "hair"
+style = "short"
+
+# School cap that blends into the hair at the back, gold badge at the front.
+[[parts]]
+type = "cap"
+material = "uniform"
+ragged_back = true
+badge = "gold"
+
+# Long open school coat (gakuran) with a high collar.
+[[parts]]
+type = "coat"
+material = "uniform"
+length = 0.85
+open = true
+collar = true
+
+# Two belts, one of them slanted.
+[[parts]]
+type = "belt"
+material = "belt"
+count = 2
+buckle = "gold"
+
+# Gold chain on the collar.
+[[parts]]
+type = "chain"
+material = "gold"

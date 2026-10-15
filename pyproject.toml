@@ -28,6 +28,7 @@ jojo_arena = ["assets/**/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["tools"]
 
 [tool.ruff]
 line-length = 100

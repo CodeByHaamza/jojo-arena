@@ -31,6 +31,7 @@ class FightScene(Scene):
     ) -> None:
         super().__init__()
         self.ctx = ctx
+        self.fighter_ids = fighter_ids
         self.fighter_defs = [get_fighter(i) for i in fighter_ids]
         self.stage = load_stage(stage_id)
         self.rules = load_rules()
@@ -115,7 +116,7 @@ class FightScene(Scene):
         elif action == ("confirm", "settings"):
             from jojo_arena.ui.setup_scene import SetupScene
 
-            self.ctx.scenes.switch(SetupScene(self.ctx, self.rounds_to_win))
+            self.ctx.scenes.switch(SetupScene(self.ctx, self.rounds_to_win, self.fighter_ids))
         elif action == ("confirm", "title"):
             self._go_to_title()
 

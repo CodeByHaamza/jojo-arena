@@ -1,9 +1,10 @@
-"""Fight settings before a local match: rounds to win and control preset."""
+"""Fight settings before a local match: fighters, rounds to win and control preset."""
 
 from __future__ import annotations
 
 import pygame
 
+from jojo_arena.characters import load_roster
 from jojo_arena.combat.rounds import ROUNDS_TO_WIN_CHOICES
 from jojo_arena.context import GameContext
 from jojo_arena.engine import font
@@ -16,18 +17,30 @@ GOLD = (255, 214, 90)
 DIM = (150, 144, 170)
 WARNING = (240, 90, 90)
 DEFAULT_ROUNDS_TO_WIN = 3
+DEFAULT_FIGHTERS = ("jotaro_p3", "mannequin_blue")
 
 
 class SetupScene(Scene):
-    def __init__(self, ctx: GameContext, rounds_to_win: int = DEFAULT_ROUNDS_TO_WIN) -> None:
+    def __init__(
+        self,
+        ctx: GameContext,
+        rounds_to_win: int = DEFAULT_ROUNDS_TO_WIN,
+        fighter_ids: tuple[str, str] = DEFAULT_FIGHTERS,
+    ) -> None:
         super().__init__()
         self.ctx = ctx
         self.backdrop = MenuBackdrop()
+        self.roster = load_roster()
+        ids = [f.id for f in self.roster]
+        names = [f.name for f in self.roster]
+        picks = [ids.index(i) if i in ids else n for n, i in enumerate(fighter_ids)]
         self.preset_keys = list(ctx.controls.presets)
         rounds = [str(n) for n in ROUNDS_TO_WIN_CHOICES]
         labels = [ctx.controls.presets[k].label for k in self.preset_keys]
         self.menu = Menu(
             [
+                MenuItem("p1", text.P1, names, picks[0]),
+                MenuItem("p2", text.P2, names, picks[1]),
                 MenuItem("rounds", text.ROUNDS_TO_WIN, rounds, rounds.index(str(rounds_to_win))),
                 MenuItem(
                     "controls", text.CONTROLS, labels, self.preset_keys.index(ctx.controls.active)
@@ -36,12 +49,19 @@ class SetupScene(Scene):
                 MenuItem("back", text.BACK),
             ]
         )
-        self.menu.cursor = 2  # straight on "fight"
+        self.menu.cursor = 4  # straight on "fight"
         self.tick = 0
 
     @property
     def rounds_to_win(self) -> int:
         return int(self.menu.item("rounds").value)
+
+    @property
+    def fighter_ids(self) -> tuple[str, str]:
+        return (
+            self.roster[self.menu.item("p1").index].id,
+            self.roster[self.menu.item("p2").index].id,
+        )
 
     def update(self) -> None:
         self.tick += 1
@@ -55,7 +75,9 @@ class SetupScene(Scene):
         elif kind == "confirm" and key == "fight":
             from jojo_arena.ui.fight_scene import FightScene
 
-            self.ctx.scenes.switch(FightScene(self.ctx, rounds_to_win=self.rounds_to_win))
+            self.ctx.scenes.switch(
+                FightScene(self.ctx, rounds_to_win=self.rounds_to_win, fighter_ids=self.fighter_ids)
+            )
         elif (kind == "confirm" and key == "back") or kind == "back":
             from jojo_arena.ui.title_scene import TitleScene
 
@@ -64,9 +86,9 @@ class SetupScene(Scene):
     def draw(self, surface: pygame.Surface) -> None:
         self.backdrop.draw(surface, self.tick)
         center = surface.get_width() // 2
-        font.draw(surface, text.SETUP_TITLE, (center, 50), GOLD, scale=3, align="center")
-        self.menu.draw(surface, center, 110, spacing=16)
+        font.draw(surface, text.SETUP_TITLE, (center, 40), GOLD, scale=3, align="center")
+        self.menu.draw(surface, center, 92, spacing=15)
         preset = self.ctx.controls.active_preset
         if preset.pads_needed() > len(self.ctx.inputs.pads):
-            font.draw(surface, text.PADS_MISSING, (center, 200), WARNING, align="center")
+            font.draw(surface, text.PADS_MISSING, (center, 210), WARNING, align="center")
         font.draw(surface, text.CONTROLS_FILE_HINT, (center, 240), DIM, align="center")

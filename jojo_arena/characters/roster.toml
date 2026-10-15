@@ -3,7 +3,17 @@
 #   sprite  = sprite sheet under assets/sprites/ (PNG + TOML). If it is missing, the
 #             game draws a simple shape in `color` instead.
 #   palette = colors that replace the sheet's key colors (see the sheet's [recolor]).
-#             Hand-drawn final sprites need no palette.
+#             Only the mannequin uses it; character sheets have their final colors.
+# Character sheets are generated from characters/looks/<id>.toml by tools/make_sprites.py.
+# Until a character has its own kit, it fights with the mannequin's moves.
+
+[[fighters]]
+id = "jotaro_p3"
+name = "JOTARO KUJO"
+kit = "mannequin"
+sprite = "jotaro_p3/jotaro_p3"
+color = "#5a6ad0"
+aura = "#9b7bff"
 
 [[fighters]]
 id = "mannequin_red"

@@ -6,7 +6,7 @@ Fan game **gratuit, open source et non commercial** : un arena fighter 1v1 en te
 
 ## État du projet
 
-Prototype jouable de la **Vague 0** (moteur) : combat local J1 contre J2 sur l'arène du Caire, avec deux mannequins génériques. Aucun personnage de JoJo n'est encore jouable. Le game design complet est dans [docs/GDD.md](docs/GDD.md).
+Prototype jouable de la **Vague 0** (moteur) : combat local J1 contre J2 sur l'arène du Caire. Jotaro Kujo (Partie 3) a son apparence, mais combat encore avec les coups du mannequin générique en attendant son kit (Vague 1). Le game design complet est dans [docs/GDD.md](docs/GDD.md).
 
 Ce qui marche déjà :
 
@@ -69,6 +69,7 @@ Options utiles :
 | --- | --- |
 | `--demo` | combat joué par l'ordinateur des deux côtés |
 | `--scene fight --rounds 1` | va droit au combat, en 1 round gagnant |
+| `--p1 jotaro_p3 --p2 mannequin_red` | choisit les persos (avec `--scene fight` ou `--demo`) |
 | `--fullscreen` | démarre en plein écran |
 | `--frames 300 --screenshot capture.png` | joue 300 images puis enregistre l'image 480 × 270 (tests rapides) |
 
@@ -109,22 +110,38 @@ GitHub Actions (`.github/workflows/release.yml`) lance les tests, construit le `
 jojo_arena/
   engine/       moteur générique (boucle, rendu, entrées, géométrie, sprites, police) : zéro référence à JoJo
   combat/       règles génériques (combattant, garde, dash, clash, jauges, rounds) + rules.toml
-  characters/   roster.toml et une fiche de jeu par perso (mannequin.toml)
+  characters/   roster.toml, une fiche de jeu par perso, et looks/ (apparence des persos)
   stages/       arènes : données (.toml) et rendu
   ui/           écrans, HUD, menus
   assets/       sprites (et plus tard sons, portraits)
-tools/          générateur du mannequin, build du .exe
+tools/          générateur de sprites (spritegen, make_sprites.py), build du .exe
 tests/          pytest
 ```
 
 Toutes les valeurs d'équilibrage sont dans des fichiers TOML commentés : `combat/rules.toml` (règles globales) et `characters/*.toml` (attaques de chaque perso).
 
-## Ajouter ou remplacer des sprites
+## Créer ou modifier l'apparence d'un perso
 
-Une planche de sprites, c'est un PNG en cases de 48 × 48 accompagné d'un TOML du même nom, dans `jojo_arena/assets/sprites/<nom>/`. Le TOML liste les animations (`idle`, `walk`, `light`, `heavy`, `special`, `dash`, `guard`, `hurt`, `ko`, `pose`). Chaque animation occupe 3 lignes de la planche : vue de face (`down`), de dos (`up`) et de profil vers la droite (`right`). La gauche est le miroir de la droite.
+Les sprites des persos sont **générés à partir d'une fiche de données**, sans dessin à la main. La fiche se trouve dans `jojo_arena/characters/looks/<id>.toml` (voir `jotaro_p3.toml`). Elle contient :
 
-- Le mannequin générique `assets/sprites/mannequin/` sert de base à habiller. Il est généré par `tools/make_mannequin.py`.
-- Remplacer une planche ne demande aucun changement de code : il suffit de garder les mêmes noms de fichiers.
+- `[palette]` : les couleurs du perso. Une seule couleur suffit, les ombres et les reflets sont calculés.
+- `[body]` : la couleur de chaque partie du corps (tête, torse, bras = manches, jambes = pantalon…).
+- `[face]` : yeux, sourcils, bouche.
+- `[[parts]]` : les pièces de costume : `hair` (styles `short`, `long`, `tower`, `spiky`, mèches `curl` ou `fringe`), `cap`, `headband`, `coat` (longueur, ouvert ou fermé, col), `belt`, `chain`, `emblem` (cœur, rond, losange, sur la poitrine ou les genoux), `earring`.
+
+Après une modification, régénère la planche :
+
+```powershell
+.\.venv\Scripts\python.exe tools\make_sprites.py jotaro_p3
+```
+
+Le script écrit la planche du jeu dans `jojo_arena/assets/sprites/<id>/`, et des aperçus agrandis dans `build/sprite_previews/` : `<id>.png` pour les 3 vues, `<id>_sheet.png` pour toutes les animations. Pour qu'un nouveau perso apparaisse dans le jeu, ajoute-le aussi dans `jojo_arena/characters/roster.toml`. Un test vérifie que les planches sont à jour par rapport à leur fiche.
+
+### Format d'une planche
+
+Une planche est un PNG en cases de 48 × 48 accompagné d'un TOML du même nom. Le TOML liste les animations (`idle`, `walk`, `light`, `heavy`, `special`, `dash`, `guard`, `hurt`, `ko`, `pose`). Chaque animation occupe 3 lignes de la planche : vue de face (`down`), de dos (`up`) et de profil vers la droite (`right`). La gauche est le miroir de la droite.
+
+- Une planche dessinée à la main peut remplacer une planche générée, sans changer le code : il suffit de garder les mêmes noms de fichiers.
 - Si une planche manque, le jeu affiche une forme simple de la couleur du perso.
 
 ## Licence

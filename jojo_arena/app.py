@@ -43,6 +43,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--rounds", type=int, default=3, choices=[1, 3, 5], help="rounds to win (--scene fight)"
     )
+    parser.add_argument("--p1", default="jotaro_p3", help="player 1 fighter id (--scene fight)")
+    parser.add_argument(
+        "--p2", default="mannequin_blue", help="player 2 fighter id (--scene fight)"
+    )
     return parser.parse_args(argv)
 
 
@@ -104,7 +108,12 @@ def build_first_scene(ctx: GameContext, args: argparse.Namespace) -> Scene:
     if args.demo or args.scene == "fight":
         from jojo_arena.ui.fight_scene import FightScene
 
-        return FightScene(ctx, rounds_to_win=args.rounds, bots=(args.demo, args.demo))
+        return FightScene(
+            ctx,
+            rounds_to_win=args.rounds,
+            fighter_ids=(args.p1, args.p2),
+            bots=(args.demo, args.demo),
+        )
     if args.scene == "setup":
         from jojo_arena.ui.setup_scene import SetupScene
 
