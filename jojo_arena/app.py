@@ -7,7 +7,10 @@ from pathlib import Path
 
 import pygame
 
+from jojo_arena.context import GameContext
+from jojo_arena.controls import controls_path, load_controls
 from jojo_arena.engine.display import Display
+from jojo_arena.engine.input import InputManager
 from jojo_arena.engine.loop import FixedStep
 from jojo_arena.engine.scene import Scene, SceneManager
 
@@ -37,49 +40,58 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 class Game:
     def __init__(self, fullscreen: bool) -> None:
         pygame.init()
-        self.display = Display(WINDOW_TITLE, INTERNAL_SIZE, fullscreen=fullscreen)
-        self.scenes = SceneManager()
+        display = Display(WINDOW_TITLE, INTERNAL_SIZE, fullscreen=fullscreen)
+        inputs = InputManager()
+        inputs.start()
+        path = controls_path()
+        config, warnings = load_controls(path)
+        print(f"Controls file: {path}")
+        for warning in warnings:
+            print(f"  ! {warning}")
+        self.ctx = GameContext(display, inputs, SceneManager(), config, path)
         self.clock = pygame.time.Clock()
         self.fixed_step = FixedStep(LOGIC_HZ)
 
     def handle_global_event(self, event: pygame.event.Event) -> bool:
         """Window-level shortcuts. Return True when the event is consumed."""
         if event.type == pygame.QUIT:
-            self.scenes.quit()
+            self.ctx.scenes.quit()
             return True
         if event.type == pygame.KEYDOWN:
             alt_enter = event.key == pygame.K_RETURN and event.mod & pygame.KMOD_ALT
             if event.key == pygame.K_F11 or alt_enter:
-                self.display.toggle_fullscreen()
+                self.ctx.display.toggle_fullscreen()
                 return True
         return False
 
     def run(self, first_scene: Scene, frame_limit: int = 0) -> None:
-        self.scenes.switch(first_scene)
-        self.scenes.apply_pending()
+        scenes = self.ctx.scenes
+        scenes.switch(first_scene)
+        scenes.apply_pending()
         frame = 0
-        while not self.scenes.quit_requested:
+        while not scenes.quit_requested:
             elapsed_ms = self.clock.tick(LOGIC_HZ)
-            scene = self.scenes.current
             for event in pygame.event.get():
                 if not self.handle_global_event(event):
-                    scene.handle_event(event)
+                    self.ctx.inputs.handle_event(event)
+                    scenes.current.handle_event(event)
             steps = 1 if frame_limit else self.fixed_step.advance(elapsed_ms)
             for _ in range(steps):
-                self.scenes.current.update()
-                self.scenes.apply_pending()
-            self.scenes.current.draw(self.display.surface)
-            self.display.present()
+                self.ctx.inputs.begin_step()
+                scenes.current.update()
+                scenes.apply_pending()
+            scenes.current.draw(self.ctx.display.surface)
+            self.ctx.display.present()
             frame += 1
             if frame_limit and frame >= frame_limit:
                 break
 
     def save_screenshot(self, path: Path) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
-        pygame.image.save(self.display.surface, str(path))
+        pygame.image.save(self.ctx.display.surface, str(path))
 
 
-def build_first_scene(name: str) -> Scene:
+def build_first_scene(ctx: GameContext, name: str) -> Scene:
     from jojo_arena.ui.test_pattern import TestPatternScene
 
     return TestPatternScene()
@@ -89,7 +101,7 @@ def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
     game = Game(fullscreen=args.fullscreen)
     try:
-        game.run(build_first_scene(args.scene), frame_limit=args.frames)
+        game.run(build_first_scene(game.ctx, args.scene), frame_limit=args.frames)
         if args.screenshot:
             game.save_screenshot(args.screenshot)
     finally:
