@@ -62,6 +62,22 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e ".[dev]"
 ```
 
+### Raccourcis avec make
+
+Le `Makefile` regroupe les commandes courantes ; `make` tout seul affiche la liste. Il crée `.venv` et installe tout au premier usage.
+
+| Commande | Effet |
+| --- | --- |
+| `make run` | lance le jeu (écran titre) |
+| `make training P1=dio_p3 P2=kakyoin` | va droit à l'entraînement |
+| `make fight`, `make versus`, `make demo` | combat direct, écran VS, ou ordinateur contre ordinateur |
+| `make check` | lint puis tests, comme la CI : à lancer avant un commit |
+| `make test-fast` | les tests sans ceux qui lancent le jeu entier |
+| `make screens` | capture tous les écrans dans `screenshots/tour/` |
+| `make sprites`, `make exe`, `make clean` | planches de sprites, `.exe`, nettoyage |
+
+Sous Windows il faut un GNU make : `winget install ezwinports.make` ou `choco install make` (ou `mingw32-make`). Les commandes marchent pareil dans PowerShell, cmd ou Git Bash.
+
 ### Lancer le jeu
 
 ```powershell
@@ -91,6 +107,14 @@ Options utiles :
 ```
 
 GitHub Actions les lance aussi à chaque push (`.github/workflows/ci.yml`).
+
+Les tests couvrent la logique de combat, les menus (parcours au clavier simulé), et lancent chaque écran du jeu dans une fenêtre cachée. Pour voir tous les écrans d'un coup après une modification :
+
+```powershell
+.\.venv\Scripts\python.exe tools\screenshot_tour.py
+```
+
+Les captures arrivent dans `screenshots/tour/` (ignoré par git).
 
 ### Construire le .exe en local
 
