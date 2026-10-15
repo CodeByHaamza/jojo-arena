@@ -57,10 +57,9 @@ docs/GDD.md
 - Les valeurs d'équilibrage (dégâts, durées, vitesses) sont dans des fichiers de données, jamais en dur dans la logique.
 - Contrôles : clavier et manette, rebindables (mapping par défaut dans le GDD).
 
-## Assets — RÈGLE STRICTE
+## Assets
 
-- **Ne dessine et ne génère jamais de sprite, d'image ou de son représentant un personnage, un Stand ou un logo de JoJo**, même à partir d'une référence. Les sprites JoJo sont faits à la main par le propriétaire ou des contributeurs.
-- Ton travail côté visuel : des **placeholders génériques** (formes simples, bonne taille, couleur propre à chaque perso) et des **mannequins de base** génériques en 48 px, style A (corps neutre avec idle, marche, coups, dash, dégâts, KO), qui servent de base à habiller.
+- Ton travail côté visuel : des **placeholders génériques** (formes simples, bonne taille, couleur propre à chaque perso), des **mannequins de base** génériques en 48 px, style A (corps neutre avec idle, marche, coups, dash, dégâts, KO), qui servent de base à habiller, et la **conversion des images fournies par le propriétaire** (dessins ou images générées) au format du jeu.
 - Le moteur charge les sprite sheets depuis `assets/` ; si un sprite manque, il affiche le placeholder. Remplacer un placeholder ne doit demander aucun changement de code.
 
 ## Licence et mentions
