@@ -5,6 +5,9 @@
 name = "Mannequin"
 recolor = ["body", "trim"]
 
+# Standard body (see Build in spritegen/skeleton.py for every setting).
+[build]
+
 [palette]
 # Exact tones (dark, mid, light, highlight), not computed: the game looks for them.
 body = ["#44444c", "#74747c", "#a4a4ac", "#d4d4dc"]
@@ -20,7 +23,7 @@ feet = "trim"
 
 [face]
 eyes = "outline"
-tall_eyes = false
+eye_style = "dot"
 
 [[parts]]
 type = "belt"

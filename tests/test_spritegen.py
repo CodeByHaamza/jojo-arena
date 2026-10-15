@@ -47,17 +47,29 @@ def test_every_look_builds_a_complete_sheet(look_path):
 
     look = load_look(look_path)
     sheet, spec = build_sheet(look)
-    assert sheet.get_size() == (240, 1440)
+    size = look.cell
+    assert sheet.get_size() == (5 * size, 10 * len(DIRECTIONS) * size)
     rows = 0
     for name, (_, _, _, frames) in animations("down").items():
         for d, _view in enumerate(DIRECTIONS):
             for i in range(len(frames)):
-                cell = sheet.subsurface((i * 48, (rows + d) * 48, 48, 48))
+                cell = sheet.subsurface((i * size, (rows + d) * size, size, size))
                 box = cell.get_bounding_rect()
                 assert box.width > 4 and box.height > 4, f"{name} frame {i} is empty"
-                assert box.bottom <= 47, f"{name} frame {i} touches the cell edge"
+                assert box.top > 0 and box.bottom < size, f"{name} frame {i} touches the edge"
+                assert box.left > 0 and box.right < size, f"{name} frame {i} touches the edge"
         rows += len(DIRECTIONS)
     assert f"[anims.{name}]" in spec
+
+
+def test_build_changes_the_silhouette():
+    from spritegen.look import load_look
+    from spritegen.sheet import body_heights
+
+    looks = {p.stem: load_look(p) for p in LOOKS}
+    _, jotaro = body_heights(looks["jotaro_p3"])
+    _, mannequin = body_heights(looks["mannequin"])
+    assert jotaro > mannequin  # Jotaro is taller than the standard body
 
 
 def test_generated_sheets_are_up_to_date():

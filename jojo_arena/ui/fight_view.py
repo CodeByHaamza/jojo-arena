@@ -25,8 +25,6 @@ from jojo_arena.paths import SPRITES_DIR
 from jojo_arena.stages.base import StageDef
 
 OUTLINE = (23, 18, 31)
-CHEST = Vec2(0, -16)  # effects happen at chest height, not on the ground
-SHADOW_SIZE = (22, 7)
 
 # When a sheet lacks an animation, show the closest one that exists.
 ANIM_FALLBACKS = {
@@ -67,6 +65,10 @@ class FighterView:
                 base.with_suffix(".png"), base.with_suffix(".toml"), fighter_def.palette or None
             )
         self.sprites = sheet or PlaceholderSprites(fighter_def.color)
+        # Effects happen at chest height, not on the ground; labels go over the head.
+        self.chest = Vec2(0, -self.sprites.chest)
+        self.height = self.sprites.height
+        self.shadow = (round(14 + self.height * 0.25), 7)
 
     def resolve(self, anim: str) -> tuple[str, AnimSpec]:
         name = anim
@@ -96,7 +98,7 @@ class FighterView:
 
     def draw_aura(self, surface: pygame.Surface, fighter: Fighter, tick: int) -> None:
         """Additive light behind the body: Stand aura, stance switch, Résolution."""
-        body = fighter.pos + CHEST
+        body = fighter.pos + self.chest
         aura = self.fighter_def.aura
         if fighter.aura_active or fighter.state == State.SWITCH:
             pulse = 0.75 + 0.15 * math.sin(tick * 0.2)
@@ -133,13 +135,13 @@ class FighterView:
         if fighter.aura_active:
             # A faint second pass over the body so the aura also tints the sprite.
             tint = tuple(round(c * 0.18) for c in self.fighter_def.aura)
-            blit_glow(surface, radial_glow(18, tint), fighter.pos + CHEST)
+            blit_glow(surface, radial_glow(18, tint), fighter.pos + self.chest)
         if fighter.state == State.GUARD_BROKEN:
             # Dizzy stars circling over the head.
             for i in range(3):
                 a = tick * 0.15 + i * 2 * math.pi / 3
                 x = fighter.pos.x + math.cos(a) * 8
-                y = fighter.pos.y - 44 + math.sin(a) * 3
+                y = fighter.pos.y - self.height - 4 + math.sin(a) * 3
                 surface.fill((255, 230, 90), (round(x), round(y), 2, 2))
 
 
@@ -169,9 +171,16 @@ class FightView:
 
     # Reacting to the simulation ------------------------------------------------------
 
+    def chest(self, index: int | None) -> Vec2:
+        """Chest offset of one fighter, or the average of both when nobody in particular."""
+        if index is not None:
+            return self.fighter_views[index].chest
+        a, b = (view.chest for view in self.fighter_views)
+        return (a + b) * 0.5
+
     def on_events(self, events: list[Event]) -> None:
         for event in events:
-            pos = event.pos + CHEST if event.pos is not None else None
+            pos = event.pos + self.chest(event.fighter) if event.pos is not None else None
             if event.kind == "hit":
                 heavy = event.value >= 80
                 self.sparks.append(Spark(pos, 14, 14, (255, 210, 140), 16 if heavy else 10, 6))
@@ -222,7 +231,8 @@ class FightView:
         self.renderer.draw_background(surface)
         self.renderer.draw_floor_details(surface, match.arena)
         for fighter in match.fighters:
-            blit_shadow(surface, (fighter.pos.x, fighter.pos.y), *SHADOW_SIZE)
+            shadow = self.fighter_views[fighter.index].shadow
+            blit_shadow(surface, (fighter.pos.x, fighter.pos.y), *shadow)
         for projectile in match.projectiles:
             blit_shadow(surface, (projectile.pos.x, projectile.pos.y), 8, 3)
         drawables = [(o.rect.bottom, 0, o) for o in match.arena.obstacles if not o.broken]
@@ -237,14 +247,15 @@ class FightView:
         self.renderer.draw_lights(surface, self.tick)
         for fighter in match.fighters:
             if fighter.state in (State.GUARD, State.BLOCKSTUN):
-                shield = fighter.pos + fighter.facing * 10 + CHEST
+                shield = fighter.pos + fighter.facing * 10 + self.chest(fighter.index)
                 blit_glow(surface, radial_glow(10, (30, 50, 90)), shield)
         if match.super_user is not None:
             # Heart Heat flash: the world goes dark, only the user stays lit.
             surface.blit(self._overlay(surface.get_size(), (8, 4, 20, 150)), (0, 0))
             user = match.fighters[match.super_user]
             aura = self.fighter_defs[user.index].aura
-            blit_glow(surface, radial_glow(40, tuple(c // 2 for c in aura)), user.pos + CHEST)
+            glow = radial_glow(40, tuple(c // 2 for c in aura))
+            blit_glow(surface, glow, user.pos + self.chest(user.index))
             self.fighter_views[user.index].draw(surface, user, self.tick)
         for spark in self.sparks:
             self._draw_spark(surface, spark)
@@ -270,7 +281,8 @@ class FightView:
 
     def _draw_clash(self, surface: pygame.Surface, match: Match) -> None:
         clash = match.clash
-        center = clash.pos + CHEST
+        center = clash.pos + self.chest(None)
+        head_room = max(view.height for view in self.fighter_views) + self.chest(None).y
         # Flickering impact light where the two attacks meet.
         flicker = 0.6 + 0.4 * ((self.tick // 2) % 2)
         blit_glow(surface, radial_glow(22, tuple(round(255 * flicker) for _ in range(3))), center)
@@ -281,7 +293,7 @@ class FightView:
         # Duel bar: each side pushes the split point toward the other.
         width, height = 120, 6
         bar = pygame.Rect(0, 0, width, height)
-        bar.center = (round(center.x), round(center.y) - 34)
+        bar.center = (round(center.x), round(center.y - head_room) - 12)
         bar.clamp_ip(surface.get_rect().inflate(-8, -8))
         # balance -1 = player 1 winning: their color fills toward the right.
         split = bar.x + round(width / 2 * (1 - clash.balance))
@@ -296,7 +308,7 @@ class FightView:
 
     def _draw_projectile(self, surface: pygame.Surface, projectile) -> None:
         color = self.fighter_defs[projectile.owner].aura
-        pos = projectile.pos + CHEST * 0.8
+        pos = projectile.pos + self.chest(projectile.owner) * 0.8
         r = round(projectile.radius)
         blit_glow(surface, radial_glow(r * 3, tuple(c // 2 for c in color)), (pos.x, pos.y))
         center = pos.as_ints()

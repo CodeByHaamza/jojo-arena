@@ -71,6 +71,8 @@ def sprite_direction(fx: float, fy: float) -> tuple[str, bool]:
 
 class SpriteSet:
     anchor: tuple[int, int] = (24, 44)
+    chest: int = 16  # pixels above the feet where hits and effects should appear
+    height: int = 38  # pixels above the feet to the top of the head
 
     def spec(self, anim: str) -> AnimSpec | None:
         raise NotImplementedError
@@ -83,6 +85,8 @@ class SheetSprites(SpriteSet):
     def __init__(self, sheet: pygame.Surface, spec_data: dict) -> None:
         self.cell = tuple(spec_data["frame_size"])
         self.anchor = tuple(spec_data["anchor"])
+        self.chest = spec_data.get("chest", SpriteSet.chest)
+        self.height = spec_data.get("height", SpriteSet.height)
         self.directions = list(spec_data["directions"])
         self.specs: dict[str, AnimSpec] = {}
         self._frames: dict[tuple[str, str], list[pygame.Surface]] = {}

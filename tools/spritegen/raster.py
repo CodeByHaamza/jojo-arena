@@ -77,19 +77,28 @@ class Part:
     highlight: set[Pixel] = field(default_factory=set)
     tone: int | None = None  # fixed tone (thin details that shading would turn dark)
     flat: Color | None = None  # exact color, ignoring the palette
+    merge: bool = False  # no dark seam against other merging parts of the same color
 
 
 def render(
-    parts: list[Part], palette: dict[str, list[Color]], outline: Color = OUTLINE
+    parts: list[Part],
+    palette: dict[str, list[Color]],
+    size: int = CELL,
+    outline: Color = OUTLINE,
 ) -> pygame.Surface:
     """Draw parts back to front, shade each one from the top-left, then outline."""
     ordered = [part for _, part in sorted(enumerate(parts), key=lambda e: (e[1].z, e[0]))]
     owner: dict[Pixel, int] = {}
     for rank, part in enumerate(ordered):
         for p in part.pixels:
-            if 0 <= p[0] < CELL and 0 <= p[1] < CELL:
+            if 0 <= p[0] < size and 0 <= p[1] < size:
                 owner[p] = rank
-    surface = pygame.Surface((CELL, CELL), pygame.SRCALPHA)
+    surface = pygame.Surface((size, size), pygame.SRCALPHA)
+    # Merging parts of the same color are shaded as one shape (one garment).
+    garments: dict[str, set[Pixel]] = {}
+    for part in ordered:
+        if part.merge:
+            garments.setdefault(part.material, set()).update(part.pixels)
     for (x, y), rank in owner.items():
         part = ordered[rank]
         if part.flat is not None:
@@ -99,10 +108,19 @@ def render(
         if part.tone is not None:
             surface.set_at((x, y), tones[min(part.tone, len(tones) - 1)])
             continue
-        shape = part.pixels
+        shape = garments[part.material] if part.merge else part.pixels
         neighbors = ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1))
-        # A part drawn over another gets a dark rim there, so overlaps stay readable.
-        over_other = any(owner.get(n, rank) < rank for n in neighbors)
+        # A part drawn over another gets a dark rim there, so overlaps stay readable,
+        # unless both are pieces of one garment (same color, both marked merge).
+        over_other = False
+        for n in neighbors:
+            other = owner.get(n, rank)
+            if other < rank:
+                below = ordered[other]
+                same_piece = part.merge and below.merge and below.material == part.material
+                if not same_piece:
+                    over_other = True
+                    break
         if over_other or (x + 1, y) not in shape or (x, y + 1) not in shape:
             tone = 0
         elif (x - 1, y) not in shape or (x, y - 1) not in shape:
@@ -112,8 +130,8 @@ def render(
         if (x, y) in part.highlight:
             tone = 3
         surface.set_at((x, y), tones[min(tone, len(tones) - 1)])
-    for y in range(CELL):
-        for x in range(CELL):
+    for y in range(size):
+        for x in range(size):
             if (x, y) not in owner and any(
                 n in owner for n in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1))
             ):

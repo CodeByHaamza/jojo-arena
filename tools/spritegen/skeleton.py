@@ -1,8 +1,12 @@
-"""The body skeleton, its poses, and the animation table shared by every character.
+"""The body skeleton, its proportions, its poses, and the animation table.
 
-Coordinates are pixels inside a 48x48 cell, feet around (24, 44). Views are "down"
-(facing the camera), "up" (back to the camera) and "right" (profile); "left" is
-mirrored by the game. In profile, index 0 of a pair is the far limb, 1 the near one.
+Coordinates are pixels inside a square cell (64 px by default), feet near the bottom.
+Views are "down" (facing the camera), "up" (back to the camera) and "right"
+(profile); "left" is mirrored by the game. In profile, index 0 of a pair is the far
+limb and 1 the near one.
+
+Poses were authored for limbs of 9 px; hand and foot offsets are scaled by the real
+arm and leg lengths, so every body shape can play the same animations.
 """
 
 from __future__ import annotations
@@ -12,6 +16,26 @@ from dataclasses import dataclass
 Point = tuple[float, float]
 DIRECTIONS = ("down", "up", "right")
 LYING = ("lying0", "lying1")  # knocked-out frames, drawn by rotating a standing pose
+POSE_LIMB = 9.0  # limb length the pose offsets were written for
+MAX_REACH_SCALE = 1.45
+
+
+@dataclass(frozen=True)
+class Build:
+    """Body proportions in pixels. The defaults are a standard adult, about 44 px tall."""
+
+    head_r: float = 5.6
+    neck: float = 1.5  # gap between the chin and the shoulder line
+    torso: float = 13.0  # shoulder line to hips
+    legs: float = 16.0  # hips to ankles
+    arms: float = 14.0  # shoulder to hand, arms hanging
+    shoulders: float = 8.0  # half the shoulder width
+    hips: float = 3.2  # half the gap between the legs
+    torso_r: float = 5.6
+    arm_r: float = 2.0
+    leg_r: float = 2.4
+    hand_r: float = 2.1
+    foot_r: float = 2.3
 
 
 @dataclass(frozen=True)
@@ -31,63 +55,95 @@ class Pose:
 @dataclass(frozen=True)
 class Skeleton:
     view: str
+    build: Build
     head: Point
-    head_r: float
     torso: tuple[Point, Point, float]  # capsule: top, bottom, radius
     shoulders: tuple[Point, Point]
     hands: tuple[Point, Point]
     hips: tuple[Point, Point]
     feet: tuple[Point, Point]
+    shoulder_y: float
     hip_y: float
     lean: float
     big_hand: bool
 
     @property
+    def head_r(self) -> float:
+        return self.build.head_r
+
+    @property
+    def k(self) -> float:
+        """Head scale: head-relative shapes were designed for a head radius of 7."""
+        return self.build.head_r / 7.0
+
+    @property
     def center_x(self) -> float:
         return (self.torso[0][0] + self.torso[1][0]) / 2
 
+    def at(self, dx: float, dy: float) -> Point:
+        """A point given relative to the head center, in head units."""
+        return self.head[0] + dx * self.k, self.head[1] + dy * self.k
 
-def make_skeleton(view: str, pose: Pose) -> Skeleton:
+
+def feet_line(cell: int) -> float:
+    return cell - 6.0
+
+
+def make_skeleton(view: str, pose: Pose, build: Build, cell: int) -> Skeleton:
+    cx = cell / 2
+    feet_y = feet_line(cell)
+    # Long arms swing a little less than their length, so punches stay inside the cell.
+    arm_k = min(build.arms / POSE_LIMB, MAX_REACH_SCALE)
+    leg_k = build.legs / POSE_LIMB
     b, lean = pose.bob, pose.lean
+    hip_y = feet_y - build.legs + b * 0.5
+    shoulder_y = feet_y - build.legs - build.torso + b
+    head_y = shoulder_y - build.neck - build.head_r + pose.head[1]
+
+    def hand(x: float, y: float, off: Point) -> Point:
+        return x + off[0] * arm_k, y + off[1] * arm_k
+
+    def foot(x: float, off: Point) -> Point:
+        return x + off[0] * leg_k, feet_y + off[1] * leg_k
+
     if view == "right":
-        hip = (24.0, 33 + b * 0.5)
-        shoulder = (24 + lean, 23 + b)
+        torso_r = build.torso_r * 0.87
+        shoulder = (cx + lean, shoulder_y + 1)
         return Skeleton(
             view=view,
-            head=(25 + lean * 1.2 + pose.head[0], 13 + b + pose.head[1]),
-            head_r=7.0,
-            torso=((24 + lean, 21 + b), (hip[0], hip[1] - 2), 5.4),
+            build=build,
+            head=(cx + 1 + lean * 1.2 + pose.head[0], head_y),
+            torso=((cx + lean, shoulder_y + torso_r - 3.2), (cx, hip_y - 2), torso_r),
             shoulders=(shoulder, (shoulder[0] + 1.5, shoulder[1])),
             hands=(
-                (shoulder[0] - 1 + pose.hand_l[0], 31 + b + pose.hand_l[1]),
-                (shoulder[0] + 2.5 + pose.hand_r[0], 31 + b + pose.hand_r[1]),
+                hand(shoulder[0] - 1, shoulder_y + build.arms, pose.hand_l),
+                hand(shoulder[0] + 2.5, shoulder_y + build.arms, pose.hand_r),
             ),
-            hips=((hip[0] - 1, hip[1]), (hip[0] + 1, hip[1])),
-            feet=(
-                (22 + pose.foot_l[0], 42 + pose.foot_l[1]),
-                (26 + pose.foot_r[0], 42 + pose.foot_r[1]),
-            ),
-            hip_y=hip[1],
+            hips=((cx - 1, hip_y), (cx + 1, hip_y)),
+            feet=(foot(cx - 2, pose.foot_l), foot(cx + 2, pose.foot_r)),
+            shoulder_y=shoulder_y,
+            hip_y=hip_y,
             lean=lean,
             big_hand=False,
         )
-    hip_y = 33 + b * 0.5
-    torso_top = 21 + b
+    half = build.shoulders
     return Skeleton(
         view=view,
-        head=(24 + lean + pose.head[0], 13 + b + pose.head[1]),
-        head_r=7.0,
-        torso=((24 + lean, torso_top + 4), (24 + lean * 0.5, hip_y - 2), 6.2),
-        shoulders=((17.5 + lean, 22 + b), (30.5 + lean, 22 + b)),
+        build=build,
+        head=(cx + lean + pose.head[0], head_y),
+        torso=(
+            (cx + lean, shoulder_y + build.torso_r - 3.2),
+            (cx + lean * 0.5, hip_y - 2),
+            build.torso_r,
+        ),
+        shoulders=((cx - half + lean, shoulder_y), (cx + half + lean, shoulder_y)),
         hands=(
-            (15 + lean + pose.hand_l[0], 31 + b + pose.hand_l[1]),
-            (33 + lean + pose.hand_r[0], 31 + b + pose.hand_r[1]),
+            hand(cx - half - 2 + lean, shoulder_y + build.arms, pose.hand_l),
+            hand(cx + half + 2 + lean, shoulder_y + build.arms, pose.hand_r),
         ),
-        hips=((21.0, hip_y), (27.0, hip_y)),
-        feet=(
-            (21 + pose.foot_l[0], 42 + pose.foot_l[1]),
-            (27 + pose.foot_r[0], 42 + pose.foot_r[1]),
-        ),
+        hips=((cx - build.hips, hip_y), (cx + build.hips, hip_y)),
+        feet=(foot(cx - build.hips, pose.foot_l), foot(cx + build.hips, pose.foot_r)),
+        shoulder_y=shoulder_y,
         hip_y=hip_y,
         lean=lean,
         big_hand=pose.big_hand_r,

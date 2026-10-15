@@ -30,7 +30,7 @@ Fan game gratuit, open source et non commercial : un **arena fighter 1v1 en temp
 ## Rendu (décisions fixées)
 
 - Résolution interne **480 × 270**, dessinée sur une surface puis agrandie **sans lissage** (nearest neighbor) vers la fenêtre, à l'échelle entière la plus grande possible (×4 = 1920 × 1080). Bandes noires si la fenêtre ne tombe pas juste.
-- Sprites des persos : **48 px**, **style A** : contour noir (#17121f), ombrage 2-3 tons, petit highlight.
+- Sprites des persos : **environ 48 px de haut** (cases de 64 × 64), **style A** : contour noir (#17121f), ombrage 2-3 tons, petit highlight. Chaque perso a sa morphologie (fiche `characters/looks/<id>.toml`).
 - Sol de l'arène : tuiles ternes, peu contrastées. Persos saturés.
 - Ombre portée : ellipse noire semi-transparente sous chaque perso, dessinée avant le sprite.
 - Effets lumineux : dégradés radiaux pré-rendus blittés en `BLEND_ADD`.

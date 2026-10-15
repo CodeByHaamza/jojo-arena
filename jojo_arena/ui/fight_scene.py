@@ -40,7 +40,7 @@ class FightScene(Scene):
         self.bots = [SimpleBot(seed=i + 1) if bot else None for i, bot in enumerate(bots)]
         self.demo = all(bots)
         self.view = FightView(self.stage, self.fighter_defs)
-        self.hud = Hud(self.fighter_defs)
+        self.hud = Hud(self.fighter_defs, [view.height for view in self.view.fighter_views])
         self.pause_menu: Menu | None = None
         self.result_menu: Menu | None = None
         self._veil: pygame.Surface | None = None

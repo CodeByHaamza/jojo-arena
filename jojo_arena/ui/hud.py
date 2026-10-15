@@ -39,8 +39,9 @@ class Callout:
 
 
 class Hud:
-    def __init__(self, fighter_defs: list[FighterDef]) -> None:
+    def __init__(self, fighter_defs: list[FighterDef], heights: list[int]) -> None:
         self.defs = fighter_defs
+        self.heights = heights  # sprite height of each fighter, to place labels overhead
         self.shown_hp: list[float | None] = [None, None]
         self.callouts: list[Callout] = []
         self.tick = 0
@@ -57,9 +58,11 @@ class Hud:
             if event.kind in labels and event.fighter is not None:
                 label, color = labels[event.kind]
                 fighter = rounds.match.fighters[event.fighter]
-                self.callouts.append(Callout(label, color, fighter.pos + Vec2(0, -52)))
+                above = Vec2(0, -(self.heights[event.fighter] + 14))
+                self.callouts.append(Callout(label, color, fighter.pos + above))
             elif event.kind == "clash_start" and event.pos is not None:
-                self.callouts.append(Callout(text.CLASH, WHITE, event.pos + Vec2(0, -60), 40))
+                above = Vec2(0, -(max(self.heights) + 24))
+                self.callouts.append(Callout(text.CLASH, WHITE, event.pos + above, 40))
             elif event.kind == "round_start":
                 self.shown_hp = [None, None]
 
@@ -89,7 +92,8 @@ class Hud:
             font.draw(surface, callout.label, (x, y), callout.color, align="center")
         if rounds.match.clash is not None and (self.tick // 8) % 2 == 0:
             pos = rounds.match.clash.pos
-            font.draw(surface, text.MASH, (round(pos.x), round(pos.y) - 74), GOLD, align="center")
+            y = round(pos.y) - max(self.heights) - 30
+            font.draw(surface, text.MASH, (round(pos.x), y), GOLD, align="center")
         self._draw_announcement(surface, rounds)
 
     def _mirror(self, index: int, x: int, width: int) -> int:

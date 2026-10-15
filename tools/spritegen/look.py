@@ -1,15 +1,17 @@
-"""A look: palette, body materials, face and costume parts, read from a TOML file."""
+"""A look: body shape, palette, body materials, face and costume parts, from a TOML file."""
 
 from __future__ import annotations
 
 import colorsys
 import tomllib
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
 from pathlib import Path
 
 from .raster import Color
+from .skeleton import Build
 
 BODY_SLOTS = ("head", "torso", "arms", "hands", "legs", "feet")
+DEFAULT_CELL = 64
 
 
 def parse_color(value: str | list[int]) -> Color:
@@ -30,7 +32,8 @@ def ramp(base: Color) -> list[Color]:
 
     def tone(dl: float, ds: float, dh: float) -> Color:
         hue = (h + dh) % 1.0
-        rgb = colorsys.hls_to_rgb(hue, max(0.03, min(0.96, light + dl)), max(0.0, min(1.0, s + ds)))
+        lum = max(0.03, min(0.96, light + dl))
+        rgb = colorsys.hls_to_rgb(hue, lum, max(0.0, min(1.0, s + ds)))
         return tuple(round(c * 255) for c in rgb)
 
     return [tone(-0.11, 0.05, 0.015), base, tone(0.11, -0.03, -0.01), tone(0.26, -0.12, -0.02)]
@@ -42,6 +45,8 @@ class Look:
     name: str
     palette: dict[str, list[Color]]
     body: dict[str, str]
+    build: Build = field(default_factory=Build)
+    cell: int = DEFAULT_CELL
     face: dict = field(default_factory=dict)
     parts: list[dict] = field(default_factory=list)
     recolor: list[str] = field(default_factory=list)  # palette entries the game may swap
@@ -63,11 +68,19 @@ def load_look(path: Path) -> Look:
     for slot, material in body.items():
         if material not in palette:
             raise ValueError(f"{path.name}: body.{slot} uses unknown color '{material}'")
+    build_data = dict(data.get("build", {}))
+    cell = int(build_data.pop("cell", DEFAULT_CELL))
+    known = {f.name for f in fields(Build)}
+    unknown = set(build_data) - known
+    if unknown:
+        raise ValueError(f"{path.name}: unknown [build] settings {', '.join(sorted(unknown))}")
     return Look(
         id=path.stem,
         name=data.get("name", path.stem),
         palette=palette,
         body=dict(body),
+        build=Build(**build_data),
+        cell=cell,
         face=data.get("face", {}),
         parts=list(data.get("parts", [])),
         recolor=list(data.get("recolor", [])),

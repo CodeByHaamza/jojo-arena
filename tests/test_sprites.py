@@ -55,8 +55,9 @@ def test_mannequin_sheet_has_every_required_animation():
         assert spec is not None, anim
         for direction in ("down", "up", "right"):
             for i in range(spec.frames):
-                assert sheet.frame(anim, direction, False, i).get_size() == (48, 48)
-    assert sheet.frame("idle", "right", True, 0).get_size() == (48, 48)
+                assert sheet.frame(anim, direction, False, i).get_size() == sheet.cell
+    assert sheet.frame("idle", "right", True, 0).get_size() == sheet.cell
+    assert 0 < sheet.chest < sheet.height < sheet.cell[1]
 
 
 def test_missing_sheet_returns_none(tmp_path):

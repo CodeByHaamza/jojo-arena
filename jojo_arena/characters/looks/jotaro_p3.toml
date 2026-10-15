@@ -6,14 +6,31 @@
 
 name = "Jotaro Kujo (P3)"
 
+# Body shape, in pixels: tall and broad-shouldered.
+[build]
+head_r = 6.2
+neck = 1.0
+torso = 14
+legs = 17
+arms = 15
+shoulders = 9
+hips = 3.5
+torso_r = 6.3
+arm_r = 2.4
+leg_r = 2.7
+hand_r = 2.4
+foot_r = 2.6
+
 [palette]
-skin = "#e7ae88"
-hair = "#26222f"
-uniform = "#2d3160"      # cap, long coat and trousers
-shirt = "#3b3946"
-belt = "#7a5232"
-shoes = "#5a3b2a"
+skin = "#e9b48c"
+hair = "#1d1f33"
+uniform = "#252c52"      # cap, long coat and trousers
+shirt = "#3f7a3c"
+lining = "#c9b48a"       # inside of the coat
+belt = "#b06a32"
+shoes = "#3a3646"
 gold = "#f0c23c"
+eyes = "#3a9aa0"
 
 # Which color each body segment uses (arms = sleeves, legs = trousers).
 [body]
@@ -25,37 +42,53 @@ legs = "uniform"
 feet = "shoes"
 
 [face]
-eyes = "outline"
+eyes = "eyes"
+eye_style = "wide"
 brows = true
+nose = true
 
 [[parts]]
 type = "hair"
 material = "hair"
 style = "short"
+volume = 8.2
 
-# School cap that blends into the hair at the back, gold badge at the front.
+# Tall school cap that blends into the hair at the back: gold band and two badges.
 [[parts]]
 type = "cap"
 material = "uniform"
+height = 1.5
 ragged_back = true
+ragged_color = "hair"
+band = "gold"
 badge = "gold"
+badges = 2
 
-# Long open school coat (gakuran) with a high collar.
+# Long open school coat (gakuran): high collar with pins, gold buttons, light lining.
 [[parts]]
 type = "coat"
 material = "uniform"
-length = 0.85
+length = 0.92
 open = true
+opening = 5
+flare = 4.5
+trail = 4
 collar = true
+pins = "gold"
+buttons = "gold"
+lining = "lining"
+cuffs = "gold"
 
-# Two belts, one of them slanted.
+# Two studded belts, one of them slanted.
 [[parts]]
 type = "belt"
 material = "belt"
 count = 2
+studs = "gold"
 buckle = "gold"
 
-# Gold chain on the collar.
+# The gold chain hanging from the collar.
 [[parts]]
 type = "chain"
 material = "gold"
+length = 9

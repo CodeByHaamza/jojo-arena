@@ -363,7 +363,8 @@ Un perso est « fini » quand il a : son kit codé et testé contre 3 autres per
 - Persos bonus gardés : Speedwagon, Prosciutto & Pesci, Mikitaka.
 - Éveils : une fois par match maximum, acquis jusqu'à la fin du match.
 - Jotaro P3 : Power Up court qui allonge son time stop de 1 s.
-- Sprites : 48 px, style A (contour noir, ombrage 2-3 tons, highlight). Résolution interne 480 × 270.
+- Sprites : persos d'environ 44 à 48 px de haut selon leur morphologie, dans des cases de 64 × 64, style A (contour noir, ombrage 2-3 tons, highlight). Résolution interne 480 × 270.
+- Apparence des persos : générée à partir d'une fiche de données (morphologie, palette, pièces de costume) par `tools/make_sprites.py`, pour que toutes les animations restent cohérentes. Une planche dessinée à la main peut toujours la remplacer.
 - Orientations des sprites : déplacement en 8 directions, mais 3 orientations dessinées par animation (bas, haut, droite) ; la gauche est le miroir de la droite. Le perso regarde où il marche ; attaques, garde et projectiles s'orientent vers l'adversaire.
 - Égalité (double KO, ou timer à zéro avec le même % de vie) : les deux marquent le round. Si ça fait gagner les deux, **mort subite** façon Smash Bros : les deux à 1 PV, sans timer, le premier coup qui passe gagne.
 - Vague 0 : inclut aussi le Flash Cancel, la Pose et la Résolution.
