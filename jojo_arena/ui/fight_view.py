@@ -18,11 +18,11 @@ from jojo_arena.engine.sprites import (
     PlaceholderSprites,
     SheetSprites,
     frame_index,
-    shade,
     sprite_direction,
 )
 from jojo_arena.paths import SPRITES_DIR
 from jojo_arena.stages.base import StageDef
+from jojo_arena.ui import vfx
 
 OUTLINE = (23, 18, 31)
 STAND_ALPHA = 215  # Stands look a little spectral
@@ -324,6 +324,8 @@ class FightView:
                 self.fighter_views[item.index].draw(surface, item, self.tick)
             else:
                 self.fighter_views[item.index].draw_stand(surface, item, self.tick)
+        for fighter in match.fighters:
+            self._draw_reach(surface, fighter)
         for projectile in match.projectiles:
             self._draw_projectile(surface, projectile)
         self.renderer.draw_lights(surface, self.tick)
@@ -430,14 +432,28 @@ class FightView:
         surface.fill((255, 255, 255), (bar.x, bar.bottom + 3, left, 1))
 
     def _draw_projectile(self, surface: pygame.Surface, projectile) -> None:
-        color = self.fighter_defs[projectile.owner].aura
+        aura = self.fighter_defs[projectile.owner].aura
         pos = projectile.pos + self.chest(projectile.owner) * 0.8
-        r = round(projectile.radius)
-        blit_glow(surface, radial_glow(r * 3, tuple(c // 2 for c in color)), (pos.x, pos.y))
-        center = pos.as_ints()
-        pygame.draw.circle(surface, OUTLINE, center, r + 1)
-        pygame.draw.circle(surface, shade(color, 40), center, r)
-        pygame.draw.circle(surface, (255, 255, 255), center, max(1, r - 2))
+        look = projectile.defn.look
+        vfx.draw_projectile(surface, look, pos, projectile.velocity, projectile.radius, aura)
+
+    def _draw_reach(self, surface: pygame.Surface, fighter: Fighter) -> None:
+        """A finger, tentacle or blade stretching out while the move is active."""
+        attack = fighter.attack
+        if fighter.state != State.ATTACK or attack is None or not attack.move.fx:
+            return
+        if not attack.active:
+            return
+        move = attack.move
+        view = self.fighter_views[fighter.index]
+        if view.stand_presence(fighter) > 0 and view.stand is not None:
+            start = fighter.stand_spot() + Vec2(0, -view.stand.chest - 6)
+        else:
+            start = fighter.pos + view.chest
+        grow = min(1.0, (attack.active_offset + 1) / 3)
+        tip = fighter.pos + attack.aim * (move.reach * grow) + view.chest
+        width = 3 if move.reach > 40 else 2
+        vfx.draw_reach(surface, start, tip, self.fighter_defs[fighter.index].aura, move.fx, width)
 
     def _draw_spark(self, surface: pygame.Surface, spark: Spark) -> None:
         k = spark.life / spark.max_life

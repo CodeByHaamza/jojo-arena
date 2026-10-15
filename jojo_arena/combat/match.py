@@ -231,8 +231,12 @@ class Match:
     def _update_projectiles(self) -> list[Event]:
         events: list[Event] = []
         for projectile in self.projectiles:
-            if not self.fighters[projectile.owner].frozen:
-                events += projectile.update(self.arena)
+            if self.fighters[projectile.owner].frozen:
+                continue
+            if projectile.defn.homing and self._projectile_moves(projectile):
+                target = self.fighters[1 - projectile.owner]
+                projectile.steer(target.pos, projectile.defn.homing)
+            events += projectile.update(self.arena)
         live = [p for p in self.projectiles if p.alive and self._projectile_moves(p)]
         for i, a in enumerate(live):
             for b in live[i + 1 :]:
@@ -286,20 +290,21 @@ class Match:
         events: list[Event] = []
         hits = []
         for attacker in self.fighters:
-            hitbox = attacker.hitbox()
-            if hitbox is None:
-                continue
-            center, radius = hitbox
-            for i, obstacle in enumerate(self.arena.obstacles):
-                if i in attacker.attack.props_hit or not obstacle.solid:
-                    continue
-                if obstacle.rect.inflate(radius).contains(center):
-                    attacker.attack.props_hit.add(i)
-                    broke = obstacle.damage(attacker.attack.move.damage)
-                    events.append(Event("prop_break" if broke else "prop_hit", center))
+            boxes = attacker.hitboxes()
+            for center, radius in boxes:
+                for i, obstacle in enumerate(self.arena.obstacles):
+                    if i in attacker.attack.props_hit or not obstacle.solid:
+                        continue
+                    if obstacle.rect.inflate(radius).contains(center):
+                        attacker.attack.props_hit.add(i)
+                        broke = obstacle.damage(attacker.attack.move.damage)
+                        events.append(Event("prop_break" if broke else "prop_hit", center))
             defender = self.opponent(attacker)
-            if defender.alive and self._touches(center, radius, defender):
-                hits.append((attacker, attacker.attack, defender, center))
+            if not defender.alive:
+                continue
+            touching = next((c for c, r in boxes if self._touches(c, r, defender)), None)
+            if touching is not None:
+                hits.append((attacker, attacker.attack, defender, touching))
         # Collect first, apply after: two hits on the same frame both land (a trade),
         # even though the first one interrupts the second attacker's move.
         for attacker, attack, defender, center in hits:
@@ -339,8 +344,8 @@ class Match:
         """Where two attacks meet "at the same instant", or None."""
         window = self.rules.clash_window_f
         for attacker in self.fighters:
-            hitbox = attacker.hitbox()
-            if hitbox is None or not attacker.attack.move.clashable:
+            boxes = attacker.hitboxes()
+            if not boxes or not attacker.attack.move.clashable:
                 continue
             defender = self.opponent(attacker)
             other = defender.attack
@@ -350,13 +355,13 @@ class Match:
                 continue
             if abs(attacker.attack.active_offset - other.active_offset) > window:
                 continue
-            center, radius = hitbox
-            touches = self._touches(center, radius, defender)
-            other_box = defender.hitbox()
-            if other_box is not None:
-                touches = touches or circles_overlap(center, radius, *other_box)
-            if touches:
-                return center
+            other_boxes = defender.hitboxes()
+            for center, radius in boxes:
+                touches = self._touches(center, radius, defender) or any(
+                    circles_overlap(center, radius, c, r) for c, r in other_boxes
+                )
+                if touches:
+                    return center
         return None
 
     def _start_clash(self, pos: Vec2) -> list[Event]:

@@ -113,13 +113,15 @@ anim = "pose"
 # Star Finger: the finger stretches to mid range.
 [stances.stand.moves.special_alt]
 label = "STAR FINGER"
-info = "Le doigt s'allonge à mi-distance"
+info = "Le doigt s'allonge et transperce jusqu'à mi-distance"
+shape = "line"
+fx = "limb"
 startup_f = 12
-active_f = 4
+active_f = 6
 recovery_f = 20
 damage = 70
-reach = 38
-radius = 6
+reach = 72
+radius = 5
 hitstun_f = 24
 knockback = 220
 hitstop_f = 6

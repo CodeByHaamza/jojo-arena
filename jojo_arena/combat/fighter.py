@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 from enum import StrEnum
 
@@ -222,18 +223,27 @@ class Fighter:
         direction = (target - self.pos).normalized()
         return direction if direction.length_sq() else self.facing
 
-    def hitbox(self) -> tuple[Vec2, float] | None:
-        """Ground-plane circle of the current attack, while it can hit."""
+    def hitboxes(self) -> list[tuple[Vec2, float]]:
+        """Ground-plane circles of the current attack, while it can hit.
+
+        One circle at `reach`; for "line" moves (a finger, a tentacle, a blade), a row of
+        circles from the body out to `reach`, so there is no blind spot up close.
+        """
         if self.frozen or self.attack is None or not self.attack.active:
-            return None
+            return []
         if self.attack.connected:
-            return None
+            return []
         move = self.attack.move
         if move.radius <= 0:
-            return None
+            return []
         if move.at_target:
-            return self.attack.target, move.radius
-        return self.pos + self.attack.aim * move.reach, move.radius
+            return [(self.attack.target, move.radius)]
+        aim = self.attack.aim
+        if move.shape == "line":
+            count = max(1, math.ceil(move.reach / move.radius))
+            step = move.reach / count
+            return [(self.pos + aim * (step * (i + 1)), move.radius) for i in range(count)]
+        return [(self.pos + aim * move.reach, move.radius)]
 
     def move_for(self, slot: str, frame: InputFrame | None = None) -> MoveDef | None:
         """The move an input starts now: depends on stance, disarm, held direction and

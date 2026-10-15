@@ -52,6 +52,7 @@ active_f = 1
 recovery_f = 16
 
 [stances.base.moves.special.projectile]
+look = "knife"
 speed = 330
 radius = 3
 damage = 20
@@ -122,6 +123,7 @@ active_f = 1
 recovery_f = 18
 
 [stances.stand.moves.special_alt.projectile]
+look = "knife"
 speed = 360
 radius = 3
 damage = 20

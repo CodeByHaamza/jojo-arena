@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 
 from jojo_arena.combat.arena import Arena
@@ -29,6 +30,17 @@ class Projectile:
     @property
     def hanging(self) -> bool:
         return self.stop_after == 0
+
+    def steer(self, target: Vec2, max_turn: float) -> None:
+        """Turn toward `target` by at most `max_turn` radians (homing)."""
+        speed = self.velocity.length()
+        if speed == 0:
+            return
+        current = self.velocity.angle()
+        wanted = (target - self.pos).angle()
+        delta = (wanted - current + math.pi) % (2 * math.pi) - math.pi
+        turn = max(-max_turn, min(max_turn, delta))
+        self.velocity = Vec2.from_angle(current + turn, speed)
 
     def update(self, arena: Arena) -> list[Event]:
         if self.stop_after is not None:

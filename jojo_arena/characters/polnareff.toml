@@ -72,6 +72,8 @@ walk_speed_mult = 1.0
 
 # Rapier thrust: very fast, chains into itself.
 [stances.stand.moves.light]
+shape = "line"
+fx = "blade"
 label = "ESTOC"
 info = "Très rapide, s'enchaîne"
 startup_f = 3
@@ -87,6 +89,8 @@ cancel_on_hit = ["light", "heavy"]
 
 # Hora Hora Hora: a flurry of thrusts.
 [stances.stand.moves.heavy]
+shape = "line"
+fx = "blade"
 label = "HORA HORA HORA"
 info = "Rafale de 7 estocs, le dernier projette"
 startup_f = 8
@@ -114,6 +118,7 @@ recovery_f = 14
 disarm_s = 2.0
 
 [stances.stand.moves.special.projectile]
+look = "blade"
 speed = 480
 radius = 3
 damage = 80

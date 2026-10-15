@@ -49,6 +49,7 @@ active_f = 1
 recovery_f = 18
 
 [stances.base.moves.special.projectile]
+look = "gem"
 speed = 280
 radius = 3
 damage = 14
@@ -67,6 +68,8 @@ walk_speed_mult = 0.95
 
 # Tentacle lash, reaching far.
 [stances.stand.moves.light]
+shape = "line"
+fx = "tentacle"
 label = "FOUET"
 info = "Tentacule à longue portée"
 startup_f = 7
@@ -81,6 +84,8 @@ hitstop_f = 4
 cancel_on_hit = ["heavy"]
 
 [stances.stand.moves.heavy]
+shape = "line"
+fx = "tentacle"
 label = "GRAND FOUET"
 info = "Très longue portée, rebond"
 startup_f = 14
@@ -103,6 +108,7 @@ active_f = 1
 recovery_f = 20
 
 [stances.stand.moves.special.projectile]
+look = "gem"
 speed = 300
 radius = 3
 damage = 14
@@ -129,6 +135,7 @@ lifetime_s = 15
 max_count = 3
 
 [stances.stand.moves.special_alt.trap.projectile]
+look = "gem"
 speed = 340
 radius = 3
 damage = 14
@@ -172,6 +179,7 @@ clashable = false
 anim = "special"
 
 [moves.gha.projectile]
+look = "gem"
 speed = 260
 radius = 3
 damage = 16

@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from jojo_arena.combat.rules import per_frame
+from jojo_arena.combat.rules import HZ, per_frame
 from jojo_arena.engine.data import load_toml, seconds_to_frames
 
 # Input slots that start a move; the stance decides which move each slot maps to.
@@ -27,6 +28,8 @@ class ProjectileDef:
     spread_deg: float = 0.0  # ...fanned out over this angle
     origin: str = "self"  # "self", or "ring": around the target, flying inward
     ring_radius: float = 0.0
+    homing: float = 0.0  # radians per frame it turns toward the target (0 = straight)
+    look: str = "orb"  # how the view draws it: "orb", "knife", "gem", "blade"
 
     @classmethod
     def from_data(cls, data: dict) -> ProjectileDef:
@@ -43,6 +46,8 @@ class ProjectileDef:
             spread_deg=data.get("spread_deg", 0.0),
             origin=data.get("origin", "self"),
             ring_radius=data.get("ring_radius", 0.0),
+            homing=math.radians(data.get("homing_deg_s", 0.0)) / HZ,
+            look=data.get("look", "orb"),
         )
 
 
@@ -97,6 +102,7 @@ class MoveDef:
     damage: int = 0
     reach: float = 0.0  # hitbox center, in front of the body
     radius: float = 0.0  # hitbox radius (0 = no melee hitbox)
+    shape: str = "circle"  # "circle" at `reach`, or "line": from the body out to `reach`
     hitstun_f: int = 0
     blockstun_f: int = 0  # 0 = derived from hitstun (rules)
     knockback: float = 0.0  # px/frame
@@ -121,6 +127,7 @@ class MoveDef:
     trap: TrapDef | None = None
     disarm_f: int = 0  # the Stand's own moves are unavailable this long afterwards
     buff: str = ""  # name of a buff (kit [buffs]) started by this move
+    fx: str = ""  # drawn while active: "limb", "tentacle" or "blade" out to `reach`
     label: str = ""  # display name in the move list
     info: str = ""  # one-line description in the move list
 
@@ -141,6 +148,7 @@ class MoveDef:
             damage=data.get("damage", 0),
             reach=data.get("reach", 0.0),
             radius=data.get("radius", 0.0),
+            shape=data.get("shape", "circle"),
             hitstun_f=data.get("hitstun_f", 0),
             blockstun_f=data.get("blockstun_f", 0),
             knockback=per_frame(data.get("knockback", 0)),
@@ -165,6 +173,7 @@ class MoveDef:
             trap=TrapDef.from_data(trap) if trap else None,
             disarm_f=seconds_to_frames(data.get("disarm_s", 0)),
             buff=data.get("buff", ""),
+            fx=data.get("fx", ""),
             label=data.get("label", ""),
             info=data.get("info", ""),
         )
