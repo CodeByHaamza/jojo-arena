@@ -4,6 +4,9 @@
 name = "Noriaki Kakyoin"
 
 # Body shape, in pixels: tall and slender.
+# Signature pose (Pose key): see tools/spritegen/skeleton.py.
+pose = "frame_face"
+
 [build]
 head_r = 5.4
 neck = 1.6

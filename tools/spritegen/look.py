@@ -8,7 +8,7 @@ from dataclasses import dataclass, field, fields
 from pathlib import Path
 
 from .raster import Color
-from .skeleton import Build
+from .skeleton import POSE_NAMES, Build
 
 BODY_SLOTS = ("head", "torso", "arms", "hands", "legs", "feet")
 DEFAULT_CELL = 64
@@ -50,6 +50,7 @@ class Look:
     face: dict = field(default_factory=dict)
     parts: list[dict] = field(default_factory=list)
     recolor: list[str] = field(default_factory=list)  # palette entries the game may swap
+    pose: str = "raise"  # signature pose (see skeleton.POSE_NAMES)
 
 
 def load_look(path: Path) -> Look:
@@ -74,6 +75,9 @@ def load_look(path: Path) -> Look:
     unknown = set(build_data) - known
     if unknown:
         raise ValueError(f"{path.name}: unknown [build] settings {', '.join(sorted(unknown))}")
+    pose = data.get("pose", "raise")
+    if pose not in POSE_NAMES:
+        raise ValueError(f"{path.name}: unknown pose '{pose}' (one of {', '.join(POSE_NAMES)})")
     return Look(
         id=path.stem,
         name=data.get("name", path.stem),
@@ -84,4 +88,5 @@ def load_look(path: Path) -> Look:
         face=data.get("face", {}),
         parts=list(data.get("parts", [])),
         recolor=list(data.get("recolor", [])),
+        pose=pose,
     )

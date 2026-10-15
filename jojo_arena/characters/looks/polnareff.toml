@@ -6,6 +6,9 @@
 name = "Jean Pierre Polnareff"
 
 # Tall, broad and strong.
+# Signature pose (Pose key): see tools/spritegen/skeleton.py.
+pose = "point_up"
+
 [build]
 head_r = 5.6
 neck = 1.2

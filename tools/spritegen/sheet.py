@@ -55,7 +55,7 @@ def body_heights(look: Look) -> tuple[int, int]:
 def build_sheet(look: Look) -> tuple[pygame.Surface, str]:
     """The sheet image and its TOML description, in the format the game loads."""
     cell = look.cell
-    tables = {view: animations(view) for view in DIRECTIONS}
+    tables = {view: animations(view, look.pose) for view in DIRECTIONS}
     names = list(tables["down"])
     max_frames = max(len(entry[3]) for entry in tables["down"].values())
     sheet = pygame.Surface(

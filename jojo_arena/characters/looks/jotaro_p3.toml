@@ -7,6 +7,9 @@
 name = "Jotaro Kujo (P3)"
 
 # Body shape, in pixels: tall and broad-shouldered.
+# Signature pose (Pose key): see tools/spritegen/skeleton.py.
+pose = "point"
+
 [build]
 head_r = 6.2
 neck = 1.0

@@ -101,7 +101,9 @@ def make_skeleton(view: str, pose: Pose, build: Build, cell: int) -> Skeleton:
     head_y = shoulder_y - build.neck - build.head_r + pose.head[1]
 
     def hand(x: float, y: float, off: Point) -> Point:
-        return x + off[0] * arm_k, y + off[1] * arm_k
+        # Hands raised high (poses) stay inside the cell, outline included.
+        margin = build.hand_r + 4  # gloves and cuffs stick out a little
+        return x + off[0] * arm_k, max(margin, y + off[1] * arm_k)
 
     def foot(x: float, off: Point) -> Point:
         return x + off[0] * leg_k, feet_y + off[1] * leg_k
@@ -155,7 +157,7 @@ def make_skeleton(view: str, pose: Pose, build: Build, cell: int) -> Skeleton:
 AnimTable = dict[str, tuple[int, bool, list[int] | None, list]]
 
 
-def animations(view: str) -> AnimTable:
+def animations(view: str, pose_name: str = "raise") -> AnimTable:
     side = view == "right"
     up = view == "up"
     fwd = -1 if up else 1  # "toward the target" on the screen's y axis, front/back views
@@ -211,25 +213,6 @@ def animations(view: str) -> AnimTable:
             Pose(lean=-3, head=(-2, 0), hand_r=(-4, -8), hand_l=(-6, -6), foot_r=(2, 0)),
             Pose(lean=-2, head=(-1, 1), bob=1, hand_r=(-3, -5), hand_l=(-5, -4)),
         ]
-        pose = [
-            Pose(
-                lean=-1.5,
-                head=(-1, -1),
-                hand_r=(4, -19),
-                hand_l=(-4, -4),
-                foot_r=(4, 0),
-                foot_l=(-3, 0),
-            ),
-            Pose(
-                lean=-1.5,
-                head=(-1, -1),
-                bob=1,
-                hand_r=(4, -18),
-                hand_l=(-4, -3),
-                foot_r=(4, 0),
-                foot_l=(-3, 0),
-            ),
-        ]
     else:
         heavy = [
             Pose(bob=1, lean=-1, hand_r=(2, -6 * fwd), hand_l=(0, -4 * fwd)),
@@ -265,25 +248,6 @@ def animations(view: str) -> AnimTable:
             Pose(lean=2, head=(1, -1), hand_r=(4, -10), hand_l=(-4, -10), foot_l=(-1, 0)),
             Pose(lean=1, head=(1, 0), bob=1, hand_r=(3, -6), hand_l=(-3, -6)),
         ]
-        pose = [
-            Pose(
-                lean=1,
-                head=(1, -1),
-                hand_r=(-11, -19),
-                hand_l=(3, -2),
-                foot_l=(-2, 0),
-                foot_r=(2, 0),
-            ),
-            Pose(
-                lean=1,
-                head=(1, -1),
-                bob=1,
-                hand_r=(-11, -18),
-                hand_l=(3, -1),
-                foot_l=(-2, 0),
-                foot_r=(2, 0),
-            ),
-        ]
     ko = [hurt[0], Pose(bob=5, lean=-2, head=(-1, 2), hand_l=(-3, 2), hand_r=(3, 2)), *LYING]
     return {
         "idle": (6, True, None, idle),
@@ -295,5 +259,105 @@ def animations(view: str) -> AnimTable:
         "guard": (1, True, None, guard),
         "hurt": (10, False, None, hurt),
         "ko": (8, False, None, ko),
-        "pose": (3, True, None, pose),
+        "pose": (3, True, None, pose_frames(pose_name, view)),
     }
+
+
+# Signature poses: the JoJo pose of each character, picked by name in its look file
+# (`pose = "point"`). Each gives two frames per view; the second breathes a little.
+
+
+def _breathe(pose: Pose) -> list[Pose]:
+    return [pose, Pose(**{**pose.__dict__, "bob": pose.bob + 1})]
+
+
+def pose_frames(name: str, view: str) -> list[Pose]:
+    side, up = view == "right", view == "up"
+    if name == "point":
+        # Points straight at the opponent, the other hand at the cap's brim.
+        if side:
+            frame = Pose(lean=-1, hand_r=(12, -10), hand_l=(1, -20), foot_r=(3, 0), foot_l=(-3, 0))
+        elif up:
+            frame = Pose(hand_r=(-3, -16), hand_l=(3, -20))
+        else:
+            frame = Pose(hand_r=(-6, -9), hand_l=(2, -20), big_hand_r=True, foot_l=(-1, 0))
+    elif name == "arch":
+        # Arched far back, one arm raised high, the other hand at the face.
+        if side:
+            frame = Pose(
+                lean=-3.5,
+                head=(-2, -1),
+                hand_r=(2, -25),
+                hand_l=(4, -15),
+                foot_r=(5, 0),
+                foot_l=(-4, 0),
+            )
+        elif up:
+            frame = Pose(lean=-2.5, hand_l=(3, -26), hand_r=(-3, -16), foot_l=(-2, 0))
+        else:
+            frame = Pose(
+                lean=2.5,
+                head=(2, -1),
+                hand_r=(-3, -27),
+                hand_l=(3, -17),
+                foot_l=(-3, 0),
+                foot_r=(3, 0),
+            )
+    elif name == "frame_face":
+        # Both hands raised before the face, fingers spread, the body twisted.
+        if side:
+            frame = Pose(
+                lean=-1,
+                head=(-1, 0),
+                hand_r=(6, -17),
+                hand_l=(8, -14),
+                foot_l=(3, 0),
+                foot_r=(-2, 0),
+            )
+        elif up:
+            frame = Pose(hand_r=(-5, -16), hand_l=(5, -16))
+        else:
+            frame = Pose(
+                lean=1.5,
+                head=(1, 0),
+                hand_r=(-6, -15),
+                hand_l=(8, -17),
+                foot_l=(2, 0),
+                foot_r=(1, 0),
+            )
+    elif name == "point_up":
+        # The index finger pointing to the sky, the other fist on the hip.
+        if side:
+            frame = Pose(lean=-0.5, hand_r=(3, -29), hand_l=(-3, -6), foot_r=(3, 0), foot_l=(-2, 0))
+        elif up:
+            frame = Pose(hand_l=(1, -29), hand_r=(-3, -6))
+        else:
+            frame = Pose(lean=1, hand_r=(-1, -29), hand_l=(4, -6), foot_l=(-2, 0))
+    elif name == "spread":
+        # Arms thrown wide and high: a Stand showing itself off.
+        if side:
+            frame = Pose(lean=-1.5, head=(-1, -1), hand_r=(7, -17), hand_l=(-7, -15))
+        else:
+            frame = Pose(hand_r=(9, -17), hand_l=(-9, -17), head=(0, -1))
+    elif name == "flex":
+        # Fists up, ready: a guard that dares the opponent.
+        if side:
+            frame = Pose(lean=1, hand_r=(9, -16), hand_l=(6, -13), foot_r=(4, 0), foot_l=(-3, 0))
+        else:
+            frame = Pose(hand_r=(-7, -15), hand_l=(7, -15), bob=1)
+    else:  # "raise": the default, one arm up
+        if side:
+            frame = Pose(
+                lean=-1.5,
+                head=(-1, -1),
+                hand_r=(4, -19),
+                hand_l=(-4, -4),
+                foot_r=(4, 0),
+                foot_l=(-3, 0),
+            )
+        else:
+            frame = Pose(lean=1, head=(1, -1), hand_r=(-11, -19), hand_l=(3, -2), foot_l=(-2, 0))
+    return _breathe(frame)
+
+
+POSE_NAMES = ("raise", "point", "arch", "frame_face", "point_up", "spread", "flex")

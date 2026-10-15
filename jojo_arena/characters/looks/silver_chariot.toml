@@ -6,6 +6,9 @@
 name = "Silver Chariot"
 
 # Slim and quick.
+# Signature pose (Pose key): see tools/spritegen/skeleton.py.
+pose = "flex"
+
 [build]
 head_r = 5.3
 neck = 1.2

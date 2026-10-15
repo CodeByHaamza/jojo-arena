@@ -6,6 +6,9 @@
 name = "The World"
 
 # Muscular, built like Star Platinum.
+# Signature pose (Pose key): see tools/spritegen/skeleton.py.
+pose = "spread"
+
 [build]
 head_r = 5.8
 neck = 0.8

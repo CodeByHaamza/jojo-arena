@@ -6,6 +6,9 @@
 name = "DIO (P3)"
 
 # Tall and heavily muscled.
+# Signature pose (Pose key): see tools/spritegen/skeleton.py.
+pose = "arch"
+
 [build]
 head_r = 5.8
 neck = 1.0

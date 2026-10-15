@@ -5,6 +5,9 @@
 name = "Hierophant Green"
 
 # Tall, thin and lanky.
+# Signature pose (Pose key): see tools/spritegen/skeleton.py.
+pose = "spread"
+
 [build]
 head_r = 5.2
 neck = 1.4
