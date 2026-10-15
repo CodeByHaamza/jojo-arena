@@ -364,6 +364,11 @@ Un perso est « fini » quand il a : son kit codé et testé contre 3 autres per
 - Éveils : une fois par match maximum, acquis jusqu'à la fin du match.
 - Jotaro P3 : Power Up court qui allonge son time stop de 1 s.
 - Sprites : 48 px, style A (contour noir, ombrage 2-3 tons, highlight). Résolution interne 480 × 270.
+- Orientations des sprites : déplacement en 8 directions, mais 3 orientations dessinées par animation (bas, haut, droite) ; la gauche est le miroir de la droite. Le perso regarde où il marche ; attaques, garde et projectiles s'orientent vers l'adversaire.
+- Égalité (double KO, ou timer à zéro avec le même % de vie) : les deux marquent le round. Si ça fait gagner les deux, **mort subite** façon Smash Bros : les deux à 1 PV, sans timer, le premier coup qui passe gagne.
+- Vague 0 : inclut aussi le Flash Cancel, la Pose et la Résolution.
+- Touches liées par position physique (ZQSD en AZERTY = WASD en QWERTY). Preset « deux joueurs sur un clavier » : J1 sur ZQSD + F G H R T Y C V B, J2 sur les flèches + pavé numérique. Tout reste rebindable.
+- Prototype : l'arène tient entière dans l'écran, pas de caméra qui défile.
 
 ## Sources
 
