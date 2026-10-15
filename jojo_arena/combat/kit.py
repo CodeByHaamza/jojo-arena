@@ -121,6 +121,8 @@ class MoveDef:
     trap: TrapDef | None = None
     disarm_f: int = 0  # the Stand's own moves are unavailable this long afterwards
     buff: str = ""  # name of a buff (kit [buffs]) started by this move
+    label: str = ""  # display name in the move list
+    info: str = ""  # one-line description in the move list
 
     @property
     def total_f(self) -> int:
@@ -163,6 +165,8 @@ class MoveDef:
             trap=TrapDef.from_data(trap) if trap else None,
             disarm_f=seconds_to_frames(data.get("disarm_s", 0)),
             buff=data.get("buff", ""),
+            label=data.get("label", ""),
+            info=data.get("info", ""),
         )
 
 
@@ -183,6 +187,7 @@ class Kit:
     stances: dict[str, Stance] = field(default_factory=dict)
     shared_moves: dict[str, MoveDef] = field(default_factory=dict)  # same in every stance
     buffs: dict[str, BuffDef] = field(default_factory=dict)
+    stance_labels: dict[str, str] = field(default_factory=dict)  # move list headings
 
     def move(self, stance: str, slot: str) -> MoveDef | None:
         return self.stances[stance].moves.get(slot) or self.shared_moves.get(slot)
@@ -226,4 +231,7 @@ def load_kit(path: Path) -> Kit:
         stances=stances,
         shared_moves=shared,
         buffs=buffs,
+        stance_labels={
+            name: stance.get("label", name.upper()) for name, stance in data["stances"].items()
+        },
     )

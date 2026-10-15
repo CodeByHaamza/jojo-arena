@@ -24,6 +24,10 @@ class FighterDef:
     aura: Color
     palette: dict[str, list[Color]]
     stand_sprite: str = ""  # sheet of the Stand shown while it is out (if any)
+    stand_name: str = ""
+    role: str = ""  # one line, for the character select screen
+    blurb: str = ""  # a short presentation
+    selectable: bool = True  # placeholders stay out of the character select screen
 
 
 def load_roster() -> list[FighterDef]:
@@ -48,6 +52,10 @@ def load_roster() -> list[FighterDef]:
                 aura=parse_color(entry.get("aura", entry["color"])),
                 palette=palette,
                 stand_sprite=entry.get("stand_sprite", ""),
+                stand_name=entry.get("stand_name", ""),
+                role=entry.get("role", ""),
+                blurb=entry.get("blurb", ""),
+                selectable=entry.get("selectable", True),
             )
         )
     return roster

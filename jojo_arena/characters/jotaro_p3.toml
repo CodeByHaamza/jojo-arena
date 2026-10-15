@@ -12,7 +12,12 @@ style = { type = "stance_toggle", off = "base", on = "stand", stand_body = true 
 
 # Jotaro alone ---------------------------------------------------------------------------
 
+[stances.base]
+label = "SANS STAND"
+
 [stances.base.moves.light]
+label = "DIRECT"
+info = "Coup de poing rapide, s'enchaîne"
 startup_f = 5
 active_f = 3
 recovery_f = 10
@@ -25,6 +30,8 @@ hitstop_f = 4
 cancel_on_hit = ["light", "heavy"]
 
 [stances.base.moves.heavy]
+label = "COUP DE PIED"
+info = "Coup lourd, rebond contre les murs"
 startup_f = 14
 active_f = 4
 recovery_f = 20
@@ -38,6 +45,8 @@ wall_bounce = true
 
 # Shoulder charge.
 [stances.base.moves.special]
+label = "CHARGE D'ÉPAULE"
+info = "Fonce sur l'adversaire"
 startup_f = 10
 active_f = 8
 recovery_f = 18
@@ -53,10 +62,13 @@ anim = "heavy"
 # Star Platinum out --------------------------------------------------------------------
 
 [stances.stand]
+label = "AVEC STAR PLATINUM"
 walk_speed_mult = 0.9
 
 # Ora!
 [stances.stand.moves.light]
+label = "ORA !"
+info = "Poing de Star Platinum, s'enchaîne"
 startup_f = 5
 active_f = 3
 recovery_f = 9
@@ -70,6 +82,8 @@ cancel_on_hit = ["light", "heavy"]
 
 # Ora Ora Ora rush: 6 hits, the last one sends flying.
 [stances.stand.moves.heavy]
+label = "ORA ORA ORA"
+info = "Rafale de 6 coups, le dernier projette"
 startup_f = 10
 active_f = 30
 recovery_f = 18
@@ -87,6 +101,8 @@ anim = "light"
 
 # Star Platinum: The World - stops time for 3 seconds.
 [stances.stand.moves.special]
+label = "STAR PLATINUM : THE WORLD"
+info = "Arrête le temps 3 s (recharge 20 s)"
 startup_f = 18
 active_f = 1
 recovery_f = 10
@@ -96,6 +112,8 @@ anim = "pose"
 
 # Star Finger: the finger stretches to mid range.
 [stances.stand.moves.special_alt]
+label = "STAR FINGER"
+info = "Le doigt s'allonge à mi-distance"
 startup_f = 12
 active_f = 4
 recovery_f = 20
@@ -111,6 +129,8 @@ anim = "light"
 
 # Heart Heat Attack (1 bar): a full-power Star Platinum punch.
 [moves.hha]
+label = "POING ÉCRASANT"
+info = "Invincible au démarrage, projette"
 startup_f = 18
 active_f = 5
 recovery_f = 26
@@ -127,6 +147,8 @@ anim = "heavy"
 
 # Great Heat Attack (2 bars): time stops, then a final Ora Ora rush.
 [moves.gha]
+label = "ORA ORA FINAL"
+info = "Arrête le temps puis rafale de 8 coups"
 time_stop_s = 2.0
 time_stop_at = "start"
 startup_f = 20

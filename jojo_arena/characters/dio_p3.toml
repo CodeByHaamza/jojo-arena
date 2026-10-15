@@ -9,7 +9,12 @@ style = { type = "stance_toggle", off = "base", on = "stand", stand_body = true 
 
 # DIO alone ------------------------------------------------------------------------------
 
+[stances.base]
+label = "SANS STAND"
+
 [stances.base.moves.light]
+label = "GRIFFE"
+info = "Rapide, s'enchaîne"
 startup_f = 4
 active_f = 3
 recovery_f = 10
@@ -23,6 +28,8 @@ cancel_on_hit = ["light", "heavy"]
 
 # Vampire grab: cannot be blocked, drains blood (heals half the damage).
 [stances.base.moves.heavy]
+label = "SUCCION DE SANG"
+info = "Saisie imparable, rend la moitié en vie"
 startup_f = 9
 active_f = 3
 recovery_f = 24
@@ -38,6 +45,8 @@ clashable = false
 
 # Three knives in a fan.
 [stances.base.moves.special]
+label = "COUTEAUX"
+info = "3 couteaux en éventail"
 startup_f = 10
 active_f = 1
 recovery_f = 16
@@ -56,10 +65,13 @@ spread_deg = 24
 # The World out ------------------------------------------------------------------------
 
 [stances.stand]
+label = "AVEC THE WORLD"
 walk_speed_mult = 0.92
 
 # Muda!
 [stances.stand.moves.light]
+label = "MUDA !"
+info = "Poing de The World, s'enchaîne"
 startup_f = 5
 active_f = 3
 recovery_f = 9
@@ -73,6 +85,8 @@ cancel_on_hit = ["light", "heavy"]
 
 # Muda Muda Muda rush.
 [stances.stand.moves.heavy]
+label = "MUDA MUDA MUDA"
+info = "Rafale de 6 coups, le dernier projette"
 startup_f = 10
 active_f = 30
 recovery_f = 18
@@ -90,6 +104,8 @@ anim = "light"
 
 # The World: time stops for 5 seconds.
 [stances.stand.moves.special]
+label = "THE WORLD"
+info = "Arrête le temps 5 s (recharge 25 s)"
 startup_f = 20
 active_f = 1
 recovery_f = 10
@@ -99,6 +115,8 @@ anim = "pose"
 
 # A wide fan of five knives.
 [stances.stand.moves.special_alt]
+label = "PLUIE DE COUTEAUX"
+info = "5 couteaux ; en temps arrêté, ils restent en l'air"
 startup_f = 12
 active_f = 1
 recovery_f = 18
@@ -118,6 +136,8 @@ spread_deg = 40
 
 # Heart Heat Attack (1 bar): a crushing kick from The World.
 [moves.hha]
+label = "COUP DE PIED DU MONDE"
+info = "Invincible au démarrage, projette"
 startup_f = 18
 active_f = 5
 recovery_f = 26
@@ -135,6 +155,8 @@ anim = "heavy"
 # Great Heat Attack (2 bars): Road Roller! Time stops, then a road roller drops on the
 # spot where the opponent stood.
 [moves.gha]
+label = "ROAD ROLLER"
+info = "Arrête le temps et écrase la cible"
 time_stop_s = 2.5
 time_stop_at = "start"
 startup_f = 50

@@ -9,7 +9,12 @@ style = { type = "stance_toggle", off = "base", on = "stand", stand_body = true 
 
 # Kakyoin alone --------------------------------------------------------------------------
 
+[stances.base]
+label = "SANS STAND"
+
 [stances.base.moves.light]
+label = "COUP DE PIED"
+info = "Rapide, s'enchaîne"
 startup_f = 5
 active_f = 3
 recovery_f = 10
@@ -22,6 +27,8 @@ hitstop_f = 4
 cancel_on_hit = ["light", "heavy"]
 
 [stances.base.moves.heavy]
+label = "COUP DE PIED LOURD"
+info = "Rebond contre les murs"
 startup_f = 14
 active_f = 4
 recovery_f = 20
@@ -35,6 +42,8 @@ wall_bounce = true
 
 # A small Emerald Splash.
 [stances.base.moves.special]
+label = "PETIT EMERALD SPLASH"
+info = "3 émeraudes"
 startup_f = 12
 active_f = 1
 recovery_f = 18
@@ -53,10 +62,13 @@ spread_deg = 20
 # Hierophant Green out ---------------------------------------------------------------------
 
 [stances.stand]
+label = "AVEC HIEROPHANT GREEN"
 walk_speed_mult = 0.95
 
 # Tentacle lash, reaching far.
 [stances.stand.moves.light]
+label = "FOUET"
+info = "Tentacule à longue portée"
 startup_f = 7
 active_f = 4
 recovery_f = 12
@@ -69,6 +81,8 @@ hitstop_f = 4
 cancel_on_hit = ["heavy"]
 
 [stances.stand.moves.heavy]
+label = "GRAND FOUET"
+info = "Très longue portée, rebond"
 startup_f = 14
 active_f = 5
 recovery_f = 20
@@ -82,6 +96,8 @@ wall_bounce = true
 
 # Emerald Splash!
 [stances.stand.moves.special]
+label = "EMERALD SPLASH"
+info = "Salve de 6 émeraudes"
 startup_f = 14
 active_f = 1
 recovery_f = 20
@@ -99,6 +115,8 @@ spread_deg = 36
 
 # Lay a web of threads: when the opponent touches it, it fires emeralds on its own.
 [stances.stand.moves.special_alt]
+label = "FILS"
+info = "Pose un piège (3 max) qui tire tout seul"
 startup_f = 10
 active_f = 1
 recovery_f = 14
@@ -125,6 +143,8 @@ spread_deg = 30
 
 # Heart Heat Attack (1 bar): Hierophant Green bursts out around Kakyoin.
 [moves.hha]
+label = "HIEROPHANT DÉCHAÎNÉ"
+info = "Explosion tout autour"
 startup_f = 20
 active_f = 6
 recovery_f = 26
@@ -142,6 +162,8 @@ anim = "special"
 # Great Heat Attack (2 bars): 20 Metre Radius Emerald Splash - emeralds close in from
 # every side.
 [moves.gha]
+label = "EMERALD SPLASH 20 MÈTRES"
+info = "Les émeraudes arrivent de partout"
 startup_f = 30
 active_f = 1
 recovery_f = 30

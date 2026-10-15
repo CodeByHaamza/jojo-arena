@@ -265,3 +265,45 @@ class GamepadSource:
 
 def pad_connected(inputs: InputManager, slot: int | None) -> bool:
     return bool(inputs.pads) if slot is None else slot < len(inputs.pads)
+
+
+_sdl_key_from_scancode = None
+
+
+def _keycode_for(scancode: int) -> int | None:
+    """The key this physical position types on the current layout (via SDL), or None."""
+    global _sdl_key_from_scancode
+    if _sdl_key_from_scancode is None:
+        try:
+            import ctypes
+            import os
+
+            names = ("SDL2.dll", "libSDL2-2.0.so.0", "libSDL2-2.0.0.dylib", "libSDL2.dylib")
+            folder = os.path.dirname(pygame.__file__)
+            library = next(
+                ctypes.CDLL(os.path.join(folder, n))
+                for n in names
+                if os.path.exists(os.path.join(folder, n))
+            )
+            function = library.SDL_GetKeyFromScancode
+            function.restype = ctypes.c_int32
+            function.argtypes = [ctypes.c_int]
+            _sdl_key_from_scancode = function
+        except (OSError, StopIteration, AttributeError):
+            _sdl_key_from_scancode = False
+    if not _sdl_key_from_scancode or not pygame.display.get_init():
+        return None
+    keycode = _sdl_key_from_scancode(scancode)
+    return keycode or None
+
+
+def key_label(name: str) -> str:
+    """How a physical key is labelled on this computer's keyboard: "W" reads "Z" on an
+    AZERTY keyboard. Falls back to the US name when the layout cannot be asked."""
+    scancode = KEY_SCANCODES.get(name)
+    keycode = _keycode_for(scancode) if scancode is not None else None
+    if keycode:
+        label = pygame.key.name(keycode)
+        if label:
+            return label.upper()
+    return name.upper()
