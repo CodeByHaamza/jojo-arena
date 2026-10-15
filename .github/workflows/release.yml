@@ -1,0 +1,50 @@
+name: Release
+
+# Pushing a tag such as v0.1.0 builds the Windows .exe and publishes it in a Release.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  windows-exe:
+    runs-on: windows-latest
+    env:
+      SDL_VIDEODRIVER: dummy
+      SDL_AUDIODRIVER: dummy
+      PYGAME_HIDE_SUPPORT_PROMPT: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Lint and test
+        run: |
+          ruff check .
+          pytest -q
+
+      - name: Build the .exe
+        run: python tools/build_exe.py
+
+      - name: Smoke test the .exe
+        run: |
+          $run = Start-Process -FilePath dist\JoJoArena.exe -ArgumentList '--demo', '--frames', '600' -Wait -PassThru
+          if ($run.ExitCode -ne 0) { throw "JoJoArena.exe exited with code $($run.ExitCode)" }
+
+      - name: Publish the Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ github.ref_name }}" dist/JoJoArena.exe `
+            --title "JoJo Arena ${{ github.ref_name }}" `
+            --notes "Fan game non officiel, gratuit et sans but lucratif. Télécharge JoJoArena.exe et lance-le (Windows)." `
+            --verify-tag
