@@ -55,6 +55,14 @@ ko_slowmo_s = 1.0             # the knockout plays in slow motion
 sudden_death_hp = 1           # tie for the win: both start with this much life, no timer
 carry_heart_heat = true       # the Heart Heat gauge is kept from one round to the next
 
+[combo]
+full_moves = 2               # the first moves of a combo deal full damage...
+step = 0.12                  # ...then each further move deals this share less...
+min_scale = 0.45             # ...down to this share (a rush counts as one move)
+
+[counter]
+freeze_f = 10                # both freeze when a counter catches a blow
+
 [training]
 refill_after_s = 1.0          # infinite life: it refills once the fighter has recovered this long
 
@@ -83,6 +91,7 @@ side = 6                      # ...and slightly to the side
 flash_s = 0.35                # everything holds while the time stop is announced
 resist_first_s = 1.0          # a time stopper caught in the other's time stop can move this long...
 resist_growth_s = 0.5         # ...plus this much more each time it happens again in the match
+damage_mult = 0.8            # blows landed in stopped time hit a little softer
 projectile_flight_f = 8       # projectiles thrown in stopped time fly this long, then hang in the air
 
 [wall_bounce]

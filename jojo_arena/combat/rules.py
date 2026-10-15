@@ -75,6 +75,11 @@ class Rules:
     sudden_death_hp: int
     carry_heart_heat: bool
     training_refill_f: int
+    combo_full_moves: int
+    combo_step: float
+    combo_min_scale: float
+    counter_freeze_f: int
+    time_stop_damage_mult: float
     stand_hurt_radius: float
     stand_front: float
     stand_back: float
@@ -106,6 +111,11 @@ class Rules:
             sudden_death_hp=rnd["sudden_death_hp"],
             carry_heart_heat=rnd["carry_heart_heat"],
             training_refill_f=seconds_to_frames(data["training"]["refill_after_s"]),
+            combo_full_moves=data["combo"]["full_moves"],
+            combo_step=data["combo"]["step"],
+            combo_min_scale=data["combo"]["min_scale"],
+            counter_freeze_f=data["counter"]["freeze_f"],
+            time_stop_damage_mult=stop["damage_mult"],
             clash_window_f=clash["window_f"],
             clash_duration_f=seconds_to_frames(clash["duration_s"]),
             clash_loser_damage=clash["loser_damage"],

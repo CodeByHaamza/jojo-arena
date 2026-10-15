@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
+
 import pygame
 
 from jojo_arena.characters import get_fighter
@@ -22,6 +24,7 @@ from jojo_arena.ui.movelist import MoveListPanel
 from jojo_arena.ui.widgets import GOLD, draw_box, veil
 
 RESULT_MENU_AFTER_F = 120  # let the victory sink in before offering a rematch
+MOUSE_AIM_F = 180  # the mouse aims for a keyboard player while it moved in the last 3 s
 
 
 class FightScene(Scene):
@@ -100,14 +103,27 @@ class FightScene(Scene):
     def _read_frames(self) -> list[InputFrame]:
         match = self.rounds.match
         frames = []
+        mouse = self._mouse_cursor()
+        players = self.ctx.controls.active_preset.players
+        mouse_player = next((i for i, p in enumerate(players) if p.device == "keyboard"), 0)
         for i, source in enumerate(self.sources):
             frame = source.read(self.ctx.inputs)
+            if i == mouse_player and mouse is not None:
+                frame = replace(frame, cursor=mouse)
             bot = self.bots[i]
             if bot is not None:
                 me = match.fighters[i]
                 frame = bot.think(me, match.opponent(me))
             frames.append(frame)
         return frames
+
+    def _mouse_cursor(self) -> tuple[float, float] | None:
+        """Where the mouse points on the arena, if it is being used."""
+        inputs = self.ctx.inputs
+        if inputs.mouse_idle_f > MOUSE_AIM_F or pygame.display.get_surface() is None:
+            return None
+        x, y = self.ctx.display.window_to_internal(inputs.mouse_pos)
+        return float(x), float(y)
 
     def _pause_items(self) -> list[MenuItem]:
         return [

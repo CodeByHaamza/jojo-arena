@@ -34,6 +34,9 @@ class InputFrame:
     held: frozenset[str] = frozenset()
     # How many times each action was pressed since the previous step (for mashing).
     press_counts: Mapping[str, int] = field(default_factory=dict)
+    # Free aim: a point on the ground (mouse) or a direction (right stick), if any.
+    cursor: tuple[float, float] | None = None
+    stick: tuple[float, float] | None = None
 
     def is_held(self, action: str) -> bool:
         return action in self.held
@@ -70,10 +73,13 @@ def merge_frames(*frames: InputFrame) -> InputFrame:
     held: set[str] = set()
     counts: dict[str, int] = {}
     move = (0.0, 0.0)
+    cursor = stick = None
     for frame in frames:
         held |= frame.held
         for action, count in frame.press_counts.items():
             counts[action] = counts.get(action, 0) + count
         if move == (0.0, 0.0):
             move = frame.move
-    return InputFrame(move, frozenset(held), counts)
+        cursor = cursor or frame.cursor
+        stick = stick or frame.stick
+    return InputFrame(move, frozenset(held), counts, cursor, stick)

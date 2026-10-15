@@ -54,6 +54,11 @@ class Attack:
     fired: bool = False  # projectile or trap already released
     stopped_time: bool = False  # time stop already triggered
     props_hit: set[int] = field(default_factory=set)
+    slot: str = ""  # the button that started it (chains continue on the same button)
+    start: Vec2 = field(default_factory=Vec2)  # where the user stood at the start
+    dest: Vec2 | None = None  # where a leap lands
+    armor_used: int = 0
+    countered: bool = False  # caught by a counter: this blow is spent
 
     @property
     def phase(self) -> int:
@@ -136,6 +141,10 @@ class Fighter:
         self.buff_f = 0
         self.frozen = False  # caught in someone else's stopped time
         self.pending_hits: list[PendingHit] = []
+        self.cursor: Vec2 | None = None  # where the player aims (mouse), if anywhere
+        # Combo scaling: moves landed in a row on this fighter, and the last one's id.
+        self.combo_moves = 0
+        self.combo_key: tuple | None = None
 
     # Queries ----------------------------------------------------------------------------
 
@@ -231,7 +240,7 @@ class Fighter:
         """
         if self.frozen or self.attack is None or not self.attack.active:
             return []
-        if self.attack.connected:
+        if self.attack.connected or self.attack.countered:
             return []
         move = self.attack.move
         if move.radius <= 0:
@@ -295,13 +304,20 @@ class Fighter:
         """Turn this step's input into actions. Only called while the fight is running."""
         self.walk_dir = Vec2()
         self.guard_held = frame.is_held("guard")
+        self.cursor = Vec2(*frame.cursor) if frame.cursor is not None else None
         if self.state == State.ATTACK and self.attack is not None:
             if self._try_flash_cancel():
                 return [Event("flash_cancel", self.pos, self.index)]
             if self.attack.connected:
-                slot = self._take_buffered(self.attack.move.cancel_on_hit)
-                if slot and (move := self.move_for(slot, frame)):
-                    self.start_attack(move, target)
+                attack = self.attack
+                slot = self._take_buffered(attack.move.cancel_on_hit)
+                move = None
+                if slot and slot == attack.slot and attack.move.chain:
+                    move = self.kit.move(self.stance, attack.move.chain)
+                elif slot:
+                    move = self.move_for(slot, frame)
+                if move is not None:
+                    self.start_attack(move, target, slot, frame)
             return []
         if self.state == State.POSE:
             if frame.is_held("pose"):
@@ -382,7 +398,7 @@ class Fighter:
         for slot in ATTACK_SLOTS:
             if slot in self.buffer and (move := self.move_for(slot, frame)):
                 del self.buffer[slot]
-                self.start_attack(move, target)
+                self.start_attack(move, target, slot, frame)
                 return True
         return False
 
@@ -401,19 +417,80 @@ class Fighter:
         self.set_state(State.DASH)
         return True
 
-    def start_attack(self, move: MoveDef, target: Vec2) -> None:
+    def start_attack(
+        self, move: MoveDef, target: Vec2, slot: str = "", frame: InputFrame | None = None
+    ) -> None:
         # A guard press made before the attack must not Flash Cancel it right away.
         self.buffer.pop("guard", None)
         aim = self.aim_at(target)
+        dest = None
+        if move.leap > 0:
+            dest = self._leap_destination(move, target, frame)
+            if (dest - self.pos).length_sq() > 1:
+                aim = (dest - self.pos).normalized()
         self.facing = aim
         self._serial += 1
         self.set_state(State.ATTACK)
-        self.attack = Attack(move, aim, self._serial, target=target.copy())
+        self.attack = Attack(
+            move, aim, self._serial, target=target.copy(), slot=slot, start=self.pos.copy()
+        )
+        self.attack.dest = dest
         if move.cooldown_f:
             self.cooldowns[move] = move.cooldown_f
         if move.buff:
             self.buff = self.kit.buffs[move.buff]
             self.buff_f = self.buff.duration_f
+
+    def _leap_destination(self, move: MoveDef, target: Vec2, frame: InputFrame | None) -> Vec2:
+        """Where a leap lands: next to the opponent, or on the aimed point (mouse, right
+        stick, else the held direction, else straight ahead), at most `leap` away."""
+        if move.leap_to == "cursor":
+            if frame is not None and frame.cursor is not None:
+                point = Vec2(*frame.cursor)
+            elif frame is not None and frame.stick is not None:
+                point = self.pos + Vec2(*frame.stick).normalized() * move.leap
+            elif frame is not None and frame.move != (0.0, 0.0):
+                point = self.pos + Vec2(*frame.move).normalized() * move.leap
+            else:
+                point = self.pos + self.facing * move.leap
+        else:
+            offset = target - self.pos
+            gap = self.rules.body_radius * 2
+            point = target - offset.normalized() * gap if offset.length() > gap else self.pos
+        delta = point - self.pos
+        if delta.length() > move.leap:
+            delta = delta.normalized() * move.leap
+        return self.pos + delta
+
+    def _leaping(self) -> bool:
+        attack = self.attack
+        return (
+            self.state == State.ATTACK
+            and attack is not None
+            and attack.dest is not None
+            and attack.phase == 0
+        )
+
+    @property
+    def countering(self) -> bool:
+        """In the window of a counter move: the next blow is caught and answered."""
+        attack = self.attack
+        return (
+            self.state == State.ATTACK
+            and attack is not None
+            and bool(attack.move.counter)
+            and attack.active
+            and not self.frozen
+        )
+
+    def armored(self) -> bool:
+        attack = self.attack
+        return (
+            self.state == State.ATTACK
+            and attack is not None
+            and attack.phase < 2
+            and attack.armor_used < attack.move.armor
+        )
 
     def integrate(self, arena: Arena) -> list[Event]:
         """Move the body for this step and resolve walls, props and wall bounces."""
@@ -449,6 +526,12 @@ class Fighter:
         elif self.state == State.DASH and self.state_f < self.rules.dash_duration_f:
             step = self.dash_dir * self.rules.dash_speed
             self.pos, _, _ = arena.constrain(self.pos + step, radius)
+        elif self._leaping():
+            attack = self.attack
+            t = min(1.0, (attack.frame + 1) / max(1, attack.move.startup_f))
+            self.pos, _, _ = arena.constrain(
+                attack.start + (attack.dest - attack.start) * t, radius
+            )
         elif self._lunging():
             step = self.attack.aim * self.attack.move.lunge
             self.pos, _, _ = arena.constrain(self.pos + step, radius)
@@ -484,6 +567,8 @@ class Fighter:
         """End-of-step timers."""
         self.state_f += 1
         rules = self.rules
+        if self.state not in (State.HITSTUN, State.GUARD_BROKEN) and not self.pending_hits:
+            self.combo_moves, self.combo_key = 0, None  # out of the combo: it starts over
         if self.state == State.ATTACK and self.attack is not None:
             self.attack.frame += 1
             attack, move = self.attack, self.attack.move
@@ -538,12 +623,17 @@ class Fighter:
         if self.hp == 0 and self.state != State.KO:
             self.set_state(State.KO)
 
-    def take_hit(self, damage: int, hitstun_f: int, knockback: Vec2, wall_bounce: bool) -> None:
+    def take_hit(self, damage: int, hitstun_f: int, knockback: Vec2, wall_bounce: bool) -> bool:
+        """Take a blow. Returns True when armor absorbed the impact (damage only)."""
         if self.frozen:
             # Stopped time: the damage is dealt now, the impact lands when time moves again.
             self.hurt(damage)
             self.pending_hits.append(PendingHit(hitstun_f, knockback, wall_bounce))
-            return
+            return False
+        if self.armored():
+            self.attack.armor_used += 1
+            self.hurt(damage)
+            return True
         self.velocity = knockback
         self.wall_bounce_armed = wall_bounce
         self.buffer.clear()
@@ -551,6 +641,7 @@ class Fighter:
         if self.state != State.KO:
             self.stun_f = hitstun_f
             self.set_state(State.HITSTUN)
+        return False
 
     def release_pending_hits(self) -> bool:
         """Time moves again: all the hits taken in stopped time land at once."""

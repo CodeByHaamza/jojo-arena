@@ -34,6 +34,7 @@ Les coups d'une posture : `[stances.<nom>.moves.<touche>]`, où la touche est `l
 | `info` | Explication d'une ligne dans la liste des coups |
 | `anim` | Animation à jouer (par défaut, le nom de la touche) |
 | `shout` | Cri écrit à l'écran quand le coup sort ; pour une rafale, à chaque coup (`ORA`, `MUDA`) |
+| `stand_flash` | Le Stand apparaît le temps de ce coup, même rangé |
 | `fx` | Dessin pendant la phase active : `limb` (doigt, bras), `tentacle` ou `blade`, jusqu'à `reach` |
 
 ### Timing
@@ -46,6 +47,7 @@ Les coups d'une posture : `[stances.<nom>.moves.<touche>]`, où la touche est `l
 | `invincible_f` | Premières images où l'on ne peut pas être touché |
 | `cooldown_s` | Délai avant de pouvoir réutiliser le coup |
 | `cancel_on_hit` | Touches qui annulent ce coup quand il a touché (enchaînements) |
+| `chain` | Nom du coup suivant quand on réappuie sur la même touche après avoir touché (ex. `light` → `light2` → `light3` : trois coups différents). La touche doit être dans `cancel_on_hit` |
 
 ### Zone de frappe
 
@@ -55,6 +57,9 @@ Les coups d'une posture : `[stances.<nom>.moves.<touche>]`, où la touche est `l
 | `radius` | Rayon de la zone (0 = pas de coup au corps à corps) |
 | `shape` | `circle` (un cercle à `reach`) ou `line` (une ligne du corps jusqu'à `reach`, sans angle mort de près) |
 | `at_target` | La zone tombe là où se trouvait l'adversaire au début du coup |
+| `leap` | Bond pendant le démarrage, jusqu'à cette distance |
+| `leap_to` | Vers l'adversaire (`target`, s'arrête à côté de lui) ou vers le point visé (`cursor` : souris, sinon stick droit, sinon direction tenue) |
+| `leap_height` | Hauteur du saut à l'écran (0 = glisse au sol, comme un grappin) |
 | `lunge` | Avance pendant le démarrage et la phase active (vitesse) ; une rafale continue d'avancer à chaque coup |
 
 ### Effet sur l'adversaire
@@ -69,7 +74,15 @@ Les coups d'une posture : `[stances.<nom>.moves.<touche>]`, où la touche est `l
 | `wall_bounce` | L'adversaire rebondit sur les murs |
 | `unblockable` | Imparable (saisies) |
 | `drain` | Part des dégâts rendue en vie à l'attaquant |
+| `guard_damage` | Multiplie l'usure de la jauge de garde quand le coup est bloqué (casse-garde) |
 | `clashable` | Peut déclencher un clash contre un autre coup (vrai par défaut pour les coups au corps à corps) |
+
+### Défense
+
+| Champ | Effet |
+| --- | --- |
+| `counter` | Coup de contre : un coup au corps à corps reçu pendant la phase active est annulé, et ce coup-ci (le nom d'un autre coup) part aussitôt |
+| `armor` | Nombre de coups encaissés sans broncher pendant le démarrage et la phase active (on prend les dégâts) |
 
 ### Rafales
 

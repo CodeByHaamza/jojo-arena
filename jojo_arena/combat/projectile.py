@@ -22,6 +22,7 @@ class Projectile:
     # Thrown in stopped time: flies this many more steps, then hangs in the air until
     # time moves again (None = normal flight).
     stop_after: int | None = None
+    key: tuple | None = None  # the move that fired it, for combo scaling
 
     @property
     def radius(self) -> float:

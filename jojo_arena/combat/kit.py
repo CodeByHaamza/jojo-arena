@@ -128,6 +128,14 @@ class MoveDef:
     trap: TrapDef | None = None
     disarm_f: int = 0  # the Stand's own moves are unavailable this long afterwards
     buff: str = ""  # name of a buff (kit [buffs]) started by this move
+    chain: str = ""  # the same button, once this connects, continues into this move
+    counter: str = ""  # struck in melee while active: answer at once with this move
+    leap: float = 0.0  # px: during startup, travel up to this far...
+    leap_to: str = "target"  # ...toward the opponent ("target") or the aimed point ("cursor")
+    leap_height: float = 0.0  # px: height of the jump arc, for the view (0 = slide)
+    armor: int = 0  # hits taken without flinching during startup and active frames
+    guard_damage: float = 1.0  # multiplies the guard gauge damage when blocked
+    stand_flash: bool = False  # the Stand appears for this move even when called back
     fx: str = ""  # drawn while active: "limb", "tentacle" or "blade" out to `reach`
     shout: str = ""  # written on screen when used (each hit of a rush: "ORA", "MUDA")
     label: str = ""  # display name in the move list
@@ -176,6 +184,14 @@ class MoveDef:
             trap=TrapDef.from_data(trap) if trap else None,
             disarm_f=seconds_to_frames(data.get("disarm_s", 0)),
             buff=data.get("buff", ""),
+            chain=data.get("chain", ""),
+            counter=data.get("counter", ""),
+            leap=data.get("leap", 0.0),
+            leap_to=data.get("leap_to", "target"),
+            leap_height=data.get("leap_height", 0.0),
+            armor=data.get("armor", 0),
+            guard_damage=data.get("guard_damage", 1.0),
+            stand_flash=data.get("stand_flash", False),
             fx=data.get("fx", ""),
             shout=data.get("shout", ""),
             label=data.get("label", ""),
@@ -218,7 +234,11 @@ class Kit:
 
 
 def load_kit(path: Path) -> Kit:
-    data = load_toml(path)
+    return parse_kit(load_toml(path), path.stem, path.name)
+
+
+def parse_kit(data: dict, kit_id: str, source: str = "kit") -> Kit:
+    """Build a kit from its data (the content of a kit file); `source` names it in errors."""
     stances = {
         name: Stance(
             moves={slot: MoveDef.from_data(slot, m) for slot, m in stance["moves"].items()},
@@ -228,14 +248,24 @@ def load_kit(path: Path) -> Kit:
     }
     shared = {slot: MoveDef.from_data(slot, m) for slot, m in data.get("moves", {}).items()}
     buffs = {name: BuffDef.from_data(b) for name, b in data.get("buffs", {}).items()}
+    for stance_name, stance in stances.items():
+        for move in [*stance.moves.values(), *shared.values()]:
+            for link in (move.chain, move.counter):
+                if link and link not in stance.moves and link not in shared:
+                    raise ValueError(
+                        f"{source}: move '{move.name}' leads to unknown move '{link}' "
+                        f"in stance '{stance_name}'"
+                    )
     for move in [*shared.values(), *(m for s in stances.values() for m in s.moves.values())]:
         if move.buff and move.buff not in buffs:
-            raise ValueError(f"{path.name}: move '{move.name}' uses unknown buff '{move.buff}'")
+            raise ValueError(f"{source}: move '{move.name}' uses unknown buff '{move.buff}'")
+        if move.leap_to not in ("target", "cursor"):
+            raise ValueError(f"{source}: move '{move.name}' has unknown leap_to")
     walk = data.get("walk_speed")
     style = data.get("style", "none")
     style_name, style_params = (style, {}) if isinstance(style, str) else (style["type"], style)
     return Kit(
-        id=path.stem,
+        id=kit_id,
         name=data["name"],
         max_hp=data.get("max_hp", 1000),
         walk_speed=per_frame(walk) if walk else None,

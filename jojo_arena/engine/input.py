@@ -11,6 +11,7 @@ button, "b" the right one, "x" the left one, "y" the top one.
 
 from __future__ import annotations
 
+import math
 from collections import Counter
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
@@ -138,6 +139,8 @@ class InputManager:
         self.key_presses: Counter[int] = Counter()
         self._key_pending: Counter[int] = Counter()
         self.pads: list[PadState] = []
+        self.mouse_pos: tuple[int, int] = (0, 0)  # window pixels
+        self.mouse_idle_f = 10**6  # steps since the mouse last moved or clicked
 
     def start(self) -> None:
         """Enable gamepads. Pads already plugged in are opened right away."""
@@ -169,6 +172,9 @@ class InputManager:
             self.keys_held.discard(event.scancode)
         elif event.type == pygame.WINDOWFOCUSLOST:
             self.keys_held.clear()
+        elif event.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONDOWN):
+            self.mouse_pos = event.pos
+            self.mouse_idle_f = 0
         elif event.type == pygame.CONTROLLERDEVICEADDED:
             self._open_pad(event.device_index)
         elif event.type == pygame.CONTROLLERDEVICEREMOVED:
@@ -196,6 +202,7 @@ class InputManager:
                     pad.held.discard(trigger)
 
     def begin_step(self) -> None:
+        self.mouse_idle_f += 1
         self.key_presses, self._key_pending = self._key_pending, Counter()
         for pad in self.pads:
             pad.presses, pad.pending = pad.pending, Counter()
@@ -254,13 +261,21 @@ class GamepadSource:
             stick = quantize_8(*pad.stick(), STICK_DEADZONE)
             if stick != (0.0, 0.0):
                 break
+        aim = None
+        for pad in pads:
+            x = pad.axes.get(pygame.CONTROLLER_AXIS_RIGHTX, 0.0)
+            y = pad.axes.get(pygame.CONTROLLER_AXIS_RIGHTY, 0.0)
+            if math.hypot(x, y) >= STICK_DEADZONE:
+                aim = (x, y)
+                break
         for action, axis, sign in self.STICK_ACTIONS:
             if stick[axis] * sign > 0:
                 held.add(action)
                 if self._last_stick[axis] * sign <= 0:
                     counts[action] = counts.get(action, 0) + 1
         self._last_stick = stick
-        return _frame(held, counts)
+        frame = _frame(held, counts)
+        return InputFrame(frame.move, frame.held, frame.press_counts, stick=aim) if aim else frame
 
 
 class MergedSource:

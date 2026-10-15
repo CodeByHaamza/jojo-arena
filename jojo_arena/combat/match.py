@@ -37,6 +37,10 @@ class Strike:
     where: Vec2  # contact point, for effects
     unblockable: bool = False
     drain: float = 0.0
+    melee: bool = False  # a blow (counters catch blows, not projectiles)
+    guard_mult: float = 1.0  # multiplies the guard gauge damage
+    key: tuple | None = None  # which move it belongs to, for combo scaling
+    super_move: bool = False  # supers are built around stopped time: not softened in it
 
 
 class Match:
@@ -165,9 +169,12 @@ class Match:
             elif move.projectile is not None:
                 attack.fired = True
                 target = self.opponent(fighter).pos
-                self.projectiles += self._spawn(
+                volley = self._spawn(
                     fighter.index, fighter.pos, attack.aim, move.projectile, target
                 )
+                for projectile in volley:
+                    projectile.key = (fighter.index, attack.serial)
+                self.projectiles += volley
                 if move.disarm_f:
                     fighter.disarmed_f = move.disarm_f
 
@@ -273,6 +280,7 @@ class Match:
                 hitstop_f=defn.hitstop_f,
                 source=projectile.pos - projectile.velocity * 4,
                 where=projectile.pos,
+                key=projectile.key,
             )
             landed, strike_events = self._strike(self.fighters[projectile.owner], target, strike)
             events += strike_events
@@ -333,6 +341,10 @@ class Match:
                 where=center,
                 unblockable=move.unblockable,
                 drain=move.drain,
+                melee=True,
+                guard_mult=move.guard_damage,
+                key=(attacker.index, attack.serial),
+                super_move=move.name in ("hha", "gha"),
             )
             landed, strike_events = self._strike(attacker, defender, strike)
             events += strike_events
@@ -372,7 +384,7 @@ class Match:
             other = defender.attack
             if defender.frozen or defender.state != State.ATTACK or other is None:
                 continue
-            if not other.move.clashable or other.connected:
+            if not other.move.clashable or other.connected or other.countered:
                 continue
             if abs(attacker.attack.active_offset - other.active_offset) > window:
                 continue
@@ -435,9 +447,34 @@ class Match:
 
     # Resolving one strike -----------------------------------------------------------------
 
+    def _combo_scale(self, defender: Fighter, strike: Strike) -> float:
+        """Long combos hit softer: each move after the first few deals a bit less (a rush
+        counts as one move). Blows in stopped time are softened too."""
+        rules = self.rules
+        key = strike.key
+        if key is None or key != defender.combo_key:
+            defender.combo_moves += 1
+            defender.combo_key = key
+        extra = max(0, defender.combo_moves - rules.combo_full_moves)
+        scale = max(rules.combo_min_scale, 1 - rules.combo_step * extra)
+        if defender.frozen and not strike.super_move:
+            scale *= rules.time_stop_damage_mult
+        return scale
+
+    def _counter(self, defender: Fighter, attacker: Fighter) -> list[Event]:
+        """A counter catches the blow: the answer comes out at once, both freeze."""
+        answer = defender.kit.move(defender.stance, defender.attack.move.counter)
+        defender.start_attack(answer, attacker.pos, defender.attack.slot)
+        if attacker.attack is not None:
+            attacker.attack.countered = True
+        self.hitstop = max(self.hitstop, self.rules.counter_freeze_f)
+        return [Event("counter", defender.pos, defender.index)]
+
     def _strike(self, attacker: Fighter, defender: Fighter, strike: Strike) -> tuple[bool, list]:
         """Dodge, block or hit. Returns (did it touch the defender, events)."""
         rules = self.rules
+        if strike.melee and defender.countering:
+            return False, self._counter(defender, attacker)
         if defender.invincible:
             if defender.in_stylish_window():
                 defender.evaded = True
@@ -453,7 +490,7 @@ class Match:
             chip = 0 if defender.in_resolve else round(damage * (1 - rules.guard_damage_reduction))
             broke = defender.take_block(
                 chip,
-                damage * rules.guard_gauge_per_damage,
+                damage * rules.guard_gauge_per_damage * strike.guard_mult,
                 strike.blockstun_f,
                 strike.knockback * rules.block_pushback_ratio,
             )
@@ -464,7 +501,8 @@ class Match:
             if defender.state == State.KO:
                 events.append(Event("ko", defender.pos, defender.index))
             return True, events
-        defender.take_hit(damage, strike.hitstun_f, strike.knockback, strike.wall_bounce)
+        damage = round(damage * self._combo_scale(defender, strike))
+        armored = defender.take_hit(damage, strike.hitstun_f, strike.knockback, strike.wall_bounce)
         if strike.drain:
             attacker.hp = min(attacker.max_hp, attacker.hp + round(damage * strike.drain))
         attacker.gain_hh(damage * rules.hh_per_damage_dealt)
@@ -472,6 +510,8 @@ class Match:
         if not defender.frozen:
             self.hitstop = max(self.hitstop, strike.hitstop_f)
         events = [Event("hit", strike.where, defender.index, damage)]
+        if armored:
+            events.append(Event("armor", defender.pos, defender.index))
         if strike.drain:
             events.append(
                 Event("drain", attacker.pos, attacker.index, round(damage * strike.drain))
