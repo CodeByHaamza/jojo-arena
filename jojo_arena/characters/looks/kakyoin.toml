@@ -52,8 +52,9 @@ volume = 7.9
 back_length = 7
 bangs = "curl"
 bangs_side = "left"
-bangs_length = 10
-bangs_width = 1.5
+bangs_length = 11
+bangs_width = 1.6
+bangs_spread = 3.5
 
 # Long closed gakuran: high collar with gold pins, gold buttons and cuff buttons.
 [[parts]]

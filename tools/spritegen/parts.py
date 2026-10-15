@@ -47,7 +47,7 @@ def hair(sk: Skeleton, p: dict, look: Look) -> list[Part]:
 
     Options (head units): volume, length (long), height (tower), back_length (locks over
     the nape); bangs = curl | fringe, bangs_side = left | right (seen from the front),
-    bangs_length and bangs_width (curl).
+    bangs_length, bangs_width and bangs_spread (curl: distance from the face).
     """
     mat = p["material"]
     style = p.get("style", "short")
@@ -125,24 +125,7 @@ def hair(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     bangs = p.get("bangs")
     side = 1 if p.get("bangs_side", "right") == "right" else -1
     if bangs == "curl":
-        length = p.get("bangs_length", 8)
-        width = p.get("bangs_width", 1.1) * k
-        if sk.view == "up":
-            # Seen from behind, the lock only peeks out beside the head (on the other side).
-            strand = capsule(*at(-side * 6.8, 0), *at(-side * 7.2, length - 2), width)
-            parts.append(Part(mat, strand, z=49))
-        else:
-            if sk.view == "down":
-                wave = [at(side * dx, dy) for dx, dy in [(2.5, -6), (4.6, -1), (3.4, 3)]]
-                wave.append(at(side * 4.8, length - 1))
-                end = at(side * 3.8, length + 0.5)
-            else:
-                wave = [at(3.5, -6), at(6.6, -1), at(5.6, 3), at(6.8, length - 1)]
-                end = at(6.0, length + 0.5)
-            strand = disc(*end, width + 0.6 * k)
-            for a, b in zip(wave, wave[1:], strict=False):
-                strand |= capsule(*a, *b, width)
-            parts.append(Part(mat, strand, z=57))
+        parts.append(_curl(sk, p, mat, side))
     elif bangs == "fringe" and sk.view != "up":
         if sk.view == "down":
             band = polygon([at(-5, -5), at(5, -5), at(5, -2), at(-5, -2)])
@@ -152,6 +135,46 @@ def hair(sk: Skeleton, p: dict, look: Look) -> list[Part]:
             fringe = polygon([at(2, -5), at(5.5, -5), at(5.5, -2.5), at(2, -2.5)])
         parts.append(Part(mat, fringe, z=55))
     return parts
+
+
+def _curl(sk: Skeleton, p: dict, mat: str, side: int) -> Part:
+    """A long lock leaving the forehead, hanging in an S away from the face, ending in a
+    ringlet. bangs_spread pushes it further from the cheek (head units)."""
+    at = sk.at
+    k = sk.k
+    length = p.get("bangs_length", 8)
+    width = p.get("bangs_width", 1.1)
+    spread = p.get("bangs_spread", 0.0)
+    if sk.view == "down":
+        path = [
+            (2.5, -6),
+            (4 + 0.6 * spread, -3.5),
+            (5 + spread, 0),
+            (3 + spread, 3.5),
+            (5.6 + spread, length - 3.5),
+        ]
+        ring = (4.4 + spread, length - 1)
+        path = [(side * x, y) for x, y in path]
+        ring = (side * ring[0], ring[1])
+        z = 57
+    elif sk.view == "right":
+        s = 0.6 * spread
+        path = [(3.5, -6), (6 + 0.7 * s, -3), (7 + s, 1), (6.2 + s, 4), (7.2 + s, length - 3)]
+        ring = (6.4 + s, length - 0.8)
+        z = 57
+    else:
+        # From behind, the lock only shows beside the head, on the other side.
+        s = 0.6 * spread
+        path = [(-side * (6.8 + s), 0), (-side * (7.6 + s), length - 3)]
+        ring = (-side * (7 + s), length - 0.8)
+        z = 49
+    strand: set[Pixel] = set()
+    for i, (a, b) in enumerate(zip(path, path[1:], strict=False)):
+        taper = 1 - 0.3 * i / max(1, len(path) - 2)  # thinner toward the tip
+        strand |= capsule(*at(*a), *at(*b), width * taper * k)
+    # The ringlet: a small loop of hair with a hole in the middle.
+    strand |= disc(*at(*ring), 2.4 * k) - disc(*at(*ring), 1.0 * k)
+    return Part(mat, strand, z=z)
 
 
 # Headwear ----------------------------------------------------------------------------
