@@ -7,6 +7,8 @@ the same fight (tests, replays, and later online play rely on it).
 
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 from jojo_arena.combat.arena import Arena
 from jojo_arena.combat.events import Event
 from jojo_arena.combat.fighter import Fighter, State
@@ -15,6 +17,20 @@ from jojo_arena.combat.projectile import Projectile
 from jojo_arena.combat.rules import Rules
 from jojo_arena.engine.actions import InputFrame
 from jojo_arena.engine.geometry import Vec2, circles_overlap
+
+
+@dataclass(frozen=True)
+class Strike:
+    """One hit about to land, whatever delivered it (fist, projectile...)."""
+
+    damage: int
+    hitstun_f: int
+    blockstun_f: int
+    knockback: Vec2
+    wall_bounce: bool
+    hitstop_f: int
+    source: Vec2  # where it comes from, to know if the guard faces it
+    where: Vec2  # contact point, for effects
 
 
 class Match:
@@ -27,6 +43,7 @@ class Match:
         ]
         self.projectiles: list[Projectile] = []
         self.hitstop = 0
+        self.slowmo = 0  # steps left at half speed (Stylish Evade)
         self.tick = 0
 
     def opponent(self, fighter: Fighter) -> Fighter:
@@ -38,6 +55,10 @@ class Match:
         self.tick += 1
         for fighter, frame in zip(self.fighters, inputs, strict=True):
             fighter.remember_presses(frame)
+        if self.slowmo > 0:
+            self.slowmo -= 1
+            if self.slowmo % 2:
+                return []  # half speed: simulate every other step
         if self.hitstop > 0:
             # Impact freeze: everything holds still for a few frames.
             self.hitstop -= 1
@@ -62,8 +83,8 @@ class Match:
 
     def _separate_bodies(self) -> None:
         a, b = self.fighters
-        if not (a.alive and b.alive):
-            return
+        if not (a.alive and b.alive) or State.DASH in (a.state, b.state):
+            return  # dashes go through the opponent
         r = self.rules.body_radius
         if not circles_overlap(a.pos, r, b.pos, r):
             return
@@ -114,22 +135,25 @@ class Match:
             target = self.fighters[1 - projectile.owner]
             if not target.alive:
                 continue
-            if circles_overlap(
+            if not circles_overlap(
                 projectile.pos, projectile.radius, target.pos, self.rules.hurt_radius
             ):
-                projectile.alive = False
-                defn = projectile.defn
-                direction = projectile.velocity.normalized()
-                events += self._hit(
-                    self.fighters[projectile.owner],
-                    target,
-                    defn.damage,
-                    defn.hitstun_f,
-                    direction * defn.knockback,
-                    False,
-                    defn.hitstop_f,
-                    projectile.pos,
-                )
+                continue
+            defn = projectile.defn
+            strike = Strike(
+                damage=defn.damage,
+                hitstun_f=defn.hitstun_f,
+                blockstun_f=defn.blockstun_f or round(defn.hitstun_f * self.rules.blockstun_ratio),
+                knockback=projectile.velocity.normalized() * defn.knockback,
+                wall_bounce=False,
+                hitstop_f=defn.hitstop_f,
+                source=projectile.pos - projectile.velocity * 4,
+                where=projectile.pos,
+            )
+            landed, strike_events = self._strike(self.fighters[projectile.owner], target, strike)
+            events += strike_events
+            if landed:
+                projectile.alive = False  # dodged projectiles keep flying
         self.projectiles = [p for p in self.projectiles if p.alive]
         return events
 
@@ -158,34 +182,50 @@ class Match:
         # Collect first, apply after: two hits on the same frame both land (a trade),
         # even though the first one interrupts the second attacker's move.
         for attacker, attack, defender, center in hits:
-            attack.connected = True
             move = attack.move
-            events += self._hit(
-                attacker,
-                defender,
-                move.damage,
-                move.hitstun_f,
-                attack.aim * move.knockback,
-                move.wall_bounce,
-                move.hitstop_f,
-                center,
+            strike = Strike(
+                damage=move.damage,
+                hitstun_f=move.hitstun_f,
+                blockstun_f=move.blockstun_f or round(move.hitstun_f * self.rules.blockstun_ratio),
+                knockback=attack.aim * move.knockback,
+                wall_bounce=move.wall_bounce,
+                hitstop_f=move.hitstop_f,
+                source=attacker.pos,
+                where=center,
             )
+            landed, strike_events = self._strike(attacker, defender, strike)
+            events += strike_events
+            if landed:
+                attack.connected = True
         return events
 
-    def _hit(
-        self,
-        attacker: Fighter,
-        defender: Fighter,
-        damage: int,
-        hitstun_f: int,
-        knockback: Vec2,
-        wall_bounce: bool,
-        hitstop_f: int,
-        where: Vec2,
-    ) -> list[Event]:
-        defender.take_hit(damage, hitstun_f, knockback, wall_bounce)
-        self.hitstop = max(self.hitstop, hitstop_f)
-        events = [Event("hit", where, defender.index, damage)]
+    # Resolving one strike -----------------------------------------------------------------
+
+    def _strike(self, attacker: Fighter, defender: Fighter, strike: Strike) -> tuple[bool, list]:
+        """Dodge, block or hit. Returns (did it touch the defender, events)."""
+        rules = self.rules
+        if defender.invincible:
+            if defender.in_stylish_window():
+                defender.evaded = True
+                self.slowmo = rules.stylish_slowmo_f
+                return False, [Event("stylish", defender.pos, defender.index)]
+            return False, []
+        if defender.guards_against(strike.source):
+            chip = round(strike.damage * (1 - rules.guard_damage_reduction))
+            broke = defender.take_block(
+                chip,
+                strike.damage * rules.guard_gauge_per_damage,
+                strike.blockstun_f,
+                strike.knockback * rules.block_pushback_ratio,
+            )
+            self.hitstop = max(self.hitstop, strike.hitstop_f // 2)
+            events = [Event("guard_break" if broke else "block", strike.where, defender.index)]
+            if defender.state == State.KO:
+                events.append(Event("ko", defender.pos, defender.index))
+            return True, events
+        defender.take_hit(strike.damage, strike.hitstun_f, strike.knockback, strike.wall_bounce)
+        self.hitstop = max(self.hitstop, strike.hitstop_f)
+        events = [Event("hit", strike.where, defender.index, strike.damage)]
         if defender.state == State.KO:
             events.append(Event("ko", defender.pos, defender.index))
-        return events
+        return True, events

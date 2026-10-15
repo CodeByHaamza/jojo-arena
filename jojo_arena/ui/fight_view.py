@@ -41,6 +41,16 @@ ANIM_FALLBACKS = {
     "dash": "walk",
     "walk": "idle",
 }
+STATE_ANIMS = {
+    State.IDLE: "idle",
+    State.WALK: "walk",
+    State.GUARD: "guard",
+    State.BLOCKSTUN: "guard",
+    State.GUARD_BROKEN: "hurt",
+    State.DASH: "dash",
+    State.HITSTUN: "hurt",
+    State.KO: "ko",
+}
 
 
 class FighterView:
@@ -66,28 +76,39 @@ class FighterView:
             anim = fighter.attack.move.anim
             phase = fighter.attack.phase_info()
         else:
-            anim = {
-                State.IDLE: "idle",
-                State.WALK: "walk",
-                State.HITSTUN: "hurt",
-                State.KO: "ko",
-            }.get(fighter.state, "idle")
+            anim = STATE_ANIMS.get(fighter.state, "idle")
         name, spec = self.resolve(anim)
         index = frame_index(spec, fighter.state_f, phase)
         direction, flip = sprite_direction(fighter.facing.x, fighter.facing.y)
         image = self.sprites.frame(name, direction, flip, index)
-        if fighter.state == State.HITSTUN and fighter.state_f < 3:
+        if fighter.state in (State.HITSTUN, State.GUARD_BROKEN) and fighter.state_f < 3:
             image = image.copy()
             image.fill((255, 255, 255, 0), special_flags=pygame.BLEND_RGB_MAX)
         return image
 
-    def draw(self, surface: pygame.Surface, fighter: Fighter) -> None:
+    def draw(self, surface: pygame.Surface, fighter: Fighter, tick: int) -> None:
         image = self.current_frame(fighter)
         ax, ay = self.sprites.anchor
         _, flip = sprite_direction(fighter.facing.x, fighter.facing.y)
         if flip:
             ax = image.get_width() - 1 - ax
+        if fighter.invincible:
+            # Afterimages trailing behind an invincible dash.
+            ghost = image.copy()
+            ghost.fill((*self.fighter_def.aura, 0), special_flags=pygame.BLEND_RGB_MAX)
+            ghost.set_alpha(70)
+            step = fighter.dash_dir * fighter.rules.dash_speed
+            for back in (6, 3):
+                pos = fighter.pos - step * back
+                surface.blit(ghost, (round(pos.x) - ax, round(pos.y) - ay))
         surface.blit(image, (round(fighter.pos.x) - ax, round(fighter.pos.y) - ay))
+        if fighter.state == State.GUARD_BROKEN:
+            # Dizzy stars circling over the head.
+            for i in range(3):
+                a = tick * 0.15 + i * 2 * math.pi / 3
+                x = fighter.pos.x + math.cos(a) * 8
+                y = fighter.pos.y - 44 + math.sin(a) * 3
+                surface.fill((255, 230, 90), (round(x), round(y), 2, 2))
 
 
 @dataclass
@@ -111,6 +132,7 @@ class FightView:
         self.sparks: list[Spark] = []
         self.shake = 0
         self.tick = 0
+        self._tint: pygame.Surface | None = None
 
     # Reacting to the simulation ------------------------------------------------------
 
@@ -128,6 +150,13 @@ class FightView:
                 self.sparks.append(Spark(pos, 8, 8, (170, 140, 100), 6, 4))
             elif event.kind in ("projectile_wall", "projectile_clash", "projectile_fade"):
                 self.sparks.append(Spark(pos, 10, 10, (200, 200, 255), 8, 5))
+            elif event.kind == "block":
+                self.sparks.append(Spark(pos, 10, 10, (110, 170, 255), 9, 4))
+            elif event.kind == "guard_break":
+                self.sparks.append(Spark(pos, 20, 20, (255, 255, 255), 20, 10))
+                self.shake = max(self.shake, 10)
+            elif event.kind == "stylish":
+                self.sparks.append(Spark(pos, 24, 24, (255, 200, 60), 18, 8))
             elif event.kind == "ko":
                 self.shake = max(self.shake, 14)
 
@@ -155,14 +184,26 @@ class FightView:
             if kind == 0:
                 self.renderer.draw_obstacle(surface, item)
             else:
-                self.fighter_views[item.index].draw(surface, item)
+                self.fighter_views[item.index].draw(surface, item, self.tick)
         for projectile in match.projectiles:
             self._draw_projectile(surface, projectile)
         self.renderer.draw_lights(surface, self.tick)
+        for fighter in match.fighters:
+            if fighter.state in (State.GUARD, State.BLOCKSTUN):
+                shield = fighter.pos + fighter.facing * 10 + CHEST
+                blit_glow(surface, radial_glow(10, (30, 50, 90)), shield)
         for spark in self.sparks:
             self._draw_spark(surface, spark)
+        if match.slowmo:
+            surface.blit(self._slowmo_tint(surface.get_size()), (0, 0))
         if self.shake:
             surface.scroll(1 if self.shake % 2 else -1, 1 if self.shake % 4 < 2 else 0)
+
+    def _slowmo_tint(self, size: tuple[int, int]) -> pygame.Surface:
+        if self._tint is None or self._tint.get_size() != size:
+            self._tint = pygame.Surface(size, pygame.SRCALPHA)
+            self._tint.fill((40, 30, 90, 50))
+        return self._tint
 
     def _draw_projectile(self, surface: pygame.Surface, projectile) -> None:
         color = self.fighter_defs[projectile.owner].aura

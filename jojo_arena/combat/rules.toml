@@ -10,6 +10,25 @@ walk_speed = 96       # default; a character file can override it
 friction = 900        # px/s² slowdown of a body sent flying
 obstacle_damage_per_speed = 0.2   # a body slammed into a prop damages it (speed × this)
 
+[guard]
+damage_reduction = 0.8   # a blocked hit deals 20 % of its damage
+gauge_max = 100
+gauge_per_damage = 0.35  # guard gauge lost per point of the blocked hit's full damage
+regen_delay_s = 1.0      # time without blocking before the gauge refills
+regen_per_s = 25
+break_stun_s = 1.5       # Guard Break
+blockstun_ratio = 0.6    # blockstun = hitstun × this
+pushback_ratio = 0.5     # knockback × this when blocked
+arc_deg = 180            # the guard covers the front half; hits from behind get through
+
+[dash]
+duration_f = 14
+speed = 330
+invincible_f = 10        # first frames of the dash
+recovery_f = 8
+stylish_window_f = 6     # an attack dodged during these first frames = Stylish Evade
+stylish_slowmo_s = 0.5   # the game runs at half speed this long
+
 [wall_bounce]
 min_speed = 150       # px/s; slower bodies just stop against the wall
 keep = 0.45           # share of the speed kept after the bounce

@@ -21,6 +21,7 @@ class ProjectileDef:
     hitstun_f: int
     knockback: float  # px/frame
     hitstop_f: int
+    blockstun_f: int = 0  # 0 = derived from hitstun (rules)
 
     @classmethod
     def from_data(cls, data: dict) -> ProjectileDef:
@@ -32,6 +33,7 @@ class ProjectileDef:
             hitstun_f=data["hitstun_f"],
             knockback=per_frame(data.get("knockback", 0)),
             hitstop_f=data.get("hitstop_f", 3),
+            blockstun_f=data.get("blockstun_f", 0),
         )
 
 
@@ -45,6 +47,7 @@ class MoveDef:
     reach: float = 0.0  # hitbox center, in front of the body
     radius: float = 0.0  # hitbox radius (0 = no melee hitbox)
     hitstun_f: int = 0
+    blockstun_f: int = 0  # 0 = derived from hitstun (rules)
     knockback: float = 0.0  # px/frame
     hitstop_f: int = 0
     wall_bounce: bool = False
@@ -68,6 +71,7 @@ class MoveDef:
             reach=data.get("reach", 0.0),
             radius=data.get("radius", 0.0),
             hitstun_f=data.get("hitstun_f", 0),
+            blockstun_f=data.get("blockstun_f", 0),
             knockback=per_frame(data.get("knockback", 0)),
             hitstop_f=data.get("hitstop_f", 0),
             wall_bounce=data.get("wall_bounce", False),

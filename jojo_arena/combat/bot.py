@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import random
 
-from jojo_arena.combat.fighter import Fighter
+from jojo_arena.combat.fighter import Fighter, State
 from jojo_arena.engine.actions import InputFrame, quantize_8
 
 
@@ -15,6 +15,7 @@ class SimpleBot:
     def __init__(self, seed: int) -> None:
         self.rng = random.Random(seed)
         self.strafe = 0.0
+        self.guard_f = 0
 
     def think(self, me: Fighter, foe: Fighter) -> InputFrame:
         rng = self.rng
@@ -26,7 +27,18 @@ class SimpleBot:
             self.strafe = rng.choice((-0.6, 0.0, 0.6))
         direction = offset.normalized()
         move = (direction.x - direction.y * self.strafe, direction.y + direction.x * self.strafe)
-        if distance < 34:
+        threatened = foe.state == State.ATTACK and distance < 50
+        if threatened and self.guard_f == 0 and rng.random() < 0.08:
+            if rng.random() < 0.3:
+                presses["dash"] = 1
+                move = (-direction.y, direction.x)  # sidestep
+            else:
+                self.guard_f = rng.randint(15, 40)
+        if self.guard_f:
+            self.guard_f -= 1
+            held.add("guard")
+            move = (0.0, 0.0)
+        elif distance < 34:
             move = (0.0, 0.0)
             roll = rng.random()
             if roll < 0.10:

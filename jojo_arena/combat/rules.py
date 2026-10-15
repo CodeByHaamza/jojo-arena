@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from pathlib import Path
 
-from jojo_arena.engine.data import load_toml
+from jojo_arena.engine.data import load_toml, seconds_to_frames
 
 RULES_PATH = Path(__file__).with_name("rules.toml")
 HZ = 60
@@ -30,10 +31,26 @@ class Rules:
     wall_bounce_keep: float
     wall_bounce_stun_f: int
     wall_bounce_damage: int
+    guard_damage_reduction: float
+    guard_gauge_max: float
+    guard_gauge_per_damage: float
+    guard_regen_delay_f: int
+    guard_regen_per_f: float
+    guard_break_stun_f: int
+    blockstun_ratio: float
+    block_pushback_ratio: float
+    guard_arc_cos: float  # cosine of half the guarded arc
+    dash_duration_f: int
+    dash_speed: float  # px/frame
+    dash_invincible_f: int
+    dash_recovery_f: int
+    stylish_window_f: int
+    stylish_slowmo_f: int
 
     @classmethod
     def from_data(cls, data: dict) -> Rules:
         body, knock, wall = data["body"], data["knockback"], data["wall_bounce"]
+        guard, dash = data["guard"], data["dash"]
         return cls(
             body_radius=body["radius"],
             hurt_radius=body["hurt_radius"],
@@ -44,6 +61,21 @@ class Rules:
             wall_bounce_keep=wall["keep"],
             wall_bounce_stun_f=wall["stun_f"],
             wall_bounce_damage=wall["damage"],
+            guard_damage_reduction=guard["damage_reduction"],
+            guard_gauge_max=guard["gauge_max"],
+            guard_gauge_per_damage=guard["gauge_per_damage"],
+            guard_regen_delay_f=seconds_to_frames(guard["regen_delay_s"]),
+            guard_regen_per_f=guard["regen_per_s"] / HZ,
+            guard_break_stun_f=seconds_to_frames(guard["break_stun_s"]),
+            blockstun_ratio=guard["blockstun_ratio"],
+            block_pushback_ratio=guard["pushback_ratio"],
+            guard_arc_cos=math.cos(math.radians(guard["arc_deg"] / 2)),
+            dash_duration_f=dash["duration_f"],
+            dash_speed=per_frame(dash["speed"]),
+            dash_invincible_f=dash["invincible_f"],
+            dash_recovery_f=dash["recovery_f"],
+            stylish_window_f=dash["stylish_window_f"],
+            stylish_slowmo_f=seconds_to_frames(dash["stylish_slowmo_s"]),
         )
 
 
