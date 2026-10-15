@@ -30,6 +30,8 @@ STAND_FLOAT = 6  # Stands hover this many pixels above the ground
 
 # When a sheet lacks an animation, show the closest one that exists.
 ANIM_FALLBACKS = {
+    "special_alt": "special",
+    "gha": "hha",
     "special": "heavy",
     "heavy": "light",
     "light": "idle",
@@ -81,6 +83,8 @@ class FighterView:
         name = anim
         while sprites.spec(name) is None and name in ANIM_FALLBACKS:
             name = ANIM_FALLBACKS[name]
+        if sprites.spec(name) is None and sprites.spec("idle") is not None:
+            name = "idle"  # an animation nobody planned for: never crash, stand still
         return name, sprites.spec(name) or AnimSpec(name, 1)
 
     def current_frame(self, fighter: Fighter, sprites=None) -> pygame.Surface:
