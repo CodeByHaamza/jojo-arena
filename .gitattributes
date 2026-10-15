@@ -1,0 +1,4 @@
+# Scripts run by sh must keep LF line endings, even on Windows checkouts.
+.githooks/* text eol=lf
+*.sh text eol=lf
+Makefile text eol=lf
