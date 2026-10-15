@@ -32,10 +32,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--screenshot", type=Path, help="save the internal 480x270 image here when quitting"
     )
     parser.add_argument(
-        "--scene", default="fight", choices=["fight", "test-pattern"], help="first scene"
+        "--scene",
+        default="title",
+        choices=["title", "setup", "fight", "test-pattern"],
+        help="first screen (default: title)",
     )
     parser.add_argument(
-        "--demo", action="store_true", help="both fighters are played by the computer"
+        "--demo", action="store_true", help="jump into a fight played by the computer on both sides"
+    )
+    parser.add_argument(
+        "--rounds", type=int, default=3, choices=[1, 3, 5], help="rounds to win (--scene fight)"
     )
     return parser.parse_args(argv)
 
@@ -95,13 +101,21 @@ class Game:
 
 
 def build_first_scene(ctx: GameContext, args: argparse.Namespace) -> Scene:
+    if args.demo or args.scene == "fight":
+        from jojo_arena.ui.fight_scene import FightScene
+
+        return FightScene(ctx, rounds_to_win=args.rounds, bots=(args.demo, args.demo))
+    if args.scene == "setup":
+        from jojo_arena.ui.setup_scene import SetupScene
+
+        return SetupScene(ctx)
     if args.scene == "test-pattern":
         from jojo_arena.ui.test_pattern import TestPatternScene
 
         return TestPatternScene()
-    from jojo_arena.ui.fight_scene import FightScene
+    from jojo_arena.ui.title_scene import TitleScene
 
-    return FightScene(ctx, bots=(args.demo, args.demo))
+    return TitleScene(ctx)
 
 
 def main(argv: list[str] | None = None) -> None:
