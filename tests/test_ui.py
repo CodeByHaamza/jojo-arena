@@ -240,3 +240,31 @@ def test_result_menu_offers_a_rematch(ctx):
     tap(ctx, "Return")
     steps(ctx)
     assert scene.result_menu is None and scene.rounds.round_number == 1
+
+
+def hold_key(ctx, key: str, frames: int):
+    code = KEY_SCANCODES[key]
+    ctx.inputs.handle_event(pygame.event.Event(pygame.KEYDOWN, scancode=code, key=0, mod=0))
+    steps(ctx, frames)
+    ctx.inputs.handle_event(pygame.event.Event(pygame.KEYUP, scancode=code, key=0, mod=0))
+
+
+@pytest.mark.parametrize("preset", ["keyboard_gamepad", "two_gamepads", "shared_keyboard"])
+def test_player_one_always_moves_with_the_keyboard_without_pads(ctx, preset):
+    ctx.controls.active = preset
+    scene = start(ctx, TrainingScene(ctx, fighter_ids=("jotaro_p3", "kakyoin")))
+    x = scene.rounds.match.fighters[0].pos.x
+    hold_key(ctx, "D", 30)  # D on QWERTY, the same key as D on AZERTY
+    assert scene.rounds.match.fighters[0].pos.x > x + 10
+
+
+def test_a_lone_pad_plays_player_one_in_training(ctx):
+    from jojo_arena.engine.input import PadState
+
+    pad = PadState(instance_id=7)
+    ctx.inputs.pads.append(pad)  # "J1 keyboard, J2 pad": the pad is player 2's...
+    scene = start(ctx, TrainingScene(ctx, fighter_ids=("jotaro_p3", "kakyoin")))
+    x = scene.rounds.match.fighters[0].pos.x
+    pad.held.add("dpad_right")
+    steps(ctx, 30)
+    assert scene.rounds.match.fighters[0].pos.x > x + 10  # ...but alone, it moves player 1

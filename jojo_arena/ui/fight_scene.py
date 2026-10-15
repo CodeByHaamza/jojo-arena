@@ -41,7 +41,7 @@ class FightScene(Scene):
         self.stage = load_stage(stage_id)
         self.rules = load_rules()
         self.rounds_to_win = rounds_to_win
-        self.sources = [p.build_source() for p in ctx.controls.active_preset.players]
+        self.sources = ctx.controls.active_preset.build_sources()
         self.bots = [SimpleBot(seed=i + 1) if bot else None for i, bot in enumerate(bots)]
         self.demo = all(bots)
         self.view = FightView(self.stage, self.fighter_defs)

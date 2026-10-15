@@ -17,7 +17,7 @@ from dataclasses import dataclass, field
 
 import pygame
 
-from .actions import MOVE_ACTIONS, InputFrame, direction_from_flags, quantize_8
+from .actions import MOVE_ACTIONS, InputFrame, direction_from_flags, merge_frames, quantize_8
 
 
 def _build_scancodes() -> dict[str, int]:
@@ -261,6 +261,16 @@ class GamepadSource:
                     counts[action] = counts.get(action, 0) + 1
         self._last_stick = stick
         return _frame(held, counts)
+
+
+class MergedSource:
+    """Several devices driving the same player (e.g. a pad and the keyboard)."""
+
+    def __init__(self, *sources: KeyboardSource | GamepadSource) -> None:
+        self.sources = sources
+
+    def read(self, inputs: InputManager) -> InputFrame:
+        return merge_frames(*(source.read(inputs) for source in self.sources))
 
 
 def pad_connected(inputs: InputManager, slot: int | None) -> bool:

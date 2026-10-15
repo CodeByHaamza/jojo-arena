@@ -15,6 +15,7 @@ from jojo_arena.engine.input import (
     PAD_BUTTON_NAMES,
     GamepadSource,
     KeyboardSource,
+    MergedSource,
 )
 from jojo_arena.engine.storage import read_json, user_data_dir, write_json
 
@@ -194,6 +195,14 @@ class Preset:
 
     def pads_needed(self) -> int:
         return max((p.slot + 1 for p in self.players if p.device == "gamepad"), default=0)
+
+    def build_sources(self) -> list[KeyboardSource | GamepadSource | MergedSource]:
+        """One input source per player. When nobody plays on the keyboard, player 1 also
+        listens to it: a missing pad must never leave the game unplayable."""
+        sources: list = [p.build_source() for p in self.players]
+        if all(p.device == "gamepad" for p in self.players):
+            sources[0] = MergedSource(sources[0], KeyboardSource(KEYBOARD_MAIN))
+        return sources
 
 
 @dataclass

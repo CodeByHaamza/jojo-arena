@@ -11,7 +11,7 @@ import pygame
 from jojo_arena.combat.training import Dummy, Training, dummy_input
 from jojo_arena.context import GameContext
 from jojo_arena.engine import font
-from jojo_arena.engine.actions import InputFrame
+from jojo_arena.engine.actions import InputFrame, merge_frames
 from jojo_arena.ui import text
 from jojo_arena.ui.fight_scene import FightScene
 from jojo_arena.ui.labels import action_label
@@ -54,7 +54,8 @@ class TrainingScene(FightScene):
         frames = super()._read_frames()
         dummy = dummy_input(self.dummy)
         if dummy is not None:
-            frames[1] = dummy
+            # Alone at training: player 1 can use any device, keyboard or pad.
+            frames = [merge_frames(*frames), dummy]
         return frames
 
     def _pause_items(self) -> list[MenuItem]:
