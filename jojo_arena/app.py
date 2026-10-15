@@ -32,7 +32,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--screenshot", type=Path, help="save the internal 480x270 image here when quitting"
     )
     parser.add_argument(
-        "--scene", default="sandbox", choices=["sandbox", "test-pattern"], help="first scene"
+        "--scene", default="fight", choices=["fight", "test-pattern"], help="first scene"
+    )
+    parser.add_argument(
+        "--demo", action="store_true", help="both fighters are played by the computer"
     )
     return parser.parse_args(argv)
 
@@ -91,21 +94,21 @@ class Game:
         pygame.image.save(self.ctx.display.surface, str(path))
 
 
-def build_first_scene(ctx: GameContext, name: str) -> Scene:
-    if name == "test-pattern":
+def build_first_scene(ctx: GameContext, args: argparse.Namespace) -> Scene:
+    if args.scene == "test-pattern":
         from jojo_arena.ui.test_pattern import TestPatternScene
 
         return TestPatternScene()
-    from jojo_arena.ui.sandbox import SandboxScene
+    from jojo_arena.ui.fight_scene import FightScene
 
-    return SandboxScene(ctx)
+    return FightScene(ctx, bots=(args.demo, args.demo))
 
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
     game = Game(fullscreen=args.fullscreen)
     try:
-        game.run(build_first_scene(game.ctx, args.scene), frame_limit=args.frames)
+        game.run(build_first_scene(game.ctx, args), frame_limit=args.frames)
         if args.screenshot:
             game.save_screenshot(args.screenshot)
     finally:

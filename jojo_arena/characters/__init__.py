@@ -1,1 +1,58 @@
 """Playable characters: data files and per-character code."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from pathlib import Path
+
+from jojo_arena.combat.kit import Kit, load_kit
+from jojo_arena.engine.data import load_toml
+from jojo_arena.engine.sprites import Color, parse_color
+
+_DIR = Path(__file__).parent
+
+
+@dataclass(frozen=True)
+class FighterDef:
+    """Everything needed to field a character: gameplay kit plus how it looks."""
+
+    id: str
+    name: str
+    kit: Kit
+    sprite: str
+    color: Color
+    aura: Color
+    palette: dict[str, list[Color]]
+
+
+def load_roster() -> list[FighterDef]:
+    data = load_toml(_DIR / "roster.toml")
+    kits: dict[str, Kit] = {}
+    roster = []
+    for entry in data["fighters"]:
+        kit_id = entry["kit"]
+        if kit_id not in kits:
+            kits[kit_id] = load_kit(_DIR / f"{kit_id}.toml")
+        palette = {
+            slot: [parse_color(c) for c in colors]
+            for slot, colors in entry.get("palette", {}).items()
+        }
+        roster.append(
+            FighterDef(
+                id=entry["id"],
+                name=entry["name"],
+                kit=kits[kit_id],
+                sprite=entry.get("sprite", ""),
+                color=parse_color(entry["color"]),
+                aura=parse_color(entry.get("aura", entry["color"])),
+                palette=palette,
+            )
+        )
+    return roster
+
+
+def get_fighter(fighter_id: str) -> FighterDef:
+    for fighter in load_roster():
+        if fighter.id == fighter_id:
+            return fighter
+    raise KeyError(f"unknown fighter '{fighter_id}'")

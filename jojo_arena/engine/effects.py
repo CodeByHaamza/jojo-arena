@@ -24,11 +24,11 @@ def radial_glow(radius: int, color: Color, falloff: float = 2.0) -> pygame.Surfa
     return surface
 
 
-def blit_glow(target: pygame.Surface, glow: pygame.Surface, center: tuple[float, float]) -> None:
+def blit_glow(target: pygame.Surface, glow: pygame.Surface, center) -> None:
+    """`center` is any (x, y) pair, a tuple or a Vec2."""
+    x, y = center
     half = glow.get_width() // 2
-    target.blit(
-        glow, (round(center[0]) - half, round(center[1]) - half), special_flags=pygame.BLEND_ADD
-    )
+    target.blit(glow, (round(x) - half, round(y) - half), special_flags=pygame.BLEND_ADD)
 
 
 @lru_cache(maxsize=32)
@@ -38,6 +38,7 @@ def ellipse_shadow(width: int, height: int, alpha: int = 110) -> pygame.Surface:
     return surface
 
 
-def blit_shadow(target: pygame.Surface, feet: tuple[float, float], width: int, height: int) -> None:
+def blit_shadow(target: pygame.Surface, feet, width: int, height: int) -> None:
+    x, y = feet
     shadow = ellipse_shadow(width, height)
-    target.blit(shadow, (round(feet[0]) - width // 2, round(feet[1]) - height // 2))
+    target.blit(shadow, (round(x) - width // 2, round(y) - height // 2))

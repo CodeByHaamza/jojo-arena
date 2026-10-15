@@ -1,0 +1,30 @@
+# Playable roster.
+#   kit     = gameplay file in this folder (moves, stats)
+#   sprite  = sprite sheet under assets/sprites/ (PNG + TOML). If it is missing, the
+#             game draws a simple shape in `color` instead.
+#   palette = colors that replace the sheet's key colors (see the sheet's [recolor]).
+#             Hand-drawn final sprites need no palette.
+
+[[fighters]]
+id = "mannequin_red"
+name = "MANNEQUIN ROUGE"
+kit = "mannequin"
+sprite = "mannequin/mannequin"
+color = "#d8545a"
+aura = "#ff5a4a"
+
+[fighters.palette]
+body = ["#6b1f2a", "#a8303c", "#d8545a", "#f3a19c"]
+trim = ["#3b2f3f", "#5d4b5f", "#86708a"]
+
+[[fighters]]
+id = "mannequin_blue"
+name = "MANNEQUIN BLEU"
+kit = "mannequin"
+sprite = "mannequin/mannequin"
+color = "#5288d8"
+aura = "#4a8cff"
+
+[fighters.palette]
+body = ["#1f3b6b", "#2f5fa8", "#5288d8", "#a6c8f3"]
+trim = ["#3b2f3f", "#5d4b5f", "#86708a"]

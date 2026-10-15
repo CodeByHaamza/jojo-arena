@@ -1,0 +1,17 @@
+# Global fight rules (GDD "Règles globales"). Starting values, to tune in playtests.
+# Units: pixels, seconds, pixels per second. Keys ending in _f are frames at 60 per second.
+
+[body]
+radius = 8            # collision circle at the feet
+hurt_radius = 10      # hurtbox circle, on the ground plane
+walk_speed = 96       # default; a character file can override it
+
+[knockback]
+friction = 900        # px/s² slowdown of a body sent flying
+obstacle_damage_per_speed = 0.2   # a body slammed into a prop damages it (speed × this)
+
+[wall_bounce]
+min_speed = 150       # px/s; slower bodies just stop against the wall
+keep = 0.45           # share of the speed kept after the bounce
+stun_f = 14           # extra hitstun after a bounce
+damage = 20
