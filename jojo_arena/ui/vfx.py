@@ -274,17 +274,20 @@ def draw_flurry(
     length: float,
     count: int = 11,
     kind: str = "fists",
+    size: int = 1,
 ) -> None:
     """A barrage: many ghostly arms and fists (or rapier thrusts) at once, a new random
-    spread every frame, so it reads as hundreds of blows."""
+    spread every frame, so it reads as hundreds of blows. `size` thickens everything
+    (close-ups)."""
     rng = random.Random(seed)
     d = aim.normalized() if aim.length_sq() else Vec2(1, 0)
     side = _side(d)
+    margin = 8 * size
     left = min(origin.x, origin.x + d.x * length) - length
     top = min(origin.y, origin.y + d.y * length) - length
-    size = round(length * 2 + 16)
-    layer = pygame.Surface((size, size), pygame.SRCALPHA)
-    offset = Vec2(left - 8, top - 8)
+    extent = round(length * 2 + 2 * margin)
+    layer = pygame.Surface((extent, extent), pygame.SRCALPHA)
+    offset = Vec2(left - margin, top - margin)
 
     def local(p: Vec2) -> tuple[int, int]:
         return _ints(p - offset)
@@ -292,21 +295,21 @@ def draw_flurry(
     for _ in range(count):
         dist = rng.uniform(length * 0.35, length)
         lateral = rng.uniform(-1, 1) * dist * 0.5
-        lift = rng.uniform(-7, 4)
+        lift = rng.uniform(-7, 4) * size
         tip = origin + d * dist + side * lateral + Vec2(0, lift)
-        tail = tip - d * rng.uniform(7, 13)
+        tail = tip - d * rng.uniform(7, 13) * size
         if kind == "blade":
-            pygame.draw.line(layer, (*OUTLINE, 200), local(origin), local(tip), 3)
-            pygame.draw.line(layer, (*STEEL, 230), local(origin), local(tip), 1)
-            layer.set_at(local(tip), (255, 255, 255, 255))
+            pygame.draw.line(layer, (*OUTLINE, 200), local(origin), local(tip), 2 * size + 1)
+            pygame.draw.line(layer, (*STEEL, 230), local(origin), local(tip), size)
+            pygame.draw.circle(layer, (255, 255, 255, 255), local(tip), size)
             continue
-        shoulder = origin + side * rng.choice((-3, -1, 1, 3))
-        pygame.draw.line(layer, (*shade(color, -60), 120), local(tail), local(tip), 1)
-        pygame.draw.line(layer, (*OUTLINE, 150), local(shoulder), local(tip), 4)
-        pygame.draw.line(layer, (*shade(color, -25), 170), local(shoulder), local(tip), 2)
-        radius = 3 if rng.random() < 0.4 else 2
-        pygame.draw.circle(layer, (*OUTLINE, 255), local(tip), radius + 1)
+        shoulder = origin + side * rng.choice((-3, -1, 1, 3)) * size
+        pygame.draw.line(layer, (*shade(color, -60), 120), local(tail), local(tip), size)
+        pygame.draw.line(layer, (*OUTLINE, 150), local(shoulder), local(tip), 4 * size)
+        pygame.draw.line(layer, (*shade(color, -25), 170), local(shoulder), local(tip), 2 * size)
+        radius = (3 if rng.random() < 0.4 else 2) * size
+        pygame.draw.circle(layer, (*OUTLINE, 255), local(tip), radius + size)
         pygame.draw.circle(layer, (*color, 255), local(tip), radius)
         x, y = local(tip)
-        layer.set_at((x - 1, y - 1), (*shade(color, 60), 255))
+        pygame.draw.circle(layer, (*shade(color, 60), 255), (x - size, y - size), size)
     surface.blit(layer, _ints(offset))

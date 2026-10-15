@@ -24,7 +24,7 @@ Un combat se gagne en vidant la barre de vie adverse, sur un nombre de rounds ch
 | Jauge Heart Heat (HH) | 3 barres. Se remplit en frappant, en prenant des coups et en posant. 1 barre = attaque Heart Heat (HHA), 2 barres = Great Heat (GHA, l'ultime cinématique) |
 | Garde | Bloquer réduit les dégâts de 80 %. Jauge de garde : vide = Guard Break (stun 1,5 s) |
 | Esquive | Dash court avec frames d'invincibilité. Esquive au dernier moment = **Stylish Evade** : ralenti bref + petit gain de HH |
-| Clash (Ora vs Muda) | Deux attaques qui se touchent au même instant (rush contre rush, coup contre coup) déclenchent un clash comme dans ASBR : les deux joueurs martellent la touche d'attaque pendant 3 s, une barre de duel bouge à l'écran, le perdant prend tout le rush et est éjecté |
+| Clash (Ora vs Muda) | Deux attaques qui se touchent au même instant (rush contre rush, coup contre coup) déclenchent un clash comme dans ASBR : les deux joueurs martellent la touche d'attaque pendant 5 s, une barre de duel bouge à l'écran, le perdant prend tout le rush et est éjecté ; égalité : rien |
 | Flash Cancel | 1/2 barre de HH pour annuler une attaque en cours (combos et feintes) |
 | Pose | Touche dédiée. Pose JoJo vulnérable qui recharge un peu de HH. Certains persos en tirent un effet unique |
 | Résolution | Sous 25 % de vie : +15 % de dégâts et la garde ne prend plus de dégâts résiduels |
@@ -377,6 +377,7 @@ Un perso est « fini » quand il a : son kit codé et testé contre 3 autres per
 - Stand sorti : il a un corps qui peut être touché (derrière son manieur, devant lui quand il frappe) ; un coup sur le Stand blesse le manieur.
 - Le Power Up de Jotaro (+1 s de time stop) attend la jauge d'Éveil (pas encore codée).
 - Menu principal du prototype : Entraînement et Combat local jouables ; Histoire, Arcade, Contre l'IA et En ligne affichés « Bientôt ».
+- Duel de rafales : l'écran quitte l'arène pour un face-à-face. Chaque moitié prend la couleur du perso et de son Stand (Jotaro violet, DIO jaune, Polnareff gris), les cris (ORA, MUDA…) fusent en arrière-plan. Une rafale qui touche un perso en train de lancer la sienne déclenche le duel, même un peu à contretemps. Polnareff fait ses rafales à l'épée seule (estocs) et crie aussi ORA.
 - Entraînement : pas d'IA. Mannequin immobile, en garde ou joué par J2 ; vie infinie (rechargée une fois le combo fini) et jauge Heart Heat infinie, désactivables ; un K.O. replace les deux persos sans score ; compteur de coups et de dégâts.
 
 ## Sources

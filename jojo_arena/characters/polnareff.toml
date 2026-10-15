@@ -91,7 +91,7 @@ cancel_on_hit = ["light", "heavy"]
 [stances.stand.moves.heavy]
 shape = "line"
 fx = "blade"
-shout = "HORA"
+shout = "ORA"
 label = "HORA HORA HORA"
 info = "Rafale de 12 estocs qui avance, le dernier envoie contre le mur"
 startup_f = 8
@@ -163,7 +163,7 @@ anim = "heavy"
 
 # Great Heat Attack (2 bars): Armor Off clone barrage all around.
 [moves.gha]
-shout = "HORA"
+shout = "ORA"
 label = "RAFALE DE CLONES"
 info = "12 coups tout autour, invincible au démarrage"
 startup_f = 16

@@ -70,8 +70,8 @@ refill_after_s = 1.0          # infinite life: it refills once the fighter has r
 # Two attacks becoming active within window_f frames of each other, and touching,
 # start a clash: both players mash attack buttons, the one who mashed less loses.
 window_f = 3
-duration_s = 3.0
-loser_damage = 120
+duration_s = 5.0
+loser_damage = 160
 loser_knockback = 420
 loser_hitstun_f = 40
 tie_knockback = 240           # draw: both are pushed back, no damage

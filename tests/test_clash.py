@@ -4,9 +4,10 @@ from helpers import kinds, make_match, press, run
 
 from jojo_arena.combat.fighter import State
 from jojo_arena.combat.kit import Kit, Stance
+from jojo_arena.combat.rules import load_rules
 from jojo_arena.engine.actions import InputFrame
 
-CLASH_F = 180
+CLASH_F = load_rules().clash_duration_f
 
 
 def step_mash(match, p1: int, p2: int):

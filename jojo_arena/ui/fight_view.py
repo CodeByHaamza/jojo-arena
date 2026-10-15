@@ -23,6 +23,7 @@ from jojo_arena.engine.sprites import (
 from jojo_arena.paths import SPRITES_DIR
 from jojo_arena.stages.base import StageDef
 from jojo_arena.ui import sfx, vfx
+from jojo_arena.ui.duel_view import DuelScreen
 
 OUTLINE = (23, 18, 31)
 STAND_ALPHA = 215  # Stands look a little spectral
@@ -227,6 +228,7 @@ class FightView:
         self.words = sfx.SfxLayer()
         self.fx = vfx.EffectsLayer()
         self._seen: list[tuple] = [(None, -1), (None, -1)]  # (state, attack serial) per fighter
+        self.duel: DuelScreen | None = None  # the rush duel close-up, while a clash lasts
         self._block_word_f = [0, 0]
 
     # Reacting to the simulation ------------------------------------------------------
@@ -351,9 +353,15 @@ class FightView:
                 fx.add(vfx.Ring(pos, (255, 90, 90), 3.5, 18, 3))
                 fx.dust(loser.pos, 12, 2.0, 4)
             elif kind == "clash_start":
-                words.add(sfx.DODODO, pos + Vec2(0, -30), "menace", 2, 60, 0.2, 1)
-                fx.add(vfx.Ring(pos, (255, 255, 255), 3.0, 14, 3))
+                shouts = tuple(self._rush_word(f) for f in match.fighters)
+                self.duel = DuelScreen(self.fighter_views, self.fighter_defs, shouts)
+                self.flash = 6
+            elif kind == "clash_tie":
+                self.duel = None
+                self.flash = 8
             elif kind == "clash_win" and event.fighter is not None:
+                self.duel = None
+                self.flash = 8
                 champion = match.fighters[event.fighter]
                 shout = self._rush_word(champion) + " !"
                 words.add(shout, self._head(champion), self._shout_style(champion.index), 3, 50)
@@ -419,6 +427,10 @@ class FightView:
     def update(self, match: Match | None = None) -> None:
         if match is not None:
             self._observe(match)
+            if match.clash is None:
+                self.duel = None
+            elif self.duel is not None:
+                self.duel.update(self.tick)
         self.words.update()
         self.fx.update()
         for wave in self.waves:
@@ -437,6 +449,12 @@ class FightView:
     # Drawing ---------------------------------------------------------------------------
 
     def draw(self, surface: pygame.Surface, match: Match) -> None:
+        if match.clash is not None and self.duel is not None:
+            # The rush duel leaves the arena for its own close-up screen.
+            self.duel.draw(surface, match, self.tick)
+            self._draw_duel_bar(surface, match)
+            self._finish_frame(surface)
+            return
         self.renderer.draw_background(surface)
         self.renderer.draw_floor_details(surface, match.arena)
         for fighter in match.fighters:
@@ -497,6 +515,10 @@ class FightView:
         if match.slowmo:
             surface.blit(self._overlay(surface.get_size(), (40, 30, 90, 50)), (0, 0))
         self.words.draw(surface)
+        self._finish_frame(surface)
+
+    def _finish_frame(self, surface: pygame.Surface) -> None:
+        """Screen-wide touches applied last: white flash and shake."""
         if self.flash:
             surface.blit(
                 self._overlay(surface.get_size(), (255, 255, 255, 20 * self.flash)), (0, 0)
@@ -559,7 +581,11 @@ class FightView:
             end = center + Vec2.from_angle(a, 8 + (i * 7 + self.tick) % 10)
             pygame.draw.line(surface, OUTLINE, center.as_ints(), end.as_ints(), 3)
             pygame.draw.line(surface, (255, 250, 220), center.as_ints(), end.as_ints())
-        # Duel bar: each side pushes the split point toward the other.
+        self._draw_duel_bar(surface, match)
+
+    def _draw_duel_bar(self, surface: pygame.Surface, match: Match) -> None:
+        """Each side pushes the split point toward the other; time left underneath."""
+        clash = match.clash
         width, height = 200, 8
         bar = pygame.Rect(0, 0, width, height)
         bar.center = (surface.get_width() // 2, 72)
