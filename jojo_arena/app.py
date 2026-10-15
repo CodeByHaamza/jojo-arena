@@ -32,7 +32,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--screenshot", type=Path, help="save the internal 480x270 image here when quitting"
     )
     parser.add_argument(
-        "--scene", default="test-pattern", choices=["test-pattern"], help="first scene"
+        "--scene", default="sandbox", choices=["sandbox", "test-pattern"], help="first scene"
     )
     return parser.parse_args(argv)
 
@@ -92,9 +92,13 @@ class Game:
 
 
 def build_first_scene(ctx: GameContext, name: str) -> Scene:
-    from jojo_arena.ui.test_pattern import TestPatternScene
+    if name == "test-pattern":
+        from jojo_arena.ui.test_pattern import TestPatternScene
 
-    return TestPatternScene()
+        return TestPatternScene()
+    from jojo_arena.ui.sandbox import SandboxScene
+
+    return SandboxScene(ctx)
 
 
 def main(argv: list[str] | None = None) -> None:

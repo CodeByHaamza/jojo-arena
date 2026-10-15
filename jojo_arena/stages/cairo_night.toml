@@ -1,0 +1,59 @@
+# Cairo, night street: prototype arena (GDD: "Le Caire, rue de nuit").
+# Coordinates are internal pixels (screen is 480 x 270). Rects are [x, y, width, height].
+
+name = "Le Caire, rue de nuit"
+
+[bounds]
+rect = [16, 40, 448, 212]
+corner_radius = 28
+
+[spawns]
+p1 = [150, 146]
+p2 = [330, 146]
+
+[prop_kinds.stall]
+hp = 120
+
+[prop_kinds.crate]
+hp = 40
+
+# Market stalls in the four corners, a few crates; the center stays open.
+[[props]]
+kind = "stall"
+rect = [62, 66, 50, 18]
+
+[[props]]
+kind = "stall"
+rect = [368, 66, 50, 18]
+
+[[props]]
+kind = "stall"
+rect = [62, 212, 50, 18]
+
+[[props]]
+kind = "stall"
+rect = [368, 212, 50, 18]
+
+[[props]]
+kind = "crate"
+rect = [120, 70, 12, 11]
+
+[[props]]
+kind = "crate"
+rect = [348, 216, 12, 11]
+
+[[props]]
+kind = "crate"
+rect = [234, 222, 12, 11]
+
+[palette]
+frame = [17, 21, 42]
+frame_dark = [11, 14, 30]
+window = [120, 96, 54]
+curb = [92, 86, 102]
+mortar = [50, 48, 62]
+stone = [76, 72, 86]
+stone_light = [84, 80, 94]
+stone_dark = [66, 62, 76]
+marking = [96, 92, 108]
+lantern = [255, 170, 80]
