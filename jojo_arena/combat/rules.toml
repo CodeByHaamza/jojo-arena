@@ -67,6 +67,7 @@ loser_damage = 120
 loser_knockback = 420
 loser_hitstun_f = 40
 tie_knockback = 240           # draw: both are pushed back, no damage
+spacing = 46                  # the two step apart so their barrages meet between them
 
 [stance]
 switch_f = 12                 # time to bring the Stand out or call it back

@@ -67,6 +67,7 @@ class Rules:
     clash_loser_knockback: float  # px/frame
     clash_loser_hitstun_f: int
     clash_tie_knockback: float  # px/frame
+    clash_spacing: float
     round_timer_f: int
     round_intro_f: int
     round_outro_f: int
@@ -111,6 +112,7 @@ class Rules:
             clash_loser_knockback=per_frame(clash["loser_knockback"]),
             clash_loser_hitstun_f=clash["loser_hitstun_f"],
             clash_tie_knockback=per_frame(clash["tie_knockback"]),
+            clash_spacing=clash["spacing"],
             hh_bar=hh["bar_size"],
             hh_max=hh["bar_size"] * hh["bars"],
             hh_per_damage_dealt=hh["gain_per_damage_dealt"],

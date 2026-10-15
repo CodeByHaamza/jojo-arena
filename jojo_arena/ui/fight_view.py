@@ -404,8 +404,13 @@ class FightView:
             if fighter.state == State.POSE and fighter.state_f % 16 == 0:
                 side = 1 if (fighter.state_f // 16) % 2 else -1
                 self.words.menace(fighter.pos + self.chest(i), side)
+            if match.clash is not None and i == 0:
+                self.shake = max(self.shake, 3)
+                if self.tick % 4 == 0:
+                    self.fx.focus(match.clash.pos + self.chest(None), heavy=True)
             if match.clash is not None and self.tick % 6 == i * 3:
-                center = fighter.pos + self.chest(i) + Vec2(0, -12)
+                away = (fighter.pos - match.clash.pos).normalized()
+                center = fighter.pos + self.chest(i) + away * 30 + Vec2(0, -6)
                 style = self._shout_style(i)
                 self.words.scatter(self._rush_word(fighter), center, 16, style=style, life=18)
             self._seen[i] = (fighter.state, serial)
@@ -458,6 +463,7 @@ class FightView:
                 self.fighter_views[item.index].draw_stand(surface, item, self.tick)
         for fighter in match.fighters:
             self._draw_reach(surface, fighter)
+            self._draw_rush(surface, fighter)
         for projectile in match.projectiles:
             self._draw_projectile(surface, projectile)
         self.renderer.draw_lights(surface, self.tick)
@@ -545,19 +551,18 @@ class FightView:
     def _draw_clash(self, surface: pygame.Surface, match: Match) -> None:
         clash = match.clash
         center = clash.pos + self.chest(None)
-        head_room = max(view.height for view in self.fighter_views) + self.chest(None).y
-        # Flickering impact light where the two attacks meet.
+        # Flickering impact light where the two barrages meet, sparks flying off.
         flicker = 0.6 + 0.4 * ((self.tick // 2) % 2)
-        blit_glow(surface, radial_glow(22, tuple(round(255 * flicker) for _ in range(3))), center)
-        for i in range(8):
-            a = self.tick * 0.5 + i * math.pi / 4
-            end = center + Vec2.from_angle(a, 10 + (i * 7 + self.tick) % 9)
+        blit_glow(surface, radial_glow(18, tuple(round(220 * flicker) for _ in range(3))), center)
+        for i in range(10):
+            a = self.tick * 0.5 + i * math.pi / 5
+            end = center + Vec2.from_angle(a, 8 + (i * 7 + self.tick) % 10)
+            pygame.draw.line(surface, OUTLINE, center.as_ints(), end.as_ints(), 3)
             pygame.draw.line(surface, (255, 250, 220), center.as_ints(), end.as_ints())
         # Duel bar: each side pushes the split point toward the other.
-        width, height = 120, 6
+        width, height = 200, 8
         bar = pygame.Rect(0, 0, width, height)
-        bar.center = (round(center.x), round(center.y - head_room) - 12)
-        bar.clamp_ip(surface.get_rect().inflate(-8, -8))
+        bar.center = (surface.get_width() // 2, 72)
         # balance -1 = player 1 winning: their color fills toward the right.
         split = bar.x + round(width / 2 * (1 - clash.balance))
         colors = [self.fighter_defs[i].color for i in range(2)]
@@ -574,6 +579,33 @@ class FightView:
         pos = projectile.pos + self.chest(projectile.owner) * 0.8
         look = projectile.defn.look
         vfx.draw_projectile(surface, look, pos, projectile.velocity, projectile.radius, aura)
+
+    def _strike_origin(self, fighter: Fighter) -> Vec2:
+        """Where blows come from on screen: the Stand's chest if it is out, else the body."""
+        view = self.fighter_views[fighter.index]
+        if view.stand_presence(fighter) > 0 and view.stand is not None:
+            return fighter.stand_spot() + Vec2(0, -view.stand.chest - 6)
+        return fighter.pos + view.chest
+
+    def _draw_rush(self, surface: pygame.Surface, fighter: Fighter) -> None:
+        """Rushes and clashes: a flurry of fists (or thrusts) a new spread every frame."""
+        if fighter.frozen:
+            return
+        attack = fighter.attack
+        if fighter.state == State.ATTACK and attack is not None and attack.move.hits > 1:
+            if not attack.active:
+                return
+            aim, length = attack.aim, attack.move.reach + attack.move.radius
+            kind = "blade" if attack.move.fx == "blade" else "fists"
+        elif fighter.state == State.CLASH:
+            aim, length = fighter.facing, 26.0
+            kind = "fists"
+        else:
+            return
+        color = self.fighter_defs[fighter.index].aura
+        seed = self.tick * 13 + fighter.index * 7
+        origin = self._strike_origin(fighter)
+        vfx.draw_flurry(surface, origin, aim, color, seed, length, 12, kind)
 
     def _draw_reach(self, surface: pygame.Surface, fighter: Fighter) -> None:
         """A finger, tentacle or blade stretching out while the move is active."""

@@ -84,20 +84,22 @@ cancel_on_hit = ["light", "heavy"]
 [stances.stand.moves.heavy]
 shout = "ORA"
 label = "ORA ORA ORA"
-info = "Rafale de 6 coups, le dernier projette"
+info = "Rafale de 14 coups qui pousse, le dernier envoie contre le mur"
 startup_f = 10
-active_f = 30
-recovery_f = 18
-hits = 6
-hit_every_f = 5
-damage = 18
+active_f = 42
+recovery_f = 20
+hits = 14
+hit_every_f = 3
+lunge = 50
+damage = 7
+last_damage = 40
 reach = 24
-radius = 13
+radius = 14
 hitstun_f = 14
-knockback = 30
-last_knockback = 420
+knockback = 36
+last_knockback = 480
 last_wall_bounce = true
-hitstop_f = 2
+hitstop_f = 1
 anim = "light"
 
 # Star Platinum: The World - stops time for 3 seconds.

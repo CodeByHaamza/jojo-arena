@@ -55,7 +55,7 @@ Les coups d'une posture : `[stances.<nom>.moves.<touche>]`, où la touche est `l
 | `radius` | Rayon de la zone (0 = pas de coup au corps à corps) |
 | `shape` | `circle` (un cercle à `reach`) ou `line` (une ligne du corps jusqu'à `reach`, sans angle mort de près) |
 | `at_target` | La zone tombe là où se trouvait l'adversaire au début du coup |
-| `lunge` | Avance pendant le démarrage et la phase active (vitesse) |
+| `lunge` | Avance pendant le démarrage et la phase active (vitesse) ; une rafale continue d'avancer à chaque coup |
 
 ### Effet sur l'adversaire
 
@@ -77,6 +77,7 @@ Les coups d'une posture : `[stances.<nom>.moves.<touche>]`, où la touche est `l
 | --- | --- |
 | `hits` | Nombre de coups de la rafale |
 | `hit_every_f` | Un coup toutes les N images |
+| `last_damage` | Dégâts du dernier coup (le coup final) |
 | `last_knockback` | Recul du dernier coup |
 | `last_wall_bounce` | Le dernier coup fait rebondir sur les murs |
 

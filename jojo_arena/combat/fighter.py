@@ -457,14 +457,27 @@ class Fighter:
         return events
 
     def _lunging(self) -> bool:
-        """Moves with a lunge carry the body forward until they first connect."""
+        """Moves with a lunge carry the body forward until they first connect; rushes
+        keep pushing forward through every hit, driving the opponent back."""
         attack = self.attack
         return (
             self.state == State.ATTACK
             and attack is not None
             and attack.move.lunge > 0
             and attack.phase < 2
-            and attack.hits_done == 0
+            and (attack.hits_done == 0 or attack.move.hits > 1)
+        )
+
+    @property
+    def rushing(self) -> bool:
+        """Starting or throwing a rush (a multi-hit barrage)."""
+        attack = self.attack
+        return (
+            self.state == State.ATTACK
+            and attack is not None
+            and attack.move.hits > 1
+            and attack.phase < 2
+            and not self.frozen
         )
 
     def advance(self) -> None:

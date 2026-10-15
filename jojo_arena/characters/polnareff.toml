@@ -89,24 +89,26 @@ cancel_on_hit = ["light", "heavy"]
 
 # Hora Hora Hora: a flurry of thrusts.
 [stances.stand.moves.heavy]
-shout = "HORA"
 shape = "line"
 fx = "blade"
+shout = "HORA"
 label = "HORA HORA HORA"
-info = "Rafale de 7 estocs, le dernier projette"
+info = "Rafale de 12 estocs qui avance, le dernier envoie contre le mur"
 startup_f = 8
-active_f = 24
+active_f = 36
 recovery_f = 16
-hits = 7
-hit_every_f = 4
-damage = 13
-reach = 26
-radius = 10
-hitstun_f = 12
-knockback = 20
-last_knockback = 340
+hits = 12
+hit_every_f = 3
+lunge = 70
+damage = 6
+last_damage = 34
+reach = 28
+radius = 9
+hitstun_f = 13
+knockback = 30
+last_knockback = 400
 last_wall_bounce = true
-hitstop_f = 2
+hitstop_f = 1
 anim = "light"
 
 # Shoots the rapier's blade; Silver Chariot is disarmed for 2 seconds.

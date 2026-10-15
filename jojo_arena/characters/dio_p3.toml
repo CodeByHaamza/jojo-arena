@@ -89,20 +89,22 @@ cancel_on_hit = ["light", "heavy"]
 [stances.stand.moves.heavy]
 shout = "MUDA"
 label = "MUDA MUDA MUDA"
-info = "Rafale de 6 coups, le dernier projette"
+info = "Rafale de 13 coups qui pousse, le dernier envoie contre le mur"
 startup_f = 10
-active_f = 30
-recovery_f = 18
-hits = 6
-hit_every_f = 5
-damage = 17
+active_f = 39
+recovery_f = 20
+hits = 13
+hit_every_f = 3
+lunge = 56
+damage = 7
+last_damage = 42
 reach = 24
-radius = 13
+radius = 14
 hitstun_f = 14
-knockback = 30
-last_knockback = 400
+knockback = 36
+last_knockback = 460
 last_wall_bounce = true
-hitstop_f = 2
+hitstop_f = 1
 anim = "light"
 
 # The World: time stops for 5 seconds.

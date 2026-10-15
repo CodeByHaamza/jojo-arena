@@ -46,6 +46,7 @@ class Hud:
         self.callouts: list[Callout] = []
         self.tick = 0
         self._bands: dict[int, pygame.Surface] = {}
+        self.mash_keys: tuple[str, str] = ("", "")  # each player's key to mash in a clash
 
     def on_events(self, events: list[Event], rounds: Rounds) -> None:
         labels = {
@@ -96,11 +97,25 @@ class Hud:
             width = round(80 * stop.frames_left / max(1, stop.duration_f))
             surface.fill(OUTLINE, (SCREEN_W // 2 - 41, 47, 82, 4))
             surface.fill(GOLD, (SCREEN_W // 2 - 40, 48, width, 2))
-        if rounds.match.clash is not None and (self.tick // 8) % 2 == 0:
-            pos = rounds.match.clash.pos
-            y = round(pos.y) - max(self.heights) - 30
-            font.draw(surface, text.MASH, (round(pos.x), y), GOLD, align="center")
+        if rounds.match.clash is not None:
+            self._draw_mash(surface)
         self._draw_announcement(surface, rounds)
+
+    def _draw_mash(self, surface: pygame.Surface) -> None:
+        """The clash prompt under the duel bar: MASH!, with each player's key."""
+        scale = 3 if (self.tick // 6) % 2 == 0 else 2
+        y = 40 if scale == 2 else 36
+        font.draw(surface, text.MASH, (SCREEN_W // 2, y), GOLD, scale=scale, align="center")
+        for i, key in enumerate(self.mash_keys):
+            if not key:
+                continue
+            width = font.text_width(key) + 8
+            x = SCREEN_W // 2 - 110 - width if i == 0 else SCREEN_W // 2 + 110
+            pressed = (self.tick // 3) % 2 == i
+            y = 65 + (1 if pressed else 0)
+            surface.fill(OUTLINE, (x - 1, y - 1, width + 2, 15))
+            surface.fill((90, 80, 120) if pressed else (60, 52, 84), (x, y, width, 13))
+            font.draw(surface, key, (x + 4, y + 2), WHITE, outline=None)
 
     def _mirror(self, index: int, x: int, width: int) -> int:
         """x of a box for player 1; the same box mirrored for player 2."""

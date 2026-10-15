@@ -263,3 +263,50 @@ class EffectsLayer:
     def draw(self, surface: pygame.Surface) -> None:
         for effect in self.effects:
             effect.draw(surface)
+
+
+def draw_flurry(
+    surface: pygame.Surface,
+    origin: Vec2,
+    aim: Vec2,
+    color,
+    seed: int,
+    length: float,
+    count: int = 11,
+    kind: str = "fists",
+) -> None:
+    """A barrage: many ghostly arms and fists (or rapier thrusts) at once, a new random
+    spread every frame, so it reads as hundreds of blows."""
+    rng = random.Random(seed)
+    d = aim.normalized() if aim.length_sq() else Vec2(1, 0)
+    side = _side(d)
+    left = min(origin.x, origin.x + d.x * length) - length
+    top = min(origin.y, origin.y + d.y * length) - length
+    size = round(length * 2 + 16)
+    layer = pygame.Surface((size, size), pygame.SRCALPHA)
+    offset = Vec2(left - 8, top - 8)
+
+    def local(p: Vec2) -> tuple[int, int]:
+        return _ints(p - offset)
+
+    for _ in range(count):
+        dist = rng.uniform(length * 0.35, length)
+        lateral = rng.uniform(-1, 1) * dist * 0.5
+        lift = rng.uniform(-7, 4)
+        tip = origin + d * dist + side * lateral + Vec2(0, lift)
+        tail = tip - d * rng.uniform(7, 13)
+        if kind == "blade":
+            pygame.draw.line(layer, (*OUTLINE, 200), local(origin), local(tip), 3)
+            pygame.draw.line(layer, (*STEEL, 230), local(origin), local(tip), 1)
+            layer.set_at(local(tip), (255, 255, 255, 255))
+            continue
+        shoulder = origin + side * rng.choice((-3, -1, 1, 3))
+        pygame.draw.line(layer, (*shade(color, -60), 120), local(tail), local(tip), 1)
+        pygame.draw.line(layer, (*OUTLINE, 150), local(shoulder), local(tip), 4)
+        pygame.draw.line(layer, (*shade(color, -25), 170), local(shoulder), local(tip), 2)
+        radius = 3 if rng.random() < 0.4 else 2
+        pygame.draw.circle(layer, (*OUTLINE, 255), local(tip), radius + 1)
+        pygame.draw.circle(layer, (*color, 255), local(tip), radius)
+        x, y = local(tip)
+        layer.set_at((x - 1, y - 1), (*shade(color, 60), 255))
+    surface.blit(layer, _ints(offset))

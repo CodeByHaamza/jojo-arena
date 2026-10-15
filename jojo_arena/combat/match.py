@@ -284,7 +284,7 @@ class Match:
     # Melee ------------------------------------------------------------------------------
 
     def _resolve_melee(self) -> list[Event]:
-        clash_pos = self._detect_clash()
+        clash_pos = self._rush_collision() or self._detect_clash()
         if clash_pos is not None:
             return self._start_clash(clash_pos)
         events: list[Event] = []
@@ -315,12 +315,15 @@ class Match:
             else:
                 direction = defender.pos - (center if move.at_target else attacker.pos)
             knockback, wall_bounce = move.knockback, move.wall_bounce
+            damage = move.damage
             if move.hits > 1 and attack.last_hit:
                 if move.last_knockback is not None:
                     knockback = move.last_knockback
+                if move.last_damage is not None:
+                    damage = move.last_damage
                 wall_bounce = wall_bounce or move.last_wall_bounce
             strike = Strike(
-                damage=move.damage,
+                damage=damage,
                 hitstun_f=move.hitstun_f,
                 blockstun_f=move.blockstun_f or round(move.hitstun_f * self.rules.blockstun_ratio),
                 knockback=direction.normalized() * knockback,
@@ -339,6 +342,24 @@ class Match:
         return events
 
     # Clash -------------------------------------------------------------------------------
+
+    def _rush_collision(self) -> Vec2 | None:
+        """Rush against rush (Ora against Muda): when a barrage reaches someone who is
+        starting or throwing one too, the two meet and the duel starts, whatever the
+        timing. Where they meet, or None."""
+        for attacker in self.fighters:
+            defender = self.opponent(attacker)
+            if not (attacker.rushing and defender.rushing):
+                continue
+            if not (attacker.attack.move.clashable and defender.attack.move.clashable):
+                continue
+            other_boxes = defender.hitboxes()
+            for center, radius in attacker.hitboxes():
+                if self._touches(center, radius, defender) or any(
+                    circles_overlap(center, radius, c, r) for c, r in other_boxes
+                ):
+                    return (attacker.pos + defender.pos) * 0.5
+        return None
 
     def _detect_clash(self) -> Vec2 | None:
         """Where two attacks meet "at the same instant", or None."""
@@ -366,10 +387,17 @@ class Match:
 
     def _start_clash(self, pos: Vec2) -> list[Event]:
         duration = self.rules.clash_duration_f
-        self.clash = Clash(pos, duration, duration)
+        a, b = self.fighters
+        # Face off at a set distance: the two barrages meet in the middle.
+        axis = (b.pos - a.pos).normalized() if (b.pos - a.pos).length_sq() else Vec2(1, 0)
+        half = self.rules.clash_spacing / 2
+        for fighter, side in ((a, -1), (b, 1)):
+            spot = pos + axis * (side * half)
+            fighter.pos, _, _ = self.arena.constrain(spot, self.rules.body_radius)
+        self.clash = Clash((a.pos + b.pos) * 0.5, duration, duration)
         for fighter in self.fighters:
             fighter.enter_clash(fighter.aim_at(self.opponent(fighter).pos))
-        return [Event("clash_start", pos)]
+        return [Event("clash_start", self.clash.pos)]
 
     def _update_clash(self, inputs: tuple[InputFrame, InputFrame]) -> list[Event]:
         clash = self.clash

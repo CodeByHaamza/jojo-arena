@@ -16,6 +16,7 @@ from jojo_arena.stages import load_stage
 from jojo_arena.ui import text
 from jojo_arena.ui.fight_view import FightView
 from jojo_arena.ui.hud import Hud
+from jojo_arena.ui.labels import action_label
 from jojo_arena.ui.menu import Menu, MenuItem
 from jojo_arena.ui.movelist import MoveListPanel
 from jojo_arena.ui.widgets import GOLD, draw_box, veil
@@ -46,6 +47,8 @@ class FightScene(Scene):
         self.demo = all(bots)
         self.view = FightView(self.stage, self.fighter_defs)
         self.hud = Hud(self.fighter_defs, [view.height for view in self.view.fighter_views])
+        players = ctx.controls.active_preset.players
+        self.hud.mash_keys = tuple(action_label(p, "light", ctx.inputs) for p in players)
         self.pause_menu: Menu | None = None
         self.result_menu: Menu | None = None
         self.move_list: MoveListPanel | None = None

@@ -116,6 +116,7 @@ class MoveDef:
     hits: int = 1  # rush: the hitbox can hit this many times...
     hit_every_f: int = 0  # ...once every this many frames
     last_knockback: float | None = None  # px/frame, for the last hit of a rush
+    last_damage: int | None = None  # damage of the last hit of a rush (the finisher)
     last_wall_bounce: bool = False
     lunge: float = 0.0  # px/frame forward during startup and active frames
     at_target: bool = False  # the hitbox lands where the opponent stood at the start
@@ -164,6 +165,7 @@ class MoveDef:
             hit_every_f=data.get("hit_every_f", 0),
             last_knockback=per_frame(last_knockback) if last_knockback is not None else None,
             last_wall_bounce=data.get("last_wall_bounce", False),
+            last_damage=data.get("last_damage"),
             lunge=per_frame(data.get("lunge", 0)),
             at_target=data.get("at_target", False),
             unblockable=data.get("unblockable", False),

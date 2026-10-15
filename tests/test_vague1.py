@@ -37,14 +37,28 @@ def test_no_stand_body_while_it_is_called_back():
 # Moves -----------------------------------------------------------------------------------
 
 
-def test_ora_rush_hits_six_times_and_sends_flying():
+def test_ora_rush_lands_every_hit_and_sends_flying():
     match = make_duel("jotaro_p3", "mannequin_red")
+    rush = match.fighters[0].kit.move("stand", "heavy")
     stand_out(match.fighters[0])
-    events = run(match, 90, p1=press("heavy"))
+    events = run(match, 100, p1=press("heavy"))
     defender = match.fighters[1]
-    assert kinds(events).count("hit") == 6
-    assert defender.max_hp - defender.hp >= 6 * 18
-    assert defender.pos.x > 230  # the last hit launched him
+    assert kinds(events).count("hit") == rush.hits  # it pushes forward: none whiff
+    assert defender.max_hp - defender.hp >= (rush.hits - 1) * rush.damage + rush.last_damage
+    assert defender.pos.x > 260  # the finisher launched him
+
+
+def test_rush_against_rush_starts_the_duel_even_off_beat():
+    match = make_duel("jotaro_p3", "dio_p3", p1=(150, 100), p2=(185, 100))
+    stand_out(match.fighters[0])
+    stand_out(match.fighters[1])
+    match.step((press("heavy"), NONE))
+    for _ in range(6):  # DIO answers well after Jotaro started (old window: 3 frames)
+        match.step((NONE, NONE))
+    match.step((NONE, press("heavy")))
+    events = run_until(match, lambda m: m.clash is not None, 60)
+    assert match.clash is not None
+    assert "hit" not in kinds(events) or match.fighters[1].state.name == "CLASH"
 
 
 def test_special_with_a_direction_is_the_alternate_move():
