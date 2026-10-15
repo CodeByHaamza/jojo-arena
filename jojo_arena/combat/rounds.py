@@ -41,6 +41,8 @@ class RoundResult:
 
 
 class Rounds:
+    training = False
+
     def __init__(
         self,
         kits: tuple[Kit, Kit],

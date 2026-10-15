@@ -73,6 +73,7 @@ class Rules:
     ko_slowmo_f: int
     sudden_death_hp: int
     carry_heart_heat: bool
+    training_refill_f: int
     stand_hurt_radius: float
     stand_front: float
     stand_back: float
@@ -103,6 +104,7 @@ class Rules:
             ko_slowmo_f=seconds_to_frames(rnd["ko_slowmo_s"]),
             sudden_death_hp=rnd["sudden_death_hp"],
             carry_heart_heat=rnd["carry_heart_heat"],
+            training_refill_f=seconds_to_frames(data["training"]["refill_after_s"]),
             clash_window_f=clash["window_f"],
             clash_duration_f=seconds_to_frames(clash["duration_s"]),
             clash_loser_damage=clash["loser_damage"],

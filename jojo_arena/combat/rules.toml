@@ -55,6 +55,9 @@ ko_slowmo_s = 1.0             # the knockout plays in slow motion
 sudden_death_hp = 1           # tie for the win: both start with this much life, no timer
 carry_heart_heat = true       # the Heart Heat gauge is kept from one round to the next
 
+[training]
+refill_after_s = 1.0          # infinite life: it refills once the fighter has recovered this long
+
 [clash]
 # Two attacks becoming active within window_f frames of each other, and touching,
 # start a clash: both players mash attack buttons, the one who mashed less loses.

@@ -110,6 +110,7 @@ class Fighter:
         self.walk_dir = Vec2()
         self.max_hp = kit.max_hp
         self.hp = kit.max_hp
+        self.min_hp = 0  # training with infinite life keeps it at 1 or more
         self.base_stance = next(iter(kit.stances))
         self.stance = self.base_stance
         self.state = State.IDLE
@@ -510,7 +511,7 @@ class Fighter:
     # Taking damage ----------------------------------------------------------------------
 
     def hurt(self, damage: int) -> None:
-        self.hp = max(0, self.hp - damage)
+        self.hp = max(self.min_hp, self.hp - damage)
         if self.hp == 0 and self.state != State.KO:
             self.set_state(State.KO)
 
