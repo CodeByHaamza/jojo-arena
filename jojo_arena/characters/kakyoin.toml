@@ -1,6 +1,9 @@
 # Noriaki Kakyoin (Part 3) - Hierophant Green. GDD: "Stand · Trapper": mid range,
 # preparation. Emerald Splash, invisible threads laid in the arena (touched = automatic
-# volley). Great Heat Attack: 20 Metre Radius Emerald Splash.
+# volley), grapple on the walls to escape. Great Heat Attack: 20 Metre Radius Emerald
+# Splash.
+# Feel: never where you want him. He kicks you away, zips off on a tentacle, and the
+# arena itself fires at you.
 
 name = "Noriaki Kakyoin"
 max_hp = 950
@@ -12,38 +15,58 @@ style = { type = "stance_toggle", off = "base", on = "stand", stand_body = true 
 [stances.base]
 label = "SANS STAND"
 
+# Kick, then spinning kick: the same button twice.
 [stances.base.moves.light]
 label = "COUP DE PIED"
-info = "Rapide, s'enchaîne"
+info = "Longue jambe. Encore la touche : pied retourné"
 startup_f = 5
 active_f = 3
 recovery_f = 10
-damage = 30
-reach = 15
+damage = 28
+reach = 17
 radius = 10
 hitstun_f = 19
 knockback = 90
 hitstop_f = 4
-cancel_on_hit = ["light", "heavy"]
+cancel_on_hit = ["light", "special"]
+chain = "light2"
+anim = "kick"
 
-[stances.base.moves.heavy]
-label = "COUP DE PIED LOURD"
-info = "Rebond contre les murs"
-startup_f = 14
+[stances.base.moves.light2]
+label = "PIED RETOURNÉ"
+info = "Repousse loin : la distance, c'est son terrain"
+startup_f = 7
 active_f = 4
-recovery_f = 20
-damage = 75
-reach = 16
+recovery_f = 16
+damage = 40
+reach = 18
 radius = 12
-hitstun_f = 27
-knockback = 340
-hitstop_f = 8
+hitstun_f = 26
+knockback = 360
+hitstop_f = 7
 wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "kick_high"
 
-# A small Emerald Splash.
+# A low spinning sweep that hits all around him.
+[stances.base.moves.heavy]
+label = "BALAYAGE"
+info = "Frappe tout autour de lui"
+startup_f = 12
+active_f = 6
+recovery_f = 20
+damage = 55
+reach = 0
+radius = 22
+hitstun_f = 30
+knockback = 260
+hitstop_f = 8
+anim = "sweep"
+
+# A small Emerald Splash that curves toward the target.
 [stances.base.moves.special]
 label = "PETIT EMERALD SPLASH"
-info = "3 émeraudes"
+info = "3 émeraudes à tête chercheuse"
 startup_f = 12
 active_f = 1
 recovery_f = 18
@@ -59,6 +82,21 @@ knockback = 40
 hitstop_f = 2
 count = 3
 spread_deg = 20
+homing_deg_s = 70
+
+# Grapple: Hierophant's tentacle pulls him to the aimed spot (mouse, right stick, or the
+# held direction).
+[stances.base.moves.special_alt]
+label = "GRAPPIN"
+info = "Le tentacule le tire vers le point visé (souris ou stick droit)"
+startup_f = 14
+active_f = 1
+recovery_f = 10
+leap = 150
+leap_to = "cursor"
+invincible_f = 10
+fx = "tentacle"
+anim = "special"
 
 # Hierophant Green out ---------------------------------------------------------------------
 
@@ -66,38 +104,58 @@ spread_deg = 20
 label = "AVEC HIEROPHANT GREEN"
 walk_speed_mult = 0.95
 
-# Tentacle lash, reaching far.
+# Tentacle lash, reaching far; twice with the same button.
 [stances.stand.moves.light]
 shape = "line"
 fx = "tentacle"
 label = "FOUET"
-info = "Tentacule à longue portée"
+info = "Tentacule à longue portée. Encore : double fouet"
 startup_f = 7
 active_f = 4
 recovery_f = 12
-damage = 32
-reach = 30
+damage = 30
+reach = 32
 radius = 8
 hitstun_f = 20
 knockback = 120
 hitstop_f = 4
-cancel_on_hit = ["heavy"]
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
 
+[stances.stand.moves.light2]
+shape = "line"
+fx = "tentacle"
+label = "DOUBLE FOUET"
+info = "Deux tentacules, encore plus loin"
+startup_f = 8
+active_f = 6
+recovery_f = 16
+hits = 2
+hit_every_f = 3
+damage = 20
+reach = 38
+radius = 8
+hitstun_f = 24
+knockback = 200
+hitstop_f = 4
+cancel_on_hit = ["special"]
+
+# The tentacle catches from afar and reels the opponent in.
 [stances.stand.moves.heavy]
 shape = "line"
 fx = "tentacle"
-label = "GRAND FOUET"
-info = "Très longue portée, rebond"
+label = "TENTACULE"
+info = "Attrape de loin et ramène l'adversaire vers lui"
 startup_f = 14
-active_f = 5
+active_f = 4
 recovery_f = 20
-damage = 60
-reach = 40
-radius = 9
-hitstun_f = 26
-knockback = 300
-hitstop_f = 7
-wall_bounce = true
+damage = 40
+reach = 46
+radius = 7
+hitstun_f = 32
+knockback = -280
+hitstop_f = 6
+cancel_on_hit = ["light", "special"]
 
 # Emerald Splash!
 [stances.stand.moves.special]
@@ -119,6 +177,7 @@ knockback = 50
 hitstop_f = 2
 count = 6
 spread_deg = 36
+homing_deg_s = 30
 
 # Lay a web of threads: when the opponent touches it, it fires emeralds on its own.
 [stances.stand.moves.special_alt]
@@ -154,6 +213,7 @@ spread_deg = 30
 shout = "HIEROPHANT !"
 label = "HIEROPHANT DÉCHAÎNÉ"
 info = "Explosion tout autour"
+stand_flash = true
 startup_f = 20
 active_f = 6
 recovery_f = 26
@@ -174,6 +234,7 @@ anim = "special"
 shout = "EMERALD SPLASH !"
 label = "EMERALD SPLASH 20 MÈTRES"
 info = "Les émeraudes arrivent de partout"
+stand_flash = true
 startup_f = 30
 active_f = 1
 recovery_f = 30

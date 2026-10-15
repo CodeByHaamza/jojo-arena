@@ -40,6 +40,7 @@ class MoveEntry:
     keys: tuple[str, ...]  # key caps, pressed together (none for passive rules)
     name: str
     info: str = ""
+    sequence: bool = False  # the keys are pressed one after the other (a chain)
 
 
 @dataclass(frozen=True)
@@ -75,6 +76,19 @@ def build_pages(
                 continue
             keys = (text.DIRECTION, key("special")) if slot == "special_alt" else (key(slot),)
             entries.append(MoveEntry(keys, move.label or slot.upper(), move.info))
+            if move.counter and move.counter in stance.moves:
+                # The answer of a counter comes out on its own, when struck.
+                answer = stance.moves[move.counter]
+                entries.append(
+                    MoveEntry((text.WHEN_STRUCK,), answer.label or answer.name, answer.info, True)
+                )
+            # A chain: the same button again, once the previous blow connects.
+            depth = 1
+            while move.chain and move.chain in stance.moves and depth < 6:
+                move = stance.moves[move.chain]
+                depth += 1
+                presses = (key(slot),) * depth
+                entries.append(MoveEntry(presses, move.label or move.name, move.info, True))
         if entries:
             title = kit.stance_labels.get(stance_name, stance_name.upper())
             pages.append(MovePage(title, tuple(entries)))
@@ -169,7 +183,7 @@ class MoveListPanel:
 
         y = TOP
         for entry in self.pages[self.page].entries:
-            draw_caps(surface, entry.keys, (16, y - 1))
+            draw_caps(surface, entry.keys, (16, y - 1), ">" if entry.sequence else "+")
             font.draw(surface, entry.name, (NAME_X, y), WHITE)
             y += 11
             if entry.info:

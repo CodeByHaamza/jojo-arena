@@ -77,7 +77,7 @@ def test_star_finger_reaches_mid_range():
 
 def test_lunge_carries_the_body_forward():
     match = make_duel("polnareff", "mannequin_red", p1=(100, 100), p2=(300, 100))
-    run(match, 20, p1=press("special"))
+    run(match, 20, p1=press("heavy"))  # the flying kick
     assert match.fighters[0].pos.x > 140
 
 

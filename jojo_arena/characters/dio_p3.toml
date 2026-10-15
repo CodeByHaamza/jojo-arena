@@ -1,48 +1,84 @@
 # DIO (Part 3) - The World. GDD: "Stand · Hit & run": knives at range, fast strikes.
 # Knife fans; in stopped time (~5 s) thrown knives hang around the opponent like a trap.
 # Blood-draining grab. Great Heat Attack: Road Roller in stopped time.
+# Feel: a predator. He comes from the air, slashes, drains, and pins you with knives.
 
 name = "DIO (P3)"
 max_hp = 1000
 walk_speed = 100
 style = { type = "stance_toggle", off = "base", on = "stand", stand_body = true }
 
-# DIO alone ------------------------------------------------------------------------------
+# DIO alone: the vampire ----------------------------------------------------------------
 
 [stances.base]
 label = "SANS STAND"
 
+# Claw, cross claw, vampire kick: the same button three times.
 [stances.base.moves.light]
 label = "GRIFFE"
-info = "Rapide, s'enchaîne"
+info = "Rapide. Encore : griffe croisée, puis coup de pied vampire"
 startup_f = 4
 active_f = 3
 recovery_f = 10
-damage = 30
-reach = 14
+damage = 28
+reach = 15
 radius = 10
 hitstun_f = 19
-knockback = 90
+knockback = 80
 hitstop_f = 4
-cancel_on_hit = ["light", "heavy"]
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
 
-# Vampire grab: cannot be blocked, drains blood (heals half the damage).
+[stances.base.moves.light2]
+label = "GRIFFE CROISÉE"
+info = "S'enchaîne sur la griffe"
+startup_f = 5
+active_f = 3
+recovery_f = 11
+damage = 32
+reach = 16
+radius = 11
+hitstun_f = 21
+knockback = 100
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "heavy"
+
+[stances.base.moves.light3]
+label = "COUP DE PIED VAMPIRE"
+info = "Fin de l'enchaînement : envoie contre le mur"
+startup_f = 8
+active_f = 4
+recovery_f = 18
+damage = 48
+reach = 17
+radius = 12
+hitstun_f = 30
+knockback = 340
+hitstop_f = 8
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "kick_high"
+
+# Vampire grab: cannot be blocked, drains blood. Slow to come out, punished if it misses.
 [stances.base.moves.heavy]
 shout = "WRYYY !"
 label = "SUCCION DE SANG"
-info = "Saisie imparable, rend la moitié en vie"
-startup_f = 9
+info = "Saisie imparable, rend la moitié en vie. Lente : punie si elle rate"
+startup_f = 14
 active_f = 3
-recovery_f = 24
+recovery_f = 30
 damage = 70
-reach = 13
+reach = 12
 radius = 9
 hitstun_f = 34
-knockback = 160
+knockback = 140
 hitstop_f = 8
 unblockable = true
 drain = 0.5
 clashable = false
+anim = "grab"
 
 # Three knives in a fan.
 [stances.base.moves.special]
@@ -64,26 +100,80 @@ hitstop_f = 2
 count = 3
 spread_deg = 24
 
+# Vampire leap: up in the air, then down on the opponent heel first.
+[stances.base.moves.special_alt]
+label = "BOND DE VAMPIRE"
+info = "Bondit sur l'adversaire et retombe en piqué, intouchable en l'air"
+startup_f = 18
+active_f = 4
+recovery_f = 16
+leap = 150
+leap_height = 26
+invincible_f = 14
+damage = 60
+reach = 0
+radius = 16
+hitstun_f = 26
+knockback = 260
+hitstop_f = 8
+anim = "leap"
+
 # The World out ------------------------------------------------------------------------
 
 [stances.stand]
 label = "AVEC THE WORLD"
 walk_speed_mult = 0.92
 
-# Muda!
+# Muda, Muda Muda, MUDAAA: the same button three times.
 [stances.stand.moves.light]
 label = "MUDA !"
-info = "Poing de The World, s'enchaîne"
-startup_f = 5
+info = "Poing de The World. Encore : MUDA MUDA, puis le coup de pied du monde"
+startup_f = 4
 active_f = 3
 recovery_f = 9
-damage = 40
+damage = 34
 reach = 22
 radius = 12
 hitstun_f = 20
-knockback = 110
+knockback = 100
 hitstop_f = 5
-cancel_on_hit = ["light", "heavy"]
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.stand.moves.light2]
+label = "MUDA MUDA"
+info = "Deux poings d'un coup"
+startup_f = 5
+active_f = 6
+recovery_f = 10
+hits = 2
+hit_every_f = 3
+damage = 20
+reach = 23
+radius = 13
+hitstun_f = 22
+knockback = 60
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "heavy"
+
+[stances.stand.moves.light3]
+label = "MUDAAA !"
+shout = "MUDAAA !"
+info = "Coup de pied de The World : envoie contre le mur"
+startup_f = 8
+active_f = 4
+recovery_f = 20
+damage = 55
+reach = 22
+radius = 14
+hitstun_f = 32
+knockback = 440
+hitstop_f = 10
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "kick_high"
 
 # Muda Muda Muda rush.
 [stances.stand.moves.heavy]
@@ -146,6 +236,7 @@ spread_deg = 40
 shout = "MUDA !"
 label = "COUP DE PIED DU MONDE"
 info = "Invincible au démarrage, projette"
+stand_flash = true
 startup_f = 18
 active_f = 5
 recovery_f = 26
@@ -158,7 +249,7 @@ knockback = 460
 hitstop_f = 12
 wall_bounce = true
 clashable = false
-anim = "heavy"
+anim = "kick_high"
 
 # Great Heat Attack (2 bars): Road Roller! Time stops, then a road roller drops on the
 # spot where the opponent stood.

@@ -1,6 +1,8 @@
 # Jean Pierre Polnareff (Part 3) - Silver Chariot. GDD: "Stand · Glass cannon": ultra
 # fast thrusts, long combos. Armor Off: monstrous speed and afterimages but no defense.
 # Can shoot the rapier's blade (projectile, but disarmed for 2 s).
+# Feel: a fencer and a show-off. The longest strings, the fastest pokes, a proud taunt,
+# and nothing to fall back on when a hit lands on him.
 
 name = "Jean Pierre Polnareff"
 max_hp = 880
@@ -15,54 +17,110 @@ damage_dealt_mult = 1.15
 damage_taken_mult = 1.35
 afterimages = true
 
-# Polnareff alone ------------------------------------------------------------------------
+# French pride: a taunt that sharpens every blow for a moment.
+[buffs.pride]
+duration_s = 5
+damage_dealt_mult = 1.2
+
+# Polnareff alone: savate ----------------------------------------------------------------
 
 [stances.base]
 label = "SANS STAND"
 
+# Savate kicks: the same button three times.
 [stances.base.moves.light]
-label = "DIRECT"
-info = "Rapide, s'enchaîne"
+label = "SAVATE"
+info = "Coup de pied rapide. Encore : chassé, puis fouetté"
 startup_f = 4
+active_f = 3
+recovery_f = 9
+damage = 26
+reach = 16
+radius = 10
+hitstun_f = 19
+knockback = 80
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+anim = "kick"
+
+[stances.base.moves.light2]
+label = "CHASSÉ"
+info = "S'enchaîne sur la savate"
+startup_f = 5
 active_f = 3
 recovery_f = 10
 damage = 30
-reach = 14
+reach = 18
 radius = 10
-hitstun_f = 19
-knockback = 90
-hitstop_f = 4
-cancel_on_hit = ["light", "heavy"]
+hitstun_f = 21
+knockback = 110
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "kick"
 
-[stances.base.moves.heavy]
-label = "COUP DE PIED"
-info = "Rebond contre les murs"
-startup_f = 13
+[stances.base.moves.light3]
+label = "FOUETTÉ"
+info = "Fin de l'enchaînement : envoie contre le mur"
+startup_f = 7
 active_f = 4
-recovery_f = 20
-damage = 75
-reach = 16
+recovery_f = 16
+damage = 44
+reach = 18
 radius = 12
-hitstun_f = 27
-knockback = 340
+hitstun_f = 30
+knockback = 360
 hitstop_f = 8
 wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "kick_high"
 
-# Lunging kick.
-[stances.base.moves.special]
+# Flying kick: crosses half the arena.
+[stances.base.moves.heavy]
 label = "COUP DE PIED SAUTÉ"
-info = "Fonce sur l'adversaire"
+info = "Traverse la moitié de l'arène, rebond contre les murs"
 startup_f = 9
-active_f = 6
+active_f = 8
+recovery_f = 18
+lunge = 300
+damage = 60
+reach = 14
+radius = 11
+hitstun_f = 26
+knockback = 320
+hitstop_f = 8
+wall_bounce = true
+anim = "leap"
+
+# Silver Chariot flashes out for one long thrust, without staying.
+[stances.base.moves.special]
+label = "ÉCLAIR DE CHARIOT"
+info = "Silver Chariot surgit le temps d'un estoc lointain"
+stand_flash = true
+shape = "line"
+fx = "blade"
+startup_f = 9
+active_f = 3
 recovery_f = 16
-lunge = 240
-damage = 55
-reach = 13
-radius = 10
+damage = 50
+reach = 48
+radius = 6
 hitstun_f = 22
-knockback = 280
+knockback = 160
 hitstop_f = 6
-anim = "heavy"
+anim = "light"
+
+[stances.base.moves.special_alt]
+shout = "HA HA HA !"
+label = "FIERTÉ"
+info = "5 s : +20 % de dégâts (recharge 15 s)"
+startup_f = 16
+active_f = 1
+recovery_f = 8
+buff = "pride"
+cooldown_s = 15
+anim = "pose"
 
 # Silver Chariot out ---------------------------------------------------------------------
 
@@ -70,24 +128,63 @@ anim = "heavy"
 label = "AVEC SILVER CHARIOT"
 walk_speed_mult = 1.0
 
-# Rapier thrust: very fast, chains into itself.
+# Thrust, slash, triple thrust: the same button three times.
 [stances.stand.moves.light]
 shape = "line"
 fx = "blade"
 label = "ESTOC"
-info = "Très rapide, s'enchaîne"
+info = "Très rapide. Encore : taille, puis triple estoc"
 startup_f = 3
 active_f = 2
 recovery_f = 8
-damage = 28
+damage = 26
 reach = 28
 radius = 6
 hitstun_f = 16
 knockback = 80
 hitstop_f = 3
-cancel_on_hit = ["light", "heavy"]
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
 
-# Hora Hora Hora: a flurry of thrusts.
+[stances.stand.moves.light2]
+label = "TAILLE"
+info = "Large coup de taille"
+startup_f = 4
+active_f = 3
+recovery_f = 10
+damage = 30
+reach = 20
+radius = 14
+hitstun_f = 20
+knockback = 120
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "heavy"
+
+[stances.stand.moves.light3]
+shape = "line"
+fx = "blade"
+label = "TRIPLE ESTOC"
+info = "Trois estocs, le dernier envoie contre le mur"
+startup_f = 5
+active_f = 10
+recovery_f = 16
+hits = 3
+hit_every_f = 4
+damage = 16
+last_damage = 30
+reach = 30
+radius = 7
+hitstun_f = 18
+knockback = 40
+last_knockback = 360
+last_wall_bounce = true
+hitstop_f = 3
+cancel_on_hit = ["special"]
+anim = "light"
+
+# Hora Hora Hora: a flurry of thrusts with the blade alone.
 [stances.stand.moves.heavy]
 shape = "line"
 fx = "blade"
@@ -145,27 +242,32 @@ anim = "pose"
 # Super moves ----------------------------------------------------------------------------
 
 [moves.hha]
+shout = "ORA !"
 label = "ESTOC ULTIME"
 info = "Invincible au démarrage, projette"
+stand_flash = true
+shape = "line"
+fx = "blade"
 startup_f = 18
 active_f = 5
 recovery_f = 26
 invincible_f = 18
 damage = 150
-reach = 24
-radius = 14
+reach = 30
+radius = 10
 hitstun_f = 36
 knockback = 440
 hitstop_f = 12
 wall_bounce = true
 clashable = false
-anim = "heavy"
+anim = "light"
 
 # Great Heat Attack (2 bars): Armor Off clone barrage all around.
 [moves.gha]
 shout = "ORA"
 label = "RAFALE DE CLONES"
 info = "12 coups tout autour, invincible au démarrage"
+stand_flash = true
 startup_f = 16
 active_f = 40
 recovery_f = 24

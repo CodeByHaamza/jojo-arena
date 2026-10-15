@@ -4,60 +4,128 @@
 #
 # Inputs: light / heavy / special; special while holding a direction = special_alt.
 # Stand key: Star Platinum out (stance "stand") or back (stance "base").
+# Feel: a delinquent who brawls with his fists and his head, never in a hurry, and a
+# Stand that punishes anything within arm's reach.
 
 name = "Jotaro Kujo (P3)"
 max_hp = 1000
 walk_speed = 92
 style = { type = "stance_toggle", off = "base", on = "stand", stand_body = true }
 
-# Jotaro alone ---------------------------------------------------------------------------
+# Jotaro alone: a street brawler ---------------------------------------------------------
 
 [stances.base]
 label = "SANS STAND"
 
+# Jab, hook, uppercut: the same button three times, once the first one lands.
 [stances.base.moves.light]
 label = "DIRECT"
-info = "Coup de poing rapide, s'enchaîne"
-startup_f = 5
+info = "Rapide. Encore la touche : crochet, puis uppercut"
+startup_f = 4
 active_f = 3
 recovery_f = 10
-damage = 32
-reach = 14
+damage = 28
+reach = 15
 radius = 10
-hitstun_f = 20
-knockback = 90
+hitstun_f = 19
+knockback = 80
 hitstop_f = 4
-cancel_on_hit = ["light", "heavy"]
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
 
-[stances.base.moves.heavy]
-label = "COUP DE PIED"
-info = "Coup lourd, rebond contre les murs"
-startup_f = 14
+[stances.base.moves.light2]
+label = "CROCHET"
+info = "S'enchaîne sur le direct"
+startup_f = 5
+active_f = 3
+recovery_f = 11
+damage = 30
+reach = 15
+radius = 11
+hitstun_f = 21
+knockback = 100
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "heavy"
+
+[stances.base.moves.light3]
+label = "UPPERCUT"
+info = "Fin de l'enchaînement : envoie contre le mur"
+startup_f = 7
 active_f = 4
-recovery_f = 20
-damage = 85
-reach = 16
+recovery_f = 18
+damage = 45
+reach = 14
 radius = 12
-hitstun_f = 28
-knockback = 360
+hitstun_f = 30
+knockback = 320
 hitstop_f = 8
 wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "uppercut"
 
-# Shoulder charge.
-[stances.base.moves.special]
-label = "CHARGE D'ÉPAULE"
-info = "Fonce sur l'adversaire"
-startup_f = 10
-active_f = 8
-recovery_f = 18
-lunge = 260
-damage = 60
+# The headbutt: slow, but it smashes through a guard.
+[stances.base.moves.heavy]
+label = "COUP DE TÊTE"
+info = "Casse-garde : vide la jauge de garde trois fois plus vite"
+startup_f = 14
+active_f = 3
+recovery_f = 20
+damage = 70
 reach = 12
 radius = 11
+hitstun_f = 34
+knockback = 220
+hitstop_f = 10
+guard_damage = 3.0
+anim = "headbutt"
+
+# Shoulder charge: armored, it walks through a blow.
+[stances.base.moves.special]
+label = "CHARGE D'ÉPAULE"
+info = "Blindée : encaisse un coup sans broncher"
+startup_f = 10
+active_f = 12
+recovery_f = 18
+lunge = 260
+armor = 1
+damage = 55
+reach = 12
+radius = 12
 hitstun_f = 24
 knockback = 300
-hitstop_f = 6
-anim = "heavy"
+hitstop_f = 8
+wall_bounce = true
+anim = "tackle"
+
+# "Yare yare daze": hands in the pockets... strike him and Star Platinum strikes back.
+[stances.base.moves.special_alt]
+label = "YARE YARE DAZE"
+info = "Contre : si on le frappe, Star Platinum surgit et cogne"
+startup_f = 4
+active_f = 26
+recovery_f = 16
+counter = "counter_ora"
+anim = "counter"
+
+[stances.base.moves.counter_ora]
+label = "ORA ! (CONTRE)"
+shout = "ORA !"
+stand_flash = true
+startup_f = 2
+active_f = 4
+recovery_f = 14
+invincible_f = 12
+damage = 90
+reach = 22
+radius = 14
+hitstun_f = 34
+knockback = 380
+hitstop_f = 12
+wall_bounce = true
+clashable = false
+anim = "light"
 
 # Star Platinum out --------------------------------------------------------------------
 
@@ -65,22 +133,58 @@ anim = "heavy"
 label = "AVEC STAR PLATINUM"
 walk_speed_mult = 0.9
 
-# Ora!
+# Ora, Ora Ora, ORAAA: the same button three times.
 [stances.stand.moves.light]
 label = "ORA !"
-info = "Poing de Star Platinum, s'enchaîne"
-startup_f = 5
+info = "Poing de Star Platinum. Encore : ORA ORA, puis ORAAA !"
+startup_f = 4
 active_f = 3
 recovery_f = 9
-damage = 42
+damage = 34
 reach = 22
 radius = 12
 hitstun_f = 20
-knockback = 110
+knockback = 100
 hitstop_f = 5
-cancel_on_hit = ["light", "heavy"]
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
 
-# Ora Ora Ora rush: 6 hits, the last one sends flying.
+[stances.stand.moves.light2]
+label = "ORA ORA"
+info = "Deux poings d'un coup"
+startup_f = 5
+active_f = 6
+recovery_f = 10
+hits = 2
+hit_every_f = 3
+damage = 20
+reach = 23
+radius = 13
+hitstun_f = 22
+knockback = 60
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "heavy"
+
+[stances.stand.moves.light3]
+label = "ORAAA !"
+shout = "ORAAA !"
+info = "Uppercut de Star Platinum : envoie contre le mur"
+startup_f = 8
+active_f = 4
+recovery_f = 20
+damage = 55
+reach = 22
+radius = 14
+hitstun_f = 32
+knockback = 440
+hitstop_f = 10
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "uppercut"
+
+# Ora Ora Ora rush: it pushes forward, the last blow sends flying.
 [stances.stand.moves.heavy]
 shout = "ORA"
 label = "ORA ORA ORA"
@@ -139,6 +243,7 @@ anim = "light"
 shout = "ORAA !"
 label = "POING ÉCRASANT"
 info = "Invincible au démarrage, projette"
+stand_flash = true
 startup_f = 18
 active_f = 5
 recovery_f = 26
@@ -158,6 +263,7 @@ anim = "heavy"
 shout = "ORA"
 label = "ORA ORA FINAL"
 info = "Arrête le temps puis rafale de 8 coups"
+stand_flash = true
 time_stop_s = 2.0
 time_stop_at = "start"
 startup_f = 20

@@ -50,12 +50,15 @@ def draw_cap(surface: pygame.Surface, label: str, pos: tuple[int, int]) -> int:
     return width
 
 
-def draw_caps(surface: pygame.Surface, labels: tuple[str, ...], pos: tuple[int, int]) -> int:
-    """Several key caps joined by "+". Returns the total width."""
+def draw_caps(
+    surface: pygame.Surface, labels: tuple[str, ...], pos: tuple[int, int], joiner: str = "+"
+) -> int:
+    """Several key caps joined by "+" (pressed together) or ">" (one after the other).
+    Returns the total width."""
     x, y = pos
     for i, label in enumerate(labels):
         if i:
-            font.draw(surface, "+", (x + 2, y + 1), DIM, outline=None)
+            font.draw(surface, joiner, (x + 2, y + 1), DIM, outline=None)
             x += 9
         x += draw_cap(surface, label, (x, y))
     return x - pos[0]

@@ -131,6 +131,9 @@ class FighterView:
             t = fighter.state_f / max(1, fighter.rules.stance_switch_f)
             coming_out = fighter.switch_target != next(iter(fighter.kit.stances))
             return t if coming_out else 1 - t
+        attack = fighter.attack
+        if fighter.state == State.ATTACK and attack is not None and attack.move.stand_flash:
+            return 1.0  # it surges out for this one blow
         return 1.0 if fighter.aura_active else 0.0
 
     def draw_stand(self, surface: pygame.Surface, fighter: Fighter, tick: int) -> None:
@@ -173,10 +176,22 @@ class FighterView:
             pulse = 0.25 + 0.15 * math.sin(tick * 0.25)
             blit_glow(surface, radial_glow(14, (round(255 * pulse), 20, 20)), fighter.pos)
 
+    @staticmethod
+    def lift(fighter: Fighter) -> float:
+        """How high a leaping fighter is above the ground (its shadow stays down)."""
+        attack = fighter.attack
+        if fighter.state != State.ATTACK or attack is None or attack.dest is None:
+            return 0.0
+        if attack.phase != 0 or attack.move.leap_height <= 0:
+            return 0.0
+        t = (attack.frame + 1) / max(1, attack.move.startup_f)
+        return math.sin(math.pi * min(1.0, t)) * attack.move.leap_height
+
     def draw(self, surface: pygame.Surface, fighter: Fighter, tick: int) -> None:
         self.draw_aura(surface, fighter, tick)
         image = self.current_frame(fighter)
         ax, ay = self.sprites.anchor
+        ay += round(self.lift(fighter))
         _, flip = sprite_direction(fighter.facing.x, fighter.facing.y)
         if flip:
             ax = image.get_width() - 1 - ax
@@ -394,6 +409,16 @@ class FightView:
                 fx.focus(pos, heavy=True)
             elif kind == "stylish":
                 fx.add(vfx.Ring(pos, (255, 210, 90), 2.5, 14))
+            elif kind == "counter" and event.fighter is not None:
+                user = match.fighters[event.fighter]
+                aura = self.fighter_defs[user.index].aura
+                words.add(sfx.DON, self._head(user), "white", 3, 40, 0.3, 2)
+                fx.add(vfx.Ring(pos, aura, 3.5, 16, 3))
+                fx.focus(pos, heavy=True)
+                self.flash = max(self.flash, 4)
+            elif kind == "armor":
+                fx.add(vfx.Flash(pos, 16, (255, 150, 60), 6))
+                fx.add(vfx.Ring(pos, (255, 170, 80), 2.0, 10))
 
     def _rush_word(self, fighter: Fighter) -> str:
         """What a fighter shouts while mashing a rush: its rush move's shout."""
@@ -491,6 +516,7 @@ class FightView:
         for fighter in match.fighters:
             self._draw_reach(surface, fighter)
             self._draw_rush(surface, fighter)
+            self._draw_reticle(surface, fighter)
         for projectile in match.projectiles:
             self._draw_projectile(surface, projectile)
         self.renderer.draw_lights(surface, self.tick)
@@ -615,6 +641,25 @@ class FightView:
         look = projectile.defn.look
         vfx.draw_projectile(surface, look, pos, projectile.velocity, projectile.radius, aura)
 
+    def _draw_reticle(self, surface: pygame.Surface, fighter: Fighter) -> None:
+        """Where an aimed move (a grapple) would go: the cursor, held within range."""
+        if fighter.cursor is None:
+            return
+        reach = max((m.leap for m in fighter.kit.all_moves() if m.leap_to == "cursor"), default=0)
+        if reach <= 0:
+            return
+        offset = fighter.cursor - fighter.pos
+        if offset.length() > reach:
+            offset = offset.normalized() * reach
+        x, y = (fighter.pos + offset).as_ints()
+        color = self.fighter_defs[fighter.index].aura
+        pulse = 4 + (self.tick // 8) % 2
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            a = (x + dx * 2, y + dy * 2)
+            b = (x + dx * (2 + pulse), y + dy * (2 + pulse))
+            pygame.draw.line(surface, OUTLINE, a, b, 3)
+            pygame.draw.line(surface, color, a, b, 1)
+
     def _strike_origin(self, fighter: Fighter) -> Vec2:
         """Where blows come from on screen: the Stand's chest if it is out, else the body."""
         view = self.fighter_views[fighter.index]
@@ -646,6 +691,13 @@ class FightView:
         """A finger, tentacle or blade stretching out while the move is active."""
         attack = fighter.attack
         if fighter.state != State.ATTACK or attack is None or not attack.move.fx:
+            return
+        if attack.dest is not None and attack.phase == 0:
+            # A grapple: the tentacle is anchored where the user is being pulled.
+            view = self.fighter_views[fighter.index]
+            color = self.fighter_defs[fighter.index].aura
+            start, end = fighter.pos + view.chest, attack.dest + view.chest
+            vfx.draw_reach(surface, start, end, color, attack.move.fx, 2)
             return
         if not attack.active:
             return
