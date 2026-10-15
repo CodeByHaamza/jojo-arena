@@ -28,6 +28,7 @@ cancel_on_hit = ["light", "heavy"]
 
 # Vampire grab: cannot be blocked, drains blood (heals half the damage).
 [stances.base.moves.heavy]
+shout = "WRYYY !"
 label = "SUCCION DE SANG"
 info = "Saisie imparable, rend la moitié en vie"
 startup_f = 9
@@ -86,6 +87,7 @@ cancel_on_hit = ["light", "heavy"]
 
 # Muda Muda Muda rush.
 [stances.stand.moves.heavy]
+shout = "MUDA"
 label = "MUDA MUDA MUDA"
 info = "Rafale de 6 coups, le dernier projette"
 startup_f = 10
@@ -105,6 +107,7 @@ anim = "light"
 
 # The World: time stops for 5 seconds.
 [stances.stand.moves.special]
+shout = "ZA WARUDO !"
 label = "THE WORLD"
 info = "Arrête le temps 5 s (recharge 25 s)"
 startup_f = 20
@@ -138,6 +141,7 @@ spread_deg = 40
 
 # Heart Heat Attack (1 bar): a crushing kick from The World.
 [moves.hha]
+shout = "MUDA !"
 label = "COUP DE PIED DU MONDE"
 info = "Invincible au démarrage, projette"
 startup_f = 18
@@ -157,6 +161,7 @@ anim = "heavy"
 # Great Heat Attack (2 bars): Road Roller! Time stops, then a road roller drops on the
 # spot where the opponent stood.
 [moves.gha]
+shout = "ROAD ROLLER DA !"
 label = "ROAD ROLLER"
 info = "Arrête le temps et écrase la cible"
 time_stop_s = 2.5

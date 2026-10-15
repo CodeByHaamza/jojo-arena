@@ -22,7 +22,7 @@ from jojo_arena.engine.sprites import (
 )
 from jojo_arena.paths import SPRITES_DIR
 from jojo_arena.stages.base import StageDef
-from jojo_arena.ui import vfx
+from jojo_arena.ui import sfx, vfx
 
 OUTLINE = (23, 18, 31)
 STAND_ALPHA = 215  # Stands look a little spectral
@@ -224,6 +224,10 @@ class FightView:
         self.waves: list[list] = []  # time stop shockwaves: [center, age]
         self.tick = 0
         self._overlays: dict[tuple, pygame.Surface] = {}
+        self.words = sfx.SfxLayer()
+        self.fx = vfx.EffectsLayer()
+        self._seen: list[tuple] = [(None, -1), (None, -1)]  # (state, attack serial) per fighter
+        self._block_word_f = [0, 0]
 
     # Reacting to the simulation ------------------------------------------------------
 
@@ -234,7 +238,9 @@ class FightView:
         a, b = (view.chest for view in self.fighter_views)
         return (a + b) * 0.5
 
-    def on_events(self, events: list[Event]) -> None:
+    def on_events(self, events: list[Event], match: Match | None = None) -> None:
+        if match is not None:
+            self._comic(events, match)
         for event in events:
             pos = event.pos + self.chest(event.fighter) if event.pos is not None else None
             if event.kind == "hit":
@@ -283,7 +289,133 @@ class FightView:
             elif event.kind == "ko":
                 self.shake = max(self.shake, 14)
 
-    def update(self) -> None:
+    def _shout_style(self, index: int):
+        return sfx.shout_style(self.fighter_defs[index].aura)
+
+    def _head(self, fighter: Fighter) -> Vec2:
+        return fighter.pos + Vec2(0, -self.fighter_views[fighter.index].height - 8)
+
+    def _comic(self, events: list[Event], match: Match) -> None:
+        """Sound effects written on screen and impact effects, comic-book style."""
+        words, fx = self.words, self.fx
+        for event in events:
+            kind = event.kind
+            pos = event.pos + self.chest(event.fighter) if event.pos is not None else None
+            if kind == "hit" and event.fighter is not None:
+                attacker = match.fighters[1 - event.fighter]
+                attack = attacker.attack
+                move = attack.move if attack is not None else None
+                if move is not None and move.hits > 1:
+                    word = move.shout or "!"
+                    base = attacker.stand_pos() or attacker.pos
+                    center = base + self.chest(attacker.index) + Vec2(0, -24)
+                    style = self._shout_style(attacker.index)
+                    if attack.hits_done >= move.hits:
+                        words.add(word + " !", center + Vec2(0, -12), style, 3, 44, 0.3, 2)
+                        words.add(sfx.DOGO, pos + Vec2(0, -16), "impact", 3, 36, 0.4, 1)
+                        fx.add(vfx.Ring(pos, (255, 240, 200), 3.0, 12, 3))
+                        fx.focus(pos, heavy=True)
+                    else:
+                        words.scatter(word, center, 24, style=style, scale=2, life=20, rise=0.9)
+                    fx.add(vfx.Flash(pos, 12))
+                    continue
+                if event.value >= 70:
+                    words.add(sfx.DON if self.tick % 2 else sfx.DOGO, pos + Vec2(0, -14))
+                    fx.add(vfx.Flash(pos, 18))
+                    fx.add(vfx.Ring(pos, (255, 236, 190), 2.5, 10))
+                    fx.focus(pos, heavy=True)
+                elif event.value >= 35:
+                    fx.add(vfx.Flash(pos, 11))
+                    fx.focus(pos, heavy=False)
+                else:
+                    fx.add(vfx.Flash(pos, 7))
+            elif kind == "block" and event.fighter is not None:
+                if self._block_word_f[event.fighter] <= 0:
+                    words.add(sfx.GA, pos + Vec2(0, -10), "block", 2, 18, 0.5)
+                    self._block_word_f[event.fighter] = 12
+                fx.add(vfx.Flash(pos, 8, (120, 170, 255)))
+            elif kind == "guard_break":
+                words.add(sfx.BAKI, pos + Vec2(0, -16), "white", 3, 40, 0.3, 2)
+                fx.add(vfx.Ring(pos, (200, 220, 255), 3.0, 14, 3))
+                fx.focus(pos, heavy=True)
+            elif kind == "wall_bounce":
+                words.add(sfx.DON, pos + Vec2(0, -12), "impact", 2, 30)
+                fx.dust(event.pos, 8, 1.6)
+                fx.add(vfx.Ring(pos, (220, 200, 170), 2.0, 10))
+            elif kind == "prop_break":
+                words.add(sfx.BAKI, pos + Vec2(0, -8), "impact", 2, 30)
+                fx.dust(event.pos, 10, 1.8, 4)
+            elif kind == "ko" and event.fighter is not None:
+                loser = match.fighters[event.fighter]
+                words.add(sfx.BAAN, self._head(loser) + Vec2(0, -6), "ko", 4, 80, 0.15, 1)
+                fx.add(vfx.Ring(pos, (255, 90, 90), 3.5, 18, 3))
+                fx.dust(loser.pos, 12, 2.0, 4)
+            elif kind == "clash_start":
+                words.add(sfx.DODODO, pos + Vec2(0, -30), "menace", 2, 60, 0.2, 1)
+                fx.add(vfx.Ring(pos, (255, 255, 255), 3.0, 14, 3))
+            elif kind == "clash_win" and event.fighter is not None:
+                champion = match.fighters[event.fighter]
+                shout = self._rush_word(champion) + " !"
+                words.add(shout, self._head(champion), self._shout_style(champion.index), 3, 50)
+                words.add(sfx.DOGO, pos, "impact", 3, 40, 0.4, 2)
+                fx.add(vfx.Ring(pos, (255, 240, 200), 4.0, 16, 3))
+                fx.focus(pos, heavy=True)
+            elif kind in ("hha", "gha") and event.fighter is not None:
+                user = match.fighters[event.fighter]
+                aura = self.fighter_defs[user.index].aura
+                fx.add(vfx.Ring(pos, aura, 4.0, 18, 3))
+                words.add(sfx.DODODO, self._head(user) + Vec2(0, -8), "menace", 2, 50, 0.25, 1)
+            elif kind == "stance_switch" and event.fighter is not None:
+                user = match.fighters[event.fighter]
+                if user.switch_target != user.base_stance:
+                    fx.add(vfx.Ring(pos, self.fighter_defs[user.index].aura, 2.5, 14, 2))
+                    side = -1 if user.facing.x >= 0 else 1
+                    words.menace(user.pos + self.chest(user.index), side)
+            elif kind == "delayed_hits":
+                words.add(sfx.DOGO, pos + Vec2(0, -10), "impact", 3, 44, 0.3, 2)
+                fx.add(vfx.Ring(pos, (255, 230, 180), 3.5, 16, 3))
+                fx.focus(pos, heavy=True)
+            elif kind == "stylish":
+                fx.add(vfx.Ring(pos, (255, 210, 90), 2.5, 14))
+
+    def _rush_word(self, fighter: Fighter) -> str:
+        """What a fighter shouts while mashing a rush: its rush move's shout."""
+        for move in fighter.kit.all_moves():
+            if move.hits > 1 and move.shout:
+                return move.shout
+        return "!"
+
+    def _observe(self, match: Match) -> None:
+        """Effects that follow what fighters are doing rather than one event."""
+        for fighter in match.fighters:
+            i = fighter.index
+            last_state, last_serial = self._seen[i]
+            attack = fighter.attack
+            serial = attack.serial if attack is not None else last_serial
+            if fighter.state == State.DASH and last_state != State.DASH:
+                self.fx.dust(fighter.pos, 5, 1.0)
+                self.fx.add(vfx.SpeedLines(fighter.pos + self.chest(i), fighter.dash_dir))
+            if attack is not None and serial != last_serial and fighter.state == State.ATTACK:
+                move = attack.move
+                if move.shout and move.hits <= 1:
+                    self.words.add(move.shout, self._head(fighter), self._shout_style(i), 2, 46)
+                elif move.hits > 1:
+                    self.words.add(sfx.DODODO, self._head(fighter), "menace", 2, 30, 0.4, 1)
+            if fighter.state == State.POSE and fighter.state_f % 16 == 0:
+                side = 1 if (fighter.state_f // 16) % 2 else -1
+                self.words.menace(fighter.pos + self.chest(i), side)
+            if match.clash is not None and self.tick % 6 == i * 3:
+                center = fighter.pos + self.chest(i) + Vec2(0, -12)
+                style = self._shout_style(i)
+                self.words.scatter(self._rush_word(fighter), center, 16, style=style, life=18)
+            self._seen[i] = (fighter.state, serial)
+            self._block_word_f[i] = max(0, self._block_word_f[i] - 1)
+
+    def update(self, match: Match | None = None) -> None:
+        if match is not None:
+            self._observe(match)
+        self.words.update()
+        self.fx.update()
         for wave in self.waves:
             wave[1] += 1
         self.waves = [w for w in self.waves if w[1] < 40]
@@ -348,6 +480,7 @@ class FightView:
             radius = 8 + age * 9
             ring = (255, 255, 255) if age % 4 < 2 else (180, 160, 255)
             pygame.draw.circle(surface, ring, center.as_ints(), radius, 2)
+        self.fx.draw(surface)
         if match.clash is not None:
             self._draw_clash(surface, match)
         if match.time_stop is not None and match.super_freeze == 0:
@@ -357,12 +490,17 @@ class FightView:
             surface.blit(negative, (0, 0), special_flags=pygame.BLEND_RGB_SUB)
         if match.slowmo:
             surface.blit(self._overlay(surface.get_size(), (40, 30, 90, 50)), (0, 0))
+        self.words.draw(surface)
         if self.flash:
             surface.blit(
                 self._overlay(surface.get_size(), (255, 255, 255, 20 * self.flash)), (0, 0)
             )
         if self.shake:
-            surface.scroll(1 if self.shake % 2 else -1, 1 if self.shake % 4 < 2 else 0)
+            # Big hits shake harder; the shake settles as it runs out.
+            amplitude = 1 + min(2, self.shake // 5)
+            dx = amplitude if self.shake % 2 else -amplitude
+            dy = (amplitude - 1 or 1) * (1 if self.shake % 4 < 2 else -1)
+            surface.scroll(dx, dy)
 
     def _overlay(self, size: tuple[int, int], rgba: tuple[int, int, int, int]) -> pygame.Surface:
         """Full-screen translucent color, cached per size and color."""

@@ -78,9 +78,9 @@ class FightScene(Scene):
             self.pause_menu = Menu(self._pause_items())
             return
         events = self.rounds.step((frames[0], frames[1]))
-        self.view.on_events(events)
+        self.view.on_events(events, self.rounds.match)
         self.hud.on_events(events, self.rounds)
-        self.view.update()
+        self.view.update(self.rounds.match)
         self.hud.update(self.rounds)
         if self.rounds.phase == Phase.MATCH_OVER and self.rounds.phase_f >= RESULT_MENU_AFTER_F:
             if self.demo:

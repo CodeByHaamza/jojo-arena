@@ -128,6 +128,7 @@ class MoveDef:
     disarm_f: int = 0  # the Stand's own moves are unavailable this long afterwards
     buff: str = ""  # name of a buff (kit [buffs]) started by this move
     fx: str = ""  # drawn while active: "limb", "tentacle" or "blade" out to `reach`
+    shout: str = ""  # written on screen when used (each hit of a rush: "ORA", "MUDA")
     label: str = ""  # display name in the move list
     info: str = ""  # one-line description in the move list
 
@@ -174,6 +175,7 @@ class MoveDef:
             disarm_f=seconds_to_frames(data.get("disarm_s", 0)),
             buff=data.get("buff", ""),
             fx=data.get("fx", ""),
+            shout=data.get("shout", ""),
             label=data.get("label", ""),
             info=data.get("info", ""),
         )

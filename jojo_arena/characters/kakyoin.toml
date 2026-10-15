@@ -101,6 +101,7 @@ wall_bounce = true
 
 # Emerald Splash!
 [stances.stand.moves.special]
+shout = "EMERALD SPLASH !"
 label = "EMERALD SPLASH"
 info = "Salve de 6 émeraudes"
 startup_f = 14
@@ -150,6 +151,7 @@ spread_deg = 30
 
 # Heart Heat Attack (1 bar): Hierophant Green bursts out around Kakyoin.
 [moves.hha]
+shout = "HIEROPHANT !"
 label = "HIEROPHANT DÉCHAÎNÉ"
 info = "Explosion tout autour"
 startup_f = 20
@@ -169,6 +171,7 @@ anim = "special"
 # Great Heat Attack (2 bars): 20 Metre Radius Emerald Splash - emeralds close in from
 # every side.
 [moves.gha]
+shout = "EMERALD SPLASH !"
 label = "EMERALD SPLASH 20 MÈTRES"
 info = "Les émeraudes arrivent de partout"
 startup_f = 30

@@ -6,6 +6,8 @@ Everything is drawn with a few pixels of pygame primitives, in the style A palet
 
 from __future__ import annotations
 
+import random
+
 import pygame
 
 from jojo_arena.engine.effects import blit_glow, radial_glow
@@ -118,3 +120,146 @@ def draw_reach(
     pygame.draw.lines(surface, shade(color, 50), False, ints[:-1], 1)
     pygame.draw.circle(surface, OUTLINE, _ints(tip), width + 1)
     pygame.draw.circle(surface, shade(color, 30), _ints(tip), width)
+
+
+# Short-lived effects ------------------------------------------------------------------
+
+
+class Effect:
+    """Something drawn for `life` frames, then gone."""
+
+    def __init__(self, life: int) -> None:
+        self.age = 0
+        self.life = life
+
+    @property
+    def done(self) -> bool:
+        return self.age >= self.life
+
+    @property
+    def fade(self) -> float:
+        return 1 - self.age / self.life
+
+    def update(self) -> None:
+        self.age += 1
+
+    def draw(self, surface: pygame.Surface) -> None:
+        raise NotImplementedError
+
+
+class Ring(Effect):
+    """A shockwave: a ring of light sweeping out (added light, so it glows)."""
+
+    def __init__(self, center: Vec2, color, speed: float, life: int, width: int = 2) -> None:
+        super().__init__(life)
+        self.center, self.color, self.speed, self.width = center, color, speed, width
+
+    def draw(self, surface: pygame.Surface) -> None:
+        radius = round(4 + self.age * self.speed)
+        size = radius * 2 + 4
+        layer = pygame.Surface((size, size))
+        color = tuple(round(c * self.fade) for c in self.color)
+        pygame.draw.circle(layer, color, (size // 2, size // 2), radius, self.width)
+        x, y = _ints(self.center)
+        surface.blit(layer, (x - size // 2, y - size // 2), special_flags=pygame.BLEND_ADD)
+
+
+class Dust(Effect):
+    """A puff of dust kicked up from the ground."""
+
+    def __init__(self, pos: Vec2, velocity: Vec2, size: float, life: int = 18) -> None:
+        super().__init__(life)
+        self.pos, self.velocity, self.size = pos, velocity, size
+
+    def update(self) -> None:
+        super().update()
+        self.pos = self.pos + self.velocity
+        self.velocity = self.velocity * 0.85
+
+    def draw(self, surface: pygame.Surface) -> None:
+        radius = max(1, round(self.size * (0.6 + self.age / self.life)))
+        layer = pygame.Surface((radius * 2 + 2, radius * 2 + 2), pygame.SRCALPHA)
+        pygame.draw.circle(
+            layer, (176, 166, 150, round(150 * self.fade)), (radius + 1, radius + 1), radius
+        )
+        x, y = _ints(self.pos)
+        surface.blit(layer, (x - radius - 1, y - radius - 1))
+
+
+class FocusLines(Effect):
+    """Manga impact lines converging on a hit."""
+
+    def __init__(self, center: Vec2, inner: float, outer: float, count: int, seed: int) -> None:
+        super().__init__(6)
+        self.center, self.inner, self.outer = center, inner, outer
+        rng = random.Random(seed)
+        self.angles = [rng.uniform(0, 6.283) for _ in range(count)]
+        self.lengths = [rng.uniform(0.6, 1.0) for _ in range(count)]
+
+    def draw(self, surface: pygame.Surface) -> None:
+        grow = 1 + self.age * 0.15
+        for angle, length in zip(self.angles, self.lengths, strict=True):
+            d = Vec2.from_angle(angle)
+            a = self.center + d * (self.inner * grow)
+            b = self.center + d * (self.inner + (self.outer - self.inner) * length) * grow
+            pygame.draw.line(surface, OUTLINE, _ints(a), _ints(b), 3)
+            pygame.draw.line(surface, (255, 252, 236), _ints(a), _ints(b), 1)
+
+
+class Flash(Effect):
+    """A burst of white light on the point of impact."""
+
+    def __init__(self, center: Vec2, radius: int, color=(255, 255, 255), life: int = 4) -> None:
+        super().__init__(life)
+        self.center, self.radius, self.color = center, radius, color
+
+    def draw(self, surface: pygame.Surface) -> None:
+        color = tuple(round(c * self.fade) for c in self.color)
+        blit_glow(surface, radial_glow(self.radius, color, falloff=1.2), self.center)
+
+
+class SpeedLines(Effect):
+    """A few streaks behind something moving fast."""
+
+    def __init__(self, pos: Vec2, direction: Vec2, color=(230, 226, 240), life: int = 8) -> None:
+        super().__init__(life)
+        self.pos, self.direction, self.color = pos, direction.normalized(), color
+
+    def draw(self, surface: pygame.Surface) -> None:
+        side = _side(self.direction)
+        color = tuple(round(c * self.fade) for c in self.color)
+        for i, (offset, length) in enumerate(((-6, 14), (-1, 20), (4, 12), (9, 16))):
+            start = self.pos + side * offset - self.direction * (4 + i * 2 + self.age * 2)
+            end = start - self.direction * length
+            pygame.draw.line(surface, color, _ints(start), _ints(end), 1)
+
+
+class EffectsLayer:
+    def __init__(self) -> None:
+        self.effects: list[Effect] = []
+        self._seed = 0
+
+    def add(self, effect: Effect) -> None:
+        self.effects.append(effect)
+
+    def dust(self, pos: Vec2, count: int, spread: float = 1.2, size: float = 3) -> None:
+        for i in range(count):
+            angle = 6.283 * i / count + self._seed * 0.7
+            self._seed += 1
+            direction = Vec2.from_angle(angle, spread)
+            velocity = Vec2(direction.x, direction.y * 0.45)
+            self.add(Dust(pos + velocity * 2, velocity, size))
+
+    def focus(self, center: Vec2, heavy: bool) -> None:
+        self._seed += 1
+        inner, outer, count = (10, 30, 14) if heavy else (7, 18, 9)
+        self.add(FocusLines(center, inner, outer, count, self._seed))
+
+    def update(self) -> None:
+        for effect in self.effects:
+            effect.update()
+        self.effects = [e for e in self.effects if not e.done]
+
+    def draw(self, surface: pygame.Surface) -> None:
+        for effect in self.effects:
+            effect.draw(surface)

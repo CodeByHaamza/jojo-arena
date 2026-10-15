@@ -89,6 +89,7 @@ cancel_on_hit = ["light", "heavy"]
 
 # Hora Hora Hora: a flurry of thrusts.
 [stances.stand.moves.heavy]
+shout = "HORA"
 shape = "line"
 fx = "blade"
 label = "HORA HORA HORA"
@@ -129,6 +130,7 @@ hitstop_f = 8
 
 # Armor Off.
 [stances.stand.moves.special_alt]
+shout = "ARMOR OFF !"
 label = "ARMOR OFF"
 info = "8 s : bien plus rapide, mais encaisse plus"
 startup_f = 16
@@ -159,6 +161,7 @@ anim = "heavy"
 
 # Great Heat Attack (2 bars): Armor Off clone barrage all around.
 [moves.gha]
+shout = "HORA"
 label = "RAFALE DE CLONES"
 info = "12 coups tout autour, invincible au démarrage"
 startup_f = 16

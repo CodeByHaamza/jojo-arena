@@ -82,6 +82,7 @@ cancel_on_hit = ["light", "heavy"]
 
 # Ora Ora Ora rush: 6 hits, the last one sends flying.
 [stances.stand.moves.heavy]
+shout = "ORA"
 label = "ORA ORA ORA"
 info = "Rafale de 6 coups, le dernier projette"
 startup_f = 10
@@ -101,6 +102,7 @@ anim = "light"
 
 # Star Platinum: The World - stops time for 3 seconds.
 [stances.stand.moves.special]
+shout = "STAR PLATINUM !"
 label = "STAR PLATINUM : THE WORLD"
 info = "Arrête le temps 3 s (recharge 20 s)"
 startup_f = 18
@@ -112,6 +114,7 @@ anim = "pose"
 
 # Star Finger: the finger stretches to mid range.
 [stances.stand.moves.special_alt]
+shout = "STAR FINGER !"
 label = "STAR FINGER"
 info = "Le doigt s'allonge et transperce jusqu'à mi-distance"
 shape = "line"
@@ -131,6 +134,7 @@ anim = "light"
 
 # Heart Heat Attack (1 bar): a full-power Star Platinum punch.
 [moves.hha]
+shout = "ORAA !"
 label = "POING ÉCRASANT"
 info = "Invincible au démarrage, projette"
 startup_f = 18
@@ -149,6 +153,7 @@ anim = "heavy"
 
 # Great Heat Attack (2 bars): time stops, then a final Ora Ora rush.
 [moves.gha]
+shout = "ORA"
 label = "ORA ORA FINAL"
 info = "Arrête le temps puis rafale de 8 coups"
 time_stop_s = 2.0
