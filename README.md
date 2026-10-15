@@ -55,6 +55,13 @@ Pour changer les touches, modifie `controls.json` dans `%APPDATA%\JoJoArena\` pu
 
 ## Développement
 
+Pour contribuer, commence par [CONTRIBUTING.md](CONTRIBUTING.md). La doc du projet :
+
+- [docs/GDD.md](docs/GDD.md) : le game design, qui fait foi ;
+- [docs/ROADMAP.md](docs/ROADMAP.md) : ce qui est fait, en cours et à venir ;
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) : l'organisation du code ;
+- [docs/KITS.md](docs/KITS.md) : tous les champs d'un kit de perso.
+
 Il faut Python 3.12 ou plus récent.
 
 ```powershell
@@ -72,6 +79,7 @@ Le `Makefile` regroupe les commandes courantes ; `make` tout seul affiche la lis
 | `make training P1=dio_p3 P2=kakyoin` | va droit à l'entraînement |
 | `make fight`, `make versus`, `make demo` | combat direct, écran VS, ou ordinateur contre ordinateur |
 | `make check` | lint puis tests, comme la CI : à lancer avant un commit |
+| `make hooks` | une fois : lint et tests rapides automatiques avant chaque commit |
 | `make test-fast` | les tests sans ceux qui lancent le jeu entier |
 | `make screens` | capture tous les écrans dans `screenshots/tour/` |
 | `make sprites`, `make exe`, `make clean` | planches de sprites, `.exe`, nettoyage |

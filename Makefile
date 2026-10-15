@@ -27,7 +27,7 @@ SCENE ?= title
 ARGS ?=
 
 .DEFAULT_GOAL := help
-.PHONY: help install run menu training fight versus demo test test-fast lint format check \
+.PHONY: help install hooks run menu training fight versus demo test test-fast lint format check \
         screens screenshot sprites exe clean
 
 help:
@@ -35,6 +35,7 @@ help:
 	$(info )
 	$(info Setup)
 	$(info $(INDENT)make install      create .venv and install the game with its dev tools)
+	$(info $(INDENT)make hooks        check lint and quick tests before every commit)
 	$(info )
 	$(info Play)
 	$(info $(INDENT)make run          start the game on the title screen (ARGS=... for options))
@@ -46,7 +47,7 @@ help:
 	$(info )
 	$(info Check)
 	$(info $(INDENT)make test         all the tests)
-	$(info $(INDENT)make test-fast    tests without the slow whole-game smoke tests)
+	$(info $(INDENT)make test-fast    tests without the slow ones (whole game, random fights))
 	$(info $(INDENT)make lint         ruff lint and format check (same as the CI))
 	$(info $(INDENT)make format       fix the formatting and the lint issues that can be fixed)
 	$(info $(INDENT)make check        lint then tests: run this before a commit)
@@ -68,6 +69,9 @@ $(VENV_PY):
 
 install: $(VENV_PY)
 	$(PY) -m pip install -e ".[dev]"
+
+hooks:
+	git config core.hooksPath .githooks
 
 # Play -----------------------------------------------------------------------------------
 
@@ -95,7 +99,7 @@ test: $(VENV_PY)
 	$(PY) -m pytest -q
 
 test-fast: $(VENV_PY)
-	$(PY) -m pytest -q --ignore=tests/test_app.py
+	$(PY) -m pytest -q --ignore=tests/test_app.py --ignore=tests/test_fuzz.py
 
 lint: $(VENV_PY)
 	$(PY) -m ruff check .

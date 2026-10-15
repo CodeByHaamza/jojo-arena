@@ -1,0 +1,13 @@
+#!/bin/sh
+# Lint and quick tests before each commit. Enable once with: make hooks
+# Skip in an emergency with: git commit --no-verify
+if [ -x .venv/Scripts/python.exe ]; then
+    PY=.venv/Scripts/python.exe
+else
+    PY=.venv/bin/python
+fi
+echo "pre-commit: ruff"
+"$PY" -m ruff check . || exit 1
+"$PY" -m ruff format --check . || exit 1
+echo "pre-commit: quick tests"
+"$PY" -m pytest -q -x --ignore=tests/test_app.py --ignore=tests/test_fuzz.py || exit 1
