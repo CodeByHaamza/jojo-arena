@@ -17,7 +17,7 @@ GOLD = (255, 214, 90)
 DIM = (150, 144, 170)
 WARNING = (240, 90, 90)
 DEFAULT_ROUNDS_TO_WIN = 3
-DEFAULT_FIGHTERS = ("jotaro_p3", "mannequin_blue")
+DEFAULT_FIGHTERS = ("jotaro_p3", "kakyoin")
 
 
 class SetupScene(Scene):

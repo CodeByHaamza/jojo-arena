@@ -44,9 +44,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--rounds", type=int, default=3, choices=[1, 3, 5], help="rounds to win (--scene fight)"
     )
     parser.add_argument("--p1", default="jotaro_p3", help="player 1 fighter id (--scene fight)")
-    parser.add_argument(
-        "--p2", default="mannequin_blue", help="player 2 fighter id (--scene fight)"
-    )
+    parser.add_argument("--p2", default="kakyoin", help="player 2 fighter id (--scene fight)")
     return parser.parse_args(argv)
 
 

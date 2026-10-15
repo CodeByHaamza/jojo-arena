@@ -16,6 +16,14 @@ color = "#5a6ad0"
 aura = "#9b7bff"
 
 [[fighters]]
+id = "kakyoin"
+name = "NORIAKI KAKYOIN"
+kit = "mannequin"
+sprite = "kakyoin/kakyoin"
+color = "#5fae55"
+aura = "#59f08c"
+
+[[fighters]]
 id = "mannequin_red"
 name = "MANNEQUIN ROUGE"
 kit = "mannequin"

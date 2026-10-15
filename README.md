@@ -6,7 +6,7 @@ Fan game **gratuit, open source et non commercial** : un arena fighter 1v1 en te
 
 ## État du projet
 
-Prototype jouable de la **Vague 0** (moteur) : combat local J1 contre J2 sur l'arène du Caire. Jotaro Kujo (Partie 3) a son apparence, mais combat encore avec les coups du mannequin générique en attendant son kit (Vague 1). Le game design complet est dans [docs/GDD.md](docs/GDD.md).
+Prototype jouable de la **Vague 0** (moteur) : combat local J1 contre J2 sur l'arène du Caire. Jotaro Kujo et Noriaki Kakyoin (Partie 3) ont leur apparence, mais combattent encore avec les coups du mannequin générique en attendant leur kit (Vague 1). Le game design complet est dans [docs/GDD.md](docs/GDD.md).
 
 Ce qui marche déjà :
 
@@ -122,12 +122,21 @@ Toutes les valeurs d'équilibrage sont dans des fichiers TOML commentés : `comb
 
 ## Créer ou modifier l'apparence d'un perso
 
-Les sprites des persos sont **générés à partir d'une fiche de données**, sans dessin à la main. La fiche se trouve dans `jojo_arena/characters/looks/<id>.toml` (voir `jotaro_p3.toml`). Elle contient :
+Les sprites des persos sont **générés à partir d'une fiche de données**, sans dessin à la main. La fiche se trouve dans `jojo_arena/characters/looks/<id>.toml` (voir `jotaro_p3.toml` et `kakyoin.toml`). Elle contient :
 
+- `[build]` : la morphologie, en pixels : taille de la tête (`head_r`), longueur du torse, des jambes et des bras, largeur des épaules, épaisseur des membres… C'est ce qui donne à chaque perso sa silhouette (Jotaro grand et carré, Kakyoin élancé).
 - `[palette]` : les couleurs du perso. Une seule couleur suffit, les ombres et les reflets sont calculés.
 - `[body]` : la couleur de chaque partie du corps (tête, torse, bras = manches, jambes = pantalon…).
-- `[face]` : yeux, sourcils, bouche.
-- `[[parts]]` : les pièces de costume : `hair` (styles `short`, `long`, `tower`, `spiky`, mèches `curl` ou `fringe`), `cap`, `headband`, `coat` (longueur, ouvert ou fermé, col), `belt`, `chain`, `emblem` (cœur, rond, losange, sur la poitrine ou les genoux), `earring`.
+- `[face]` : couleur des yeux, style (`dot`, `tall`, `wide` avec paupière), sourcils, bouche, nez de profil.
+- `[[parts]]` : les pièces de costume :
+  - `hair` : styles `short`, `long`, `tower`, `spiky`, `swept` ; mèches sur la nuque ; mèche `curl` ondulée ou frange `fringe` ;
+  - `cap` : hauteur, bandeau, un ou deux insignes, mèches effilochées sous la casquette ;
+  - `headband` ;
+  - `coat` : longueur, ouvert ou fermé, évasement, col, épingles de col, boutons, doublure, boutons de manche ;
+  - `belt` : une ou deux, rivets, boucle ;
+  - `chain` : longueur ;
+  - `emblem` : cœur, rond ou losange, sur la poitrine ou les genoux ;
+  - `earring` : simple ou en cerise.
 
 Après une modification, régénère la planche :
 
@@ -139,7 +148,7 @@ Le script écrit la planche du jeu dans `jojo_arena/assets/sprites/<id>/`, et de
 
 ### Format d'une planche
 
-Une planche est un PNG en cases de 48 × 48 accompagné d'un TOML du même nom. Le TOML liste les animations (`idle`, `walk`, `light`, `heavy`, `special`, `dash`, `guard`, `hurt`, `ko`, `pose`). Chaque animation occupe 3 lignes de la planche : vue de face (`down`), de dos (`up`) et de profil vers la droite (`right`). La gauche est le miroir de la droite.
+Une planche est un PNG en cases carrées (64 × 64 pour les persos générés) accompagné d'un TOML du même nom, qui donne aussi la taille des cases, le point des pieds, et les hauteurs de la poitrine et du haut de la tête (pour placer les effets). Le TOML liste les animations (`idle`, `walk`, `light`, `heavy`, `special`, `dash`, `guard`, `hurt`, `ko`, `pose`). Chaque animation occupe 3 lignes de la planche : vue de face (`down`), de dos (`up`) et de profil vers la droite (`right`). La gauche est le miroir de la droite.
 
 - Une planche dessinée à la main peut remplacer une planche générée, sans changer le code : il suffit de garder les mêmes noms de fichiers.
 - Si une planche manque, le jeu affiche une forme simple de la couleur du perso.
