@@ -69,6 +69,11 @@ muet. **Ce n'est pas pour jouer** — le jeu se joue depuis le `.exe` ou les sou
 pour reproduire un échec de CI sans rien installer, et pour qu'un contributeur sous Linux
 ou macOS vérifie son travail exactement comme la CI.
 
+> **Pas encore vérifié en vrai** : le `Dockerfile` et le `docker-compose.yml` sont écrits
+> et la configuration compose est valide (`docker compose config`), mais l'image n'a pas
+> été construite — le démon Docker n'était pas lancé. La liste des bibliothèques SDL est à
+> confirmer au premier `docker build`.
+
 ## Couverture
 
 ```
