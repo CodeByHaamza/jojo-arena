@@ -19,7 +19,7 @@ Ce qui marche déjà :
 - onomatopées façon JoJo (ゴゴゴ, ドン, ORA, MUDA…), poses iconiques, effets d'impact ;
 - ultimes en cinématique avec caméra (Road Roller, Ora Ora final, clones de Chariot, toile de Hierophant), seulement si le premier coup touche ;
 - mode contrôle de Hierophant Green (maintenir Stand) avec possession ;
-- caisses et jarres à ramasser (Pose) et à lancer (attaque), qui reviennent à leur place ;
+- caisses et jarres : le Stand les prend (Pose) et les lance (Pose), plus ou moins fort selon sa puissance ; elles reviennent à leur place ;
 - recul, rebond sur les murs, étals et caisses cassables ;
 - touche Stand : le Stand apparaît à côté de son manieur et change les coups ; un coup sur le Stand blesse son manieur ;
 - coups propres à chaque perso : arrêt du temps (Jotaro, DIO), couteaux, saisie qui draine la vie, fils piégés, Emerald Splash, Armor Off, GHA (2 barres) ;
@@ -52,7 +52,7 @@ Les touches sont liées à leur **position** sur le clavier : ZQSD en AZERTY cor
 | Dash / esquive | Espace | A / Croix | V | 0 |
 | Garde (Flash Cancel pendant une attaque) | Maj gauche | LB / L1 | C | 1 |
 | Heart Heat : HHA ; direction + Heart Heat : GHA (2 barres) | O | RT / R2 | T | 9 |
-| Pose (près d'un objet : le ramasser) | P | Select / Touchpad | Y | 7 |
+| Pose (près d'un objet : le Stand le prend, puis le lance) | P | Select / Touchpad | Y | 7 |
 | Power Up (pas encore utilisé) | U | LT / L2 | B | 3 |
 
 Choisis la configuration (J1 clavier + J2 manette, clavier partagé, deux manettes) dans **Options** ou sur l'écran VS du **Combat local**. Options affiche aussi le tableau des touches des deux joueurs.

@@ -7,6 +7,7 @@
 name = "Jean Pierre Polnareff"
 max_hp = 880
 walk_speed = 104
+strength = 1.1  # Silver Chariot: quick rather than strong
 style = { type = "stance_toggle", off = "base", on = "stand", stand_body = true }
 
 # Silver Chariot drops its armor: much faster and hits a bit harder, but takes far more.

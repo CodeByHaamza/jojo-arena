@@ -88,6 +88,7 @@ class FighterView:
         self.height = self.sprites.height
         self.shadow = (round(14 + self.height * 0.25), 7)
         self.stand: SheetSprites | None = None
+        self.throw_f = 0  # frames left of the Stand's throw pose (view only)
         if fighter_def.stand_sprite:
             base = SPRITES_DIR / fighter_def.stand_sprite
             self.stand = SheetSprites.load(base.with_suffix(".png"), base.with_suffix(".toml"))
@@ -141,7 +142,14 @@ class FighterView:
         attack = fighter.attack
         if fighter.state == State.ATTACK and attack is not None and attack.move.stand_flash:
             return 1.0  # it surges out for this one blow
+        if fighter.carrying is not None or self.throw_f > 0:
+            return 1.0  # the Stand holds (or throws) a prop, even when called back
         return 1.0 if fighter.aura_active else 0.0
+
+    def _stand_pose(self, fighter: Fighter, anim: str, index: int) -> pygame.Surface:
+        name, spec = self.resolve(self.stand, anim)
+        direction, flip = sprite_direction(fighter.facing.x, fighter.facing.y)
+        return self.stand.frame(name, direction, flip, min(index, spec.frames - 1))
 
     def draw_stand(self, surface: pygame.Surface, fighter: Fighter, tick: int) -> None:
         presence = self.stand_presence(fighter)
@@ -152,7 +160,12 @@ class FighterView:
         chest = pos + Vec2(0, -self.stand.chest - lift)
         aura = tuple(round(c * 0.45 * presence) for c in self.fighter_def.aura)
         blit_glow(surface, radial_glow(26, aura), chest)
-        image = self.current_frame(fighter, self.stand).copy()
+        if self.throw_f > 0:
+            image = self._stand_pose(fighter, "heavy", 2).copy()  # the throw
+        elif fighter.carrying is not None and fighter.state != State.ATTACK:
+            image = self._stand_pose(fighter, "guard", 0).copy()  # holding it up
+        else:
+            image = self.current_frame(fighter, self.stand).copy()
         image.set_alpha(round(STAND_ALPHA * presence))
         ax, ay = self.stand.anchor
         _, flip = sprite_direction(fighter.facing.x, fighter.facing.y)
@@ -427,7 +440,15 @@ class FightView:
                 fx.add(vfx.Ring(pos, (255, 210, 90), 2.5, 14))
             elif kind == "throw" and event.fighter is not None:
                 thrower = match.fighters[event.fighter]
-                fx.add(vfx.SpeedLines(pos, thrower.facing))
+                self.fighter_views[event.fighter].throw_f = 14
+                aim = (match.opponent(thrower).pos - thrower.pos).normalized()
+                fx.add(vfx.SpeedLines(pos, aim))
+                if event.value >= match.rules.strong_throw:
+                    # A Stand of brute force: the prop leaves like a cannonball.
+                    fx.add(vfx.SpeedLines(pos + Vec2(0, -6), aim))
+                    fx.add(vfx.Ring(pos, (255, 240, 200), 2.5, 10))
+                    words.add(sfx.DON, self._head(thrower), "impact", 2, 26, 0.4, 1)
+                    self.shake = max(self.shake, 6)
             elif kind in ("pickup", "drop"):
                 fx.dust(event.pos, 4, 0.8, 2)
             elif kind == "prop_respawn":
@@ -492,6 +513,8 @@ class FightView:
             self._block_word_f[i] = max(0, self._block_word_f[i] - 1)
 
     def update(self, match: Match | None = None) -> None:
+        for view in self.fighter_views:
+            view.throw_f = max(0, view.throw_f - 1)
         if match is not None:
             self._observe(match)
             if match.clash is None:
@@ -728,8 +751,13 @@ class FightView:
             view = self.fighter_views[fighter.index]
             if fighter.carrying is not None:
                 obstacle = match.arena.obstacles[fighter.carrying]
-                lift = FighterView.lift(fighter)
-                top = fighter.pos + Vec2(0, -view.height - obstacle.rect.h / 2 - 1 - lift)
+                half = obstacle.rect.h / 2 + 1
+                if view.stand is not None:
+                    # The Stand holds it up over its own head.
+                    spot = fighter.stand_spot()
+                    top = spot + Vec2(0, -view.stand.height - STAND_FLOAT - half)
+                else:
+                    top = fighter.pos + Vec2(0, -view.height - half - FighterView.lift(fighter))
                 self._draw_prop_at(surface, obstacle, top)
                 continue
             key = self.pose_keys[fighter.index]

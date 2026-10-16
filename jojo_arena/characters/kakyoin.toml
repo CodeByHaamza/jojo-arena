@@ -8,6 +8,7 @@
 name = "Noriaki Kakyoin"
 max_hp = 950
 walk_speed = 96
+strength = 0.8  # Hierophant Green: slender, it throws softly
 # Hold the Stand key: Hierophant Green leaves him and is steered from afar (GDD "Mode
 # contrôle"), up to remote_range px away, at remote_speed px/s.
 style = { type = "stance_toggle", off = "base", on = "stand", stand_body = true, remote = "remote", remote_range = 150, remote_speed = 150 }

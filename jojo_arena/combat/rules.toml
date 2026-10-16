@@ -69,16 +69,17 @@ hold_s = 0.5                 # hold the Stand key this long to take control
 break_stun_s = 0.8           # hit while controlling: the Stand snaps back, stunned
 
 [throw]
-# Props picked up (Pose key near one) and thrown (any attack key).
+# Props: Pose near one, the Stand grabs it; Pose again, the Stand throws it. A kit's
+# `strength` multiplies the speed, damage and knockback of its throws.
 reach = 10                   # px between the body and a prop to pick it up
-carry_speed_mult = 0.85      # walking with a prop over the head
+carry_speed_mult = 1.0       # the Stand carries it: its user walks as usual
+strong_throw = 1.5           # from this strength on, a throw sends the victim into a wall bounce
 speed = 380
 radius = 6
 lifetime_s = 1.2
 hitstun_f = 26
 knockback = 260
 hitstop_f = 8
-recovery_f = 14              # the thrower's own recovery
 
 [training]
 refill_after_s = 1.0          # infinite life: it refills once the fighter has recovered this long

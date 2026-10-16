@@ -112,6 +112,7 @@ def build_pages(
         MoveEntry((key("guard"),), text.SYS_GUARD, text.SYS_GUARD_INFO),
         MoveEntry((key("dash"),), text.SYS_DASH, text.SYS_DASH_INFO),
         MoveEntry((key("pose"),), text.SYS_POSE, text.SYS_POSE_INFO),
+        MoveEntry((key("pose"),), text.SYS_PROP, text.SYS_PROP_INFO),
     ]
     if len(kit.stances) > 1:
         basics.insert(1, MoveEntry((key("stand"),), text.SYS_STAND, stand_info))

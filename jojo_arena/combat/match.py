@@ -16,7 +16,7 @@ from jojo_arena.combat.clash import Clash
 from jojo_arena.combat.cutscene import Cutscene
 from jojo_arena.combat.events import Event
 from jojo_arena.combat.fighter import Attack, Fighter, State
-from jojo_arena.combat.kit import Kit, MoveDef, ProjectileDef
+from jojo_arena.combat.kit import Kit, ProjectileDef
 from jojo_arena.combat.projectile import Projectile
 from jojo_arena.combat.rules import Rules
 from jojo_arena.combat.traps import Trap, Web, web_layout
@@ -56,10 +56,6 @@ class Match:
         self.traps: list[Trap] = []
         self.webs: list[Web] = []
         self._last_prop_pos: dict[int, Vec2] = {}
-        # Throwing a prop: a short move with no blow of its own, for the recovery.
-        self._throw_move = MoveDef(
-            "throw", startup_f=1, active_f=1, recovery_f=rules.throw_recovery_f, anim="special"
-        )
         self.cutscene: Cutscene | None = None
         self.hitstop = 0
         self.slowmo = 0  # steps left at half speed (Stylish Evade)
@@ -316,7 +312,7 @@ class Match:
                 hitstun_f=defn.hitstun_f,
                 blockstun_f=defn.blockstun_f or round(defn.hitstun_f * self.rules.blockstun_ratio),
                 knockback=projectile.velocity.normalized() * defn.knockback,
-                wall_bounce=False,
+                wall_bounce=defn.wall_bounce,
                 hitstop_f=defn.hitstop_f,
                 source=projectile.pos - projectile.velocity * 4,
                 where=projectile.pos,
@@ -402,13 +398,12 @@ class Match:
 
     # Props: pick up, throw, drop, respawn -----------------------------------------------
 
-    THROW_KEYS = ("light", "heavy", "special")
-
     def _handle_props(
         self, inputs: tuple[InputFrame, InputFrame]
     ) -> tuple[tuple[InputFrame, InputFrame], list[Event]]:
-        """Pose near a prop picks it up; with a prop held, an attack throws it and Pose
-        puts it down. Those presses are used up and do nothing else."""
+        """Pose near a prop: the Stand grabs it (even called back) and holds it, while its
+        user keeps fighting as usual. Pose again: the Stand throws it. Those Pose presses
+        are used up and do nothing else."""
         events: list[Event] = []
         frames = list(inputs)
         for fighter in self.fighters:
@@ -418,14 +413,9 @@ class Match:
             if fighter.carrying is not None:
                 if fighter.state in (State.HITSTUN, State.GUARD_BROKEN, State.KO):
                     events += self._drop(fighter, fighter.pos)  # knocked: it falls
-                elif fighter.can_act() and any(frame.was_pressed(k) for k in self.THROW_KEYS):
+                elif fighter.state != State.CLASH and frame.was_pressed("pose"):
                     events += self._throw(fighter)
-                    frames[fighter.index] = _without(frame, (*self.THROW_KEYS, "pose"))
-                elif fighter.can_act() and frame.was_pressed("pose"):
-                    events += self._drop(fighter, fighter.pos + fighter.facing * 14)
-                    frames[fighter.index] = _without(frame, ("pose",))
-                else:
-                    frames[fighter.index] = _without(frame, ("pose",))  # no posing with it
+                frames[fighter.index] = _without(frame, ("pose",))  # no posing with it
                 continue
             if fighter.remote or not fighter.can_act() or not frame.was_pressed("pose"):
                 continue
@@ -453,24 +443,28 @@ class Match:
         fighter.carrying = None
         obstacle.carried_by, obstacle.flying = None, True
         target = self.opponent(fighter).pos
-        aim = fighter.aim_at(target)
+        aim = (target - fighter.pos).normalized()
+        if not aim.length_sq():
+            aim = fighter.facing
+        # A Stand built for brute force (Star Platinum, The World...) hurls it much harder.
+        power = fighter.kit.strength
         defn = ProjectileDef(
-            speed=rules.throw_speed,
+            speed=rules.throw_speed * power,
             radius=rules.throw_radius,
-            damage=obstacle.throw_damage,
+            damage=round(obstacle.throw_damage * power),
             lifetime_f=rules.throw_lifetime_f,
-            hitstun_f=rules.throw_hitstun_f,
-            knockback=rules.throw_knockback,
+            hitstun_f=round(rules.throw_hitstun_f * min(power, 1.5)),
+            knockback=rules.throw_knockback * power,
             hitstop_f=rules.throw_hitstop_f,
             look="prop",
+            wall_bounce=power >= rules.strong_throw,
         )
         start = fighter.pos + aim * (rules.body_radius + defn.radius + 2)
         projectile = Projectile(fighter.index, start, aim * defn.speed, defn, defn.lifetime_f)
         projectile.prop = self.arena.obstacles.index(obstacle)
         projectile.key = (fighter.index, -1 - projectile.prop)
         self.projectiles.append(projectile)
-        fighter.start_attack(self._throw_move, target)
-        return [Event("throw", fighter.pos, fighter.index)]
+        return [Event("throw", fighter.pos, fighter.index, power)]
 
     def _drop(self, fighter: Fighter, spot: Vec2) -> list[Event]:
         """The held prop lands on the ground at `spot` (kept inside the arena)."""

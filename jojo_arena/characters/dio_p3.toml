@@ -6,6 +6,7 @@
 name = "DIO (P3)"
 max_hp = 1000
 walk_speed = 100
+strength = 1.8  # The World: overwhelming strength, it hurls props
 style = { type = "stance_toggle", off = "base", on = "stand", stand_body = true }
 
 # DIO alone: the vampire ----------------------------------------------------------------

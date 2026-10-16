@@ -29,6 +29,7 @@ class ProjectileDef:
     origin: str = "self"  # "self", or "ring": around the target, flying inward
     ring_radius: float = 0.0
     homing: float = 0.0  # radians per frame it turns toward the target (0 = straight)
+    wall_bounce: bool = False  # what it hits rebounds off the walls
     waves: int = 1  # volleys thrown one after the other...
     wave_every_f: int = 4  # ...this many frames apart (each volley offset a little)
     look: str = "orb"  # how the view draws it: "orb", "knife", "gem", "blade"
@@ -266,6 +267,7 @@ class Kit:
     shared_moves: dict[str, MoveDef] = field(default_factory=dict)  # same in every stance
     buffs: dict[str, BuffDef] = field(default_factory=dict)
     stance_labels: dict[str, str] = field(default_factory=dict)  # move list headings
+    strength: float = 1.0  # the Stand's raw power: how fast and hard it throws props
 
     def move(self, stance: str, slot: str) -> MoveDef | None:
         return self.stances[stance].moves.get(slot) or self.shared_moves.get(slot)
@@ -317,6 +319,7 @@ def parse_kit(data: dict, kit_id: str, source: str = "kit") -> Kit:
     style_name, style_params = (style, {}) if isinstance(style, str) else (style["type"], style)
     return Kit(
         id=kit_id,
+        strength=data.get("strength", 1.0),
         name=data["name"],
         max_hp=data.get("max_hp", 1000),
         walk_speed=per_frame(walk) if walk else None,

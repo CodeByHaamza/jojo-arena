@@ -89,7 +89,7 @@ class Rules:
     throw_hitstun_f: int
     throw_knockback: float  # px/frame
     throw_hitstop_f: int
-    throw_recovery_f: int
+    strong_throw: float
     time_stop_damage_mult: float
     stand_hurt_radius: float
     stand_front: float
@@ -135,7 +135,7 @@ class Rules:
             throw_hitstun_f=data["throw"]["hitstun_f"],
             throw_knockback=per_frame(data["throw"]["knockback"]),
             throw_hitstop_f=data["throw"]["hitstop_f"],
-            throw_recovery_f=data["throw"]["recovery_f"],
+            strong_throw=data["throw"]["strong_throw"],
             remote_break_stun_f=seconds_to_frames(data["control"]["break_stun_s"]),
             time_stop_damage_mult=stop["damage_mult"],
             clash_window_f=clash["window_f"],
