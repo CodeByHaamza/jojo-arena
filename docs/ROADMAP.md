@@ -64,6 +64,9 @@ Chaque perso doit avoir un ressenti unique, et chaque coup qui touche doit être
 - [x] **Glossaire** : termes du lore (masque de pierre, onde, Hommes du Pilier, Super Aja, Stand, tarot, temps arrêté, flèche, Requiem, rotation, Rokakaka), personnages et Stands de la partie 3 (description, famille, origine du nom, statistiques), par partie, avec icônes en pixel art. À compléter avec chaque nouveau perso.
 - [x] **Partie 1** : styles Hamon et vampire faits (jauges, respiration, sang, cicatrisation, gel vaporisant, soleil). Jonathan, Zeppeli, Dio Brando (yeux laser, Absorption), Bruford et Tarkus (zombies, anneau de chaînes) et Speedwagon (chapeau boomerang) jouables, avec le manoir Joestar en flammes et son aube.
 
+- [x] **Partie 2, première vague** : Joseph jeune (clackers boomerang, grenades, fils de Hamon, « Ta prochaine réplique sera... », la fuite, Tommy gun, plan caché), Caesar (Bubble Launcher, Bubble Cutter, Bubble Lens, Bubble Barrier), Lisa Lisa (écharpe fouet et lance, Snake Muffler qui renvoie les projectiles, saut acrobatique, piège de l'écharpe en cinématique) et Straizo (vampire tireur d'élite, posture de visée, rafale d'yeux en cinématique).
+- [ ] **Partie 2, deuxième vague** : Wamuu, Esidisi, Kars, Santana (Hommes du Pilier, modes), Stroheim, le château suisse et son cycle jour/nuit.
+
 ## Ensuite
 
 - [x] **Bruitages** synthétisés dans le code (coups, garde, clash, temps arrêté, K.O., Hamon, gel, soleil, chaînes, yeux laser, menus), volume dans Options.
