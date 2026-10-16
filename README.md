@@ -17,6 +17,9 @@ Ce qui marche déjà :
 - jauge Heart Heat à 3 barres, HHA (1 barre), Flash Cancel (½ barre), Pose, Résolution ;
 - clash : deux attaques simultanées, on martèle pour gagner le duel ; rafale contre rafale, l'écran passe en face-à-face (5 s) ;
 - onomatopées façon JoJo (ゴゴゴ, ドン, ORA, MUDA…), poses iconiques, effets d'impact ;
+- ultimes en cinématique avec caméra (Road Roller, Ora Ora final, clones de Chariot, toile de Hierophant), seulement si le premier coup touche ;
+- mode contrôle de Hierophant Green (maintenir Stand) avec possession ;
+- caisses et jarres à ramasser (Pose) et à lancer (attaque), qui reviennent à leur place ;
 - recul, rebond sur les murs, étals et caisses cassables ;
 - touche Stand : le Stand apparaît à côté de son manieur et change les coups ; un coup sur le Stand blesse son manieur ;
 - coups propres à chaque perso : arrêt du temps (Jotaro, DIO), couteaux, saisie qui draine la vie, fils piégés, Emerald Splash, Armor Off, GHA (2 barres) ;
@@ -33,6 +36,7 @@ Télécharge `JoJoArena.exe` dans la dernière [Release](../../releases) et lanc
 - **F11** ou **Alt+Entrée** : plein écran.
 - **Échap** (ou Start) : pause. En entraînement, la pause contient les réglages (mannequin, vie, jauge, replacer).
 - **Tab** (ou Y) sur la sélection des persos : liste des coups du perso survolé. Elle est aussi dans la pause.
+- **F3** en combat : affiche les zones de frappe. En entraînement, les touches reconnues s'affichent en bas à gauche.
 
 ### Contrôles par défaut
 
@@ -48,7 +52,7 @@ Les touches sont liées à leur **position** sur le clavier : ZQSD en AZERTY cor
 | Dash / esquive | Espace | A / Croix | V | 0 |
 | Garde (Flash Cancel pendant une attaque) | Maj gauche | LB / L1 | C | 1 |
 | Heart Heat : HHA ; direction + Heart Heat : GHA (2 barres) | O | RT / R2 | T | 9 |
-| Pose | P | Select / Touchpad | Y | 7 |
+| Pose (près d'un objet : le ramasser) | P | Select / Touchpad | Y | 7 |
 | Power Up (pas encore utilisé) | U | LT / L2 | B | 3 |
 
 Choisis la configuration (J1 clavier + J2 manette, clavier partagé, deux manettes) dans **Options** ou sur l'écran VS du **Combat local**. Options affiche aussi le tableau des touches des deux joueurs.

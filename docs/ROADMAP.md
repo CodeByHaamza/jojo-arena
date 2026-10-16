@@ -10,6 +10,8 @@ Ce qui est fait, ce qui est en cours et ce qui vient ensuite. Le détail du game
 - [x] **Menus** : écran titre, menu principal (modes « Bientôt »), sélection des persos, écran VS, pause, options, liste des coups.
 - [x] **Entraînement** : mannequin immobile, en garde ou joué par J2 ; vie et jauge infinies ; compteur de combo.
 - [x] Couteaux, émeraudes et lame dessinés en vrai ; Star Finger qui s'allonge jusqu'à mi-distance.
+- [x] Entraînement : affichage des touches en direct, zones de frappe avec F3.
+- [x] The World et Silver Chariot redessinés d'après des références.
 - [x] Duel de rafales : écran de face-à-face aux couleurs des persos, 5 s à marteler.
 - [x] Onomatopées façon JoJo (ゴゴゴ, ドン, バーン…), cris des persos (ORA, MUDA, ZA WARUDO…), éclairs, ondes de choc, poussière.
 - [x] Outillage : Makefile, hook avant commit, CI (lint, tests, combats aléatoires, captures de tous les écrans), `.exe` de test à chaque push sur `main`, Release sur tag.
@@ -30,13 +32,13 @@ Chaque perso doit avoir un ressenti unique, et chaque coup qui touche doit être
    - Stand qui surgit le temps d'un coup.
 4. [x] **Nouveaux kits** pour les quatre persos (détail dans les décisions du GDD).
 5. [x] **Visée libre** (souris pour le clavier, stick droit pour la manette) : le **grappin** de Kakyoin vise un point choisi au curseur.
-6. [ ] **Mode contrôle de Hierophant Green**, comme dans le GDD :
+6. [x] **Mode contrôle de Hierophant Green**, comme dans le GDD :
    - piloter HG loin de Kakyoin ;
    - fouet, Emerald Splash et fils depuis HG ;
    - possession de l'adversaire pendant 1,5 s ;
    - retour immédiat de HG, et Kakyoin sonné, s'il est touché.
-7. [ ] **Objets de l'arène** : ramasser (touche Pose près d'un objet) et lancer une caisse ou une jarre ; elle réapparaît à sa place plus tard.
-8. [ ] **Ultimes (GHA) en cinématique**, avec caméra (zoom, travelling, tremblement). L'ultime commence par un coup : s'il touche, la cinématique se lance et les dégâts tombent à la fin ; s'il rate, temps de récupération.
+7. [x] **Objets de l'arène** : ramasser (touche Pose près d'un objet) et lancer une caisse ou une jarre ; elle réapparaît à sa place plus tard.
+8. [x] **Ultimes (GHA) en cinématique**, avec caméra (zoom, travelling, tremblement). L'ultime commence par un coup : s'il touche, la cinématique se lance et les dégâts tombent à la fin ; s'il rate, temps de récupération.
    - **DIO, Road Roller** : il frappe et le temps s'arrête. Il part hors champ, revient par les airs avec le rouleau compresseur et écrase l'adversaire. Il martèle le rouleau de MUDA, puis le temps reprend et tout explose.
    - **Kakyoin, Emerald Splash 20 mètres** : courte cinématique où HG parcourt l'arène en posant ses fils. Les tentacules couvrent ensuite toute l'arène comme une toile d'araignée : la toucher déclenche des Emerald Splash automatiques, pendant que Kakyoin continue de se battre.
    - **Jotaro** : temps arrêté, ORA en gros plan, et le temps reprend sur l'impact.
@@ -45,6 +47,13 @@ Chaque perso doit avoir un ressenti unique, et chaque coup qui touche doit être
    - baisse des dégâts sur les longs combos ;
    - dégâts réduits pendant le temps arrêté ;
    - saisie de DIO moins abusive.
+
+## Prochaines idées pour la base
+
+- [ ] **Relecture de combat** : enregistrer les entrées d'un combat (la simulation est déterministe) pour rejouer exactement un bug, ou revoir un match.
+- [ ] **Données de frames en entraînement** : démarrage, actif, récupération et avantage affichés à chaque coup.
+- [ ] **Animations par images-clés dans les fiches** (au lieu des poses du générateur) pour des coups encore plus longs et lisibles.
+- [ ] **Bot d'équilibrage** : des milliers de combats IA contre IA pour repérer les persos trop forts.
 
 ## Ensuite
 

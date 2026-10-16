@@ -387,6 +387,10 @@ Un perso est « fini » quand il a : son kit codé et testé contre 3 autres per
   - Kakyoin : coup de pied, pied retourné ; balayage circulaire ; émeraudes à tête chercheuse ; grappin vers le point visé.
   - Polnareff : savate, chassé, fouetté ; coup de pied sauté ; éclair de Chariot (estoc lointain) ; fierté (+20 % de dégâts 5 s).
 - Avec le Stand : chaînes de trois coups (ORA, ORA ORA, ORAAA ; MUDA… ; estoc, taille, triple estoc), tentacule de Hierophant qui ramène l'adversaire.
+- Ultimes (GHA) : un premier coup doit toucher (pas en garde) ; alors le combat se fige pour une cinématique avec caméra (zoom, travelling, bandes noires), puis le coup final tombe, imparable. Raté : rien de plus, les 2 barres sont perdues. Kakyoin fait exception : sa cinématique part tout de suite, puis ses fils couvrent l'arène 10 s.
+- Road Roller : coup de The World, ZA WARUDO, DIO s'envole hors champ, revient avec le rouleau compresseur, l'écrase, martèle de MUDA, le temps reprend, explosion.
+- Mode contrôle (Kakyoin) : maintenir Stand 0,5 s, HG va jusqu'à 150 px de Kakyoin ; fouet, Emerald Splash et fils depuis HG ; possession (coup lourd, imparable) : on dirige la marche de l'adversaire 1,5 s. Kakyoin ou HG touché : HG revient, Kakyoin sonné 0,8 s.
+- Objets : Pose près d'une caisse ou d'une jarre la ramasse ; n'importe quelle attaque la lance sur l'adversaire ; Pose de nouveau la pose ; touché, on la lâche. Cassée, elle revient à sa place (caisse 10 s, jarre 8 s).
 - Entraînement : pas d'IA. Mannequin immobile, en garde ou joué par J2 ; vie infinie (rechargée une fois le combo fini) et jauge Heart Heat infinie, désactivables ; un K.O. replace les deux persos sans score ; compteur de coups et de dégâts.
 
 ## Sources
