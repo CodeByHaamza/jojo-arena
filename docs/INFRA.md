@@ -15,7 +15,7 @@ casser ce qui marche.
 | Filet | Ce qu'il attrape | Quand |
 | --- | --- | --- |
 | `ruff` (lint + format) | code mort, imports cassés, style | à chaque sauvegarde (hook), au commit, en CI |
-| `pytest` (630 tests) | la simulation, les menus, les données | au commit (rapides), en CI (tous) |
+| `pytest` (630 tests, 93 % de couverture) | la simulation, les menus, les données | au commit (rapides), en CI (tous) |
 | Tournée de captures | texte qui se chevauche, HUD recouvert | en CI, artefact à regarder |
 | Combats aléatoires (`test_fuzz`) | plantages dans des situations non prévues | en CI |
 | Smoke test du `.exe` | données manquantes dans le paquet | sur `main` et à chaque tag |
@@ -74,6 +74,8 @@ ou macOS vérifie son travail exactement comme la CI.
 ```
 make coverage       # rapport en console + htmlcov/index.html
 ```
+
+Au 16/10/2026 : **93 %** sur 11 843 lignes, 630 tests, un peu plus de 3 minutes.
 
 La couverture est un **indicateur, pas un objectif**. Ce qui compte ici :
 `jojo_arena/combat/` et `jojo_arena/characters/` doivent être très couverts (c'est la

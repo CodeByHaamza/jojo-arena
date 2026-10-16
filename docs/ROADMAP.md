@@ -65,7 +65,26 @@ Chaque perso doit avoir un ressenti unique, et chaque coup qui touche doit être
 - [x] **Partie 1** : styles Hamon et vampire faits (jauges, respiration, sang, cicatrisation, gel vaporisant, soleil). Jonathan, Zeppeli, Dio Brando (yeux laser, Absorption), Bruford et Tarkus (zombies, anneau de chaînes) et Speedwagon (chapeau boomerang) jouables, avec le manoir Joestar en flammes et son aube.
 
 - [x] **Partie 2, première vague** : Joseph jeune (clackers boomerang, grenades, fils de Hamon, « Ta prochaine réplique sera... », la fuite, Tommy gun, plan caché), Caesar (Bubble Launcher, Bubble Cutter, Bubble Lens, Bubble Barrier), Lisa Lisa (écharpe fouet et lance, Snake Muffler qui renvoie les projectiles, saut acrobatique, piège de l'écharpe en cinématique) et Straizo (vampire tireur d'élite, posture de visée, rafale d'yeux en cinématique).
-- [ ] **Partie 2, deuxième vague** : Wamuu, Esidisi, Kars, Santana (Hommes du Pilier, modes), Stroheim, le château suisse et son cycle jour/nuit.
+- [ ] **Partie 2, deuxième vague** : Wamuu, Esidisi, Kars, Santana (Hommes du Pilier, modes), Stroheim, le château suisse et son cycle jour/nuit. Détail préparé ci-dessous.
+
+### Hommes du Pilier : ce qui est prêt à construire
+
+Un **nouveau style réutilisable**, `pillar_man` (composant dans `combat/styles.py`, comme `hamon` et `vampire`), plutôt qu'un cas particulier par perso :
+
+- nature `pillar_man` : déjà reconnue par le Hamon (dégâts doublés) et par le soleil ;
+- la touche Stand passe en **Mode** (流法) : une jauge qui se vide, des coups transformés ;
+- chacun a le sien, ce qui donne quatre persos très différents avec un seul composant.
+
+| Perso | Mode | Coups | Ultime |
+| --- | --- | --- | --- |
+| **Wamuu** | Mode du Vent | Divine Sandstorm (神砂嵐, tourbillon qui traverse), corne-canon à vent, fils anti-Hamon du casque, Wind Suit (invisible, renvoie la lumière) | **Final Mode : Atmospheric Rift** (最終流法・渾楔颯) : immense, et il s'abîme lui-même — parfait pour un ultime qui coûte de la vie |
+| **Esidisi** | Mode de la Flamme | sang bouillant à 500 °C projeté par les veines, mode « Rumble » automatique sous 30 % de vie | les larmes et le sang en pluie sur toute l'arène |
+| **Kars** | Mode de la Lumière | Light Blades (輝彩滑刀) des bras et des jambes, lames qui ricochent sur les murs | **Ultimate Thing** : il gagne du Hamon et une régénération — un éveil en fin de combat, pas un coup |
+| **Santana** | aucun (il ne l'a pas maîtrisé) | se faufile dans le corps de l'adversaire, lames de côtes, corps qui se déforme | absorption complète |
+
+Sources : [JoJo Wiki — Wamuu](https://jojowiki.com/Wamuu), [Kars](https://jojowiki.com/Kars), [Pillar Men](https://jojowiki.com/Pillar_Men), [ASBR Wamuu](https://jojowiki.com/ASBR/Wamuu), [ASBR Kars](https://jojowiki.com/ASBR/Kars).
+
+Ce que ça apporte au jeu, au-delà du roster : le Hamon et le soleil **servent enfin à quelque chose contre un adversaire qui frappe fort**, et le trio Wamuu / Esidisi / Kars donne trois façons de jouer qui n'existent pas encore (lutteur d'honneur, zoneur dégueulasse, caméléon qui s'éveille).
 
 ## Ensuite
 
@@ -80,6 +99,29 @@ Chaque perso doit avoir un ressenti unique, et chaque coup qui touche doit être
 - [ ] **Flèche** et Chariot Requiem.
 - [ ] **Vague 2** (JoJolion), **Vague 3** (Hamon), **Vague 4** (icônes) : voir les priorités du GDD.
 - [ ] **Histoire**, puis **en ligne** (la simulation déterministe le prépare).
+
+## Idées proposées le 16/10/2026
+
+Classées par ce qu'elles apportent pour ce qu'elles coûtent.
+
+### Rapides et qui se sentent tout de suite
+
+- [ ] **Défis d'entraînement** : « fais 5 coups d'affilée avec Jotaro », « punis le coup de tête », « sors le Star Finger après une garde ». Le mode entraînement sait déjà tout mesurer (combo, frise, avantage) ; il ne manque qu'une liste d'objectifs en TOML et un écran de validation. C'est ce qui apprend le jeu à un joueur sans tutoriel.
+- [ ] **Sauver un réglage d'entraînement** : l'action du mannequin, le délai et les options dans `settings.json`, pour retrouver sa situation de travail en relançant.
+- [ ] **Vitesse d'entraînement** : jouer à 50 % ou 25 % de vitesse pour voir un enchaînement se dérouler. Le pas fixe le permet sans toucher à la simulation.
+- [ ] **Arrêt sur image et avance image par image** en entraînement (F7 / F8) : la frise devient un outil d'analyse complet.
+
+### Le jeu lui-même
+
+- [ ] **Power Up et jauge d'Éveil** (déjà dans la roadmap) : la touche existe, elle ne sert à rien ; c'est la mécanique manquante la plus visible.
+- [ ] **Partie 4** (Josuke, Crazy Diamond qui répare le décor et renvoie les projectiles) : le décor destructible existe déjà, Crazy Diamond lui donnerait un sens.
+- [ ] **Deuxième arène par partie** : le château de Wamuu (piliers à casser), la grotte de Santana. Les arènes font autant pour l'identité d'une partie que les persos.
+- [ ] **Écran de fin de combat** : meilleur combo, dégâts totaux, temps — lu directement du combat, sans nouvelle mécanique.
+
+### Plus gros, mais c'est là que le jeu devient un jeu
+
+- [ ] **Mode Histoire** partie par partie, avec les cinématiques déjà écrites et des conditions de victoire spéciales (« gagne sans être touché », « finis par un Hamon »).
+- [ ] **En ligne en rollback** : la simulation est déterministe et les entrées sont déjà sérialisées pour les replays — les deux prérequis sont faits. C'est le plus gros chantier du projet, et le seul qui change ce qu'est le jeu.
 
 ## Outillage
 
