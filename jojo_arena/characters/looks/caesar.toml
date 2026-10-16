@@ -1,0 +1,96 @@
+# Caesar Anthonio Zeppeli (Part 2): look file for tools/make_sprites.py.
+# Spiky blond hair, a white headband with purple triangles and a feather, purple marks
+# under the eyes, a pink scarf, a short light blue jacket open on a navy shirt, blue
+# fingerless gloves, white trousers.
+
+name = "Caesar Zeppeli"
+
+# Slim and athletic, a dancer's balance.
+# Signature pose (Pose key): see tools/spritegen/skeleton.py.
+pose = "arch"
+
+[build]
+head_r = 5.7
+neck = 1.2
+torso = 14
+legs = 17.5
+arms = 15
+shoulders = 8.4
+hips = 3.2
+torso_r = 5.9
+arm_r = 2.3
+leg_r = 2.4
+hand_r = 2.2
+foot_r = 2.3
+
+[palette]
+skin = "#f2cca6"
+hair = "#f2d860"
+band = "#f0eef4"
+mark = "#8a4ac8"
+feather = "#e89040"
+scarf = "#e88aa8"
+jacket = "#7ab4ea"
+shirt = "#2a3a6e"
+gloves = "#4a7ad0"
+trousers = "#e8e8f0"
+shoes = "#3a2c28"
+gold = "#f0c23c"
+eyes = "#3aa08a"
+
+[body]
+head = "skin"
+torso = "shirt"
+arms = "jacket"
+hands = "gloves"
+legs = "trousers"
+feet = "shoes"
+
+[face]
+eyes = "eyes"
+eye_style = "wide"
+brows = true
+nose = true
+cheek_marks = "mark"
+
+[[parts]]
+type = "hair"
+material = "hair"
+style = "mane"
+volume = 7.3
+flare = 0.6
+fill = 0.45
+
+[[parts]]
+type = "headband"
+material = "band"
+triangles = "mark"
+feather = "feather"
+
+[[parts]]
+type = "scarf"
+material = "scarf"
+tail = 5
+
+[[parts]]
+type = "coat"
+material = "jacket"
+length = 0.08
+open = true
+opening = 4
+collar = true
+
+[[parts]]
+type = "gloves"
+material = "gloves"
+length = 0.2
+
+[[parts]]
+type = "belt"
+material = "shirt"
+buckle = "gold"
+
+[[parts]]
+type = "boots"
+material = "shoes"
+length = 0.18

@@ -38,3 +38,16 @@ family = "Fils de George Joestar II et d'Elizabeth, qui n'est autre que Lisa Lis
 family_en = "Son of George Joestar II and Elizabeth, who is none other than Lisa Lisa. Grandson of Jonathan and Erina. Father of Holly Kujo, grandfather of Jotaro."
 name_origin = "Comme chaque héros de la saga, son nom donne JoJo : JOseph JOestar."
 name_origin_en = "Like every hero of the saga, his name makes JoJo: JOseph JOestar."
+
+[[characters]]
+id = "caesar"
+name = "CAESAR A. ZEPPELI"
+fighter = "caesar"
+power = "ONDE (HAMON)"
+power_en = "RIPPLE (HAMON)"
+text = "Petit-fils de Will A. Zeppeli. Il grandit dans la rue à Rome, rongé de rancune envers son père qui avait abandonné sa famille, avant d'apprendre qu'il était mort en le protégeant. Il se bat avec des bulles de savon chargées d'onde. D'abord rival de Joseph, il devient son ami, et tombe face à Wamuu en lui laissant l'antidote."
+text_en = "Grandson of Will A. Zeppeli. He grows up on the streets of Rome, eaten by resentment toward the father who left his family, before learning that he died protecting him. He fights with soap bubbles charged with Ripple. First Joseph's rival, he becomes his friend, and falls against Wamuu, leaving him the antidote."
+family = "Fils de Mario Zeppeli, petit-fils de Will A. Zeppeli, le maître de Jonathan. Élève de Lisa Lisa avec Joseph."
+family_en = "Son of Mario Zeppeli, grandson of Will A. Zeppeli, Jonathan's master. Lisa Lisa's student alongside Joseph."
+name_origin = "Comme son grand-père, il porte un nom tiré du groupe de rock Led Zeppelin."
+name_origin_en = "Like his grandfather, he bears a name drawn from the rock band Led Zeppelin."
