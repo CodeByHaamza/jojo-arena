@@ -46,11 +46,13 @@ def _mirror(sk: Skeleton, pixels: set[Pixel]) -> set[Pixel]:
 
 def hair(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     """style: short | long | tower | spiky | swept (volume swept up and back) | crest
-    (a fin on top of a helmet; crest_color).
+    (a fin on top of a helmet; crest_color) | mane (wild curved tufts flaring up and out).
 
     Options (head units): volume, length (long), height (tower, crest), back_length (locks over
-    the nape); bangs = curl | fringe, bangs_side = left | right (seen from the front),
-    bangs_length, bangs_width and bangs_spread (curl: distance from the face).
+    the nape; a mane flows down behind the shoulders), flare (mane: how far its tufts reach),
+    fill (mane: 0 = separate spikes, 1 = one full mass);
+    bangs = curl | fringe, bangs_side = left | right (seen from the front), bangs_length,
+    bangs_width and bangs_spread (curl: distance from the face).
     """
     mat = p["material"]
     style = p.get("style", "short")
@@ -102,6 +104,35 @@ def hair(sk: Skeleton, p: dict, look: Look) -> list[Part]:
             x = i * 3 - (1.5 if sk.view == "right" else 0)
             spikes |= polygon([at(x - 2.2, -5), at(x + 2.2, -5), at(x + i * 0.8, -11)])
         parts.append(Part(mat, spikes, z=53.5))
+    elif style == "mane":
+        flare = p.get("flare", 1.0)
+        if sk.view == "right":
+            tufts = [
+                ((2.5, -7), (1, -12)),
+                ((0, -7.5), (-4, -12.5)),
+                ((-3, -6.5), (-9, -10.5)),
+                ((-5.5, -4), (-11.5, -6)),
+                ((-6, -1), (-11, 0.5)),
+            ]
+        else:
+            tufts = [
+                ((-6.5, -4), (-11.5, -7)),
+                ((-4.5, -6.5), (-8, -12)),
+                ((-1.5, -7.5), (-2.5, -13.5)),
+                ((1.5, -7.5), (2.5, -13.5)),
+                ((4.5, -6.5), (8, -12)),
+                ((6.5, -4), (11.5, -7)),
+            ]
+        mane: set[Pixel] = set()
+        fill = p.get("fill", 0.0)
+        if fill:
+            # A mass under the tufts, so they read as one wild mane rather than spikes.
+            middle = at(-3, -5.5) if sk.view == "right" else at(0, -6)
+            mane |= {q for q in disc(*middle, 6.5 * k * fill) if rel(q)[1] < -2}
+        for (bx, by), (tx, ty) in tufts:
+            tip = (bx + (tx - bx) * flare, by + (ty - by) * flare)
+            mane |= _tuft(sk, (bx, by), tip, 3.6)
+        parts.append(Part(mat, mane, z=53.5, highlight=points([at(-1.5, -10)]) & mane))
     elif style == "swept":
         if sk.view == "right":
             outline = [(4, -5), (1, -10), (-4, -11), (-8, -8.5), (-10, -5), (-8.5, -2), (-5, -4)]
@@ -125,7 +156,19 @@ def hair(sk: Skeleton, p: dict, look: Look) -> list[Part]:
         parts.append(Part(p.get("crest_color", mat), fin, z=55))
 
     back_length = p.get("back_length", 0)
-    if back_length and style != "long":
+    if back_length and style == "mane":
+        # The mane flows down behind the shoulders: wide from behind, swept back in profile.
+        if sk.view == "down":
+            flow = capsule(*at(-6.5, 0), *at(-9, back_length), 2.4 * k)
+            flow |= capsule(*at(6.5, 0), *at(9, back_length), 2.4 * k)
+            parts.append(Part(mat, flow, z=4))
+        elif sk.view == "up":
+            flow = capsule(*at(-3, 1), *at(-4.5, back_length), 4 * k)
+            flow |= capsule(*at(3, 1), *at(4.5, back_length), 4 * k)
+            parts.append(Part(mat, flow, z=53))
+        else:
+            parts.append(Part(mat, capsule(*at(-5, 0), *at(-8.5, back_length), 3 * k), z=4))
+    elif back_length and style != "long":
         if sk.view == "down":
             nape = capsule(*at(-5.2, 1), *at(-5.6, back_length), 1.8 * k)
             nape |= capsule(*at(5.2, 1), *at(5.6, back_length), 1.8 * k)
@@ -148,6 +191,25 @@ def hair(sk: Skeleton, p: dict, look: Look) -> list[Part]:
             fringe = polygon([at(2, -5), at(5.5, -5), at(5.5, -2.5), at(2, -2.5)])
         parts.append(Part(mat, fringe, z=55))
     return parts
+
+
+def _tuft(sk: Skeleton, base: Point, tip: Point, width: float) -> set[Pixel]:
+    """A tapering lock of hair from base to tip (head units), bowed like a flame."""
+    (bx, by), (tx, ty) = base, tip
+    dx, dy = tx - bx, ty - by
+    n = math.hypot(dx, dy) or 1.0
+    px, py = -dy / n, dx / n  # perpendicular
+    bow = 0.9 if tx >= bx else -0.9
+    mx, my = bx + dx * 0.55 + px * bow, by + dy * 0.55 + py * bow
+    half = width / 2
+    corners = [
+        (bx - px * half, by - py * half),
+        (mx - px * half * 0.55, my - py * half * 0.55),
+        (tx, ty),
+        (mx + px * half * 0.55, my + py * half * 0.55),
+        (bx + px * half, by + py * half),
+    ]
+    return polygon([sk.at(*c) for c in corners])
 
 
 def _curl(sk: Skeleton, p: dict, mat: str, side: int) -> Part:
@@ -196,7 +258,8 @@ def _curl(sk: Skeleton, p: dict, mat: str, side: int) -> Part:
 def cap(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     """Peaked cap. Options: height (taller crown, head units), brim (default true),
     ragged_back (frayed locks under the back), ragged_color (their color, e.g. the hair),
-    band (color of a band around the crown), badge (color) and badges (1 or 2).
+    band (color of a band around the crown), badge (color), badges (1 or 2) and plate
+    (true: the second badge is a wide plate).
     """
     mat = p["material"]
     k = sk.k
@@ -230,10 +293,14 @@ def cap(sk: Skeleton, p: dict, look: Look) -> list[Part]:
         y = (top + round(at(0, -3.9)[1])) / 2
         if sk.view == "down":
             spots = [at(-1.5, 0)] if p.get("badges", 1) == 1 else [at(-3, 0), at(1.5, 0)]
-            for x, _ in spots:
+            for n, (x, _) in enumerate(spots):
+                wide = 1 if p.get("plate") and n == 1 else 0
                 parts.append(
                     Part(
-                        badge, rect(x, y - 1, x + 1, y), z=58, highlight={(round(x), round(y - 1))}
+                        badge,
+                        rect(x, y - 1, x + 1 + wide, y),
+                        z=58,
+                        highlight={(round(x), round(y - 1))},
                     )
                 )
         else:
@@ -441,8 +508,8 @@ def coat(sk: Skeleton, p: dict, look: Look) -> list[Part]:
 def belt(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     """Belt at the waist; count = 2 adds a second, slanted one.
 
-    Options: buckle (color), studs (color of rivets along the belt), pouches (color of
-    two pouches hanging on the sides).
+    Options: buckle (color), buckle_shape (heart), studs (color of rivets along the belt),
+    second (color of the second belt), pouches (color of two pouches hanging on the sides).
     """
     mat = p["material"]
     (ta, tb, tr) = sk.torso
@@ -453,13 +520,23 @@ def belt(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     cx = sk.center_x
     if p.get("count", 1) >= 2 and sk.view != "right":
         slant = capsule(cx - tr, y - 3, cx + tr, y + 1, 0.6)
-        parts.append(Part(mat, slant & capsule(*ta, *tb, tr + 1), z=30.6, tone=1))
+        second = p.get("second", mat)
+        parts.append(Part(second, slant & capsule(*ta, *tb, tr + 1), z=30.6, tone=1))
     studs = p.get("studs")
     if studs and sk.view != "up":
         dots = {q for q in band if q[1] == y and q[0] % 2 == 0}
         parts.append(Part(studs, dots, z=30.65, tone=2))
     if p.get("buckle") and sk.view == "down":
-        parts.append(Part(p["buckle"], rect(cx - 1, y, cx, y + 1), z=30.7, tone=2))
+        if p.get("buckle_shape") == "heart":
+            heart = {
+                (round(cx) - 2 + dx, y - 1 + dy)
+                for dy, row in enumerate(SHAPES["heart"])
+                for dx, cell in enumerate(row)
+                if cell == "#"
+            }
+            parts.append(Part(p["buckle"], heart, z=30.7, tone=2))
+        else:
+            parts.append(Part(p["buckle"], rect(cx - 1, y, cx, y + 1), z=30.7, tone=2))
     pouches = p.get("pouches")
     if pouches:
         if sk.view == "right":
@@ -496,12 +573,13 @@ SHAPES = {
     "heart": ["#.#", "###", ".#."],
     "circle": [".#.", "###", ".#."],
     "diamond": [".#.", "#.#", ".#."],
+    "ball": [".##.", "####", "####", ".##."],
 }
 
 
 def emblem(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     """A small 3x3 motif. on: knees | elbows | chest | belt (one on each side) | chin.
-    shape: heart | circle | diamond."""
+    shape: heart | circle | diamond | ball (a round guard, 4 by 4)."""
     shape = SHAPES[p.get("shape", "heart")]
     spots: list[tuple[float, float, float]] = []  # x, y, z
     where = p.get("on", "chest")
@@ -510,7 +588,7 @@ def emblem(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     if where == "knees" and sk.view != "up":
         for i in limbs:
             (px, py), (fx, fy) = sk.hips[i], sk.feet[i]
-            spots.append(((px + fx) / 2, (py + fy) / 2, 35.5 if side else 10.5))
+            spots.append(((px + fx) / 2, (py + fy) / 2, 36.7 if side else 11.7))
     elif where == "elbows":
         for i in limbs:
             (sx, sy), (hx, hy) = sk.shoulders[i], sk.hands[i]
@@ -654,7 +732,8 @@ def scarf(sk: Skeleton, p: dict, look: Look) -> list[Part]:
 
 def pauldrons(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     """Rounded shoulder pads. Options: size (px), rim (color of their lower edge),
-    spikes (how many points stick out of each), ring (color of a ring boss on each)."""
+    spikes (how many points stick out of each), ring (color of a ring boss on each),
+    spiral (color of a spiral groove on each)."""
     mat = p["material"]
     size = p.get("size", 4.2)
     rim = p.get("rim")
@@ -679,6 +758,19 @@ def pauldrons(sk: Skeleton, p: dict, look: Look) -> list[Part]:
             edge = {(qx, qy) for qx, qy in dome if qy >= lowest[qx] - 1}
             parts.append(Part(rim, edge, z=z + 0.05, tone=2))
             parts.append(Part(rim, points([(x, y - 0.5)]), z=z + 0.06, tone=1))  # spiral boss
+        spiral = p.get("spiral")
+        if spiral:
+            pattern = [".###.", "#...#", "#.#.#", "#..##"]
+            if x < sk.center_x:
+                pattern = [row[::-1] for row in pattern]
+            sx, sy = round(x) - 2, round(y - size * 0.45) - 1
+            groove = {
+                (sx + dx, sy + dy)
+                for dy, row in enumerate(pattern)
+                for dx, cell in enumerate(row)
+                if cell == "#"
+            }
+            parts.append(Part(spiral, groove & dome, z=z + 0.08, tone=0))
         if ring:
             boss = disc(x, y - size * 0.15, size * 0.55) - disc(x, y - size * 0.15, size * 0.25)
             parts.append(Part(ring, boss & dome, z=z + 0.07, tone=1))
@@ -703,11 +795,25 @@ def pauldrons(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     return parts
 
 
+def _band(pixels: set[Pixel], start: Point, end: Point, width: float) -> set[Pixel]:
+    """The pixels within `width` of `start`, measured along the line toward `end`."""
+    dx, dy = end[0] - start[0], end[1] - start[1]
+    n = math.hypot(dx, dy) or 1.0
+    ux, uy = dx / n, dy / n
+    out = set()
+    for q in pixels:
+        cx, cy = _center(q)
+        t = (cx - start[0]) * ux + (cy - start[1]) * uy
+        if 0 <= t <= width:
+            out.add(q)
+    return out
+
+
 def gloves(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     """Long gloves up the forearms (give the hands the glove color in [body]).
 
     Options: length (share of the arm covered, from the hand), studs (knuckle studs color),
-    ribbed (true: dark rings across, like segmented tubes).
+    ribbed (true: dark rings across, like segmented tubes), cuff (color of a band at the top).
     """
     mat = p["material"]
     length = p.get("length", 0.5)
@@ -726,6 +832,9 @@ def gloves(sk: Skeleton, p: dict, look: Look) -> list[Part]:
         parts.append(Part(mat, sleeve, z=z))
         if p.get("ribbed"):
             parts.append(Part(mat, _rings(sleeve, start, hand), z=z + 0.01, tone=0))
+        if p.get("cuff"):
+            band = _band(sleeve, start, hand, 1.5)
+            parts.append(Part(p["cuff"], band, z=z + 0.02))
     studs = p.get("studs")
     if studs and sk.view != "up":
         knuckles: set[Pixel] = set()
@@ -806,7 +915,8 @@ def body_lines(sk: Skeleton, p: dict, look: Look) -> list[Part]:
 
 
 def veins(sk: Skeleton, p: dict, look: Look) -> list[Part]:
-    """A net of thin dark lines over the torso and arms. Option: density (torso lines)."""
+    """A net of thin lines over the torso and arms (the material's dark tone).
+    Options: density (torso lines), legs (true: over the legs too)."""
     mat = p["material"]
     rng = random.Random(7)  # same pattern every frame, placed relative to the body
     (ta, tb, tr) = sk.torso
@@ -829,6 +939,13 @@ def veins(sk: Skeleton, p: dict, look: Look) -> list[Part]:
         parts.append(
             Part(mat, _wavy(sh, _lerp(sh, hand, 0.8), amp=0.6, period=3) & arm, z=z, tone=0)
         )
+    if p.get("legs"):
+        for i in arms:
+            hip, foot = sk.hips[i], sk.feet[i]
+            leg = capsule(*hip, *foot, sk.build.leg_r)
+            z = 35.2 if sk.view == "right" else 10.2
+            wave = _wavy(hip, _lerp(hip, foot, 0.85), amp=0.6, period=3)
+            parts.append(Part(mat, wave & leg, z=z, tone=0))
     return parts
 
 

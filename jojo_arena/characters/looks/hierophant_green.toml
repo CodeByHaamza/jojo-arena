@@ -23,17 +23,17 @@ hand_r = 2.0
 foot_r = 2.2
 
 [palette]
-body = "#2f9a5c"
-plate = "#dfe6b4"
-vein = "#1a5c38"
-glow = "#e0ff6a"
+body = "#2ea24a"
+plate = "#e2e6e8"
+vein = "#8ff08c"
+glow = "#f4d23a"
 
 [body]
-head = "plate"
+head = "body"
 torso = "body"
 arms = "body"
 hands = "plate"
-legs = "plate"
+legs = "body"
 feet = "plate"
 
 [face]
@@ -43,13 +43,14 @@ eye_style = "wide"
 # Green face under the cream helmet.
 [[parts]]
 type = "mask"
-material = "body"
-top = -2.0
+material = "plate"
+top = -2.5
 
 [[parts]]
 type = "veins"
 material = "vein"
 density = 7
+legs = true
 
 [[parts]]
 type = "pauldrons"
@@ -59,11 +60,21 @@ size = 3.6
 [[parts]]
 type = "gloves"
 material = "plate"
-length = 0.5
+length = 0.35
 
 [[parts]]
 type = "belt"
 material = "plate"
+
+[[parts]]
+type = "loincloth"
+material = "plate"
+length = 0.22
+
+[[parts]]
+type = "boots"
+material = "plate"
+length = 0.45
 
 [[parts]]
 type = "tendrils"

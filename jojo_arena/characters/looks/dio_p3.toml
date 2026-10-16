@@ -1,7 +1,8 @@
 # DIO (Part 3): look file for tools/make_sprites.py.
-# Long golden hair, green heart-shaped band on the forehead, gold earring, a golden
-# jacket over a fitted black tank top, bare muscular arms with black wristbands,
-# trousers with green heart knee pads, pointed shoes (crakows).
+# Golden hair swept up in spikes, green heart-shaped band on the forehead, gold earring,
+# a golden jacket over a fitted black tank top, bare muscular arms with ringed gold
+# bracelets, green belt with a heart buckle, trousers with green heart knee pads,
+# pointed shoes (crakows).
 
 name = "DIO (P3)"
 
@@ -53,10 +54,10 @@ nose = true
 [[parts]]
 type = "hair"
 material = "hair"
-style = "long"
-length = 10
-volume = 8.8
-bangs = "fringe"
+style = "mane"
+volume = 8.4
+flare = 0.75
+back_length = 4
 
 # Green band with the heart on the forehead.
 [[parts]]
@@ -80,8 +81,16 @@ collar = true
 
 [[parts]]
 type = "gloves"
-material = "top"
-length = 0.18
+material = "gold"
+length = 0.16
+ribbed = true
+
+# Green belt with a heart buckle.
+[[parts]]
+type = "belt"
+material = "band"
+buckle = "heart"
+buckle_shape = "heart"
 
 [[parts]]
 type = "emblem"

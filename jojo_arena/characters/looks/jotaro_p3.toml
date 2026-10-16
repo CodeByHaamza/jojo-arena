@@ -28,10 +28,11 @@ foot_r = 2.6
 skin = "#e9b48c"
 hair = "#1c1c24"
 uniform = "#26262f"      # cap, long coat and trousers: black, a touch of blue-gray
-shirt = "#3f7a3c"
-lining = "#c9b48a"       # inside of the coat
-belt = "#b06a32"
-shoes = "#3a3646"
+shirt = "#6f8068"        # grey-green, fitted and sleeveless
+lining = "#e2dbc3"       # inside of the coat, cream
+belt = "#2f9c86"         # jade belt
+belt2 = "#c8485a"        # red belt
+shoes = "#26252e"
 gold = "#f0c23c"
 eyes = "#3a9aa0"
 
@@ -67,6 +68,7 @@ ragged_color = "hair"
 band = "gold"
 badge = "gold"
 badges = 2
+plate = true
 
 # Long open school coat (gakuran): high collar with pins, gold buttons, light lining.
 [[parts]]
@@ -83,12 +85,13 @@ buttons = "gold"
 lining = "lining"
 cuffs = "gold"
 
-# Two studded belts, one of them slanted.
+# Two belts, jade and red, one of them slanted, with a pattern of cream triangles.
 [[parts]]
 type = "belt"
 material = "belt"
 count = 2
-studs = "gold"
+second = "belt2"
+studs = "lining"
 buckle = "gold"
 
 # The gold chain hanging from the collar.

@@ -1,6 +1,7 @@
 # Star Platinum (Jotaro's Stand, Part 3): look file for tools/make_sprites.py.
-# Purple skin, long black hair, metal headband, red scarf, shoulder pads with a gold
-# rim, long black studded gloves, white loincloth, wavy gold lines along the body.
+# Purple skin, a wild black mane, gold headband, orange-red scarf, tan shoulder pads
+# with a spiral, long black gloves with gold cuffs, gold belt, white loincloth, black
+# boots under round white knee guards, wavy gold lines along the body.
 
 name = "Star Platinum"
 
@@ -23,15 +24,14 @@ hand_r = 3.0
 foot_r = 2.8
 
 [palette]
-skin = "#9468c8"
+skin = "#9b78d2"
 hair = "#1f1a2a"
 metal = "#c8cad8"
 gold = "#eab83c"
-scarf = "#d63a32"
-glove = "#2b2733"
+scarf = "#e2532e"
+glove = "#2a2e2c"
 cloth = "#ece6f2"
-pad = "#8b5a3c"
-rope = "#b9a6dc"
+pad = "#d2b07a"
 eyes = "#8fe0f0"
 
 [body]
@@ -48,19 +48,21 @@ eye_style = "wide"
 brows = true
 nose = true
 
-# Wild spiky hair, with a long mane flowing down the back.
+# A wild mane of curved tufts, flowing down behind the shoulders.
 [[parts]]
 type = "hair"
 material = "hair"
-style = "spiky"
-volume = 8.4
-back_length = 12
+style = "mane"
+volume = 8.6
+flare = 1.15
+fill = 1.0
+back_length = 11
 
-# Three-part metal headband with an oval stone in the middle.
+# Three-part gold headband with an oval piece in the middle.
 [[parts]]
 type = "headband"
-material = "metal"
-gem = "metal"
+material = "gold"
+gem = "gold"
 
 [[parts]]
 type = "scarf"
@@ -69,14 +71,15 @@ material = "scarf"
 [[parts]]
 type = "pauldrons"
 material = "pad"
-rim = "gold"
-size = 4.6
+spiral = "pad"
+size = 4.8
 
 [[parts]]
 type = "gloves"
 material = "glove"
-length = 0.42
+length = 0.78
 studs = "gold"
+cuff = "gold"
 
 [[parts]]
 type = "body_lines"
@@ -86,17 +89,28 @@ period = 7
 
 [[parts]]
 type = "belt"
-material = "rope"
-buckle = "gold"
+material = "gold"
 
 [[parts]]
 type = "loincloth"
 material = "cloth"
-length = 0.55
+length = 0.38
 
-# Knee guards.
+# A round white disc on the side of the belt.
 [[parts]]
 type = "emblem"
-material = "gold"
+material = "cloth"
 shape = "circle"
+on = "belt"
+
+[[parts]]
+type = "boots"
+material = "glove"
+length = 0.45
+
+# Round white knee guards over the boots.
+[[parts]]
+type = "emblem"
+material = "cloth"
+shape = "ball"
 on = "knees"
