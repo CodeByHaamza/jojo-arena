@@ -167,9 +167,11 @@ class Ring(Effect):
 class Dust(Effect):
     """A puff of dust kicked up from the ground."""
 
-    def __init__(self, pos: Vec2, velocity: Vec2, size: float, life: int = 18) -> None:
+    def __init__(
+        self, pos: Vec2, velocity: Vec2, size: float, life: int = 18, color=(176, 166, 150)
+    ) -> None:
         super().__init__(life)
-        self.pos, self.velocity, self.size = pos, velocity, size
+        self.pos, self.velocity, self.size, self.color = pos, velocity, size, color
 
     def update(self) -> None:
         super().update()
@@ -180,7 +182,7 @@ class Dust(Effect):
         radius = max(1, round(self.size * (0.6 + self.age / self.life)))
         layer = pygame.Surface((radius * 2 + 2, radius * 2 + 2), pygame.SRCALPHA)
         pygame.draw.circle(
-            layer, (176, 166, 150, round(150 * self.fade)), (radius + 1, radius + 1), radius
+            layer, (*self.color, round(150 * self.fade)), (radius + 1, radius + 1), radius
         )
         x, y = _ints(self.pos)
         surface.blit(layer, (x - radius - 1, y - radius - 1))
@@ -242,13 +244,15 @@ class EffectsLayer:
     def add(self, effect: Effect) -> None:
         self.effects.append(effect)
 
-    def dust(self, pos: Vec2, count: int, spread: float = 1.2, size: float = 3) -> None:
+    def dust(
+        self, pos: Vec2, count: int, spread: float = 1.2, size: float = 3, color=None, life=18
+    ) -> None:
         for i in range(count):
             angle = 6.283 * i / count + self._seed * 0.7
             self._seed += 1
             direction = Vec2.from_angle(angle, spread)
             velocity = Vec2(direction.x, direction.y * 0.45)
-            self.add(Dust(pos + velocity * 2, velocity, size))
+            self.add(Dust(pos + velocity * 2, velocity, size, life, color or (176, 166, 150)))
 
     def focus(self, center: Vec2, heavy: bool) -> None:
         self._seed += 1
@@ -313,3 +317,10 @@ def draw_flurry(
         x, y = local(tip)
         pygame.draw.circle(layer, (*shade(color, 60), 255), (x - size, y - size), size)
     surface.blit(layer, _ints(offset))
+
+
+def draw_thread(surface: pygame.Surface, a: Vec2, b: Vec2, color, tick: int) -> None:
+    """A fine thread stretched between two points, with a glint running along it."""
+    pygame.draw.line(surface, shade(color, -70), _ints(a), _ints(b), 1)
+    t = ((tick * 0.03) + (a.x + b.y) * 0.01) % 1.0
+    blit_glow(surface, radial_glow(3, shade(color, -20)), a + (b - a) * t)

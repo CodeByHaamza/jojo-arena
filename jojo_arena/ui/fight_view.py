@@ -23,6 +23,7 @@ from jojo_arena.engine.sprites import (
 from jojo_arena.paths import SPRITES_DIR
 from jojo_arena.stages.base import StageDef
 from jojo_arena.ui import sfx, vfx
+from jojo_arena.ui.cutscenes import make_cutscene
 from jojo_arena.ui.duel_view import DuelScreen
 
 OUTLINE = (23, 18, 31)
@@ -254,6 +255,7 @@ class FightView:
         self._seen: list[tuple] = [(None, -1), (None, -1)]  # (state, attack serial) per fighter
         self.duel: DuelScreen | None = None  # the rush duel close-up, while a clash lasts
         self.debug = False  # F3: draw the circles the simulation hits with
+        self.cutscene = None  # the ultimate's cutscene being played, if any
         self._block_word_f = [0, 0]
 
     # Reacting to the simulation ------------------------------------------------------
@@ -377,6 +379,12 @@ class FightView:
                 words.add(sfx.BAAN, self._head(loser) + Vec2(0, -6), "ko", 4, 80, 0.15, 1)
                 fx.add(vfx.Ring(pos, (255, 90, 90), 3.5, 18, 3))
                 fx.dust(loser.pos, 12, 2.0, 4)
+            elif kind == "cutscene_start" and match.cutscene is not None:
+                self.cutscene = make_cutscene(self, match, match.cutscene)
+            elif kind == "cutscene_end":
+                self.cutscene = None
+                self.flash = 6
+                self.shake = max(self.shake, 12)
             elif kind == "clash_start":
                 shouts = tuple(self._rush_word(f) for f in match.fighters)
                 self.duel = DuelScreen(self.fighter_views, self.fighter_defs, shouts)
@@ -466,6 +474,10 @@ class FightView:
                 self.duel = None
             elif self.duel is not None:
                 self.duel.update(self.tick)
+            if match.cutscene is None:
+                self.cutscene = None
+            elif self.cutscene is not None:
+                self.cutscene.update(match.cutscene.frame)
         self.words.update()
         self.fx.update()
         for wave in self.waves:
@@ -484,6 +496,10 @@ class FightView:
     # Drawing ---------------------------------------------------------------------------
 
     def draw(self, surface: pygame.Surface, match: Match) -> None:
+        if match.cutscene is not None and self.cutscene is not None:
+            self.cutscene.draw(surface)
+            self._finish_frame(surface)
+            return
         if match.clash is not None and self.duel is not None:
             # The rush duel leaves the arena for its own close-up screen.
             self.duel.draw(surface, match, self.tick)
@@ -499,6 +515,10 @@ class FightView:
             blit_shadow(surface, (projectile.pos.x, projectile.pos.y), 8, 3)
         for trap in match.traps:
             self._draw_trap(surface, trap)
+        for web in match.webs:
+            aura = self.fighter_defs[web.owner].aura
+            for a, b in web.edges:
+                vfx.draw_thread(surface, web.nodes[a], web.nodes[b], aura, self.tick)
         for fighter in match.fighters:
             self._draw_falling_strike(surface, fighter)
         drawables = [(o.rect.bottom, 0, o) for o in match.arena.obstacles if not o.broken]

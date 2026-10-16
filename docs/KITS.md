@@ -103,6 +103,16 @@ Les coups d'une posture : `[stances.<nom>.moves.<touche>]`, où la touche est `l
 | `disarm_s` | Les coups du Stand sont indisponibles pendant cette durée ensuite |
 | `buff` | Nom d'un bonus de la section `[buffs]`, lancé par ce coup |
 
+### Ultimes en cinématique
+
+| Champ | Effet |
+| --- | --- |
+| `cinematic` | Nom de la cinématique jouée par l'affichage (`road_roller`, `star_finish`, `chariot_clones`, `hierophant_web`) |
+| `cinematic_s` | Durée de la cinématique ; le combat est figé pendant ce temps |
+| `cinematic_at` | `hit` : seulement si le coup touche (pas en garde) ; `start` : dès que le coup part |
+| `finish_damage`, `finish_hitstun_f`, `finish_knockback`, `finish_wall_bounce` | Le coup final qui tombe à la fin de la cinématique (imparable) |
+| `web` | Fils tendus sur toute l'arène à la fin de la cinématique (voir plus bas) |
+
 ## Projectiles
 
 `[<coup>.projectile]`
@@ -128,6 +138,19 @@ Les coups d'une posture : `[stances.<nom>.moves.<touche>]`, où la touche est `l
 | `lifetime_s` | Durée de vie |
 | `max_count` | Nombre maximum ; le plus ancien disparaît |
 | `projectile` | Ce qu'il tire (comme un projectile) |
+
+## Toile
+
+`[<coup>.web]` : des fils tendus sur toute l'arène ; les toucher fait tirer les deux points d'ancrage les plus proches.
+
+| Champ | Effet |
+| --- | --- |
+| `columns`, `rows` | Points d'ancrage en largeur et en hauteur |
+| `margin` | Distance gardée par rapport aux murs |
+| `lifetime_s` | Durée de vie |
+| `rearm_s` | Après un tir, délai avant de pouvoir tirer de nouveau |
+| `touch_radius` | Distance à un fil qui compte comme le toucher |
+| `projectile` | Ce que tirent les points d'ancrage |
 
 ## Bonus
 

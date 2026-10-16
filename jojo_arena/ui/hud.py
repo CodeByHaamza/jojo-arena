@@ -83,6 +83,8 @@ class Hud:
     # Drawing ---------------------------------------------------------------------------
 
     def draw(self, surface: pygame.Surface, rounds: Rounds, announcements: bool = True) -> None:
+        if rounds.match.cutscene is not None:
+            return  # the cutscene has the whole screen
         for fighter in rounds.match.fighters:
             self._draw_player(surface, fighter, rounds)
         self._draw_timer(surface, rounds)

@@ -60,6 +60,7 @@ class Attack:
     dest: Vec2 | None = None  # where a leap lands
     armor_used: int = 0
     countered: bool = False  # caught by a counter: this blow is spent
+    cutscene_done: bool = False
 
     @property
     def phase(self) -> int:

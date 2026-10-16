@@ -77,6 +77,31 @@ class TrapDef:
 
 
 @dataclass(frozen=True)
+class WebDef:
+    """Threads stretched over the whole arena: touching one fires at the toucher."""
+
+    columns: int  # anchor points across...
+    rows: int  # ...and down the arena
+    margin: float  # px kept clear of the walls
+    lifetime_f: int
+    rearm_f: int  # after firing, the web waits this long before firing again
+    touch_radius: float  # how close to a thread counts as touching it
+    projectile: ProjectileDef  # fired from the two anchors nearest to the toucher
+
+    @classmethod
+    def from_data(cls, data: dict) -> WebDef:
+        return cls(
+            columns=data.get("columns", 4),
+            rows=data.get("rows", 3),
+            margin=data.get("margin", 30),
+            lifetime_f=seconds_to_frames(data["lifetime_s"]),
+            rearm_f=seconds_to_frames(data.get("rearm_s", 0.6)),
+            touch_radius=data.get("touch_radius", 6),
+            projectile=ProjectileDef.from_data(data["projectile"]),
+        )
+
+
+@dataclass(frozen=True)
 class BuffDef:
     """A temporary state started by a move (e.g. dropping armor for speed)."""
 
@@ -133,6 +158,16 @@ class MoveDef:
     disarm_f: int = 0  # the Stand's own moves are unavailable this long afterwards
     buff: str = ""  # name of a buff (kit [buffs]) started by this move
     chain: str = ""  # the same button, once this connects, continues into this move
+    # Cutscene: when this move lands ("hit") or as soon as it starts ("start"), the fight
+    # holds for a cutscene of `cinematic_f` frames, then the finishing blow lands.
+    cinematic: str = ""  # which cutscene the view plays
+    cinematic_f: int = 0
+    cinematic_at: str = "hit"
+    finish_damage: int = 0
+    finish_hitstun_f: int = 0
+    finish_knockback: float = 0.0  # px/frame
+    finish_wall_bounce: bool = False
+    web: WebDef | None = None  # threads laid over the arena once the cutscene ends
     counter: str = ""  # struck in melee while active: answer at once with this move
     leap: float = 0.0  # px: during startup, travel up to this far...
     leap_to: str = "target"  # ...toward the opponent ("target") or the aimed point ("cursor")
@@ -189,6 +224,14 @@ class MoveDef:
             disarm_f=seconds_to_frames(data.get("disarm_s", 0)),
             buff=data.get("buff", ""),
             chain=data.get("chain", ""),
+            cinematic=data.get("cinematic", ""),
+            cinematic_f=seconds_to_frames(data.get("cinematic_s", 0)),
+            cinematic_at=data.get("cinematic_at", "hit"),
+            finish_damage=data.get("finish_damage", 0),
+            finish_hitstun_f=data.get("finish_hitstun_f", 40),
+            finish_knockback=per_frame(data.get("finish_knockback", 0)),
+            finish_wall_bounce=data.get("finish_wall_bounce", False),
+            web=WebDef.from_data(data["web"]) if "web" in data else None,
             counter=data.get("counter", ""),
             leap=data.get("leap", 0.0),
             leap_to=data.get("leap_to", "target"),
@@ -265,6 +308,8 @@ def parse_kit(data: dict, kit_id: str, source: str = "kit") -> Kit:
             raise ValueError(f"{source}: move '{move.name}' uses unknown buff '{move.buff}'")
         if move.leap_to not in ("target", "cursor"):
             raise ValueError(f"{source}: move '{move.name}' has unknown leap_to")
+        if move.cinematic and (move.cinematic_f <= 0 or move.cinematic_at not in ("hit", "start")):
+            raise ValueError(f"{source}: move '{move.name}' needs cinematic_s and cinematic_at")
     walk = data.get("walk_speed")
     style = data.get("style", "none")
     style_name, style_params = (style, {}) if isinstance(style, str) else (style["type"], style)

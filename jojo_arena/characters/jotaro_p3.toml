@@ -258,28 +258,27 @@ wall_bounce = true
 clashable = false
 anim = "heavy"
 
-# Great Heat Attack (2 bars): time stops, then a final Ora Ora rush.
+# Great Heat Attack (2 bars): a Star Platinum punch must land first; then time stops,
+# a final Ora Ora rush, and time moves again on the last blow.
 [moves.gha]
-shout = "ORA"
+shout = "ORA !"
 label = "ORA ORA FINAL"
-info = "Arrête le temps puis rafale de 8 coups"
+info = "Un poing de Star Platinum. S'il touche : temps arrêté et rafale finale"
 stand_flash = true
-time_stop_s = 2.0
-time_stop_at = "start"
-startup_f = 20
-active_f = 40
-recovery_f = 24
-invincible_f = 20
-lunge = 200
-hits = 8
-hit_every_f = 5
-damage = 25
-reach = 22
+startup_f = 12
+active_f = 4
+recovery_f = 28
+invincible_f = 12
+damage = 30
+reach = 24
 radius = 14
-hitstun_f = 16
-knockback = 20
-last_knockback = 520
-last_wall_bounce = true
-hitstop_f = 2
+hitstun_f = 40
+hitstop_f = 10
 clashable = false
 anim = "light"
+cinematic = "star_finish"
+cinematic_s = 4.6
+finish_damage = 250
+finish_hitstun_f = 50
+finish_knockback = 480
+finish_wall_bounce = true

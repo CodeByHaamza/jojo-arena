@@ -254,24 +254,28 @@ wall_bounce = true
 clashable = false
 anim = "kick_high"
 
-# Great Heat Attack (2 bars): Road Roller! Time stops, then a road roller drops on the
-# spot where the opponent stood.
+# Great Heat Attack (2 bars): Road Roller! A blow from The World must land first; then
+# time stops, DIO comes back from the sky on a road roller, pounds it with MUDA, and when
+# time moves again, it all explodes.
 [moves.gha]
-shout = "ROAD ROLLER DA !"
+shout = "MUDA !"
 label = "ROAD ROLLER"
-info = "Arrête le temps et écrase la cible"
-time_stop_s = 2.5
-time_stop_at = "start"
-startup_f = 50
+info = "Un coup de The World. S'il touche : temps arrêté, et le rouleau compresseur tombe"
+stand_flash = true
+startup_f = 12
 active_f = 4
 recovery_f = 30
-invincible_f = 50
-at_target = true
-damage = 220
-radius = 26
+invincible_f = 12
+damage = 30
+reach = 24
+radius = 14
 hitstun_f = 40
-knockback = 460
-hitstop_f = 14
-wall_bounce = true
+hitstop_f = 10
 clashable = false
-anim = "special"
+anim = "light"
+cinematic = "road_roller"
+cinematic_s = 5.5
+finish_damage = 260
+finish_hitstun_f = 50
+finish_knockback = 420
+finish_wall_bounce = true

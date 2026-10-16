@@ -228,29 +228,39 @@ wall_bounce = true
 clashable = false
 anim = "special"
 
-# Great Heat Attack (2 bars): 20 Metre Radius Emerald Splash - emeralds close in from
-# every side.
+# Great Heat Attack (2 bars): 20 Metre Radius Emerald Splash. Hierophant Green runs all
+# over the arena stretching its threads; for 10 s, touching one fires emeralds at the
+# toucher, while Kakyoin keeps fighting.
 [moves.gha]
-shout = "EMERALD SPLASH !"
 label = "EMERALD SPLASH 20 MÈTRES"
-info = "Les émeraudes arrivent de partout"
+info = "Les fils couvrent toute l'arène 10 s : les toucher déclenche un Emerald Splash"
 stand_flash = true
-startup_f = 30
+startup_f = 4
 active_f = 1
-recovery_f = 30
-invincible_f = 30
+recovery_f = 10
+invincible_f = 14
 clashable = false
 anim = "special"
+cinematic = "hierophant_web"
+cinematic_at = "start"
+cinematic_s = 2.6
 
-[moves.gha.projectile]
+[moves.gha.web]
+columns = 5
+rows = 3
+margin = 34
+lifetime_s = 10
+rearm_s = 0.6
+touch_radius = 5
+
+[moves.gha.web.projectile]
 look = "gem"
-speed = 260
+speed = 300
 radius = 3
-damage = 16
-lifetime_s = 0.6
+damage = 14
+lifetime_s = 0.8
 hitstun_f = 14
 knockback = 50
 hitstop_f = 2
-count = 16
-origin = "ring"
-ring_radius = 95
+count = 3
+spread_deg = 20

@@ -13,12 +13,13 @@ from dataclasses import dataclass
 from jojo_arena.combat import interactions
 from jojo_arena.combat.arena import Arena
 from jojo_arena.combat.clash import Clash
+from jojo_arena.combat.cutscene import Cutscene
 from jojo_arena.combat.events import Event
 from jojo_arena.combat.fighter import Attack, Fighter, State
 from jojo_arena.combat.kit import Kit, ProjectileDef
 from jojo_arena.combat.projectile import Projectile
 from jojo_arena.combat.rules import Rules
-from jojo_arena.combat.traps import Trap
+from jojo_arena.combat.traps import Trap, Web, web_layout
 from jojo_arena.engine.actions import InputFrame
 from jojo_arena.engine.geometry import Vec2, circles_overlap
 
@@ -53,6 +54,8 @@ class Match:
         ]
         self.projectiles: list[Projectile] = []
         self.traps: list[Trap] = []
+        self.webs: list[Web] = []
+        self.cutscene: Cutscene | None = None
         self.hitstop = 0
         self.slowmo = 0  # steps left at half speed (Stylish Evade)
         self.super_freeze = 0  # steps left of a super move's flash
@@ -67,8 +70,13 @@ class Match:
 
     @property
     def cinematic(self) -> bool:
-        """Moments that pause the round timer: clash, super flash, stopped time."""
-        return self.clash is not None or self.super_freeze > 0 or self.time_stop is not None
+        """Moments that pause the round timer: clash, super flash, stopped time, cutscene."""
+        return (
+            self.clash is not None
+            or self.super_freeze > 0
+            or self.time_stop is not None
+            or self.cutscene is not None
+        )
 
     # Main step ------------------------------------------------------------------------
 
@@ -76,6 +84,8 @@ class Match:
         self.tick += 1
         for fighter, frame in zip(self.fighters, inputs, strict=True):
             fighter.remember_presses(frame)
+        if self.cutscene is not None:
+            return self._update_cutscene()
         if self.clash is not None:
             return self._update_clash(inputs)
         if self.super_freeze > 0:
@@ -103,12 +113,20 @@ class Match:
                 events.append(event)
         events += self._trigger_time_stops()
         for fighter in self.fighters:
+            attack = fighter.attack
+            if attack is None or attack.cutscene_done or attack.move.cinematic_at != "start":
+                continue
+            if attack.move.cinematic:
+                events += self._start_cutscene(fighter, self.opponent(fighter), attack)
+                return events  # the whole fight holds from now on
+        for fighter in self.fighters:
             if not fighter.frozen:
                 events += fighter.integrate(self.arena)
         self._separate_bodies()
         self._release_attacks()
         events += self._update_projectiles()
         events += self._update_traps()
+        events += self._update_webs()
         events += self._resolve_melee()
         events += self._resolve_projectile_hits()
         for fighter in self.fighters:
@@ -358,9 +376,94 @@ class Match:
             if landed:
                 attack.connected = True
                 attack.hits_done += 1
+            clean = any(e.kind == "hit" and e.fighter == defender.index for e in strike_events)
+            if clean and self._confirms(attack) and defender.alive:
+                events += self._start_cutscene(attacker, defender, attack)
         return events
 
     # Clash -------------------------------------------------------------------------------
+
+    # Cutscenes ---------------------------------------------------------------------------
+
+    def _confirms(self, attack: Attack) -> bool:
+        """A clean hit of this attack starts its cutscene."""
+        move = attack.move
+        cued = move.cinematic and move.cinematic_at == "hit" and not attack.cutscene_done
+        return bool(cued) and self.cutscene is None
+
+    def _start_cutscene(self, user: Fighter, target: Fighter, attack: Attack) -> list[Event]:
+        move = attack.move
+        attack.cutscene_done = True
+        self.cutscene = Cutscene(
+            move.cinematic,
+            user.index,
+            target.index,
+            move.cinematic_f,
+            move.cinematic_f,
+            move,
+            attack.serial,
+        )
+        self.super_freeze = 0
+        self.super_user = None
+        self.hitstop = 0
+        return [Event("cutscene_start", user.pos, user.index)]
+
+    def _update_cutscene(self) -> list[Event]:
+        """The fight holds while the cutscene plays, then its outcome lands at once."""
+        scene = self.cutscene
+        scene.frames_left -= 1
+        if scene.frames_left > 0:
+            return []
+        self.cutscene = None
+        user, target = self.fighters[scene.user], self.fighters[scene.target]
+        move = scene.move
+        events = [Event("cutscene_end", user.pos, user.index)]
+        if move.finish_damage and target.alive:
+            away = (target.pos - user.pos).normalized() if target.pos != user.pos else user.facing
+            strike = Strike(
+                damage=move.finish_damage,
+                hitstun_f=move.finish_hitstun_f,
+                blockstun_f=0,
+                knockback=away * move.finish_knockback,
+                wall_bounce=move.finish_wall_bounce,
+                hitstop_f=12,
+                source=user.pos,
+                where=target.pos,
+                unblockable=True,
+                key=(user.index, scene.serial),
+                super_move=True,
+            )
+            _, strike_events = self._strike(user, target, strike)
+            events += strike_events
+        if move.web is not None:
+            nodes, edges = web_layout(self.arena.bounds.rect, move.web)
+            self.webs = [w for w in self.webs if w.owner != user.index]
+            self.webs.append(Web(user.index, nodes, edges, move.web, move.web.lifetime_f))
+        attack = user.attack
+        if attack is not None and attack.serial == scene.serial:
+            attack.frame = max(attack.frame, move.startup_f + move.active_f)  # recovery now
+        return events
+
+    def _update_webs(self) -> list[Event]:
+        events: list[Event] = []
+        for web in self.webs:
+            if self.fighters[web.owner].frozen:
+                continue
+            web.life -= 1
+            web.rearm -= 1
+            target = self.fighters[1 - web.owner]
+            if web.rearm > 0 or not target.alive:
+                continue
+            if web.touched_by(target.pos, self.rules.hurt_radius):
+                web.rearm = web.defn.rearm_f
+                for node in web.nearest_nodes(target.pos, 2):
+                    direction = (target.pos - node).normalized()
+                    self.projectiles += self._spawn(
+                        web.owner, node - direction * 6, direction, web.defn.projectile, target.pos
+                    )
+                    events.append(Event("trap_triggered", node, web.owner))
+        self.webs = [w for w in self.webs if w.life > 0]
+        return events
 
     def _rush_collision(self) -> Vec2 | None:
         """Rush against rush (Ora against Muda): when a barrage reaches someone who is

@@ -194,7 +194,7 @@ class FightScene(Scene):
         self.view.draw(surface, self.rounds.match)
         menus_open = self.pause_menu is not None or self.move_list is not None
         self.hud.draw(surface, self.rounds, announcements=not menus_open)
-        if not menus_open:
+        if not menus_open and self.rounds.match.cutscene is None:
             self.draw_overlay(surface)
         center = surface.get_width() // 2
         if self.pause_menu is not None:

@@ -262,25 +262,29 @@ wall_bounce = true
 clashable = false
 anim = "light"
 
-# Great Heat Attack (2 bars): Armor Off clone barrage all around.
+# Great Heat Attack (2 bars): one thrust must land first; then Armor Off, and the
+# afterimages of Silver Chariot strike from every side at once.
 [moves.gha]
-shout = "ORA"
+shout = "ORA !"
 label = "RAFALE DE CLONES"
-info = "12 coups tout autour, invincible au démarrage"
+info = "Un estoc. S'il touche : Armor Off, les clones frappent de partout"
 stand_flash = true
-startup_f = 16
-active_f = 40
-recovery_f = 24
-invincible_f = 16
-hits = 12
-hit_every_f = 3
-damage = 16
-reach = 12
-radius = 24
-hitstun_f = 12
-knockback = 10
-last_knockback = 480
-last_wall_bounce = true
-hitstop_f = 2
+shape = "line"
+fx = "blade"
+startup_f = 10
+active_f = 4
+recovery_f = 26
+invincible_f = 10
+damage = 26
+reach = 34
+radius = 7
+hitstun_f = 40
+hitstop_f = 10
 clashable = false
 anim = "light"
+cinematic = "chariot_clones"
+cinematic_s = 4.0
+finish_damage = 240
+finish_hitstun_f = 50
+finish_knockback = 460
+finish_wall_bounce = true

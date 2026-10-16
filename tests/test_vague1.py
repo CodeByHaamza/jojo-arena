@@ -239,23 +239,6 @@ def test_time_stop_has_a_long_cooldown():
     assert match.fighters[0].time_stop_ready() is False
 
 
-def test_road_roller_lands_where_the_opponent_stood():
-    match = make_duel("dio_p3", "mannequin_red", p1=(100, 100), p2=(200, 100))
-    match.fighters[0].hh = 200
-    events = run(match, 150, p1=press("heart_heat", move=(1.0, 0.0)))
-    victim = match.fighters[1]
-    assert "time_stop" in kinds(events)
-    assert victim.max_hp - victim.hp >= 220
-
-
-def test_jotaro_great_heat_rushes_in_stopped_time():
-    match = make_duel("jotaro_p3", "mannequin_red", p1=(100, 100), p2=(160, 100))
-    match.fighters[0].hh = 200
-    events = run(match, 200, p1=press("heart_heat", move=(1.0, 0.0)))
-    assert "time_stop" in kinds(events)
-    assert match.fighters[1].max_hp - match.fighters[1].hp >= 8 * 25
-
-
 # Kakyoin -----------------------------------------------------------------------------------
 
 
@@ -284,16 +267,6 @@ def test_at_most_three_threads():
     for _ in range(4):
         run(match, 30, p1=press("special", move=(0.0, 1.0)))
     assert len(match.traps) == 3
-
-
-def test_twenty_metre_emerald_splash_closes_in_from_every_side():
-    match = make_duel("kakyoin", "mannequin_red", p1=(100, 100), p2=(220, 100))
-    match.fighters[0].hh = 200
-    run(match, 30 + match.rules.super_freeze_f + 2, p1=press("heart_heat", move=(1.0, 0.0)))
-    target = match.fighters[1].pos
-    assert len(match.projectiles) >= 12
-    xs = [p.pos.x - target.x for p in match.projectiles]
-    assert min(xs) < 0 < max(xs)
 
 
 # Polnareff ---------------------------------------------------------------------------------
