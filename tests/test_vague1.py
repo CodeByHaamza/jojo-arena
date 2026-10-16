@@ -86,10 +86,11 @@ def test_vampire_grab_ignores_guard_and_drains_blood():
     dio, victim = match.fighters
     dio.hp = 500
     run_held(match, 2, p2=walk(0, 0))
+    grab = dio.kit.move("base", "heavy")
     for i in range(40):
         match.step((press("heavy") if i == 0 else NONE, press(hold=("guard",))))
-    assert victim.hp == victim.max_hp - 70
-    assert dio.hp == 500 + 35
+    assert victim.hp == victim.max_hp - grab.damage  # through the guard
+    assert dio.hp == 500 + round(grab.damage * grab.drain)
 
 
 def test_heart_heat_key_alone_is_the_hha_with_a_direction_the_gha():

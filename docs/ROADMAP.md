@@ -50,10 +50,11 @@ Chaque perso doit avoir un ressenti unique, et chaque coup qui touche doit être
 
 ## Prochaines idées pour la base
 
-- [ ] **Relecture de combat** : enregistrer les entrées d'un combat (la simulation est déterministe) pour rejouer exactement un bug, ou revoir un match.
-- [ ] **Données de frames en entraînement** : démarrage, actif, récupération et avantage affichés à chaque coup.
+- [x] **Relecture de combat** : les entrées sont enregistrées (en quittant, ou F9) et `--replay` rejoue exactement le même combat.
+- [x] **Données de frames en entraînement** : démarrage, actif, récupération et avantage du dernier coup.
 - [ ] **Animations par images-clés dans les fiches** (au lieu des poses du générateur) pour des coups encore plus longs et lisibles.
-- [ ] **Bot d'équilibrage** : des milliers de combats IA contre IA pour repérer les persos trop forts.
+- [x] **Bot d'équilibrage** : `make balance` fait combattre les bots sur chaque duel et donne les taux de victoire.
+  Le bot ne joue ni le zoning ni le contrôle à distance : ses chiffres mesurent la force brute, pas plus.
 
 ## Ensuite
 

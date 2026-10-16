@@ -24,10 +24,11 @@ P1 ?= jotaro_p3
 P2 ?= dio_p3
 ROUNDS ?= 3
 SCENE ?= title
+FIGHTS ?= 20
 ARGS ?=
 
 .DEFAULT_GOAL := help
-.PHONY: help install hooks run menu training fight versus demo test test-fast lint format check \
+.PHONY: help install hooks run menu training fight versus demo test test-fast lint format check balance \
         screens screenshot sprites exe clean
 
 help:
@@ -51,6 +52,7 @@ help:
 	$(info $(INDENT)make lint         ruff lint and format check (same as the CI))
 	$(info $(INDENT)make format       fix the formatting and the lint issues that can be fixed)
 	$(info $(INDENT)make check        lint then tests: run this before a commit)
+	$(info $(INDENT)make balance      bots fight every matchup, win rates (FIGHTS=$(FIGHTS)))
 	$(info $(INDENT)make screens      screenshot tour of every screen into screenshots/tour/)
 	$(info $(INDENT)make screenshot   picture of one screen: SCENE=menu or select or options...)
 	$(info )
@@ -110,6 +112,9 @@ format: $(VENV_PY)
 	$(PY) -m ruff check --fix .
 
 check: lint test
+
+balance: $(VENV_PY)
+	$(PY) tools/balance.py --fights $(FIGHTS)
 
 screens: $(VENV_PY)
 	$(PY) tools/screenshot_tour.py screenshots/tour

@@ -5,7 +5,7 @@
 
 name = "DIO (P3)"
 max_hp = 1000
-walk_speed = 112
+walk_speed = 106
 strength = 1.8  # The World: overwhelming strength, it hurls props
 style = { type = "stance_toggle", off = "base", on = "stand", stand_body = true }
 
@@ -69,15 +69,15 @@ label = "SUCCION DE SANG"
 info = "Saisie imparable, rend la moitié en vie. Lente : punie si elle rate"
 startup_f = 14
 active_f = 3
-recovery_f = 30
-damage = 70
+recovery_f = 34
+damage = 60
 reach = 12
 radius = 9
 hitstun_f = 34
 knockback = 140
 hitstop_f = 8
 unblockable = true
-drain = 0.5
+drain = 0.35
 clashable = false
 anim = "grab"
 
@@ -130,7 +130,7 @@ active_f = 4
 recovery_f = 16
 leap = 150
 leap_height = 26
-invincible_f = 14
+invincible_f = 10
 damage = 60
 reach = 0
 radius = 16
@@ -241,12 +241,12 @@ anim = "kick"
 [stances.stand.moves.special]
 shout = "ZA WARUDO !"
 label = "THE WORLD"
-info = "Arrête le temps 5 s (recharge 25 s)"
-startup_f = 20
+info = "Arrête le temps 5 s (recharge 30 s)"
+startup_f = 26
 active_f = 1
 recovery_f = 10
 time_stop_s = 5.0
-cooldown_s = 25
+cooldown_s = 30
 anim = "pose"
 
 # A dozen knives in two volleys; in stopped time they hang in the air, a wall of blades.
