@@ -16,9 +16,12 @@ p1 = [150, 146]
 p2 = [330, 146]
 
 # Dawn: from this time into the round (the round lasts 99 s), the sun shines in
-# through the windows onto these patches of floor.
+# through the windows; the patches below are where it lands first, and they grow.
 [sun]
 after_s = 60
+# From dawn, the beams take this long to stretch from the windows to the far wall.
+# Until then there is shadow to fight in; after that, a vampire has nowhere left.
+spread_s = 22
 
 [[sun.windows]]
 rect = [70, 40, 44, 92]

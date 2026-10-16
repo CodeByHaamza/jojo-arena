@@ -121,7 +121,10 @@ stance_blood_per_s = 6        # ...and burns this much per second while it lasts
 # Sunlight (some arenas, late in the round): it burns the undead and fuels the Hamon.
 undead_natures = ["vampire", "zombie", "pillar_man"]
 blood_per_s = 25              # it boils their blood away...
-damage_per_s = 30             # ...then burns them
+damage_per_s = 30             # ...then burns them, and the fire takes hold:
+burn_ramp_s = 5               # after this long without shade the burn is at its worst...
+burn_max_mult = 3.5           # ...this many times faster. Standing in it is a death.
+burn_cool_per_f = 3           # out of the light, that build-up drops this fast per frame
 hamon_breath_mult = 1.5       # Hamon breathing fills faster in the sun
 
 [stance]

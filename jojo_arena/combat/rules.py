@@ -119,6 +119,9 @@ class Rules:
     sun_blood_per_f: float
     sun_damage_per_f: float
     sun_hamon_mult: float
+    sun_burn_ramp_f: int
+    sun_burn_max_mult: float
+    sun_burn_cool_per_f: int
 
     @classmethod
     def from_data(cls, data: dict) -> Rules:
@@ -154,6 +157,9 @@ class Rules:
             sun_blood_per_f=data["sun"]["blood_per_s"] / HZ,
             sun_damage_per_f=data["sun"]["damage_per_s"] / HZ,
             sun_hamon_mult=data["sun"]["hamon_breath_mult"],
+            sun_burn_ramp_f=seconds_to_frames(data["sun"]["burn_ramp_s"]),
+            sun_burn_max_mult=data["sun"]["burn_max_mult"],
+            sun_burn_cool_per_f=data["sun"]["burn_cool_per_f"],
             round_timer_f=seconds_to_frames(rnd["timer_s"]),
             round_intro_f=seconds_to_frames(rnd["intro_s"]),
             round_outro_f=seconds_to_frames(rnd["outro_s"]),

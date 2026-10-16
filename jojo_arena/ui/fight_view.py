@@ -702,7 +702,7 @@ class FightView:
         self.renderer.draw_floor_details(surface, match.arena)
         draw_sun = getattr(self.renderer, "draw_sun", None)
         if draw_sun is not None and match.arena.sun_windows:
-            draw_sun(surface, match.arena, sun_amount(match))
+            draw_sun(surface, match.arena, sun_amount(match), match.arena.sun_spread(match.tick))
         for fighter in match.fighters:
             shadow = self.fighter_views[fighter.index].shadow
             blit_shadow(surface, (fighter.pos.x, fighter.pos.y), *shadow)

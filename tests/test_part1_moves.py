@@ -167,3 +167,20 @@ def test_the_hat_supers_stay_his_whoever_is_out():
     for stance in kit_.stances:
         assert kit_.move(stance, "hha").projectile.look == "hat"
         assert kit_.move(stance, "gha").buff == "cool"
+
+
+def test_the_move_list_tabs_slide_so_the_open_one_is_always_visible():
+    from jojo_arena.ui.movelist import tab_slide
+
+    widths = [90, 120, 110, 60, 70, 100]
+    offsets, x = [], 16
+    for w in widths:
+        offsets.append(x)
+        x += w + 12
+    assert tab_slide(offsets, widths, 0, 16, 464) == 0  # the first one never moves
+    assert tab_slide(offsets, widths, 1, 16, 464) == 0  # still fits
+    last = tab_slide(offsets, widths, len(widths) - 1, 16, 464)
+    assert last > 0  # the row has to come left
+    assert offsets[-1] - last >= 16  # and the open tab lands inside the screen
+    assert offsets[-1] - last + widths[-1] <= 464
+    assert tab_slide([], [], 0, 16, 464) == 0

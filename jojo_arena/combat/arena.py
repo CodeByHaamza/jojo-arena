@@ -93,10 +93,27 @@ class Arena:
     # Sunlight: patches of the floor where the sun shines in, from this step of the round.
     sun_windows: list[Rect] = field(default_factory=list)
     sun_after_f: int = 0
+    sun_spread_f: int = 0  # frames for the beams to reach the far wall (0 = at once)
     cage: Cage | None = None
 
-    def in_sun(self, pos: Vec2) -> bool:
-        return any(window.contains(pos) for window in self.sun_windows)
+    def sun_spread(self, tick: int) -> float:
+        """How far the sun has climbed: 0 when dawn breaks, 1 once it fills the room."""
+        if not self.sun_windows or tick < self.sun_after_f:
+            return 0.0
+        if self.sun_spread_f <= 0:
+            return 1.0
+        return min(1.0, (tick - self.sun_after_f) / self.sun_spread_f)
+
+    def sun_patch(self, window: Rect, spread: float) -> Rect:
+        """The floor one window lights. The beam starts just under the window and
+        lengthens toward the far wall as the sun climbs, widening a little on the way:
+        at dawn there is shadow to hide in, and after a while there is none."""
+        reach = max(0.0, self.bounds.rect.bottom - window.bottom)
+        widen = window.w * 0.3 * spread
+        return Rect(window.x - widen / 2, window.y, window.w + widen, window.h + reach * spread)
+
+    def in_sun(self, pos: Vec2, spread: float = 1.0) -> bool:
+        return any(self.sun_patch(w, spread).contains(pos) for w in self.sun_windows)
 
     def constrain(self, pos: Vec2, radius: float) -> tuple[Vec2, Vec2 | None, Obstacle | None]:
         """Keep a body inside the walls and out of solid obstacles.

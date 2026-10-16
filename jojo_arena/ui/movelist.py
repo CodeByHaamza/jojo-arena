@@ -63,6 +63,18 @@ def entry_height(entry: MoveEntry, width: int) -> int:
     return 11 + 10 * lines + ENTRY_GAP
 
 
+def tab_slide(offsets: list[int], widths: list[int], current: int, left: int, right: int) -> int:
+    """How far the tab row has to slide left so tab `current` is fully in view.
+
+    Zero while every tab fits; it only ever slides as far as it has to, so the first
+    tabs stay put until the row really is too wide.
+    """
+    if not offsets:
+        return 0
+    slide = max(0, offsets[current] + widths[current] - right)
+    return min(slide, max(0, offsets[current] - left))
+
+
 def paginate(pages: list[MovePage], size: tuple[int, int]) -> list[MovePage]:
     """Cut the pages whose entries run past the bottom of the screen into parts."""
     width, height = size
@@ -152,8 +164,17 @@ def build_pages(
 
     prop_info = text.SYS_PROP_INFO if fdef.stand_sprite else text.SYS_PROP_INFO_HANDS
     stand_info = text.SYS_STYLE_INFO
+    stand_label = text.SYS_STAND
     if fdef.stand_name:
         stand_info = text.SYS_STAND_INFO.format(stand=fdef.stand_name)
+    if kit.style == "stance_cycle":
+        # Not a Stand: someone this character calls in. Name them, in order.
+        friends = [
+            kit.stance_tags.get(name) or kit.stance_labels.get(name, name.upper())
+            for name in kit.style_params.get("stances", [])[1:]
+        ]
+        stand_info = text.SYS_CYCLE_INFO.format(names=", ".join(friends))
+        stand_label = text.SYS_CALL
     basics = [
         MoveEntry((move_label(player),), text.SYS_MOVE, text.SYS_MOVE_INFO),
         MoveEntry((key("guard"),), text.SYS_GUARD, text.SYS_GUARD_INFO),
@@ -172,7 +193,7 @@ def build_pages(
         basics.insert(1, MoveEntry((key("stand"),), text.SYS_FREEZE, text.SYS_FREEZE_INFO))
         basics.insert(2, MoveEntry((), text.SYS_BLOOD, text.SYS_BLOOD_INFO))
     elif len(kit.stances) > 1:
-        basics.insert(1, MoveEntry((key("stand"),), text.SYS_STAND, stand_info))
+        basics.insert(1, MoveEntry((key("stand"),), stand_label, stand_info))
     if kit.style_params.get("remote"):
         secs = f"{rules.remote_hold_f / 60:.1f}".replace(".", ",")
         stand = fdef.stand_name or text.SYS_STAND
@@ -234,21 +255,32 @@ class MoveListPanel:
         font.draw(surface, text.MOVE_LIST, (width - 16, 8), GOLD, align="right")
         font.draw(surface, self.owner, (width - 16, 20), DIM, align="right")
 
-        # Tabs: one per page; the parts of a long page share their tab.
-        x = 16
+        # Tabs: one per page; the parts of a long page share their tab. A character with
+        # several stances has more tabs than the screen is wide, so the row slides to
+        # keep the open one in view.
         shown = self.pages[self.page]
-        for page in self.pages:
-            if page.part > 1:
+        tabs = [page for page in self.pages if page.part == 1]
+        labels = [
+            f"{page.title} {shown.part}/{shown.parts}"
+            if page.title == shown.title and shown.parts > 1
+            else page.title
+            for page in tabs
+        ]
+        widths = [font.text_width(label) for label in labels]
+        offsets, x = [], 16
+        for w in widths:
+            offsets.append(x)
+            x += w + 12
+        here = next(i for i, page in enumerate(tabs) if page.title == shown.title)
+        slide = tab_slide(offsets, widths, here, 16, width - 16)
+        for i in range(len(tabs)):
+            x = offsets[i] - slide
+            if x + widths[i] < 16 or x > width - 16:
                 continue
-            current = page.title == shown.title
-            color = GOLD if current else DIM
-            label = page.title
-            if current and shown.parts > 1:
-                label = f"{page.title} {shown.part}/{shown.parts}"
-            rect = font.draw(surface, label, (x, 44), color)
+            current = i == here
+            rect = font.draw(surface, labels[i], (x, 44), GOLD if current else DIM)
             if current:
                 surface.fill(GOLD, (rect.x, rect.bottom + 1, rect.width, 2))
-            x = rect.right + 12
         surface.fill(BORDER, (16, 58, width - 32, 1))
 
         y = TOP

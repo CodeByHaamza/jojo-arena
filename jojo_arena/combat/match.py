@@ -663,10 +663,14 @@ class Match:
         if active and not self.dawn_announced:
             self.dawn_announced = True
             events.append(Event("dawn", None))
+        spread = self.arena.sun_spread(self.tick)
         for fighter in self.fighters:
-            fighter.in_sun = active and fighter.alive and self.arena.in_sun(fighter.pos)
+            fighter.in_sun = active and fighter.alive and self.arena.in_sun(fighter.pos, spread)
             undead = fighter.kit.nature in self.rules.sun_undead_natures
             if not fighter.in_sun or not undead or fighter.frozen:
+                if undead and not fighter.frozen:
+                    # In stopped time nothing happens at all, not even cooling down.
+                    fighter.leave_the_sun()
                 continue
             if fighter.burn_in_sun():
                 events.append(Event("ko", fighter.pos, fighter.index))

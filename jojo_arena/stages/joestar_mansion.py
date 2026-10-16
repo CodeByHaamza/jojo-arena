@@ -160,8 +160,11 @@ class JoestarMansionRenderer:
     def draw_background(self, surface: pygame.Surface) -> None:
         surface.blit(self.background, (0, 0))
 
-    def draw_sun(self, surface: pygame.Surface, arena: Arena, amount: float) -> None:
-        """Dawn: the windows glow, then sunlight lies on the floor below them."""
+    def draw_sun(
+        self, surface: pygame.Surface, arena: Arena, amount: float, spread: float = 1.0
+    ) -> None:
+        """Dawn: the windows glow, then sunlight lies on the floor below them and
+        stretches across the room as the sun climbs (`spread`, 0 to 1)."""
         if amount <= 0:
             return
         pal = self.palette
@@ -178,7 +181,7 @@ class JoestarMansionRenderer:
             return tuple(round(c * strength) for c in sun)
 
         for window in arena.sun_windows:
-            rect = _to_pygame(window)
+            rect = _to_pygame(arena.sun_patch(window, spread))
             for i in range(rect.h):
                 # Brighter near the window, fading down the floor, soft at the edges.
                 strength = 0.32 * amount * (1 - 0.5 * i / rect.h)

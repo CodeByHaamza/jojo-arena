@@ -52,7 +52,7 @@ def test_every_arena_draws_at_night_and_at_dawn(stage_id, monkeypatch):
         obstacle.damage(obstacle.max_hp)
     renderer.draw_floor_details(surface, arena)  # broken: debris
     if hasattr(renderer, "draw_sun"):
-        renderer.draw_sun(surface, arena, 1.0)
+        renderer.draw_sun(surface, arena, 1.0, 1.0)
     renderer.draw_lights(surface, 30)
     pygame.display.quit()
 

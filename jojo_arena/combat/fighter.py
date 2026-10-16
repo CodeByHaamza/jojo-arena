@@ -145,6 +145,7 @@ class Fighter:
         self.iced_f = 0  # frozen solid by Vaporization Freezing (for the view)
         self._pose_heal_left = 0.0
         self.in_sun = False
+        self.sun_f = 0  # frames of sunlight on the skin, with no shade to break it
         self.style = make_style(kit.style, kit.style_params)
         self.switch_target = self.stance
         self.resolve_announced = False
@@ -562,14 +563,29 @@ class Fighter:
                 self.rules.blood_max, self.blood + life_drained * self.rules.blood_per_drain
             )
 
+    @property
+    def sun_burn_mult(self) -> float:
+        """The fire takes hold: the longer an undead body stays in the light with no
+        shade to break it, the faster it burns."""
+        ramp = self.rules.sun_burn_ramp_f
+        if ramp <= 0:
+            return 1.0
+        held = min(1.0, self.sun_f / ramp)
+        return 1.0 + held * (self.rules.sun_burn_max_mult - 1.0)
+
+    def leave_the_sun(self) -> None:
+        """A step out of the light: what had caught fire cools, but not instantly."""
+        self.sun_f = max(0, self.sun_f - self.rules.sun_burn_cool_per_f)
+
     def burn_in_sun(self) -> bool:
         """One step of sunlight on an undead body: the blood boils away, then the sun
-        burns. Returns True when this step's burn knocked the fighter out."""
+        burns, harder and harder. Returns True when this step's burn knocked it out."""
         rules = self.rules
+        self.sun_f += 1
         if self.blood > 0:
             self.blood = max(0.0, self.blood - rules.sun_blood_per_f)
             return False
-        self._sun_left += rules.sun_damage_per_f
+        self._sun_left += rules.sun_damage_per_f * self.sun_burn_mult
         whole = int(self._sun_left)
         if whole:
             self._sun_left -= whole
