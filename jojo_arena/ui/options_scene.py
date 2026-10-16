@@ -5,7 +5,7 @@ from __future__ import annotations
 import pygame
 
 from jojo_arena.context import GameContext
-from jojo_arena.engine import font, i18n
+from jojo_arena.engine import audio, font, i18n
 from jojo_arena.engine.scene import Scene
 from jojo_arena.ui import text
 from jojo_arena.ui.backdrop import MenuBackdrop
@@ -43,6 +43,7 @@ class OptionsScene(Scene):
                     [text.LANGUAGE_NAMES[code] for code in i18n.LANGUAGES],
                     i18n.LANGUAGES.index(i18n.language()),
                 ),
+                MenuItem("volume", text.VOLUME, [str(n) for n in range(11)], ctx.settings.volume),
                 MenuItem("back", text.BACK),
             ]
         )
@@ -63,6 +64,12 @@ class OptionsScene(Scene):
         elif kind == "change" and key == "fullscreen":
             if bool(self.menu.item("fullscreen").index) != self.ctx.display.fullscreen:
                 self.ctx.display.toggle_fullscreen()
+        elif kind == "change" and key == "volume":
+            self.ctx.settings.volume = self.menu.item("volume").index
+            self.ctx.save_settings()
+            if audio._player is not None:
+                audio._player.volume = self.ctx.settings.volume / 10
+            audio.play("menu_ok")
         elif kind == "change" and key == "language":
             code = i18n.LANGUAGES[self.menu.item("language").index]
             i18n.set_language(code)
@@ -80,8 +87,8 @@ class OptionsScene(Scene):
     def draw(self, surface: pygame.Surface) -> None:
         self.backdrop.draw(surface, self.tick)
         width, height = surface.get_size()
-        font.draw(surface, text.OPTIONS_TITLE, (width // 2, 10), GOLD, scale=3, align="center")
-        self.menu.draw(surface, width // 2, 40, spacing=13)
+        font.draw(surface, text.OPTIONS_TITLE, (width // 2, 4), GOLD, scale=3, align="center")
+        self.menu.draw(surface, width // 2, 36, spacing=11)
 
         preset = self.ctx.controls.active_preset
         draw_box(surface, TABLE)

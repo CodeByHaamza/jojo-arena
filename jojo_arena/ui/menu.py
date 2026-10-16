@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 
 import pygame
 
-from jojo_arena.engine import font
+from jojo_arena.engine import audio, font
 from jojo_arena.engine.actions import InputFrame
 
 WHITE = (255, 255, 255)
@@ -53,22 +53,28 @@ class Menu:
         self.tick += 1
         if frame.was_pressed("up"):
             self.cursor = (self.cursor - 1) % len(self.items)
+            audio.play("menu_move")
         if frame.was_pressed("down"):
             self.cursor = (self.cursor + 1) % len(self.items)
+            audio.play("menu_move")
         item = self.selected
         if item.values and item.enabled:
             step = int(frame.was_pressed("right")) - int(frame.was_pressed("left"))
             if step:
                 item.index = (item.index + step) % len(item.values)
+                audio.play("menu_move")
                 return "change", item.key
         if frame.was_pressed("confirm"):
             if not item.enabled:
+                audio.play("menu_locked")
                 return "locked", item.key
+            audio.play("menu_ok")
             if item.values:
                 item.index = (item.index + 1) % len(item.values)
                 return "change", item.key
             return "confirm", item.key
         if frame.was_pressed("back"):
+            audio.play("menu_back")
             return "back", ""
         return None
 

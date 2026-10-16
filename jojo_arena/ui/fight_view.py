@@ -12,7 +12,7 @@ from jojo_arena.characters import FighterDef
 from jojo_arena.combat.events import Event
 from jojo_arena.combat.fighter import Fighter, State
 from jojo_arena.combat.match import Match
-from jojo_arena.engine import font
+from jojo_arena.engine import audio, font
 from jojo_arena.engine.effects import blit_glow, blit_shadow, radial_glow
 from jojo_arena.engine.geometry import Vec2
 from jojo_arena.engine.sprites import (
@@ -25,7 +25,7 @@ from jojo_arena.engine.sprites import (
 )
 from jojo_arena.paths import SPRITES_DIR
 from jojo_arena.stages.base import StageDef
-from jojo_arena.ui import sfx, text, vfx
+from jojo_arena.ui import sfx, sounds, text, vfx
 from jojo_arena.ui.cutscenes import make_cutscene
 from jojo_arena.ui.duel_view import DuelScreen
 from jojo_arena.ui.widgets import draw_cap
@@ -317,6 +317,7 @@ class FightView:
         return (a + b) * 0.5
 
     def on_events(self, events: list[Event], match: Match | None = None) -> None:
+        sounds.play_events(events)
         if match is not None:
             self._comic(events, match)
         for event in events:
@@ -565,10 +566,12 @@ class FightView:
             attack = fighter.attack
             serial = attack.serial if attack is not None else last_serial
             if fighter.state == State.DASH and last_state != State.DASH:
+                audio.play("whoosh", 0.5)
                 self.fx.dust(fighter.pos, 5, 1.0)
                 self.fx.add(vfx.SpeedLines(fighter.pos + self.chest(i), fighter.dash_dir))
             if attack is not None and serial != last_serial and fighter.state == State.ATTACK:
                 move = attack.move
+                audio.play("beam" if move.fx == "beam" else "whoosh", 0.7 if move.fx else 0.35)
                 if move.shout and move.hits <= 1:
                     self.words.add(move.shout, self._head(fighter), self._shout_style(i), 2, 46)
                 elif move.hits > 1:

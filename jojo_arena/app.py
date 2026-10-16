@@ -9,7 +9,7 @@ import pygame
 
 from jojo_arena.context import GameContext
 from jojo_arena.controls import controls_path, load_controls
-from jojo_arena.engine import i18n
+from jojo_arena.engine import audio, i18n
 from jojo_arena.engine.display import Display
 from jojo_arena.engine.input import InputManager
 from jojo_arena.engine.loop import FixedStep
@@ -79,6 +79,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 class Game:
     def __init__(self, fullscreen: bool, language: str | None = None) -> None:
+        pygame.mixer.pre_init(audio.RATE, -16, 1, 512)
         pygame.init()
         display = Display(WINDOW_TITLE, INTERNAL_SIZE, fullscreen=fullscreen)
         inputs = InputManager()
@@ -93,6 +94,12 @@ class Game:
             settings.language = language
         i18n.set_language(settings.language)
         self.ctx = GameContext(display, inputs, SceneManager(), config, path, settings)
+        from jojo_arena.ui.sounds import build_sounds
+
+        player = audio.AudioPlayer()
+        build_sounds(player)
+        player.volume = settings.volume / 10
+        audio.set_player(player)
         self.clock = pygame.time.Clock()
         self.fixed_step = FixedStep(LOGIC_HZ)
 

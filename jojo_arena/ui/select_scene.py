@@ -11,7 +11,7 @@ import pygame
 from jojo_arena.characters import FighterDef, PartDef, load_parts, load_roster
 from jojo_arena.combat.rules import load_rules
 from jojo_arena.context import GameContext
-from jojo_arena.engine import font
+from jojo_arena.engine import audio, font
 from jojo_arena.engine.scene import Scene
 from jojo_arena.engine.sprites import shade
 from jojo_arena.ui import text
@@ -153,6 +153,8 @@ class CharacterSelectScene(Scene):
         col, row = self.cell % GRID_COLS, self.cell // GRID_COLS
         col = (col + frame.presses("right") - frame.presses("left")) % GRID_COLS
         row = (row + frame.presses("down") - frame.presses("up")) % GRID_ROWS
+        if row * GRID_COLS + col != self.cell or step:
+            audio.play("menu_move")
         self.cell = row * GRID_COLS + col
         if frame.was_pressed("confirm"):
             self._pick()
@@ -178,7 +180,9 @@ class CharacterSelectScene(Scene):
     def _pick(self) -> None:
         if self._hovered() is None:
             self.toast_f = TOAST_F
+            audio.play("menu_locked")
             return
+        audio.play("menu_ok")
         self.flash_f[self.picking] = PICK_FLASH_F
         self.picks.append(self.cursor)  # not None: a fighter is hovered
         if len(self.picks) < self.picks_needed:

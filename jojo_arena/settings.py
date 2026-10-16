@@ -14,9 +14,10 @@ from jojo_arena.engine import i18n
 class Settings:
     language: str = field(default_factory=i18n.system_language)
     cpu_level: int = 1  # the computer's level, as last picked
+    volume: int = 7  # sound effects, 0 (silent) to 10
 
     def to_json(self) -> dict:
-        return {"language": self.language, "cpu_level": self.cpu_level}
+        return {"language": self.language, "cpu_level": self.cpu_level, "volume": self.volume}
 
 
 def settings_path(controls_file: Path) -> Path:
@@ -30,6 +31,8 @@ def parse_settings(data: object) -> Settings:
         settings.language = data["language"]
     if isinstance(data, dict) and data.get("cpu_level") in (0, 1, 2, 3):
         settings.cpu_level = data["cpu_level"]
+    if isinstance(data, dict) and data.get("volume") in range(11):
+        settings.volume = data["volume"]
     return settings
 
 
