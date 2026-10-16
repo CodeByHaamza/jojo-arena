@@ -1,0 +1,27 @@
+# Zombie: a grey-green hand clawing out of the earth.
+
+pixels = [
+    ".......o.o......",
+    ".....ooZoZo.....",
+    "....oZoZoZoo....",
+    "....oZoZoZoZo...",
+    "....oZoZoZoZo...",
+    "....oZoZoZoZo...",
+    "...oZZZZZZZZo...",
+    "..oZZZZZZzZo....",
+    "..oZZZzZZZZo....",
+    "..oZZZZZzZZo....",
+    "...ooZZZZZZo....",
+    "...ooZZZZZZoo...",
+    "..oDDZZZZZZDDo..",
+    ".oDDdddDDDDDDDo.",
+    ".oDDDDDDDDdddDo.",
+    "oDDDDDDDDDDDDDDo",
+]
+
+[palette]
+o = "#17121f"
+Z = "#8aa88a"
+z = "#5a7a5e"
+D = "#6a4a30"
+d = "#4a3220"

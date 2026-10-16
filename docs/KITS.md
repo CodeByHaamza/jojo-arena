@@ -40,7 +40,7 @@ Les coups d'une posture : `[stances.<nom>.moves.<touche>]`, où la touche est `l
 | `anim` | Animation à jouer (par défaut, le nom de la touche). Une variante `famille_nom` (`special_splash`) se dessine dans la fiche de look ; une planche qui ne l'a pas (le Stand) joue la famille (`special`) |
 | `shout` | Cri écrit à l'écran quand le coup sort ; pour une rafale, à chaque coup (`ORA`, `MUDA`) |
 | `stand_flash` | Le Stand apparaît le temps de ce coup, même rangé |
-| `fx` | Dessin pendant la phase active : `limb` (doigt, bras), `tentacle` ou `blade`, jusqu'à `reach` |
+| `fx` | Dessin pendant la phase active : `limb` (doigt, bras), `tentacle`, `blade`, `hair` (mèches), `chain` (chaîne) ou `beam` (jets des yeux), jusqu'à `reach` |
 
 Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de même `label_en` pour une posture, et `role_en`, `blurb_en`, `name_en` dans le roster). Sans traduction, le texte français s'affiche.
 
@@ -88,6 +88,7 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `blood_cost` | Style vampire : le coup ne sort qu'avec assez de sang, et le dépense |
 | `freeze_f` | Touché net, l'adversaire est gelé sur place ce nombre d'images (gel vaporisant) |
 | `finish_drain` | Part des dégâts du coup final d'une cinématique rendue en vie |
+| `cage_s`, `cage_radius` | Touché net : un anneau de chaînes de ce rayon se ferme autour des deux combattants, ce nombre de secondes ; personne n'en sort (Tarkus) |
 | `guard_damage` | Multiplie l'usure de la jauge de garde quand le coup est bloqué (casse-garde) |
 | `clashable` | Peut déclencher un clash contre un autre coup (vrai par défaut pour les coups au corps à corps) |
 

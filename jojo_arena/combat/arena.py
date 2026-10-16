@@ -76,6 +76,16 @@ class Obstacle:
 
 
 @dataclass
+class Cage:
+    """A ring of chains closed around both fighters: nobody leaves it until it falls."""
+
+    center: Vec2
+    radius: float
+    frames_left: int
+    owner: int  # who closed it
+
+
+@dataclass
 class Arena:
     bounds: RoundedRect
     spawns: tuple[Vec2, Vec2]
@@ -83,6 +93,7 @@ class Arena:
     # Sunlight: patches of the floor where the sun shines in, from this step of the round.
     sun_windows: list[Rect] = field(default_factory=list)
     sun_after_f: int = 0
+    cage: Cage | None = None
 
     def in_sun(self, pos: Vec2) -> bool:
         return any(window.contains(pos) for window in self.sun_windows)
@@ -105,6 +116,13 @@ class Arena:
             pos, wall_normal = self.bounds.constrain_circle(pos, radius)
             if wall_normal is not None:
                 normal = wall_normal
+            if self.cage is not None:
+                away = pos - self.cage.center
+                room = max(0.0, self.cage.radius - radius)
+                if away.length_sq() > room * room:
+                    out = away.normalized()
+                    pos = self.cage.center + out * room
+                    normal = out * -1
         return pos, normal, hit
 
     def obstacle_at(self, pos: Vec2, radius: float) -> Obstacle | None:

@@ -62,7 +62,7 @@ Chaque perso doit avoir un ressenti unique, et chaque coup qui touche doit être
 - [x] **Français et anglais** : langue dans Options (gardée dans `settings.json`), `--lang en`, traductions des coups dans les kits.
 - [x] **Écrans pour tout JoJo** : fond des menus aux couleurs des 9 parties (trame manga, ゴゴゴ), écran titre partie par partie avec les 9 emblèmes, sélection des persos en onglets par partie, emblème de la partie sur chaque case (masque de pierre, Super Aja, plaque de Jotaro...).
 - [x] **Glossaire** : termes du lore (masque de pierre, onde, Hommes du Pilier, Super Aja, Stand, tarot, temps arrêté, flèche, Requiem, rotation, Rokakaka), personnages et Stands de la partie 3 (description, famille, origine du nom, statistiques), par partie, avec icônes en pixel art. À compléter avec chaque nouveau perso.
-- [ ] **Partie 1** : styles Hamon et vampire faits (jauges, respiration, sang, cicatrisation, gel vaporisant, soleil). Jonathan, Zeppeli et Dio Brando jouables (yeux laser, Absorption), avec le manoir Joestar en flammes et son aube. À venir : Bruford, Tarkus (zombies), Speedwagon.
+- [ ] **Partie 1** : styles Hamon et vampire faits (jauges, respiration, sang, cicatrisation, gel vaporisant, soleil). Jonathan, Zeppeli, Dio Brando (yeux laser, Absorption), Bruford et Tarkus (zombies, anneau de chaînes) jouables, avec le manoir Joestar en flammes et son aube. À venir : Speedwagon.
 
 ## Ensuite
 

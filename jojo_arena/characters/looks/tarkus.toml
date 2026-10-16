@@ -1,0 +1,86 @@
+# Tarkus (Part 1): look file for tools/make_sprites.py.
+# A towering zombie knight in heavy dark armor, a horned helmet with crimson horns,
+# red eyes, a chain hanging from the neck.
+
+name = "Tarkus"
+
+# A giant: the biggest body of the cast.
+# Signature pose (Pose key): see tools/spritegen/skeleton.py.
+pose = "spread"
+
+[build]
+head_r = 6.2
+neck = 0.6
+torso = 16
+legs = 17
+arms = 16
+shoulders = 11.2
+hips = 4.2
+torso_r = 8.4
+arm_r = 3.6
+leg_r = 3.6
+hand_r = 3.3
+foot_r = 3.0
+
+[palette]
+skin = "#7a6a58"
+armor = "#4a4a54"
+armor_light = "#8a8a94"
+horn = "#a8283c"
+horn_tip = "#e8706a"
+hair = "#7a3a2a"
+cloth = "#6a5a48"
+chain = "#a8a8b4"
+eyes = "#ff3a3a"
+
+[body]
+head = "skin"
+torso = "armor"
+arms = "skin"
+hands = "armor"
+legs = "armor"
+feet = "armor"
+
+[face]
+eyes = "eyes"
+eye_style = "wide"
+brows = true
+
+[[parts]]
+type = "hair"
+material = "hair"
+style = "short"
+volume = 7.6
+back_length = 4
+
+[[parts]]
+type = "helmet"
+material = "armor"
+
+[[parts]]
+type = "horns"
+material = "horn"
+tip = "horn_tip"
+size = 0.9
+
+[[parts]]
+type = "pauldrons"
+material = "armor"
+rim = "armor_light"
+size = 5.2
+
+[[parts]]
+type = "gloves"
+material = "armor"
+length = 0.45
+ribbed = true
+
+[[parts]]
+type = "loincloth"
+material = "cloth"
+length = 0.35
+
+[[parts]]
+type = "chain"
+material = "chain"
+length = 8

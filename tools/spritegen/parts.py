@@ -1088,6 +1088,28 @@ def top(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     return [Part(mat, cover, z=30.45)]
 
 
+def horns(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """Two horns curving up and out from the sides of the head (a helmet's, or a
+    demon's). Options: size (head units), tip (color of the tips)."""
+    mat = p["material"]
+    size = p.get("size", 1.0)
+    if sk.view == "right":
+        pairs = [((1.5, -5), (6 * size + 1.5, -12 * size - 3), 60.6)]
+    else:
+        pairs = [
+            ((-5, -4), (-10 * size - 2, -11 * size - 3), 56.8),
+            ((5, -4), (10 * size + 2, -11 * size - 3), 56.8),
+        ]
+    parts = []
+    for base, tip, z in pairs:
+        horn = _tuft(sk, base, tip, 3.4)
+        parts.append(Part(mat, horn, z=z))
+        if p.get("tip"):
+            point = _tuft(sk, ((base[0] + 2 * tip[0]) / 3, (base[1] + 2 * tip[1]) / 3), tip, 2.0)
+            parts.append(Part(p["tip"], point & horn, z=z + 0.1))
+    return parts
+
+
 def top_hat(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     """A tall top hat with a wide brim. Options: height (crown, head units), band (color of
     a band around the crown), checker (second color: harlequin diamonds on the band)."""
@@ -1243,6 +1265,7 @@ PART_TYPES: dict[str, Callable[[Skeleton, dict, Look], list[Part]]] = {
     "top": top,
     "helmet": helmet,
     "top_hat": top_hat,
+    "horns": horns,
     "tanks": tanks,
     "cheek_guards": cheek_guards,
 }

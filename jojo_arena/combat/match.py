@@ -11,7 +11,7 @@ import math
 from dataclasses import dataclass
 
 from jojo_arena.combat import interactions
-from jojo_arena.combat.arena import Arena
+from jojo_arena.combat.arena import Arena, Cage
 from jojo_arena.combat.clash import Clash
 from jojo_arena.combat.cutscene import Cutscene
 from jojo_arena.combat.events import Event
@@ -141,6 +141,7 @@ class Match:
         events += self._resolve_melee()
         events += self._resolve_projectile_hits()
         events += self._apply_sunlight()
+        events += self._update_cage()
         for fighter in self.fighters:
             if fighter.frozen:
                 continue
@@ -399,6 +400,10 @@ class Match:
             clean = any(e.kind == "hit" and e.fighter == defender.index for e in strike_events)
             if clean and move.possess_f and defender.alive and attacker.remote:
                 events += self._possess(attacker, defender, move.possess_f)
+            if clean and move.cage_f and defender.alive:
+                center = (attacker.pos + defender.pos) * 0.5
+                self.arena.cage = Cage(center, move.cage_radius, move.cage_f, attacker.index)
+                events.append(Event("cage", center, attacker.index))
             if clean and self._confirms(attack) and defender.alive:
                 events += self._start_cutscene(attacker, defender, attack)
         return events
@@ -542,6 +547,16 @@ class Match:
         move = attack.move
         cued = move.cinematic and move.cinematic_at == "hit" and not attack.cutscene_done
         return bool(cued) and self.cutscene is None
+
+    def _update_cage(self) -> list[Event]:
+        cage = self.arena.cage
+        if cage is None:
+            return []
+        cage.frames_left -= 1
+        if cage.frames_left > 0:
+            return []
+        self.arena.cage = None
+        return [Event("cage_end", cage.center, cage.owner)]
 
     @property
     def sun_active(self) -> bool:

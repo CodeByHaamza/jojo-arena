@@ -1,0 +1,201 @@
+# Tarkus (Part 1). GDD: "Zombie · Grappler": very slow, very tough. Chain Neck Ring:
+# both are locked inside a ring of chains, and nobody leaves it. Ultimate: the Neck
+# Breaker, a huge grab. Frames (_f) are at 60 per second; speeds and knockback in px/s.
+#
+# A zombie: Hamon burns him (double damage) and so does the sun. No style key.
+# Feel: a wall of iron that walks on you, armored blows, then nowhere left to run.
+
+name = "Tarkus"
+max_hp = 1150
+walk_speed = 82
+strength = 1.8  # he hurls props like a Stand
+nature = "zombie"
+
+[stances.base]
+label = "COLOSSE ZOMBIE"
+label_en = "ZOMBIE COLOSSUS"
+
+# Fist, hammer, horns: the same button three times, once the first one lands.
+[stances.base.moves.light]
+label = "POING DE FER"
+label_en = "IRON FIST"
+info = "Lent mais lourd. Encore : marteau, puis coup de cornes"
+info_en = "Slow but heavy. Again: hammer, then horn strike"
+startup_f = 8
+active_f = 3
+recovery_f = 13
+damage = 40
+reach = 17
+radius = 12
+hitstun_f = 22
+knockback = 120
+hitstop_f = 6
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.base.moves.light2]
+label = "MARTEAU"
+label_en = "HAMMER"
+info = "Les deux poings s'abattent"
+info_en = "Both fists come down"
+startup_f = 9
+active_f = 4
+recovery_f = 14
+damage = 48
+reach = 16
+radius = 13
+hitstun_f = 24
+knockback = 140
+hitstop_f = 7
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "heavy"
+
+[stances.base.moves.light3]
+label = "COUP DE CORNES"
+label_en = "HORN STRIKE"
+info = "Fin de l'enchaînement : blindé, envoie contre le mur"
+info_en = "Chain ender: armored, sends into the wall"
+startup_f = 11
+active_f = 4
+recovery_f = 20
+armor = 1
+damage = 60
+reach = 14
+radius = 13
+hitstun_f = 32
+knockback = 380
+hitstop_f = 10
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "headbutt"
+
+# The giant's grip: he takes hold and throws, whatever the guard.
+[stances.base.moves.heavy]
+label = "PRISE DU GÉANT"
+label_en = "GIANT'S GRIP"
+info = "Saisie imparable qui jette contre le mur. Lente : punie si elle rate"
+info_en = "An unblockable grab that throws into the wall. Slow: punished on a miss"
+startup_f = 16
+active_f = 3
+recovery_f = 30
+unblockable = true
+damage = 80
+reach = 15
+radius = 13
+hitstun_f = 36
+knockback = 400
+hitstop_f = 12
+wall_bounce = true
+anim = "grab"
+
+# With a direction: an armored charge, horns lowered.
+[stances.base.moves.heavy_alt]
+label = "CHARGE CORNUE"
+label_en = "HORNED CHARGE"
+info = "Avec une direction : fonce cornes baissées ; encaisse deux coups sans broncher"
+info_en = "With a direction: charges horns lowered; takes two blows without flinching"
+startup_f = 12
+active_f = 12
+recovery_f = 22
+lunge = 240
+armor = 2
+damage = 66
+reach = 14
+radius = 14
+hitstun_f = 28
+knockback = 360
+hitstop_f = 10
+wall_bounce = true
+anim = "tackle"
+
+# Chain Neck Ring: the chain flies, catches the neck, and the ring closes on both.
+[stances.base.moves.special]
+shout = "ANNEAU DE CHAÎNES !"
+shout_en = "CHAIN NECK RING!"
+label = "ANNEAU DE CHAÎNES"
+label_en = "CHAIN NECK RING"
+info = "La chaîne attrape au cou : 6 s enfermés dans un anneau, impossible d'en sortir"
+info_en = "The chain catches the neck: 6 s locked in a ring, no way out"
+shape = "line"
+fx = "chain"
+cooldown_s = 14
+startup_f = 14
+active_f = 5
+recovery_f = 20
+damage = 30
+reach = 90
+radius = 6
+hitstun_f = 30
+knockback = -260
+hitstop_f = 8
+cage_s = 6.0
+cage_radius = 74
+anim = "special"
+
+# With a direction: the chain as a whip.
+[stances.base.moves.special_alt]
+label = "FOUET DE CHAÎNE"
+label_en = "CHAIN WHIP"
+info = "Avec une direction : la chaîne fouette à mi-distance"
+info_en = "With a direction: the chain lashes at mid range"
+shape = "line"
+fx = "chain"
+startup_f = 12
+active_f = 4
+recovery_f = 18
+damage = 46
+reach = 70
+radius = 6
+hitstun_f = 26
+knockback = 220
+hitstop_f = 7
+anim = "special"
+
+# Super moves -----------------------------------------------------------------------------
+
+# Heart Heat Attack (1 bar): he stamps, and the floor shakes all around him.
+[moves.hha]
+label = "ÉCRASEMENT"
+label_en = "CRUSH"
+info = "Il frappe le sol : onde de choc tout autour, invincible au démarrage"
+info_en = "He stamps on the floor: a shock wave all around, invincible on startup"
+startup_f = 18
+active_f = 6
+recovery_f = 26
+invincible_f = 18
+damage = 130
+reach = 0
+radius = 40
+hitstun_f = 36
+knockback = 420
+hitstop_f = 12
+wall_bounce = true
+clashable = false
+anim = "sweep"
+
+# Great Heat Attack (2 bars): the giant's grip must land first; then the Neck Breaker,
+# the chain around the neck and all his weight on it.
+[moves.gha]
+label = "BRISE-NUQUE"
+label_en = "NECK BREAKER"
+info = "Une saisie. Si elle prend : la chaîne au cou, il serre de tout son poids"
+info_en = "A grab. If it takes hold: the chain round the neck, he pulls with all his weight"
+startup_f = 12
+active_f = 4
+recovery_f = 28
+invincible_f = 12
+unblockable = true
+damage = 26
+reach = 15
+radius = 14
+hitstun_f = 40
+hitstop_f = 10
+clashable = false
+anim = "grab"
+cinematic = "neck_breaker"
+cinematic_s = 3.0
+finish_damage = 270
+finish_hitstun_f = 54
+finish_knockback = 480
+finish_wall_bounce = true

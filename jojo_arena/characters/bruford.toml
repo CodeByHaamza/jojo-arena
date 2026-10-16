@@ -1,0 +1,206 @@
+# Bruford (Part 1). GDD: "Zombie chevalier · Contrôle": mid range, a sword. His hair
+# grabs and pierces: a grab from afar that drains. Ultimate: the Hair Dance, grabs from
+# every side. Frames (_f) are at 60 per second; speeds and knockback in px per second.
+#
+# A zombie: Hamon burns him (double damage) and so does the sun. No style key.
+# Feel: a knight who keeps you at the length of his sword, then of his hair.
+
+name = "Bruford"
+max_hp = 1000
+walk_speed = 102
+nature = "zombie"
+
+[stances.base]
+label = "CHEVALIER ZOMBIE"
+label_en = "ZOMBIE KNIGHT"
+
+# Thrust, slash, piercing hair: the same button three times, once the first one lands.
+[stances.base.moves.light]
+label = "ESTOC"
+label_en = "THRUST"
+info = "L'épée Luck porte loin. Encore : taille, puis cheveux perçants"
+info_en = "The sword Luck reaches far. Again: slash, then piercing hair"
+shape = "line"
+fx = "blade"
+startup_f = 6
+active_f = 3
+recovery_f = 11
+damage = 30
+reach = 30
+radius = 6
+hitstun_f = 20
+knockback = 90
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.base.moves.light2]
+label = "TAILLE"
+label_en = "SLASH"
+info = "Un large coup d'épée"
+info_en = "A wide sword stroke"
+startup_f = 6
+active_f = 4
+recovery_f = 12
+damage = 36
+reach = 18
+radius = 14
+hitstun_f = 22
+knockback = 120
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "heavy"
+
+[stances.base.moves.light3]
+label = "CHEVEUX PERÇANTS"
+label_en = "PIERCING HAIR"
+info = "Fin de l'enchaînement : les cheveux transpercent et boivent le sang"
+info_en = "Chain ender: the hair pierces and drinks the blood"
+shape = "line"
+fx = "hair"
+startup_f = 8
+active_f = 4
+recovery_f = 18
+damage = 42
+drain = 0.3
+reach = 44
+radius = 6
+hitstun_f = 28
+knockback = 300
+hitstop_f = 8
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "special"
+
+# A two-handed stroke of Luck: heavy, it caves a guard in.
+[stances.base.moves.heavy]
+label = "COUP DE LUCK"
+label_en = "STROKE OF LUCK"
+info = "Lourd coup d'épée à deux mains ; casse la garde"
+info_en = "A heavy two-handed sword stroke; crushes guards"
+startup_f = 15
+active_f = 4
+recovery_f = 22
+damage = 72
+reach = 22
+radius = 15
+hitstun_f = 34
+knockback = 320
+hitstop_f = 11
+wall_bounce = true
+guard_damage = 2.2
+anim = "heavy"
+
+# With a direction: the knight's charge, sword first.
+[stances.base.moves.heavy_alt]
+label = "CHARGE DU CHEVALIER"
+label_en = "KNIGHT'S CHARGE"
+info = "Avec une direction : fonce l'épée en avant"
+info_en = "With a direction: charges, sword first"
+shape = "line"
+fx = "blade"
+startup_f = 10
+active_f = 8
+recovery_f = 18
+lunge = 260
+damage = 52
+reach = 28
+radius = 7
+hitstun_f = 26
+knockback = 300
+hitstop_f = 8
+wall_bounce = true
+anim = "tackle"
+
+# His hair reaches out, catches, and draws the opponent in while drinking.
+[stances.base.moves.special]
+label = "CHEVEUX QUI ATTRAPENT"
+label_en = "GRASPING HAIR"
+info = "Les cheveux attrapent de loin, ramènent l'adversaire et boivent son sang"
+info_en = "The hair grabs from afar, pulls the opponent in and drinks their blood"
+shape = "line"
+fx = "hair"
+startup_f = 14
+active_f = 5
+recovery_f = 20
+damage = 40
+drain = 0.3
+reach = 84
+radius = 6
+hitstun_f = 32
+knockback = -300
+hitstop_f = 7
+anim = "special"
+
+# With a direction: the hair goes under the floor and bursts up beneath the opponent.
+[stances.base.moves.special_alt]
+label = "CHEVEUX DU SOL"
+label_en = "HAIR FROM BELOW"
+info = "Avec une direction : les cheveux jaillissent du sol sous l'adversaire"
+info_en = "With a direction: the hair bursts from the floor under the opponent"
+startup_f = 18
+active_f = 6
+recovery_f = 18
+at_target = true
+fx = "hair"
+damage = 40
+drain = 0.2
+radius = 12
+hitstun_f = 30
+knockback = 160
+hitstop_f = 7
+anim = "special"
+
+# Super moves -----------------------------------------------------------------------------
+
+# Heart Heat Attack (1 bar): one thrust of Luck, all his strength in it.
+[moves.hha]
+label = "ESTOC DE MARIE STUART"
+label_en = "MARY STUART'S THRUST"
+info = "Un estoc qui porte loin, invincible au démarrage, projette"
+info_en = "A far-reaching thrust, invincible on startup, launches"
+shape = "line"
+fx = "blade"
+startup_f = 16
+active_f = 5
+recovery_f = 26
+invincible_f = 16
+damage = 140
+reach = 54
+radius = 8
+hitstun_f = 36
+knockback = 440
+hitstop_f = 12
+wall_bounce = true
+clashable = false
+anim = "light"
+
+# Great Heat Attack (2 bars): the hair must catch first; then the Hair Dance, strands
+# piercing the opponent from every side at once.
+[moves.gha]
+label = "DANSE DES CHEVEUX"
+label_en = "HAIR DANCE"
+info = "Les cheveux attrapent. S'ils prennent : ils percent de partout et boivent le sang"
+info_en = "The hair grabs. If it holds: it pierces from every side and drinks the blood"
+shape = "line"
+fx = "hair"
+startup_f = 12
+active_f = 5
+recovery_f = 26
+invincible_f = 12
+damage = 24
+reach = 72
+radius = 7
+hitstun_f = 40
+knockback = -120
+hitstop_f = 10
+clashable = false
+anim = "special"
+cinematic = "hair_dance"
+cinematic_s = 3.0
+finish_damage = 220
+finish_drain = 0.4
+finish_hitstun_f = 50
+finish_knockback = 420
+finish_wall_bounce = true

@@ -524,6 +524,14 @@ class FightView:
                 fx.add(vfx.Ring(pos, (255, 220, 80), 3.5 if burns else 2.5, 14, 2))
                 fx.add(vfx.Flash(pos, 20 if burns else 14, (255, 210, 60), 8))
                 words.add(sfx.CRACKLE, pos + Vec2(0, -12), sfx.HAMON, 2, 26, 0.5, 1)
+            elif kind == "cage":
+                self.impact(pos)
+                words.add(sfx.RATTLE, pos + Vec2(0, -24), "impact", 3, 40, 0.3, 2)
+                fx.add(vfx.Ring(event.pos, (180, 180, 196), 3.0, 18, 2))
+                self.shake = max(self.shake, 8)
+            elif kind == "cage_end":
+                words.add(sfx.RATTLE, event.pos + Vec2(0, -10), "impact", 2, 30, 0.3, 1)
+                fx.dust(event.pos, 8, 1.6, 2, (170, 170, 184), 18)
             elif kind == "dawn":
                 words.add(text.DAWN, Vec2(240, 96), sfx.HAMON, 3, 110, 0.05, 0)
                 self.flash = max(self.flash, 10)
@@ -639,6 +647,8 @@ class FightView:
             blit_shadow(surface, (projectile.pos.x, projectile.pos.y), 8, 3)
         for trap in match.traps:
             self._draw_trap(surface, trap)
+        if match.arena.cage is not None:
+            self._draw_cage(surface, match)
         for web in match.webs:
             aura = self.fighter_defs[web.owner].aura
             for a, b in web.edges:
@@ -783,7 +793,7 @@ class FightView:
         attack = fighter.attack
         if attack is None or not attack.move.at_target or attack.phase > 1:
             return
-        if attack.move.fx == "tentacle":
+        if attack.move.fx in ("tentacle", "hair"):
             self._draw_ground_tentacles(surface, fighter)
             return
         if attack.phase != 0:
@@ -815,7 +825,7 @@ class FightView:
             angle = i * math.tau / 5 + 0.4
             root = target + Vec2(math.cos(angle) * move.radius * 0.6, math.sin(angle) * 4)
             tip = root + Vec2(math.cos(angle) * 3, -26 * rise)
-            vfx.draw_reach(surface, root, tip, aura, "tentacle", 2)
+            vfx.draw_reach(surface, root, tip, aura, move.fx, 2)
 
     def _draw_clash(self, surface: pygame.Surface, match: Match) -> None:
         clash = match.clash
@@ -1010,6 +1020,23 @@ class FightView:
         tip = fighter.pos + attack.aim * (move.reach * grow) + view.chest
         width = 3 if move.reach > 40 else 2
         vfx.draw_reach(surface, start, tip, self.fighter_defs[fighter.index].aura, move.fx, width)
+
+    def _draw_cage(self, surface: pygame.Surface, match: Match) -> None:
+        """The ring of chains on the floor, a stake in the middle, a chain to each neck."""
+        cage = match.arena.cage
+        links = max(12, round(cage.radius * 0.5))
+        for i in range(links):
+            a = cage.center + Vec2.from_angle(math.tau * i / links, cage.radius) * 1.0
+            b = cage.center + Vec2.from_angle(math.tau * (i + 1) / links, cage.radius)
+            a, b = Vec2(a.x, cage.center.y + (a.y - cage.center.y) * 0.7), b
+            b = Vec2(b.x, cage.center.y + (b.y - cage.center.y) * 0.7)
+            vfx.draw_chain(surface, a, b)
+        stake = cage.center.as_ints()
+        pygame.draw.rect(surface, (23, 18, 31), (stake[0] - 2, stake[1] - 9, 5, 11))
+        surface.fill((120, 110, 100), (stake[0] - 1, stake[1] - 8, 3, 9))
+        for fighter in match.fighters:
+            neck = fighter.pos + Vec2(0, -self.fighter_views[fighter.index].height + 12)
+            vfx.draw_chain(surface, cage.center + Vec2(0, -7), neck, sag=6)
 
     def _draw_spark(self, surface: pygame.Surface, spark: Spark) -> None:
         k = spark.life / spark.max_life

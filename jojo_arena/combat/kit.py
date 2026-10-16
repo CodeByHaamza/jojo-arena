@@ -187,6 +187,8 @@ class MoveDef:
     hamon_unblockable: bool = False  # boosted, it goes through the guard
     blood_cost: int = 0  # vampires: the move needs and spends this much blood
     freeze_f: int = 0  # the blow freezes the opponent solid this long (Vaporization Freezing)
+    cage_f: int = 0  # on a clean hit, a ring of chains closes around both this long
+    cage_radius: float = 0.0
     shout: str = ""  # written on screen when used (each hit of a rush: "ORA", "MUDA")
     label: str = ""  # display name in the move list
     info: str = ""  # one-line description in the move list
@@ -258,6 +260,8 @@ class MoveDef:
             hamon_unblockable=data.get("hamon_unblockable", False),
             blood_cost=data.get("blood_cost", 0),
             freeze_f=data.get("freeze_f", 0),
+            cage_f=seconds_to_frames(data.get("cage_s", 0)),
+            cage_radius=data.get("cage_radius", 0.0),
             finish_drain=data.get("finish_drain", 0.0),
             shout=localized(data, "shout"),
             label=localized(data, "label"),

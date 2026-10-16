@@ -952,6 +952,128 @@ class Absorption(CutscenePlayer):
         blit_glow(world, radial_glow(18, glow), self.chest(user, spot).as_ints())
 
 
+# Bruford: the Hair Dance ----------------------------------------------------------------
+
+HAIR_DARK = (40, 30, 52)
+
+
+class HairDance(CutscenePlayer):
+    """The hair caught: it spreads all around the opponent, then pierces from every side
+    at once and drinks."""
+
+    length = 180
+    PIERCE = 96
+
+    def camera(self, f):
+        if f < 14:
+            return (self.u + self.v) * 0.5, 2
+        return self.v + Vec2(0, -20), 2
+
+    def roots(self, f: int) -> list[Vec2]:
+        """Where the locks come from: a ring around the victim, closing in."""
+        spread = 54 - min(20, f * 0.25)
+        return [
+            self.v
+            + Vec2(math.cos(i * math.tau / 9 + 0.3) * spread, math.sin(i * math.tau / 9) * 22)
+            for i in range(9)
+        ]
+
+    def cue(self, f):
+        fx = self.fx
+        hit = self.chest(self.scene.target, self.v)
+        if f == 1:
+            self.world_words.add(sfx.DON, self.head(self.scene.target, self.v), "impact", 2, 30)
+            fx.add(vfx.Flash(hit, 14))
+            self.shake = 6
+        if f == 20:
+            self.world_words.menace(hit, 1)
+            self.world_words.menace(hit, -1)
+        if f == self.PIERCE:
+            fx.add(vfx.Flash(hit, 30, (230, 40, 60), 10))
+            fx.focus(hit, heavy=True)
+            self.world_words.add(sfx.DOGO, hit + Vec2(0, -14), "impact", 3, 44, 0.2, 2)
+            self.flash, self.shake = 6, 14
+        if f > self.PIERCE and f % 14 == 0:
+            self.world_words.add(sfx.HEARTBEAT, hit + Vec2(0, -18), sfx.BLOOD, 2, 22)
+            fx.add(vfx.Ring(hit, (210, 24, 48), 2.0, 12, 2))
+
+    def negative(self, f):
+        return self.PIERCE <= f < self.PIERCE + 3
+
+    def scene_draw(self, world, f):
+        user, right = self.scene.user, self.side > 0
+        self.body(world, user, self.u, "special", 2, right)
+        self.victim(world, f)
+        hit = self.chest(self.scene.target, self.v)
+        head = self.chest(user, self.u) + Vec2(0, -14)
+        for i, root in enumerate(self.roots(f)):
+            # Each lock runs from Bruford's head round to its spot, then stabs in.
+            lift = root + Vec2(0, -18 - (i % 3) * 6)
+            vfx.draw_reach(world, head, lift, HAIR_DARK, "hair", 1)
+            if f >= self.PIERCE:
+                vfx.draw_reach(
+                    world, lift, hit + Vec2((i - 4) * 1.5, (i % 3) - 1), HAIR_DARK, "hair", 1
+                )
+
+
+# Tarkus: the Neck Breaker -----------------------------------------------------------------
+
+
+class NeckBreaker(CutscenePlayer):
+    """The grip took hold: the chain goes round the opponent's neck, Tarkus throws all his
+    weight back on it, and pulls."""
+
+    length = 180
+    SNAP = 140
+
+    def camera(self, f):
+        if f < 14:
+            return (self.u + self.v) * 0.5, 2
+        return (self.u + self.v) * 0.5 + Vec2(0, -16), 2
+
+    def puller(self, f: int) -> Vec2:
+        """Tarkus steps back, pulling."""
+        back = min(26.0, max(0, f - 40) * 0.4)
+        return self.u - Vec2(self.side * back, 0)
+
+    def cue(self, f):
+        fx = self.fx
+        hit = self.chest(self.scene.target, self.v) + Vec2(0, -8)
+        if f == 1:
+            self.world_words.add(sfx.DON, self.head(self.scene.target, self.v), "impact", 2, 30)
+            fx.add(vfx.Flash(hit, 14))
+            self.shake = 6
+        if f == 24:
+            self.world_words.add(sfx.RATTLE, hit + Vec2(0, -14), "impact", 3, 40, 0.2, 2)
+        if 44 <= f < self.SNAP and f % 12 == 0:
+            self.world_words.menace(self.chest(self.scene.user, self.puller(f)), -self.side)
+            self.shake = max(self.shake, 3)
+        if f == self.SNAP:
+            fx.add(vfx.Flash(hit, 34, (255, 255, 255), 10))
+            fx.focus(hit, heavy=True)
+            self.world_words.add(sfx.BAKI, hit + Vec2(0, -12), "impact", 3, 46, 0.2, 2)
+            self.flash, self.shake = 8, 18
+
+    def negative(self, f):
+        return self.SNAP <= f < self.SNAP + 3
+
+    def scene_draw(self, world, f):
+        user, right = self.scene.user, self.side > 0
+        spot = self.puller(f)
+        anim = "grab" if f < 40 else "guard"
+        self.body(world, user, spot, anim, 1 if f < 40 else 0, right)
+        self.victim(world, f)
+        neck = self.chest(self.scene.target, self.v) + Vec2(0, -10)
+        hands = self.chest(user, spot) + Vec2(self.side * 6, -4)
+        if f >= 18:
+            vfx.draw_chain(world, hands, neck, sag=0 if f >= 44 else 4)
+            # The chain round the neck.
+            for i in range(6):
+                angle = i * math.tau / 6
+                link = neck + Vec2(math.cos(angle) * 5, math.sin(angle) * 2)
+                vfx.draw_chain(world, link, link + Vec2(1, 0))
+
+
 CUTSCENES = {
     "road_roller": RoadRoller,
     "star_finish": StarFinish,
@@ -961,6 +1083,8 @@ CUTSCENES = {
     "sunlight_yellow_overdrive": SunlightYellowOverdrive,
     "tornado_overdrive": TornadoOverdrive,
     "absorption": Absorption,
+    "hair_dance": HairDance,
+    "neck_breaker": NeckBreaker,
 }
 
 

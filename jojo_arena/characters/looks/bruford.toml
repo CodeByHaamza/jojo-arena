@@ -1,0 +1,92 @@
+# Bruford (Part 1): look file for tools/make_sprites.py.
+# A zombie knight: grey-lavender skin, a wild mane of black hair, a golden diadem,
+# grey plate under a dark cloak, light blue clothes, his sword Luck in hand.
+
+name = "Bruford"
+
+# Tall and broad, a knight's build.
+# Signature pose (Pose key): see tools/spritegen/skeleton.py.
+pose = "flex"
+
+[build]
+head_r = 5.8
+neck = 1.0
+torso = 14.5
+legs = 17
+arms = 15
+shoulders = 9.4
+hips = 3.4
+torso_r = 6.6
+arm_r = 2.6
+leg_r = 2.6
+hand_r = 2.4
+foot_r = 2.5
+
+[palette]
+skin = "#b8aec8"
+hair = "#1c1822"
+gold = "#e8c03a"
+plate = "#8a8a9a"
+cloak = "#4e4258"
+cloth = "#98aed0"
+boots = "#5a5a66"
+steel = "#d0d4e0"
+eyes = "#ff8a3a"
+
+[body]
+head = "skin"
+torso = "plate"
+arms = "cloth"
+hands = "skin"
+legs = "cloth"
+feet = "boots"
+
+[face]
+eyes = "eyes"
+eye_style = "wide"
+brows = true
+nose = true
+
+# The wild mane that he fights with.
+[[parts]]
+type = "hair"
+material = "hair"
+style = "mane"
+volume = 8.4
+flare = 0.9
+fill = 0.8
+back_length = 10
+
+[[parts]]
+type = "headband"
+material = "gold"
+gem = "gold"
+
+[[parts]]
+type = "coat"
+material = "cloak"
+length = 0.45
+open = true
+opening = 6
+collar = true
+
+[[parts]]
+type = "pauldrons"
+material = "plate"
+size = 3.8
+
+[[parts]]
+type = "belt"
+material = "cloak"
+buckle = "gold"
+
+[[parts]]
+type = "boots"
+material = "boots"
+length = 0.4
+
+[[parts]]
+type = "sword"
+material = "steel"
+length = 16
+guard = "gold"

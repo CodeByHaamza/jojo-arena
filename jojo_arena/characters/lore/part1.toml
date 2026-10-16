@@ -43,6 +43,13 @@ icon = "glossary_stingy_eyes"
 text = "Dio met sous pression le liquide de ses yeux et le projette en deux jets si fins et si rapides qu'ils tranchent la pierre : des yeux laser."
 text_en = "Dio pressurizes the fluid in his eyeballs and fires it in two jets so thin and fast they cut through stone: eye beams."
 
+[[terms]]
+id = "zombie"
+name = "ZOMBIE"
+icon = "glossary_zombie"
+text = "Une victime vidée de son sang par un vampire peut se relever en zombie, à ses ordres. Les zombies se nourrissent de sang et de chair ; le soleil et l'onde les détruisent. Dio s'en entoure, et ressuscite ainsi les chevaliers Bruford et Tarkus."
+text_en = "A victim drained of blood by a vampire can rise again as a zombie, at their command. Zombies feed on blood and flesh; sunlight and the Ripple destroy them. Dio surrounds himself with them, and so brings back the knights Bruford and Tarkus."
+
 [[characters]]
 id = "jonathan"
 name = "JONATHAN JOESTAR"
@@ -80,3 +87,27 @@ family = "Fils de Dario Brando. Adopté par George Joestar, frère adoptif de Jo
 family_en = "Son of Dario Brando. Adopted by George Joestar, Jonathan's adoptive brother. He will later take Jonathan's body: he is the DIO of Part 3."
 name_origin = "Dio veut dire dieu en italien. Le nom évoque aussi le chanteur de heavy metal Ronnie James Dio et son groupe, Dio."
 name_origin_en = "Dio means god in Italian. The name also recalls the heavy metal singer Ronnie James Dio and his band, Dio."
+
+[[characters]]
+id = "bruford"
+name = "BRUFORD"
+fighter = "bruford"
+power = "ZOMBIE"
+text = "Chevalier de Marie Stuart au XVIe siècle, mort plein de haine envers les hommes après l'exécution de sa reine. Dio le ressuscite en zombie avec Tarkus. Il se bat avec l'épée Luck et ses cheveux, qui percent la peau et boivent le sang. Vaincu par le Hamon de Jonathan, il retrouve son humanité et lui offre son épée, qui devient Luck & Pluck."
+text_en = "A 16th-century knight of Mary Stuart, who died full of hatred for mankind after his queen's execution. Dio brings him back as a zombie with Tarkus. He fights with the sword Luck and his hair, which pierces the skin and drinks the blood. Defeated by Jonathan's Hamon, he finds his humanity again and gives him his sword, which becomes Luck & Pluck."
+family = "Fidèle chevalier de Marie Stuart, reine d'Écosse, aux côtés de Tarkus, son compagnon d'armes."
+family_en = "A loyal knight of Mary Stuart, Queen of Scots, alongside Tarkus, his brother in arms."
+name_origin = "Son nom évoque Bill Bruford, le batteur de Yes et de King Crimson ; ce n'est pas confirmé par Araki."
+name_origin_en = "His name recalls Bill Bruford, the drummer of Yes and King Crimson; Araki has not confirmed it."
+
+[[characters]]
+id = "tarkus"
+name = "TARKUS"
+fighter = "tarkus"
+power = "ZOMBIE"
+text = "Un géant en armure, chevalier de Marie Stuart exécuté comme Bruford après la trahison d'Élisabeth Ire. Ressuscité en zombie par Dio, il lui est entièrement dévoué. Dans la salle du dragon à deux têtes, il affronte Jonathan dans un duel à mort enchaînés par le cou, et tue Zeppeli, qui transmet son Hamon à Jonathan avant de mourir."
+text_en = "An armored giant, a knight of Mary Stuart executed like Bruford after Elizabeth I's betrayal. Brought back as a zombie by Dio, he is utterly devoted to him. In the chamber of the two-headed dragon he fights Jonathan in a death match chained by the neck, and kills Zeppeli, who passes his Hamon to Jonathan before dying."
+family = "Chevalier de Marie Stuart, reine d'Écosse, compagnon d'armes de Bruford."
+family_en = "A knight of Mary Stuart, Queen of Scots, Bruford's brother in arms."
+name_origin = "Son nom évoque Tarkus, l'album et le morceau d'Emerson, Lake & Palmer ; ce n'est pas confirmé par Araki."
+name_origin_en = "His name recalls Tarkus, the album and song by Emerson, Lake & Palmer; Araki has not confirmed it."

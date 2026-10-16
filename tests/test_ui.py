@@ -196,7 +196,7 @@ def test_locked_cells_and_the_move_list_in_the_select_screen(ctx):
     assert select.move_list.page == 1
     keys(ctx, "Escape")
     assert select.move_list is None
-    keys(ctx, "Down", "Return")  # an empty cell
+    keys(ctx, "Down", "Down", "Return")  # an empty cell, bottom row
     assert select.picks == [] and select.toast_f > 0
     keys(ctx, "Escape")
     assert isinstance(ctx.scenes.current, MainMenuScene)

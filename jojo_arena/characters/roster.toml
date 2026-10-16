@@ -50,6 +50,31 @@ blurb_en = "He steals life, freezes what he touches and fires eye beams: only Ha
 color = "#a8223e"
 aura = "#ff4a6a"
 
+[[fighters]]
+id = "bruford"
+part = 1
+name = "BRUFORD"
+kit = "bruford"
+sprite = "bruford/bruford"
+role = "CONTRÔLE - ZOMBIE"
+role_en = "CONTROL - ZOMBIE"
+blurb = "Chevalier zombie : l'épée Luck à mi-distance, et des cheveux qui attrapent et boivent."
+blurb_en = "A zombie knight: the sword Luck at mid range, and hair that grabs and drinks."
+color = "#6a5a8a"
+aura = "#b080ff"
+
+[[fighters]]
+id = "tarkus"
+part = 1
+name = "TARKUS"
+kit = "tarkus"
+sprite = "tarkus/tarkus"
+role = "GRAPPLER - ZOMBIE"
+blurb = "Lent et blindé, il enferme l'adversaire dans un anneau de chaînes, puis l'écrase."
+blurb_en = "Slow and armored, he locks the opponent in a ring of chains, then crushes them."
+color = "#5a5a66"
+aura = "#ff4a4a"
+
 # Part 3: Stardust Crusaders --------------------------------------------------------------
 
 [[fighters]]

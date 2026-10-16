@@ -6,6 +6,7 @@ Everything is drawn with a few pixels of pygame primitives, in the style A palet
 
 from __future__ import annotations
 
+import math
 import random
 
 import pygame
@@ -29,6 +30,10 @@ def _ints(v: Vec2) -> tuple[int, int]:
 
 
 WINE = (150, 20, 52)
+HAIR = (40, 30, 52)
+HAIR_SHEEN = (150, 120, 190)
+CHAIN = (170, 170, 184)
+CHAIN_DARK = (100, 100, 112)
 HAMON_EDGE = (255, 220, 110)
 
 
@@ -89,6 +94,24 @@ def _draw_gem(surface, pos: Vec2, d: Vec2) -> None:
     surface.set_at(_ints(pos + d * 2 + side), (235, 255, 240))
 
 
+def draw_chain(surface: pygame.Surface, start: Vec2, end: Vec2, sag: float = 0.0) -> None:
+    """A chain of iron links from `start` to `end`, sagging a little in the middle."""
+    length = (end - start).length()
+    if length < 1:
+        return
+    count = max(2, round(length / 4))
+    for i in range(count + 1):
+        t = i / count
+        point = start + (end - start) * t + Vec2(0, math.sin(t * math.pi) * sag)
+        x, y = _ints(point)
+        if i % 2:
+            pygame.draw.rect(surface, OUTLINE, (x - 2, y - 1, 4, 3))
+            surface.fill(CHAIN_DARK, (x - 1, y, 2, 1))
+        else:
+            pygame.draw.rect(surface, OUTLINE, (x - 1, y - 2, 3, 4))
+            surface.fill(CHAIN, (x, y - 1, 1, 2))
+
+
 def _draw_wine(surface, pos: Vec2, d: Vec2) -> None:
     """A jet of wine made sharp as a blade by Hamon: a red streak with a golden edge."""
     blit_glow(surface, radial_glow(8, (90, 66, 10)), (pos.x, pos.y))
@@ -116,6 +139,25 @@ def draw_reach(
     `kind` is "limb" (rounded, the user's color), "tentacle" (wavy) or "blade" (steel).
     """
     if (tip - start).length_sq() < 1:
+        return
+    if kind == "hair":
+        # A lock of hair: three thin wavy strands, black with a violet sheen.
+        d = (tip - start).normalized()
+        side = _side(d)
+        length = (tip - start).length()
+        for strand in (-1.5, 0.0, 1.5):
+            points = []
+            steps = max(3, round(length / 3))
+            for i in range(steps + 1):
+                t = i / steps
+                wave = math.sin(t * 9 + strand * 2) * 1.6 * (1 - t * 0.5)
+                points.append(_ints(start + (tip - start) * t + side * (strand + wave)))
+            pygame.draw.lines(surface, OUTLINE, False, points, 3)
+            pygame.draw.lines(surface, HAIR, False, points, 1)
+        surface.set_at(_ints(tip), HAIR_SHEEN)
+        return
+    if kind == "chain":
+        draw_chain(surface, start, tip)
         return
     if kind == "beam":
         # Two jets, one from each eye, white hot in the core.
