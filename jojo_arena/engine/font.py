@@ -193,6 +193,7 @@ def draw(
     text: str,
     pos: tuple[int, int],
     color: Color,
+    *,
     scale: int = 1,
     align: str = "left",
     outline: Color | None = (23, 18, 31),

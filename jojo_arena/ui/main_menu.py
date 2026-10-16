@@ -138,7 +138,9 @@ class MainMenuScene(Scene):
         fdef = look.fdef
         y = 206
         name_scale = 2 if font.text_width(fdef.name, 2) <= 230 else 1
-        font.draw(surface, fdef.name, (center, y), shade(fdef.color, 60), name_scale, "center")
+        font.draw(
+            surface, fdef.name, (center, y), shade(fdef.color, 60), scale=name_scale, align="center"
+        )
         y += 10 * name_scale + 2
         if fdef.stand_name:
             font.draw(surface, fdef.stand_name, (center, y), fdef.aura, align="center")

@@ -14,6 +14,7 @@ from jojo_arena.engine.sprites import shade
 from jojo_arena.ui import text
 from jojo_arena.ui.backdrop import MenuBackdrop
 from jojo_arena.ui.icons import draw_icon
+from jojo_arena.ui.labels import menu_key
 from jojo_arena.ui.portraits import FighterLook
 from jojo_arena.ui.widgets import DIM, GOLD, WHITE
 
@@ -62,7 +63,8 @@ class TitleScene(Scene):
         font.draw(surface, text.TITLE, (width // 2, 20), GOLD, scale=5, align="center")
         font.draw(surface, text.DISCLAIMER, (width // 2, 69), DIM, align="center")
         if (self.tick // 30) % 2 == 0:
-            font.draw(surface, text.PRESS_START, (width // 2, 110), WHITE, align="center")
+            start = text.PRESS_START.format(key=menu_key("confirm", self.ctx.inputs))
+            font.draw(surface, start, (width // 2, 110), WHITE, align="center")
         self._draw_emblems(surface, number)
         part = self.parts.get(number)
         if part is not None:

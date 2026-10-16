@@ -193,7 +193,8 @@ class BindingsScene(Scene):
             player = players[self.column]
             ask = text.PRESS_KEY if player.device == "keyboard" else text.PRESS_BUTTON
             font.draw(surface, ask, (width // 2, height - 26), GOLD, align="center")
-            font.draw(surface, text.CANCEL_HINT, (width // 2, height - 14), FAINT, align="center")
+            cancel = text.CANCEL_HINT.format(key=menu_key("back", self.ctx.inputs))
+            font.draw(surface, cancel, (width // 2, height - 14), FAINT, align="center")
         else:
             hints = [
                 (menu_key("confirm", self.ctx.inputs), text.HINT_CONFIRM),
