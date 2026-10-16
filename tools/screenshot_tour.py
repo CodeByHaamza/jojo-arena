@@ -119,7 +119,7 @@ def _play(tour: Tour, title) -> None:
         tour.keys("Right")
     tour.keys("Escape")
     tour.keys("Return")  # player 1
-    tour.keys("Right", "Right", wait=20)
+    tour.keys("Right", wait=20)
     tour.shot("select_dummy")
     tour.keys("Down", "Return", wait=5)  # a slot still to come
     tour.shot("select_soon")

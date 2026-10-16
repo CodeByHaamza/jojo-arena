@@ -167,11 +167,11 @@ def test_training_flow(ctx):
     keys(ctx, "Return")  # player 1
     keys(ctx, "Escape")  # changed my mind
     assert select.picks == []
-    keys(ctx, "Return", "Right", "Right", "Return")  # player 1, then the dummy
+    keys(ctx, "Return", "Right", "Return")  # player 1, then the dummy (first tab)
     training = ctx.scenes.current
     assert isinstance(training, TrainingScene)
     assert isinstance(training.rounds, Training)
-    assert training.fighter_ids == (select.roster[0].id, select.roster[2].id)
+    assert training.fighter_ids == (select.roster[0].id, select.roster[1].id)
     steps(ctx, 10)
     keys(ctx, "Escape")
     keys(ctx, "Down", "Down", "Right")  # dummy: stand still -> guard

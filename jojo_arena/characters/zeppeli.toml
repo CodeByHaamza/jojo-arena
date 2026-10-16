@@ -1,0 +1,209 @@
+# Will A. Zeppeli (Part 1). GDD: "Hamon · Mobilité": fast, leaps high, very good at mid
+# range. Hamon through liquids: spat wine that cuts (Hamon Cutter, or Ripple Cutter). Zoom Punch. Ultimate:
+# Tornado Overdrive. Frames (_f) are at 60 per second; speeds and knockback in px per s.
+#
+# Style key held: Hamon breathing (the gauge fills, he stands still). Moves with a
+# hamon_cost spend it when there is enough, and strike harder; without, they stay plain.
+# Feel: a gentleman who never stays where you hit; light blows, then a cutter from afar.
+
+name = "Will A. Zeppeli"
+max_hp = 900
+walk_speed = 118
+style = { type = "hamon" }
+
+[stances.base]
+label = "HAMON"
+
+# Jab, kick, Hamon kick: the same button three times, once the first one lands.
+[stances.base.moves.light]
+label = "DIRECT"
+label_en = "JAB"
+info = "Très rapide. Encore la touche : coup de pied, puis coup de pied Hamon"
+info_en = "Very fast. Press again: kick, then Hamon kick"
+startup_f = 4
+active_f = 3
+recovery_f = 9
+damage = 26
+reach = 15
+radius = 10
+hitstun_f = 18
+knockback = 80
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.base.moves.light2]
+label = "COUP DE PIED"
+label_en = "KICK"
+info = "S'enchaîne sur le direct"
+info_en = "Follows the jab"
+startup_f = 5
+active_f = 3
+recovery_f = 10
+damage = 30
+reach = 17
+radius = 11
+hitstun_f = 20
+knockback = 110
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "kick"
+
+[stances.base.moves.light3]
+label = "COUP DE PIED HAMON"
+label_en = "HAMON KICK"
+info = "Fin de l'enchaînement : envoie contre le mur"
+info_en = "Chain ender: sends into the wall"
+hamon_cost = 20
+startup_f = 7
+active_f = 4
+recovery_f = 16
+damage = 42
+reach = 17
+radius = 12
+hitstun_f = 30
+knockback = 320
+hitstop_f = 8
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "kick_high"
+
+# Overdrive: an open palm full of Hamon.
+[stances.base.moves.heavy]
+shout = "OVERDRIVE !"
+label = "OVERDRIVE"
+info = "Paume de Hamon qui envoie contre le mur"
+info_en = "A Hamon palm that sends into the wall"
+hamon_cost = 25
+startup_f = 12
+active_f = 4
+recovery_f = 18
+damage = 60
+reach = 15
+radius = 12
+hitstun_f = 32
+knockback = 320
+hitstop_f = 10
+wall_bounce = true
+anim = "heavy"
+
+# With a direction: a gentleman's leap, high over the fight, where he aims.
+[stances.base.moves.heavy_alt]
+label = "BOND DU GENTLEMAN"
+label_en = "GENTLEMAN'S LEAP"
+info = "Avec une direction : bondit vers le point visé et retombe en frappant, intouchable en l'air"
+info_en = "With a direction: leaps to the aimed spot and lands striking, untouchable in the air"
+hamon_cost = 15
+startup_f = 14
+active_f = 4
+recovery_f = 14
+leap = 160
+leap_height = 34
+leap_to = "cursor"
+invincible_f = 14
+damage = 40
+reach = 0
+radius = 15
+hitstun_f = 24
+knockback = 240
+hitstop_f = 7
+anim = "leap"
+
+# Hamon Cutter (Ripple Cutter): wine spat through the teeth, so sharp with Hamon it cuts stone.
+[stances.base.moves.special]
+label = "HAMON CUTTER"
+label_en = "RIPPLE CUTTER"
+info = "Trois jets de vin tranchants ; le Hamon les rend bien plus durs"
+info_en = "Three cutting jets of wine; Hamon makes them far sharper"
+hamon_cost = 20
+startup_f = 10
+active_f = 1
+recovery_f = 16
+anim = "special"
+
+[stances.base.moves.special.projectile]
+look = "wine"
+speed = 380
+radius = 3
+damage = 18
+lifetime_s = 0.8
+hitstun_f = 14
+knockback = 70
+hitstop_f = 3
+count = 3
+spread_deg = 10
+
+# With a direction: the Zoom Punch, the arm dislocated to reach far.
+[stances.base.moves.special_alt]
+shout = "ZOOM PUNCH !"
+label = "ZOOM PUNCH"
+info = "Il se déboîte le bras pour frapper à mi-distance"
+info_en = "He dislocates his arm to strike at mid range"
+hamon_cost = 20
+shape = "line"
+fx = "limb"
+startup_f = 11
+active_f = 5
+recovery_f = 18
+damage = 50
+reach = 66
+radius = 5
+hitstun_f = 24
+knockback = 240
+hitstop_f = 7
+anim = "light"
+
+# Super moves -----------------------------------------------------------------------------
+
+# Heart Heat Attack (1 bar): a fan of Hamon Cutters over half the arena.
+[moves.hha]
+label = "ÉVENTAIL DE HAMON CUTTERS"
+label_en = "RIPPLE CUTTER FAN"
+info = "Sept jets de vin au Hamon en éventail, invincible au démarrage"
+info_en = "Seven Hamon jets of wine in a fan, invincible on startup"
+hamon = true
+startup_f = 14
+active_f = 1
+recovery_f = 22
+invincible_f = 14
+anim = "special"
+
+[moves.hha.projectile]
+look = "wine"
+speed = 360
+radius = 4
+damage = 26
+lifetime_s = 0.9
+hitstun_f = 20
+knockback = 160
+hitstop_f = 4
+count = 7
+spread_deg = 70
+
+# Great Heat Attack (2 bars): a leaping kick must land first; then Tornado Overdrive, a
+# spinning dive that drives Hamon all through the opponent.
+[moves.gha]
+shout = "TORNADO OVERDRIVE !"
+label = "TORNADO OVERDRIVE"
+info = "Un coup de pied sauté. S'il touche : une vrille de Hamon qui écrase l'adversaire"
+info_en = "A leaping kick. On hit: a spinning dive of Hamon that crushes the opponent"
+hamon = true
+startup_f = 12
+active_f = 5
+recovery_f = 24
+invincible_f = 12
+lunge = 220
+damage = 28
+reach = 15
+radius = 13
+hitstun_f = 40
+hitstop_f = 10
+clashable = false
+anim = "kick_high"
+cinematic = "tornado_overdrive"
+cinematic_s = 3.0
+finish_damage = 230
+finish_hitstun_f = 50
+finish_knockback = 460
+finish_wall_bounce = true

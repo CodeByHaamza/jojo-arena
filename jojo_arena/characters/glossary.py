@@ -26,7 +26,8 @@ class Entry:
     icon: str = ""  # icon shown for a term
     fighter: str = ""  # fighter whose sprite shows, for a character
     sprite: str = ""  # sprite sheet shown, for a Stand
-    subtitle: str = ""  # a character's Stand, or a Stand's user
+    subtitle: str = ""  # a character's Stand or power, or a Stand's user
+    subtitle_kind: str = ""  # "stand", "power" or "user"
     family: str = ""
     name_origin: str = ""
     stats: str = ""  # six grades A to E, in STAT_NAMES order (Stands)
@@ -36,7 +37,11 @@ class Entry:
 
 
 def _entry(kind: str, data: dict) -> Entry:
-    subtitle = data.get("stand", "") if kind == "characters" else data.get("user", "")
+    if kind == "characters":
+        subtitle_kind = "stand" if data.get("stand") else "power"
+        subtitle = data.get("stand") or localized(data, "power")
+    else:
+        subtitle_kind, subtitle = "user", data.get("user", "")
     return Entry(
         kind=kind,
         id=data["id"],
@@ -46,6 +51,7 @@ def _entry(kind: str, data: dict) -> Entry:
         fighter=data.get("fighter", ""),
         sprite=data.get("sprite", ""),
         subtitle=subtitle,
+        subtitle_kind=subtitle_kind if subtitle else "",
         family=localized(data, "family"),
         name_origin=localized(data, "name_origin"),
         stats=data.get("stats", ""),

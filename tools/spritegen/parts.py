@@ -509,7 +509,8 @@ def belt(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     """Belt at the waist; count = 2 adds a second, slanted one.
 
     Options: buckle (color), buckle_shape (heart), studs (color of rivets along the belt),
-    second (color of the second belt), pouches (color of two pouches hanging on the sides).
+    second (color of the second belt), pouches (color of two pouches hanging on the sides),
+    below (color of the trousers' waist under the belt, when the torso is bare skin).
     """
     mat = p["material"]
     (ta, tb, tr) = sk.torso
@@ -517,6 +518,9 @@ def belt(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     y = round(sk.hip_y) - 2
     band = {q for q in torso if y <= q[1] <= y + 1}
     parts = [Part(mat, band, z=30.5)]
+    below = p.get("below")
+    if below:
+        parts.append(Part(below, {q for q in torso if q[1] > y + 1}, z=30.3))
     cx = sk.center_x
     if p.get("count", 1) >= 2 and sk.view != "right":
         slant = capsule(cx - tr, y - 3, cx + tr, y + 1, 0.6)
@@ -574,12 +578,13 @@ SHAPES = {
     "circle": [".#.", "###", ".#."],
     "diamond": [".#.", "#.#", ".#."],
     "ball": [".##.", "####", "####", ".##."],
+    "bow": ["#.#", "###", "#.#"],
 }
 
 
 def emblem(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     """A small 3x3 motif. on: knees | elbows | chest | belt (one on each side) | chin.
-    shape: heart | circle | diamond | ball (a round guard, 4 by 4)."""
+    shape: heart | circle | diamond | ball (a round guard, 4 by 4) | bow (a bow tie)."""
     shape = SHAPES[p.get("shape", "heart")]
     spots: list[tuple[float, float, float]] = []  # x, y, z
     where = p.get("on", "chest")
@@ -1058,12 +1063,20 @@ def top(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     """A fitted top from the chest down, shoulders bare.
 
     Options: neckline (px below the shoulder line), strap (left | right: a single strap
-    up to the wearer's shoulder on that side).
+    up to the wearer's shoulder on that side), length (share of the torso it covers,
+    from the neckline: below 1, a cropped top), torn (true: a ragged lower edge).
     """
     mat = p["material"]
     (ta, tb, tr) = sk.torso
     neck = sk.shoulder_y + p.get("neckline", 3)
-    cover = {q for q in capsule(*ta, *tb, tr) if q[1] >= neck}
+    torso = capsule(*ta, *tb, tr)
+    bottom = max(q[1] for q in torso)
+    hem = neck + (bottom - neck) * p.get("length", 1.0)
+    cover = {q for q in torso if neck <= q[1] <= hem}
+    if p.get("torn") and cover:
+        # Rips along the hem: every other column stops a pixel or two short.
+        last = max(q[1] for q in cover)
+        cover = {(x, y) for x, y in cover if not (y >= last - (x % 3 == 0) and x % 2)}
     strap = p.get("strap")
     if strap and sk.view != "right":
         # The wearer's left is the screen's right from the front, the screen's left from behind.
@@ -1073,6 +1086,38 @@ def top(sk: Skeleton, p: dict, look: Look) -> list[Part]:
         sign = 1 if i == 1 else -1
         cover |= capsule(sk.center_x + sign * 1.5, neck + 1, sx - sign * 1.5, sy, 1.1)
     return [Part(mat, cover, z=30.45)]
+
+
+def top_hat(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """A tall top hat with a wide brim. Options: height (crown, head units), band (color of
+    a band around the crown), checker (second color: harlequin diamonds on the band)."""
+    mat = p["material"]
+    at = sk.at
+    h = p.get("height", 9.0)
+    shift = -0.6 if sk.view == "right" else 0.0
+    base = -4.4
+    crown = polygon(
+        [
+            at(-5.6 + shift, base),
+            at(5.6 + shift, base),
+            at(6.1 + shift, base - h),
+            at(-6.1 + shift, base - h),
+        ]
+    )
+    brim = polygon([at(-9, base - 0.3), at(9, base - 0.3), at(9, base + 1.2), at(-9, base + 1.2)])
+    shine = points([at(-4 + shift, base - h + 1.5), at(-4 + shift, base - h + 2.5)]) & crown
+    parts = [Part(mat, crown, z=56, highlight=shine), Part(mat, brim, z=57)]
+    band = p.get("band")
+    if band:
+        rows = {q for q in crown if base - 4.2 <= _rel(sk, q)[1] < base - 0.6}
+        parts.append(Part(band, rows, z=56.4))
+        checker = p.get("checker")
+        if checker:
+            top = min(q[1] for q in rows)
+            # Diamonds: lit where the distance to the nearest diamond center is small.
+            diamonds = {(x, y) for x, y in rows if (abs((x % 4) - 1.5) + abs(y - top - 1)) <= 1.6}
+            parts.append(Part(checker, diamonds, z=56.5, tone=2))
+    return parts
 
 
 def helmet(sk: Skeleton, p: dict, look: Look) -> list[Part]:
@@ -1197,6 +1242,7 @@ PART_TYPES: dict[str, Callable[[Skeleton, dict, Look], list[Part]]] = {
     "boots": boots,
     "top": top,
     "helmet": helmet,
+    "top_hat": top_hat,
     "tanks": tanks,
     "cheek_guards": cheek_guards,
 }

@@ -1,6 +1,7 @@
 # Glossary, Part 1: Phantom Blood. One file per part, filled as the parts come in.
 # Texts in French; the *_en keys give the English. Sources: JoJo Wiki (jojowiki.com),
 # the manga and the anime. Icons: assets/icons/ (drawings in tools/icons/).
+#   fighter = the fighter whose sprite shows; power = what they fight with (no Stands yet)
 
 part = 1
 
@@ -26,3 +27,29 @@ name = "VAMPIRE"
 icon = "glossary_vampire"
 text = "Porter le masque de pierre fait de quelqu'un un vampire : il ne vieillit plus, se remet de presque toutes ses blessures et se nourrit du sang des humains. Il peut changer ses victimes en zombies qui lui obéissent. Le soleil et l'onde le réduisent en poussière."
 text_en = "Wearing the Stone Mask makes someone a vampire: they stop ageing, recover from almost any wound and feed on human blood. They can turn their victims into zombies who obey them. Sunlight and the Ripple turn them to dust."
+
+[[characters]]
+id = "jonathan"
+name = "JONATHAN JOESTAR"
+fighter = "jonathan"
+power = "ONDE (HAMON)"
+power_en = "RIPPLE (HAMON)"
+text = "Fils d'un noble anglais, George Joestar. Son père adopte Dio Brando, qui lui gâche la vie avant de devenir vampire. Formé à l'onde par Zeppeli, ce gentleman de 1,95 m affronte Dio jusqu'au bout : il meurt en 1889 sur un navire qui explose, en protégeant sa femme Erina."
+text_en = "Son of an English noble, George Joestar. His father adopts Dio Brando, who wrecks his life before becoming a vampire. Trained in the Ripple by Zeppeli, this 195 cm gentleman fights Dio to the end: he dies in 1889 aboard an exploding ship, protecting his wife Erina."
+family = "Fils de George Joestar. Mari d'Erina Pendleton, père de George Joestar II, grand-père de Joseph Joestar. Le premier JoJo : la lignée Joestar part de lui."
+family_en = "Son of George Joestar. Husband of Erina Pendleton, father of George Joestar II, grandfather of Joseph Joestar. The first JoJo: the Joestar line starts with him."
+name_origin = "Araki et son éditeur voulaient des initiales doubles, comme S.S. pour Steven Spielberg : J.J. donne JoJo. Le nom a été trouvé dans un restaurant Denny's."
+name_origin_en = "Araki and his editor wanted double initials, like S.S. for Steven Spielberg: J.J. gives JoJo. The name was found in a Denny's restaurant."
+
+[[characters]]
+id = "zeppeli"
+name = "WILL A. ZEPPELI"
+fighter = "zeppeli"
+power = "ONDE (HAMON)"
+power_en = "RIPPLE (HAMON)"
+text = "Un gentleman italien, maître de l'onde. En 1858, son père porte le masque de pierre et tue tout l'équipage d'une expédition : Zeppeli consacre sa vie à détruire le masque et apprend le Hamon auprès de Tonpetty. Il forme Jonathan, puis meurt face à Tarkus en lui transmettant toute son énergie : le Deep Pass Overdrive."
+text_en = "An Italian gentleman, a master of the Ripple. In 1858 his father wears the Stone Mask and kills the whole crew of an expedition: Zeppeli gives his life to destroying the mask and learns Hamon from Tonpetty. He trains Jonathan, then dies against Tarkus, passing him all his energy: the Deep Pass Overdrive."
+family = "Son père porta le masque de pierre lors de l'expédition de 1858. Père de Mario Zeppeli, grand-père de Caesar Zeppeli, l'ami de Joseph dans la partie 2."
+family_en = "His father wore the Stone Mask on the 1858 expedition. Father of Mario Zeppeli, grandfather of Caesar Zeppeli, Joseph's friend in Part 2."
+name_origin = "Araki l'a nommé d'après le groupe de rock Led Zeppelin, dont il admirait les musiciens."
+name_origin_en = "Araki named him after the rock band Led Zeppelin, whose musicians he admired."

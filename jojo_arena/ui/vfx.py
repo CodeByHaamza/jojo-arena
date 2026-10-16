@@ -28,6 +28,10 @@ def _ints(v: Vec2) -> tuple[int, int]:
     return round(v.x), round(v.y)
 
 
+WINE = (150, 20, 52)
+HAMON_EDGE = (255, 220, 110)
+
+
 def _side(d: Vec2) -> Vec2:
     return Vec2(-d.y, d.x)
 
@@ -43,6 +47,8 @@ def draw_projectile(
         _draw_gem(surface, pos, d)
     elif look == "blade":
         _draw_blade(surface, pos, d)
+    elif look == "wine":
+        _draw_wine(surface, pos, d)
     else:
         _draw_orb(surface, pos, radius, aura)
 
@@ -81,6 +87,16 @@ def _draw_gem(surface, pos: Vec2, d: Vec2) -> None:
     pygame.draw.polygon(surface, EMERALD_DARK, [_ints(p) for p in (pos, right, back)])
     pygame.draw.polygon(surface, EMERALD_LIGHT, [_ints(p) for p in (front, left, pos)])
     surface.set_at(_ints(pos + d * 2 + side), (235, 255, 240))
+
+
+def _draw_wine(surface, pos: Vec2, d: Vec2) -> None:
+    """A jet of wine made sharp as a blade by Hamon: a red streak with a golden edge."""
+    blit_glow(surface, radial_glow(8, (90, 66, 10)), (pos.x, pos.y))
+    head, tail = pos + d * 4, pos - d * 7
+    pygame.draw.line(surface, OUTLINE, _ints(head + d), _ints(tail - d), 4)
+    pygame.draw.line(surface, WINE, _ints(head), _ints(tail), 2)
+    pygame.draw.line(surface, HAMON_EDGE, _ints(head), _ints(pos), 1)
+    surface.set_at(_ints(head), (255, 255, 230))
 
 
 def _draw_blade(surface, pos: Vec2, d: Vec2) -> None:

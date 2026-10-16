@@ -1,0 +1,83 @@
+# Will A. Zeppeli (Part 1): look file for tools/make_sprites.py.
+# Black top hat with a band of harlequin diamonds, curly brown hair, a handlebar
+# mustache, white suit with dark blue lapels over a red waistcoat, green bow tie.
+
+name = "Will A. Zeppeli"
+
+# Slim and nimble, an average height.
+# Signature pose (Pose key): see tools/spritegen/skeleton.py.
+pose = "point"
+
+[build]
+head_r = 5.6
+neck = 1.3
+torso = 13
+legs = 16.5
+arms = 14
+shoulders = 7.8
+hips = 3.1
+torso_r = 5.6
+arm_r = 2.1
+leg_r = 2.3
+hand_r = 2.1
+foot_r = 2.3
+
+[palette]
+skin = "#f0c8a0"
+hair = "#7a4a2a"
+suit = "#eceaf2"
+trim = "#2a3a6e"          # lapels and the inside of the jacket
+vest = "#c8463c"
+bow = "#3cba78"
+shoes = "#26222c"
+hat = "#1e1c26"
+check = "#f2f0f6"
+gold = "#e8c03a"
+eyes = "#3a9aa0"
+
+[body]
+head = "skin"
+torso = "vest"
+arms = "suit"
+hands = "skin"
+legs = "suit"
+feet = "shoes"
+
+[face]
+eyes = "eyes"
+eye_style = "wide"
+brows = true
+nose = true
+ear = true
+mustache = "hair"
+
+[[parts]]
+type = "hair"
+material = "hair"
+style = "short"
+volume = 7.6
+back_length = 4
+
+[[parts]]
+type = "top_hat"
+material = "hat"
+height = 8
+band = "hat"
+checker = "check"
+
+# The white jacket, open on the red waistcoat, dark blue lapels.
+[[parts]]
+type = "coat"
+material = "suit"
+length = 0.4
+open = true
+opening = 4
+collar = true
+lining = "trim"
+buttons = "gold"
+
+[[parts]]
+type = "emblem"
+material = "bow"
+shape = "bow"
+on = "chest"

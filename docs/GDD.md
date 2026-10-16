@@ -151,7 +151,7 @@ Partie 1 = Hamon contre vampires : pas de Stands, tout se joue sur la jauge de H
 
 | Perso | Style | Gameplay | Mécanique signature | Ultime (GHA) |
 | --- | --- | --- | --- | --- |
-| **Jonathan Joestar** | Hamon · Tank rushdown | Coups lourds et lents, grosse vie (1150). Hamon à courte portée | Sunlight Yellow Overdrive : rush Hamon qui brûle les vampires. Peut charger le Hamon dans son épée (Luck & Pluck) pour plus de portée | Luck & Pluck : coup d'épée Hamon géant |
+| **Jonathan Joestar** | Hamon · Tank rushdown | Coups lourds et lents, grosse vie (1150). Hamon à courte portée | Rafale d'Overdrive (coup lourd) qui fait le duel contre les rafales de Stand (ORA, MUDA). Hamon dans son épée Luck & Pluck (HHA) pour plus de portée | Sunlight Yellow Overdrive : rafale de Hamon du soleil qui brûle les vampires |
 | **Dio Brando** | Vampire · Bruiser | Agressif, vole de la vie sur les coups lourds | Gel vaporisant : le contact au corps à corps gèle l'adversaire (stun). Space Ripper Stingy Eyes : rayons oculaires pour zoner | Absorption : attrape et draine une grosse part de vie |
 | **Will A. Zeppeli** | Hamon · Mobilité | Rapide, saute haut, très bon à mi-distance | Hamon à travers les liquides : lance du vin ou de l'eau qui transmet le Hamon (projectile tranchant). Peut marcher sur l'eau | Ondes de Hamon en rafale (Tornado Overdrive) |
 | **Bruford** | Zombie chevalier · Contrôle | Portée moyenne, épée | Cheveux qui attrapent et percent : grab à distance qui draine | Danse des cheveux : zone de grabs multiples |
@@ -393,6 +393,9 @@ Un perso est « fini » quand il a : son kit codé et testé contre 3 autres per
 - Objets : Pose près d'une caisse ou d'une jarre : c'est le Stand qui la prend, même rangé, et la tient pendant que son manieur se bat normalement ; Pose de nouveau : le Stand la lance sur l'adversaire. La force du Stand (`strength` dans le kit) règle la vitesse, les dégâts et le recul : Star Platinum et The World (1,8) lancent ultra vite et fort, avec rebond contre les murs ; Silver Chariot 1,1 ; Hierophant Green 0,8. Touché, on la lâche. Cassée, elle revient à sa place (caisse 10 s, jarre 8 s).
 - Gameplay nerveux : marche et dash plus rapides ; un coup qui touche peut s'annuler en dash ou en HHA/GHA (super cancel) ; direction + coup lourd = attaque en mouvement propre à chaque perso. Impact frames (2 images noir et blanc façon anime) puis coup de zoom sur les gros coups, contres, Guard Break et K.O.
 - HHA de Kakyoin : les tentacules frappent d'en haut ; s'ils touchent, Hierophant entre par la bouche de l'adversaire et le détruit de l'intérieur (comme contre Death 13 et dans ASBR).
+- Hamon (Vague 3) : jauge de 100, chaque round commence à 40 ; respirer (maintenir la touche Stand) recharge 25 par seconde, immobile. Un coup marqué Hamon dépense 15 à 30 points s'il y en a assez, et frappe 1,4 fois plus fort (certains, comme l'onde traversante de Jonathan, passent alors la garde) ; sinon il reste normal. Le Hamon fait double dégâts aux natures « vampire » et « Pillar Man » : DIO P3 compris.
+- Jonathan : coup lourd = rafale d'Overdrive (duel contre ORA ORA, MUDA MUDA, HORA HORA) ; spéciale = Scarlet Overdrive ; spéciale + direction = onde traversante (la leçon de la grenouille) ; HHA = Luck & Pluck (estoc de Hamon à longue portée) ; GHA = Sunlight Yellow Overdrive en cinématique.
+- Zeppeli : Zoom Punch, Hamon Cutter (jets de vin tranchants), bond du gentleman vers le point visé ; HHA = éventail de Hamon Cutters ; GHA = Tornado Overdrive en cinématique.
 - Entraînement : pas d'IA. Mannequin immobile, en garde ou joué par J2 ; vie infinie (rechargée une fois le combo fini) et jauge Heart Heat infinie, désactivables ; un K.O. replace les deux persos sans score ; compteur de coups et de dégâts.
 
 ## Sources

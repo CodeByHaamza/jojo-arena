@@ -690,12 +690,206 @@ class HierophantInside(CutscenePlayer):
                 vfx.draw_projectile(world, "gem", gem, direction, 3, aura)
 
 
+# Jonathan: Sunlight Yellow Overdrive -----------------------------------------------------
+
+HAMON_GOLD = (255, 214, 80)
+
+
+class SunlightYellowOverdrive(CutscenePlayer):
+    """The Hamon fist landed: Jonathan breathes in, the Hamon blazes in his fists like the
+    sun, then the barrage, and the last blow sends the sunlight through the opponent."""
+
+    length = 216
+    BREATH_END = 66
+    FINAL = 168
+
+    def camera(self, f):
+        if f < 16:
+            return (self.u + self.v) * 0.5, 2
+        if f < self.BREATH_END:
+            return self.u + Vec2(0, -24), 2
+        return (self.u + self.v) * 0.5 + Vec2(0, -12), 2
+
+    def puncher(self) -> Vec2:
+        """Where Jonathan stands to punch: right up against the opponent."""
+        return self.v - Vec2(self.side * 20, 0)
+
+    def cue(self, f):
+        fx, user = self.fx, self.scene.user
+        hit = self.chest(self.scene.target, self.v)
+        if f == 1:
+            self.world_words.add(sfx.DON, self.head(self.scene.target, self.v), "impact", 2, 30)
+            fx.add(vfx.Flash(hit, 16, HAMON_GOLD))
+            fx.focus(hit, heavy=True)
+            self.shake = 8
+        if 16 <= f < self.BREATH_END and f % 8 == 0:
+            chest = self.chest(user, self.u)
+            fx.add(vfx.Ring(chest, HAMON_GOLD, 1.8, 20, 1))
+            fx.add(vfx.Flash(chest + Vec2(self.side * 8, 2), 10, HAMON_GOLD, 6))
+        if f == 20:
+            self.world_words.add(sfx.BREATH, self.head(user, self.u), sfx.HAMON, 2, 46, 0.3)
+        if f == 30:
+            self.shout("SUNLIGHT YELLOW", (240, 50), 3, 60)
+        if f == 50:
+            self.shout("OVERDRIVE !!", (240, 78), 4, 60)
+        if self.BREATH_END <= f < self.FINAL and f % 3 == 0:
+            spot = hit + Vec2(self.rng.uniform(-8, 8), self.rng.uniform(-10, 8))
+            fx.add(vfx.Flash(spot, 10, HAMON_GOLD, 5))
+            if f % 9 == 0:
+                style = sfx.HAMON
+                where = Vec2(240 + self.rng.uniform(-170, 170), self.rng.uniform(46, 224))
+                self.words.add("OVERDRIVE", where, style, self.rng.choice((2, 2, 3)), 22, 0.6, 1)
+            if f % 12 == 0:
+                fx.add(vfx.Ring(hit, HAMON_GOLD, 2.8, 14, 2))
+            self.shake = max(self.shake, 2)
+        if f == self.FINAL:
+            fx.add(vfx.Flash(hit, 44, HAMON_GOLD, 14))
+            fx.add(vfx.Ring(hit, HAMON_GOLD, 4.5, 24, 3))
+            fx.add(vfx.Ring(hit, (255, 250, 220), 3.0, 20, 2))
+            fx.focus(hit, heavy=True)
+            self.world_words.add(sfx.DOGO, hit + Vec2(0, -14), "impact", 3, 46, 0.2, 2)
+            self.flash, self.shake = 9, 18
+        if f > self.FINAL and f % 7 == 0:
+            spot = hit + Vec2(self.rng.uniform(-10, 10), self.rng.uniform(-12, 8))
+            self.world_words.add(sfx.CRACKLE, spot, sfx.HAMON, 2, 20, 0.5, 1)
+            fx.add(vfx.Flash(spot, 12, HAMON_GOLD, 6))
+
+    def negative(self, f):
+        return self.FINAL <= f < self.FINAL + 3  # the impact frames
+
+    def scene_draw(self, world, f):
+        user, right = self.scene.user, self.side > 0
+        hit = self.chest(self.scene.target, self.v)
+        if f < self.BREATH_END:
+            self.victim(world, f)
+            anim, frame = ("heavy_overdrive", 2) if f < 16 else ("breathe", (f // 10) % 2)
+            self.body(world, user, self.u, anim, frame, right)
+            if f >= 16:
+                # Hamon gathering in his fists: a glow that grows like a small sun.
+                chest = self.chest(user, self.u) + Vec2(self.side * 7, 4)
+                glow = 10 + min(14, (f - 16) // 3)
+                blit_glow(world, radial_glow(glow, (150, 110, 20)), (chest.x, chest.y))
+            return
+        spot = self.puncher()
+        if f < self.FINAL:
+            frame = 1 + (f // 3) % 2
+            self.victim(world, f)
+            self.body(world, user, spot, "light", frame, right)
+            vfx.draw_flurry(
+                world,
+                self.chest(user, spot),
+                Vec2(self.side, 0),
+                HAMON_GOLD,
+                f * 13,
+                30,
+                8,
+                "fists",
+            )
+        else:
+            knocked = self.v + Vec2(self.side * min(30, (f - self.FINAL) * 3), 0)
+            self.body(world, self.scene.target, knocked, "hurt", 1, self.side < 0)
+            self.body(world, user, spot, "heavy_overdrive", 3, right)
+            blit_glow(world, radial_glow(20, (140, 100, 20)), (hit.x, hit.y))
+
+
+# Zeppeli: Tornado Overdrive ---------------------------------------------------------------
+
+
+class TornadoOverdrive(CutscenePlayer):
+    """The kick landed: Zeppeli spins up into the air in a whirl of Hamon, then dives
+    heel first onto the opponent, and the ripples go through them."""
+
+    length = 180
+    RISE_END = 70
+    DIVE_END = 94
+
+    def camera(self, f):
+        if f < 16:
+            return (self.u + self.v) * 0.5, 2
+        if f < self.RISE_END:
+            return self.u + Vec2(0, -40), 2
+        return self.v + Vec2(0, -22), 2
+
+    def lift(self, f) -> float:
+        if f < 16:
+            return 0.0
+        if f < self.RISE_END:
+            return min(44.0, (f - 16) * 1.3)
+        if f < self.DIVE_END:
+            return 44.0 * (1 - (f - self.RISE_END) / (self.DIVE_END - self.RISE_END))
+        return 0.0
+
+    def spot(self, f) -> Vec2:
+        if f < self.RISE_END:
+            return self.u
+        if f < self.DIVE_END:
+            t = (f - self.RISE_END) / (self.DIVE_END - self.RISE_END)
+            return self.u + (self.v - Vec2(self.side * 12, 0) - self.u) * t
+        return self.v - Vec2(self.side * 22, 0)
+
+    def cue(self, f):
+        fx, user = self.fx, self.scene.user
+        hit = self.chest(self.scene.target, self.v)
+        if f == 1:
+            self.world_words.add(sfx.DON, self.head(self.scene.target, self.v), "impact", 2, 30)
+            fx.add(vfx.Flash(hit, 16, HAMON_GOLD))
+            fx.focus(hit, heavy=True)
+            self.shake = 8
+        if 16 <= f < self.RISE_END and f % 6 == 0:
+            chest = self.chest(user, self.u, lift=self.lift(f))
+            fx.add(vfx.Ring(chest, HAMON_GOLD, 2.0, 16, 1))
+        if f == 24:
+            self.shout("TORNADO", (240, 52), 4, 56)
+        if f == 46:
+            self.shout("OVERDRIVE !", (240, 84), 4, 56)
+        if f == self.RISE_END:
+            direction = (self.v - self.u).normalized()
+            fx.add(vfx.SpeedLines(self.chest(user, self.u, lift=40), direction, HAMON_GOLD, 14))
+        if f == self.DIVE_END:
+            fx.add(vfx.Flash(hit, 42, HAMON_GOLD, 14))
+            fx.add(vfx.Ring(hit, HAMON_GOLD, 4.5, 24, 3))
+            fx.focus(hit, heavy=True)
+            fx.dust(self.v, 12, 2.0, 2)
+            self.world_words.add(sfx.DOGO, hit + Vec2(0, -14), "impact", 3, 46, 0.2, 2)
+            self.flash, self.shake = 9, 18
+        if f > self.DIVE_END and f % 8 == 0:
+            fx.add(vfx.Ring(hit, HAMON_GOLD, 2.4, 16, 2))
+            spot = hit + Vec2(self.rng.uniform(-10, 10), self.rng.uniform(-12, 8))
+            self.world_words.add(sfx.CRACKLE, spot, sfx.HAMON, 2, 20, 0.5, 1)
+
+    def negative(self, f):
+        return self.DIVE_END <= f < self.DIVE_END + 3
+
+    def scene_draw(self, world, f):
+        user = self.scene.user
+        lift, spot = self.lift(f), self.spot(f)
+        if f < self.DIVE_END:
+            self.victim(world, f)
+            # Spinning: he turns around every few frames as he rises.
+            facing = self.side > 0 if f < 16 or f >= self.RISE_END else (f // 4) % 2 == 0
+            frame = 2 if f >= self.RISE_END else 1
+            self.body(world, user, spot, "kick_high", frame, facing, lift=lift)
+            if 16 <= f < self.DIVE_END:
+                center = self.chest(user, spot, lift=lift)
+                for i in range(3):
+                    angle = f * 0.5 + i * math.tau / 3
+                    a = center + Vec2(math.cos(angle) * 14, math.sin(angle) * 6)
+                    b = center + Vec2(math.cos(angle + 0.9) * 14, math.sin(angle + 0.9) * 6)
+                    pygame.draw.line(world, HAMON_GOLD, a.as_ints(), b.as_ints(), 2)
+            return
+        knocked = self.v + Vec2(self.side * min(26, (f - self.DIVE_END) * 2), 0)
+        self.body(world, self.scene.target, knocked, "hurt", 1, self.side < 0)
+        self.body(world, user, spot, "pose", 0, self.side > 0)
+
+
 CUTSCENES = {
     "road_roller": RoadRoller,
     "star_finish": StarFinish,
     "chariot_clones": ChariotClones,
     "hierophant_web": HierophantWeb,
     "hierophant_inside": HierophantInside,
+    "sunlight_yellow_overdrive": SunlightYellowOverdrive,
+    "tornado_overdrive": TornadoOverdrive,
 }
 
 

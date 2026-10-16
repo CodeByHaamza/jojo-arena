@@ -1,0 +1,209 @@
+# Jonathan Joestar (Part 1). GDD: "Hamon · Tank rushdown": heavy, slow blows, a big
+# life (1150), short-range Hamon. Sunlight Yellow Overdrive (his ultimate), Hamon run
+# through his sword Luck & Pluck, and a barrage of fists that clashes with ORA ORA. Frames (_f) are at 60 per second; speeds and knockback in px per second.
+#
+# Style key held: Hamon breathing (the gauge fills, he stands still). Moves with a
+# hamon_cost spend it when there is enough, and strike harder; without, they stay plain.
+# Hamon burns vampires and Pillar Men: double damage.
+# Feel: a gentleman built like a wall, a rugby player who walks through blows.
+
+name = "Jonathan Joestar"
+max_hp = 1150
+walk_speed = 94
+strength = 1.3  # 195 cm of rugby player: he throws hard
+style = { type = "hamon" }
+
+[stances.base]
+label = "HAMON"
+
+# Jab, hook, Overdrive: the same button three times, once the first one lands.
+[stances.base.moves.light]
+label = "DIRECT"
+label_en = "JAB"
+info = "Lourd pour un coup rapide. Encore la touche : crochet, puis Overdrive"
+info_en = "Heavy for a quick blow. Press again: hook, then Overdrive"
+startup_f = 6
+active_f = 3
+recovery_f = 12
+damage = 34
+reach = 16
+radius = 11
+hitstun_f = 21
+knockback = 90
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.base.moves.light2]
+label = "CROCHET"
+label_en = "HOOK"
+info = "S'enchaîne sur le direct"
+info_en = "Follows the jab"
+startup_f = 7
+active_f = 3
+recovery_f = 13
+damage = 40
+reach = 16
+radius = 12
+hitstun_f = 23
+knockback = 110
+hitstop_f = 6
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "heavy"
+
+[stances.base.moves.light3]
+shout = "OVERDRIVE !"
+label = "OVERDRIVE"
+info = "Fin de l'enchaînement : poing de Hamon qui envoie contre le mur"
+info_en = "Chain ender: a Hamon fist that sends into the wall"
+hamon_cost = 20
+startup_f = 9
+active_f = 4
+recovery_f = 20
+damage = 50
+reach = 15
+radius = 13
+hitstun_f = 32
+knockback = 340
+hitstop_f = 10
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "uppercut"
+
+# Overdrive barrage: a rush of Hamon fists. Against a rush (ORA, MUDA...), the duel.
+[stances.base.moves.heavy]
+shout = "OVERDRIVE"
+label = "RAFALE D'OVERDRIVE"
+label_en = "OVERDRIVE BARRAGE"
+info = "Rafale de poings de 10 coups qui pousse ; contre une autre rafale, c'est le duel"
+info_en = "A 10-punch barrage that pushes; against another barrage, it's a duel"
+hamon_cost = 25
+startup_f = 12
+active_f = 30
+recovery_f = 22
+hits = 10
+hit_every_f = 3
+lunge = 40
+damage = 8
+last_damage = 42
+reach = 18
+radius = 13
+hitstun_f = 14
+knockback = 34
+last_knockback = 440
+last_wall_bounce = true
+hitstop_f = 1
+anim = "light"
+
+# With a direction: the rugby tackle of the Hugh Hudson School star.
+[stances.base.moves.heavy_alt]
+label = "PLAQUAGE"
+label_en = "RUGBY TACKLE"
+info = "Avec une direction : plaquage de rugby blindé, il encaisse un coup sans broncher"
+info_en = "With a direction: an armored rugby tackle, he takes a blow without flinching"
+startup_f = 10
+active_f = 12
+recovery_f = 20
+lunge = 280
+armor = 1
+damage = 60
+reach = 13
+radius = 13
+hitstun_f = 26
+knockback = 320
+hitstop_f = 9
+wall_bounce = true
+anim = "tackle"
+
+# Scarlet Overdrive: a burning Hamon fist, slow, it caves a guard in.
+[stances.base.moves.special]
+shout = "SCARLET OVERDRIVE !"
+label = "SCARLET OVERDRIVE"
+info = "Poing de Hamon brûlant, lent et lourd ; casse la garde"
+info_en = "A burning Hamon fist, slow and heavy; crushes guards"
+hamon_cost = 30
+startup_f = 16
+active_f = 4
+recovery_f = 24
+damage = 80
+reach = 15
+radius = 13
+hitstun_f = 36
+knockback = 320
+hitstop_f = 12
+wall_bounce = true
+guard_damage = 2.5
+anim = "heavy_overdrive"
+
+# With a direction, the frog lesson: the Hamon passes through what it strikes.
+[stances.base.moves.special_alt]
+label = "ONDE TRAVERSANTE"
+label_en = "PASSING RIPPLE"
+info = "Avec une direction : comme à travers la grenouille, avec le Hamon le coup traverse la garde"
+info_en = "With a direction: as through the frog, with Hamon the blow goes through the guard"
+hamon_cost = 30
+hamon_mult = 1.2
+hamon_unblockable = true
+startup_f = 12
+active_f = 4
+recovery_f = 18
+damage = 45
+reach = 16
+radius = 12
+hitstun_f = 28
+knockback = 220
+hitstop_f = 9
+anim = "light"
+
+# Super moves -----------------------------------------------------------------------------
+
+# Heart Heat Attack (1 bar): Luck & Pluck, the Hamon run through the sword's blade.
+[moves.hha]
+shout = "LUCK & PLUCK !"
+label = "LUCK & PLUCK"
+info = "Le Hamon embrase l'épée : un estoc qui porte loin, invincible au démarrage"
+info_en = "Hamon sets the sword ablaze: a far-reaching thrust, invincible on startup"
+hamon = true
+shape = "line"
+fx = "blade"
+startup_f = 16
+active_f = 5
+recovery_f = 26
+invincible_f = 16
+damage = 140
+reach = 64
+radius = 7
+hitstun_f = 36
+knockback = 440
+hitstop_f = 12
+wall_bounce = true
+clashable = false
+anim = "heavy_overdrive"
+
+# Great Heat Attack (2 bars): a Hamon fist must land first; then Sunlight Yellow
+# Overdrive, the barrage of the sun itself, the very blow that defeated Dio.
+[moves.gha]
+shout = "OVERDRIVE !"
+label = "SUNLIGHT YELLOW OVERDRIVE"
+info = "Un poing de Hamon. S'il touche : la rafale de Hamon du soleil, qui brûle les vampires"
+info_en = "A Hamon fist. On hit: the sunlight Hamon barrage that burns vampires"
+hamon = true
+startup_f = 12
+active_f = 4
+recovery_f = 26
+invincible_f = 12
+lunge = 140
+damage = 30
+reach = 15
+radius = 13
+hitstun_f = 40
+hitstop_f = 10
+clashable = false
+anim = "heavy_overdrive"
+cinematic = "sunlight_yellow_overdrive"
+cinematic_s = 3.6
+finish_damage = 250
+finish_hitstun_f = 50
+finish_knockback = 480
+finish_wall_bounce = true

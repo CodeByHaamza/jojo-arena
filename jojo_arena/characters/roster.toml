@@ -11,6 +11,35 @@
 #                  character select screen.
 # Character sheets are generated from characters/looks/<id>.toml by tools/make_sprites.py.
 
+# Part 1: Phantom Blood ------------------------------------------------------------------
+
+[[fighters]]
+id = "jonathan"
+part = 1
+name = "JONATHAN JOESTAR"
+kit = "jonathan"
+sprite = "jonathan/jonathan"
+role = "TANK - HAMON"
+blurb = "Coups lourds, grosse vie et Hamon à courte portée : il encaisse, puis il écrase."
+blurb_en = "Heavy blows, a big life and short-range Hamon: he takes it, then he crushes."
+color = "#3d63c8"
+aura = "#ffd040"
+
+[[fighters]]
+id = "zeppeli"
+part = 1
+name = "WILL A. ZEPPELI"
+kit = "zeppeli"
+sprite = "zeppeli/zeppeli"
+role = "MOBILITÉ - HAMON"
+role_en = "MOBILITY - HAMON"
+blurb = "Rapide et insaisissable : Zoom Punch, Hamon Cutter et grands bonds."
+blurb_en = "Fast and elusive: Zoom Punch, Ripple Cutter and great leaps."
+color = "#c8463c"
+aura = "#ffd040"
+
+# Part 3: Stardust Crusaders --------------------------------------------------------------
+
 [[fighters]]
 id = "jotaro_p3"
 part = 3

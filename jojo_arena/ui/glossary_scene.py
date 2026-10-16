@@ -209,7 +209,10 @@ class GlossaryScene(Scene):
         font.draw(surface, entry.name, (x, VISUAL.y + 2), GOLD, scale=scale)
         y = VISUAL.y + 4 + 10 * scale
         if entry.subtitle:
-            template = text.GLOSSARY_STAND if entry.kind == "characters" else text.GLOSSARY_USER
+            template = {
+                "stand": text.GLOSSARY_STAND,
+                "power": text.GLOSSARY_POWER,
+            }.get(entry.subtitle_kind, text.GLOSSARY_USER)
             font.draw(surface, template.format(name=entry.subtitle), (x, y), WHITE)
             y += 12
         grades = entry.stat_grades()

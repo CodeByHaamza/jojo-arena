@@ -1,0 +1,220 @@
+# Jonathan Joestar (Part 1): look file for tools/make_sprites.py.
+# Very tall and muscular, indigo hair swept up, a torn blue top cropped over the abs,
+# brown leather shoulder pads, red belt with a gold buckle, grey trousers, boots.
+
+name = "Jonathan Joestar"
+
+# The tallest of the cast: 195 cm of gentleman.
+# Signature pose (Pose key): see tools/spritegen/skeleton.py.
+pose = "raise"
+
+[build]
+head_r = 6.0
+neck = 1.0
+torso = 15
+legs = 18
+arms = 16
+shoulders = 10
+hips = 3.7
+torso_r = 7.0
+arm_r = 3.0
+leg_r = 2.9
+hand_r = 2.7
+foot_r = 2.6
+
+[palette]
+skin = "#f0c49c"
+hair = "#3c3c9e"          # indigo
+top = "#3d63c8"
+pad = "#8a5530"
+belt = "#c8403a"
+gold = "#f0c23c"
+trousers = "#8c909e"
+boots = "#3a2c28"
+eyes = "#7ac0e8"
+
+[body]
+head = "skin"
+torso = "skin"
+arms = "skin"
+hands = "skin"
+legs = "trousers"
+feet = "boots"
+
+[face]
+eyes = "eyes"
+eye_style = "wide"
+brows = true
+nose = true
+ear = true
+
+# Thick, short hair standing up in tufts.
+[[parts]]
+type = "hair"
+material = "hair"
+style = "mane"
+volume = 7.4
+flare = 0.5
+fill = 0.55
+
+# The torn top, cropped high: the abs show.
+[[parts]]
+type = "top"
+material = "top"
+neckline = 2
+length = 0.45
+torn = true
+
+[[parts]]
+type = "pauldrons"
+material = "pad"
+size = 3.8
+
+[[parts]]
+type = "belt"
+material = "belt"
+buckle = "gold"
+below = "trousers"
+
+[[parts]]
+type = "boots"
+material = "boots"
+length = 0.3
+
+# Key-pose animations ------------------------------------------------------------------
+# [anims.<name>] replaces the generated animation of that name, or adds a new one that a
+# move picks in the kit (anim = "<name>"). One [[anims.<name>.<view>]] table per key pose,
+# for the views down, up and right (a view left out copies another).
+
+# Hamon breathing: chest out, fists low and back, a slow deep breath.
+[anims.breathe]
+fps = 3
+loop = true
+tween = 1
+
+[[anims.breathe.down]]
+head = [0, -1]
+hand_l = [-2, 1]
+hand_r = [2, 1]
+foot_l = [-1, 0]
+foot_r = [1, 0]
+
+[[anims.breathe.down]]
+bob = -1
+head = [0, -2]
+hand_l = [-3, 0]
+hand_r = [3, 0]
+foot_l = [-1, 0]
+foot_r = [1, 0]
+
+[[anims.breathe.right]]
+lean = -1
+head = [-1, -1]
+hand_l = [-3, 0]
+hand_r = [-3, 1]
+
+[[anims.breathe.right]]
+lean = -1.5
+bob = -1
+head = [-1, -2]
+hand_l = [-4, -1]
+hand_r = [-4, 0]
+
+# Overdrive: the fist drawn back, then driven through with all the body.
+[anims.heavy_overdrive]
+fps = 12
+phases = [2, 1, 2]
+tween = 1
+
+[[anims.heavy_overdrive.right]]
+lean = -2
+bob = 1
+hand_r = [-7, -5]
+hand_l = [3, -9]
+foot_l = [-3, 0]
+
+[[anims.heavy_overdrive.right]]
+lean = -3
+bob = 1
+head = [-1, 0]
+hand_r = [-9, -6]
+hand_l = [5, -10]
+foot_l = [-4, 0]
+
+[[anims.heavy_overdrive.right]]
+lean = 4
+hand_r = [15, -8]
+hand_l = [-4, -4]
+foot_r = [6, 0]
+foot_l = [-5, 0]
+
+[[anims.heavy_overdrive.right]]
+lean = 3.5
+hand_r = [14, -7]
+hand_l = [-4, -4]
+foot_r = [6, 0]
+foot_l = [-5, 0]
+
+[[anims.heavy_overdrive.right]]
+lean = 1
+hand_r = [5, -4]
+hand_l = [0, -3]
+foot_r = [2, 0]
+
+[[anims.heavy_overdrive.down]]
+bob = 1
+hand_r = [3, -7]
+hand_l = [-2, -6]
+
+[[anims.heavy_overdrive.down]]
+bob = 1
+lean = -1
+hand_r = [4, -9]
+hand_l = [-3, -7]
+
+[[anims.heavy_overdrive.down]]
+bob = -1
+hand_r = [-6, -4]
+hand_l = [2, -3]
+big_hand_r = true
+foot_l = [-2, 0]
+foot_r = [2, 0]
+
+[[anims.heavy_overdrive.down]]
+hand_r = [-6, -3]
+hand_l = [2, -3]
+big_hand_r = true
+foot_l = [-2, 0]
+foot_r = [2, 0]
+
+[[anims.heavy_overdrive.down]]
+hand_r = [-2, -3]
+hand_l = [1, -2]
+
+[[anims.heavy_overdrive.up]]
+bob = 1
+hand_r = [3, -8]
+hand_l = [-2, -6]
+
+[[anims.heavy_overdrive.up]]
+bob = 1
+lean = -1
+hand_r = [4, -10]
+hand_l = [-3, -7]
+
+[[anims.heavy_overdrive.up]]
+bob = -1
+hand_r = [-6, -16]
+hand_l = [2, -4]
+foot_l = [-2, 0]
+foot_r = [2, 0]
+
+[[anims.heavy_overdrive.up]]
+hand_r = [-6, -15]
+hand_l = [2, -4]
+foot_l = [-2, 0]
+foot_r = [2, 0]
+
+[[anims.heavy_overdrive.up]]
+hand_r = [-2, -4]
+hand_l = [1, -2]
