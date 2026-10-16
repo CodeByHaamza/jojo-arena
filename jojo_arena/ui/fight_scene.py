@@ -2,17 +2,21 @@
 
 from __future__ import annotations
 
+import time
 from dataclasses import replace
+from pathlib import Path
 
 import pygame
 
+from jojo_arena import __version__
 from jojo_arena.characters import get_fighter
 from jojo_arena.combat.bot import SimpleBot
+from jojo_arena.combat.replay import Replay, save_replay
 from jojo_arena.combat.rounds import Phase, Rounds
 from jojo_arena.combat.rules import load_rules
 from jojo_arena.context import GameContext
 from jojo_arena.engine import font
-from jojo_arena.engine.actions import InputFrame
+from jojo_arena.engine.actions import NEUTRAL, InputFrame
 from jojo_arena.engine.scene import Scene
 from jojo_arena.stages import load_stage
 from jojo_arena.ui import text
@@ -21,9 +25,10 @@ from jojo_arena.ui.hud import Hud
 from jojo_arena.ui.labels import action_label
 from jojo_arena.ui.menu import Menu, MenuItem
 from jojo_arena.ui.movelist import MoveListPanel
-from jojo_arena.ui.widgets import GOLD, draw_box, veil
+from jojo_arena.ui.widgets import GOLD, draw_box, draw_toast, veil
 
 RESULT_MENU_AFTER_F = 120  # let the victory sink in before offering a rematch
+TOAST_F = 90
 MOUSE_AIM_F = 60  # the mouse aims for a keyboard player if it moved in the last second
 
 
@@ -57,17 +62,55 @@ class FightScene(Scene):
         self.result_menu: Menu | None = None
         self.move_list: MoveListPanel | None = None
         self.paused_by = 0  # the player who paused: the move list shows their character
+        self.stage_id = stage_id
+        # Replays: every fight is recorded; a replay given here is played back instead.
+        self.playback: Replay | None = None
+        self.playback_step = 0
+        self.toast_f = 0
         self._new_rounds()
 
     def handle_event(self, event: pygame.event.Event) -> None:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_F3:
             self.view.debug = not self.view.debug  # show hit and hurt circles
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_F9 and self.playback is None:
+            stamp = time.strftime("%Y%m%d-%H%M%S")
+            self.save_replay(f"replay-{stamp}")
+            self.toast_f = TOAST_F
+
+    # Replays ----------------------------------------------------------------------------
+
+    def replay_meta(self) -> dict:
+        return {
+            "game": __version__,
+            "mode": self.mode,
+            "fighters": list(self.fighter_ids),
+            "stage": self.stage_id,
+            "rounds_to_win": self.rounds_to_win,
+        }
+
+    def replays_dir(self) -> Path:
+        return self.ctx.controls_path.parent / "replays"
+
+    def save_replay(self, name: str = "derniere_partie") -> Path | None:
+        """Keep the fight so far (not in demos, and not when watching a replay)."""
+        if self.demo or self.playback is not None or not self.replay.frames:
+            return None
+        path = self.replays_dir() / f"{name}.json"
+        try:
+            save_replay(path, self.replay)
+        except OSError:
+            return None
+        return path
+
+    def apply_command(self, command: dict) -> None:
+        """A pause-menu command found in a replay (fight variants handle theirs)."""
 
     def _new_rounds(self) -> None:
         kits = (self.fighter_defs[0].kit, self.fighter_defs[1].kit)
         self.rounds = Rounds(kits, self.rules, self.stage.build_arena, self.rounds_to_win)
         self.pause_menu = None
         self.result_menu = None
+        self.replay = Replay(self.replay_meta())
 
     # Update -----------------------------------------------------------------------------
 
@@ -82,21 +125,31 @@ class FightScene(Scene):
         if self.result_menu is not None:
             self._update_result()
             return
+        self.toast_f = max(0, self.toast_f - 1)
+        if self.playback is not None:
+            menu = self.ctx.read_menu()
+            if menu.was_pressed("pause") or menu.was_pressed("back"):
+                self._go_to_menu()
+                return
         frames = self._read_frames()
         pauser = next((i for i, f in enumerate(frames) if f.was_pressed("pause")), None)
         if not self.demo and pauser is not None:
             self.paused_by = pauser
             self.pause_menu = Menu(self._pause_items())
             return
+        if self.playback is None:
+            self.replay.record((frames[0], frames[1]))
         events = self.rounds.step((frames[0], frames[1]))
         self.view.on_events(events, self.rounds.match)
         self.hud.on_events(events, self.rounds)
         self.view.update(self.rounds.match)
         self.hud.update(self.rounds)
         if self.rounds.phase == Phase.MATCH_OVER and self.rounds.phase_f >= RESULT_MENU_AFTER_F:
-            if self.demo:
-                self._new_rounds()
+            if self.demo or self.playback is not None:
+                if self.demo:
+                    self._new_rounds()
             else:
+                self.save_replay()
                 self.result_menu = Menu(
                     [
                         MenuItem("rematch", text.REMATCH),
@@ -106,6 +159,15 @@ class FightScene(Scene):
                 )
 
     def _read_frames(self) -> list[InputFrame]:
+        if self.playback is not None:
+            # Watching a replay: the recorded inputs, and the recorded menu commands.
+            step = self.playback_step
+            for command in self.playback.commands.get(step, []):
+                self.apply_command(command)
+            if step >= len(self.playback.frames):
+                return [NEUTRAL, NEUTRAL]
+            self.playback_step += 1
+            return list(self.playback.frames[step])
         match = self.rounds.match
         frames = []
         mouse = self._mouse_cursor()
@@ -180,6 +242,7 @@ class FightScene(Scene):
     def _change_fighters(self) -> None:
         from jojo_arena.ui.select_scene import CharacterSelectScene
 
+        self.save_replay()
         self.ctx.scenes.switch(
             CharacterSelectScene(self.ctx, self.mode, cursor=self.fighter_ids[0])
         )
@@ -187,6 +250,7 @@ class FightScene(Scene):
     def _go_to_menu(self) -> None:
         from jojo_arena.ui.main_menu import MainMenuScene
 
+        self.save_replay()
         self.ctx.scenes.switch(MainMenuScene(self.ctx, cursor=self.mode))
 
     # Draw -------------------------------------------------------------------------------
@@ -197,6 +261,11 @@ class FightScene(Scene):
         self.hud.draw(surface, self.rounds, announcements=not menus_open)
         if not menus_open and self.rounds.match.cutscene is None:
             self.draw_overlay(surface)
+            if self.playback is not None:
+                over = self.playback_step >= len(self.playback.frames)
+                label = text.REPLAY_OVER if over else text.REPLAY
+                font.draw(surface, label, (surface.get_width() // 2, 38), GOLD, align="center")
+        draw_toast(surface, text.REPLAY_SAVED, self.toast_f, y=60)
         center = surface.get_width() // 2
         if self.pause_menu is not None:
             surface.blit(veil(surface.get_size(), (10, 8, 24, 160)), (0, 0))

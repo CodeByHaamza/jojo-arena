@@ -51,6 +51,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--p2", default="kakyoin", help="player 2 fighter id (--scene fight/training/setup)"
     )
     parser.add_argument(
+        "--replay", type=Path, help="watch a recorded fight (a .json file from the replays folder)"
+    )
+    parser.add_argument(
         "--mode",
         default="versus",
         choices=["versus", "training"],
@@ -114,6 +117,8 @@ class Game:
 
 
 def build_first_scene(ctx: GameContext, args: argparse.Namespace) -> Scene:
+    if args.replay:
+        return replay_scene(ctx, args.replay)
     if args.demo or args.scene == "fight":
         from jojo_arena.ui.fight_scene import FightScene
 
@@ -150,6 +155,30 @@ def build_first_scene(ctx: GameContext, args: argparse.Namespace) -> Scene:
     from jojo_arena.ui.title_scene import TitleScene
 
     return TitleScene(ctx)
+
+
+def replay_scene(ctx: GameContext, path: Path) -> Scene:
+    """The fight a replay was recorded in, fed with its recorded inputs."""
+    from jojo_arena.combat.replay import load_replay
+
+    replay = load_replay(path)
+    meta = replay.meta
+    fighters = tuple(meta["fighters"])
+    if meta.get("mode") == "training":
+        from jojo_arena.ui.training_scene import TrainingScene
+
+        scene = TrainingScene(ctx, fighter_ids=fighters, stage_id=meta["stage"])
+    else:
+        from jojo_arena.ui.fight_scene import FightScene
+
+        scene = FightScene(
+            ctx,
+            rounds_to_win=meta.get("rounds_to_win", 3),
+            fighter_ids=fighters,
+            stage_id=meta["stage"],
+        )
+    scene.playback = replay
+    return scene
 
 
 def main(argv: list[str] | None = None) -> None:

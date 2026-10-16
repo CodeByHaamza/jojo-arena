@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import pygame
 
+from jojo_arena.combat.replay import Replay
 from jojo_arena.combat.training import Dummy, Training, dummy_input
 from jojo_arena.context import GameContext
 from jojo_arena.engine import font
@@ -53,9 +54,12 @@ class TrainingScene(FightScene):
         self.rounds = Training(kits, self.rules, self.stage.build_arena)
         self.pause_menu = None
         self.result_menu = None
+        self.replay = Replay(self.replay_meta())
 
     def _read_frames(self) -> list[InputFrame]:
         frames = super()._read_frames()
+        if self.playback is not None:
+            return frames  # recorded as they were played, dummy included
         dummy = dummy_input(self.dummy)
         if dummy is not None:
             # Alone at training: player 1 can use any device, keyboard or pad.
@@ -84,6 +88,15 @@ class TrainingScene(FightScene):
             MenuItem("menu", text.MAIN_MENU),
         ]
 
+    def apply_command(self, command: dict) -> None:
+        if "life" in command:
+            self.training.infinite_life = command["life"]
+        if "hh" in command:
+            self.training.infinite_hh = command["hh"]
+        if command.get("reset"):
+            self.training.reset()
+        self.training.apply_options()
+
     def _pause_action(self, kind: str, key: str) -> None:
         menu = self.pause_menu
         if kind == "change":
@@ -92,13 +105,16 @@ class TrainingScene(FightScene):
                 self.dummy = list(Dummy)[index]
             elif key == "life":
                 self.training.infinite_life = index == 0
+                self.replay.command({"life": index == 0})
             elif key == "hh":
                 self.training.infinite_hh = index == 0
+                self.replay.command({"hh": index == 0})
             elif key == "inputs":
                 self.inputs_shown = index == 0
             self.training.apply_options()
         elif (kind, key) == ("confirm", "reset"):
             self.training.reset()
+            self.replay.command({"reset": True})
             self.pause_menu = None
         else:
             super()._pause_action(kind, key)
