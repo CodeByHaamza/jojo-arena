@@ -12,7 +12,7 @@ from jojo_arena.engine.scene import Scene
 from jojo_arena.engine.sprites import shade
 from jojo_arena.ui import text
 from jojo_arena.ui.backdrop import MenuBackdrop
-from jojo_arena.ui.labels import menu_key
+from jojo_arena.ui.labels import menu_key, preset_label
 from jojo_arena.ui.menu import Menu, MenuItem
 from jojo_arena.ui.portraits import FighterLook
 from jojo_arena.ui.widgets import DIM, GOLD, P1_COLOR, P2_COLOR, draw_box, draw_hints
@@ -39,7 +39,7 @@ class SetupScene(Scene):
         self.backdrop = MenuBackdrop()
         self.preset_keys = list(ctx.controls.presets)
         rounds = [str(n) for n in ROUNDS_TO_WIN_CHOICES]
-        labels = [ctx.controls.presets[k].label for k in self.preset_keys]
+        labels = [preset_label(ctx.controls.presets[k]) for k in self.preset_keys]
         self.menu = Menu(
             [
                 MenuItem("rounds", text.ROUNDS_TO_WIN, rounds, rounds.index(str(rounds_to_win))),
@@ -92,7 +92,8 @@ class SetupScene(Scene):
             x = FEET_X[side]
             look.draw(surface, (x, FEET_Y), self.tick, scale=2, flip=side == 1)
             color = P1_COLOR if side == 0 else P2_COLOR
-            font.draw(surface, f"J{side + 1}", (x, 40), color, scale=2, align="center")
+            tag = text.PLAYER_N.format(n=side + 1)
+            font.draw(surface, tag, (x, 40), color, scale=2, align="center")
             font.draw(surface, fdef.name, (x, FEET_Y + 8), shade(fdef.color, 60), align="center")
             if fdef.stand_name:
                 font.draw(surface, fdef.stand_name, (x, FEET_Y + 19), fdef.aura, align="center")

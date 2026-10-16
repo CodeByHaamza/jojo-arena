@@ -27,11 +27,13 @@ damage_dealt_mult = 1.2
 
 [stances.base]
 label = "SANS STAND"
+label_en = "NO STAND"
 
 # Savate kicks: the same button three times.
 [stances.base.moves.light]
 label = "SAVATE"
 info = "Coup de pied rapide. Encore : chassé, puis fouetté"
+info_en = "Fast kick. Again: side kick, then whip kick"
 startup_f = 4
 active_f = 3
 recovery_f = 9
@@ -47,7 +49,9 @@ anim = "kick"
 
 [stances.base.moves.light2]
 label = "CHASSÉ"
+label_en = "SIDE KICK"
 info = "S'enchaîne sur la savate"
+info_en = "Follows the savate"
 startup_f = 5
 active_f = 3
 recovery_f = 10
@@ -63,7 +67,9 @@ anim = "kick"
 
 [stances.base.moves.light3]
 label = "FOUETTÉ"
+label_en = "WHIP KICK"
 info = "Fin de l'enchaînement : envoie contre le mur"
+info_en = "Chain ender: sends into the wall"
 startup_f = 7
 active_f = 4
 recovery_f = 16
@@ -80,7 +86,9 @@ anim = "kick_high"
 # Flying kick: crosses half the arena.
 [stances.base.moves.heavy]
 label = "COUP DE PIED SAUTÉ"
+label_en = "JUMP KICK"
 info = "Traverse la moitié de l'arène, rebond contre les murs"
+info_en = "Crosses half the arena, bounces off walls"
 startup_f = 9
 active_f = 8
 recovery_f = 18
@@ -97,7 +105,9 @@ anim = "leap"
 # With a direction: a low slide that sweeps the legs.
 [stances.base.moves.heavy_alt]
 label = "GLISSADE"
+label_en = "SLIDE"
 info = "Avec une direction : glisse au ras du sol et fauche"
+info_en = "With a direction: slides along the ground and sweeps"
 startup_f = 7
 active_f = 10
 recovery_f = 16
@@ -114,7 +124,9 @@ anim = "sweep"
 # Silver Chariot flashes out for one long thrust, without staying.
 [stances.base.moves.special]
 label = "ÉCLAIR DE CHARIOT"
+label_en = "CHARIOT FLASH"
 info = "Silver Chariot surgit le temps d'un estoc lointain"
+info_en = "Silver Chariot appears for one long-range thrust"
 stand_flash = true
 shape = "line"
 fx = "blade"
@@ -131,8 +143,11 @@ anim = "light"
 
 [stances.base.moves.special_alt]
 shout = "HA HA HA !"
+shout_en = "HA HA HA!"
 label = "FIERTÉ"
+label_en = "PRIDE"
 info = "5 s : +20 % de dégâts (recharge 15 s)"
+info_en = "5 s: +20% damage (15 s cooldown)"
 startup_f = 16
 active_f = 1
 recovery_f = 8
@@ -144,6 +159,7 @@ anim = "pose"
 
 [stances.stand]
 label = "AVEC SILVER CHARIOT"
+label_en = "WITH SILVER CHARIOT"
 walk_speed_mult = 1.0
 
 # Thrust, slash, triple thrust: the same button three times.
@@ -151,7 +167,9 @@ walk_speed_mult = 1.0
 shape = "line"
 fx = "blade"
 label = "ESTOC"
+label_en = "THRUST"
 info = "Très rapide. Encore : taille, puis triple estoc"
+info_en = "Very fast. Again: slash, then triple thrust"
 startup_f = 3
 active_f = 2
 recovery_f = 8
@@ -166,7 +184,9 @@ chain = "light2"
 
 [stances.stand.moves.light2]
 label = "TAILLE"
+label_en = "SLASH"
 info = "Large coup de taille"
+info_en = "A wide slash"
 startup_f = 4
 active_f = 3
 recovery_f = 10
@@ -184,7 +204,9 @@ anim = "heavy"
 shape = "line"
 fx = "blade"
 label = "TRIPLE ESTOC"
+label_en = "TRIPLE THRUST"
 info = "Trois estocs, le dernier envoie contre le mur"
+info_en = "Three thrusts, the last one sends into the wall"
 startup_f = 5
 active_f = 10
 recovery_f = 16
@@ -209,6 +231,7 @@ fx = "blade"
 shout = "ORA"
 label = "HORA HORA HORA"
 info = "Rafale de 12 estocs qui avance, le dernier envoie contre le mur"
+info_en = "A 12-thrust barrage that advances, the last one sends into the wall"
 startup_f = 8
 active_f = 36
 recovery_f = 16
@@ -231,7 +254,9 @@ anim = "light"
 shape = "line"
 fx = "blade"
 label = "ESTOC PLONGEANT"
+label_en = "DIVING THRUST"
 info = "Avec une direction : bondit sur l'adversaire, estoc qui envoie au mur"
+info_en = "With a direction: leaps at the opponent, a thrust into the wall"
 startup_f = 14
 active_f = 5
 recovery_f = 18
@@ -250,7 +275,9 @@ anim = "leap"
 # Shoots the rapier's blade; Silver Chariot is disarmed for 2 seconds.
 [stances.stand.moves.special]
 label = "LAME TIRÉE"
+label_en = "BLADE SHOT"
 info = "Tire la lame : désarmé 2 s"
+info_en = "Fires the blade: disarmed for 2 s"
 startup_f = 10
 active_f = 1
 recovery_f = 14
@@ -271,6 +298,7 @@ hitstop_f = 8
 shout = "ARMOR OFF !"
 label = "ARMOR OFF"
 info = "8 s : bien plus rapide, mais encaisse plus"
+info_en = "8 s: much faster, but takes more damage"
 startup_f = 16
 active_f = 1
 recovery_f = 8
@@ -283,7 +311,9 @@ anim = "pose"
 [moves.hha]
 shout = "ORA !"
 label = "ESTOC ULTIME"
+label_en = "ULTIMATE THRUST"
 info = "Invincible au démarrage, projette"
+info_en = "Invincible on startup, launches"
 stand_flash = true
 shape = "line"
 fx = "blade"
@@ -306,7 +336,9 @@ anim = "light"
 [moves.gha]
 shout = "ORA !"
 label = "RAFALE DE CLONES"
+label_en = "CLONE BARRAGE"
 info = "Un estoc. S'il touche : Armor Off, les clones frappent de partout"
+info_en = "One thrust. On hit: Armor Off, the clones strike from everywhere"
 stand_flash = true
 shape = "line"
 fx = "blade"

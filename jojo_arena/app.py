@@ -9,10 +9,12 @@ import pygame
 
 from jojo_arena.context import GameContext
 from jojo_arena.controls import controls_path, load_controls
+from jojo_arena.engine import i18n
 from jojo_arena.engine.display import Display
 from jojo_arena.engine.input import InputManager
 from jojo_arena.engine.loop import FixedStep
 from jojo_arena.engine.scene import Scene, SceneManager
+from jojo_arena.settings import load_settings, settings_path
 
 WINDOW_TITLE = "JoJo Arena"
 INTERNAL_SIZE = (480, 270)
@@ -54,6 +56,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--replay", type=Path, help="watch a recorded fight (a .json file from the replays folder)"
     )
     parser.add_argument(
+        "--lang", choices=i18n.LANGUAGES, help="language of the texts (default: the saved one)"
+    )
+    parser.add_argument(
         "--mode",
         default="versus",
         choices=["versus", "training"],
@@ -63,7 +68,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 class Game:
-    def __init__(self, fullscreen: bool) -> None:
+    def __init__(self, fullscreen: bool, language: str | None = None) -> None:
         pygame.init()
         display = Display(WINDOW_TITLE, INTERNAL_SIZE, fullscreen=fullscreen)
         inputs = InputManager()
@@ -73,7 +78,11 @@ class Game:
         print(f"Controls file: {path}")
         for warning in warnings:
             print(f"  ! {warning}")
-        self.ctx = GameContext(display, inputs, SceneManager(), config, path)
+        settings = load_settings(settings_path(path))
+        if language:
+            settings.language = language
+        i18n.set_language(settings.language)
+        self.ctx = GameContext(display, inputs, SceneManager(), config, path, settings)
         self.clock = pygame.time.Clock()
         self.fixed_step = FixedStep(LOGIC_HZ)
 
@@ -183,7 +192,7 @@ def replay_scene(ctx: GameContext, path: Path) -> Scene:
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
-    game = Game(fullscreen=args.fullscreen)
+    game = Game(fullscreen=args.fullscreen, language=args.lang)
     try:
         game.run(build_first_scene(game.ctx, args), frame_limit=args.frames)
         if args.screenshot:

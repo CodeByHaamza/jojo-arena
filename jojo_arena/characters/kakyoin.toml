@@ -17,11 +17,14 @@ style = { type = "stance_toggle", off = "base", on = "stand", stand_body = true,
 
 [stances.base]
 label = "SANS STAND"
+label_en = "NO STAND"
 
 # Kick, then spinning kick: the same button twice.
 [stances.base.moves.light]
 label = "COUP DE PIED"
+label_en = "KICK"
 info = "Longue jambe. Encore la touche : pied retourné"
+info_en = "Long leg. Press again: spinning kick"
 startup_f = 5
 active_f = 3
 recovery_f = 10
@@ -37,7 +40,9 @@ anim = "kick"
 
 [stances.base.moves.light2]
 label = "PIED RETOURNÉ"
+label_en = "SPINNING KICK"
 info = "Repousse loin : la distance, c'est son terrain"
+info_en = "Pushes far away: distance is his ground"
 startup_f = 7
 active_f = 4
 recovery_f = 16
@@ -54,7 +59,9 @@ anim = "kick_high"
 # A low spinning sweep that hits all around him.
 [stances.base.moves.heavy]
 label = "BALAYAGE"
+label_en = "SWEEP"
 info = "Frappe tout autour de lui"
+info_en = "Hits all around him"
 startup_f = 12
 active_f = 6
 recovery_f = 20
@@ -69,7 +76,9 @@ anim = "sweep"
 # With a direction: "Let's shake on it" - an elbow that lifts the opponent.
 [stances.base.moves.heavy_alt]
 label = "POIGNÉE DE MAIN"
+label_en = "HANDSHAKE"
 info = "Avec une direction : un coup de coude qui soulève"
+info_en = "With a direction: an elbow that lifts"
 startup_f = 9
 active_f = 4
 recovery_f = 18
@@ -88,7 +97,9 @@ anim = "heavy"
 [stances.base.moves.special]
 anim = "special_splash"
 label = "PETIT EMERALD SPLASH"
+label_en = "SMALL EMERALD SPLASH"
 info = "3 émeraudes à tête chercheuse"
+info_en = "3 homing emeralds"
 startup_f = 12
 active_f = 1
 recovery_f = 18
@@ -110,7 +121,9 @@ homing_deg_s = 70
 # held direction).
 [stances.base.moves.special_alt]
 label = "GRAPPIN"
+label_en = "GRAPPLE"
 info = "Le tentacule le tire vers le point visé (souris ou stick droit)"
+info_en = "The tentacle pulls him toward the aimed spot (mouse or right stick)"
 startup_f = 14
 active_f = 1
 recovery_f = 10
@@ -124,6 +137,7 @@ anim = "special"
 
 [stances.stand]
 label = "AVEC HIEROPHANT GREEN"
+label_en = "WITH HIEROPHANT GREEN"
 walk_speed_mult = 0.95
 
 # Tentacle lash, reaching far; twice with the same button.
@@ -131,7 +145,9 @@ walk_speed_mult = 0.95
 shape = "line"
 fx = "tentacle"
 label = "FOUET"
+label_en = "WHIP"
 info = "Tentacule à longue portée. Encore : double fouet"
+info_en = "Long-range tentacle. Again: double whip"
 startup_f = 7
 active_f = 4
 recovery_f = 12
@@ -148,7 +164,9 @@ chain = "light2"
 shape = "line"
 fx = "tentacle"
 label = "DOUBLE FOUET"
+label_en = "DOUBLE WHIP"
 info = "Deux tentacules, encore plus loin"
+info_en = "Two tentacles, even farther"
 startup_f = 8
 active_f = 6
 recovery_f = 16
@@ -167,7 +185,9 @@ cancel_on_hit = ["special"]
 shape = "line"
 fx = "tentacle"
 label = "TENTACULE"
+label_en = "TENTACLE"
 info = "Attrape de loin et ramène l'adversaire vers lui"
+info_en = "Grabs from afar and pulls the opponent in"
 startup_f = 14
 active_f = 4
 recovery_f = 20
@@ -183,7 +203,9 @@ cancel_on_hit = ["light", "special"]
 # right under the opponent.
 [stances.stand.moves.heavy_alt]
 label = "TENTACULES DU SOL"
+label_en = "GROUND TENTACLES"
 info = "Avec une direction : les tentacules jaillissent du sol sous l'adversaire"
+info_en = "With a direction: tentacles burst from the ground under the opponent"
 startup_f = 18
 active_f = 6
 recovery_f = 18
@@ -202,6 +224,7 @@ anim = "special_splash"
 shout = "EMERALD SPLASH !"
 label = "EMERALD SPLASH"
 info = "Salve de 6 émeraudes"
+info_en = "A volley of 6 emeralds"
 startup_f = 14
 active_f = 1
 recovery_f = 20
@@ -222,7 +245,9 @@ homing_deg_s = 30
 # Lay a web of threads: when the opponent touches it, it fires emeralds on its own.
 [stances.stand.moves.special_alt]
 label = "FILS"
+label_en = "THREADS"
 info = "Pose un piège (3 max) qui tire tout seul"
+info_en = "Sets a trap (3 max) that fires on its own"
 startup_f = 10
 active_f = 1
 recovery_f = 14
@@ -251,12 +276,15 @@ spread_deg = 30
 
 [stances.remote]
 label = "HIEROPHANT À DISTANCE"
+label_en = "REMOTE HIEROPHANT"
 
 [stances.remote.moves.light]
 shape = "line"
 fx = "tentacle"
 label = "FOUET À DISTANCE"
+label_en = "REMOTE WHIP"
 info = "Hierophant fouette là où il est"
+info_en = "Hierophant whips where it stands"
 startup_f = 7
 active_f = 4
 recovery_f = 12
@@ -271,6 +299,7 @@ hitstop_f = 4
 [stances.remote.moves.heavy]
 label = "POSSESSION"
 info = "Entre dans l'adversaire : tu diriges sa marche 1,5 s"
+info_en = "Enters the opponent: you steer their walk for 1.5 s"
 startup_f = 16
 active_f = 4
 recovery_f = 24
@@ -287,7 +316,9 @@ anim = "grab"
 anim = "special_splash"
 shout = "EMERALD SPLASH !"
 label = "EMERALD SPLASH À DISTANCE"
+label_en = "REMOTE EMERALD SPLASH"
 info = "6 émeraudes tirées depuis Hierophant, sous n'importe quel angle"
+info_en = "6 emeralds fired from Hierophant, from any angle"
 startup_f = 14
 active_f = 1
 recovery_f = 20
@@ -306,7 +337,9 @@ spread_deg = 36
 
 [stances.remote.moves.special_alt]
 label = "FILS À DISTANCE"
+label_en = "REMOTE THREADS"
 info = "Pose un piège là où se trouve Hierophant (3 max)"
+info_en = "Sets a trap where Hierophant is (3 max)"
 startup_f = 10
 active_f = 1
 recovery_f = 14
@@ -337,8 +370,11 @@ spread_deg = 30
 # mouth and wrecks them from the inside, as it did to Death 13.
 [moves.hha]
 shout = "L'HEURE DU CHÂTIMENT !"
+shout_en = "TIME FOR JUDGMENT!"
 label = "CHÂTIMENT"
+label_en = "JUDGMENT"
 info = "Tentacules d'en haut. S'ils touchent : Hierophant entre dans l'adversaire et le détruit de l'intérieur"
+info_en = "Tentacles from above. On hit: Hierophant enters the opponent and wrecks them from inside"
 stand_flash = true
 shape = "line"
 fx = "tentacle"
@@ -365,7 +401,9 @@ finish_wall_bounce = true
 # toucher, while Kakyoin keeps fighting.
 [moves.gha]
 label = "EMERALD SPLASH 20 MÈTRES"
+label_en = "20-METER EMERALD SPLASH"
 info = "Les fils couvrent toute l'arène 10 s : les toucher déclenche un Emerald Splash"
+info_en = "Threads cover the whole arena for 10 s: touching them triggers an Emerald Splash"
 stand_flash = true
 startup_f = 4
 active_f = 1

@@ -10,6 +10,7 @@ from jojo_arena.engine.actions import InputFrame, merge_frames
 from jojo_arena.engine.display import Display
 from jojo_arena.engine.input import GamepadSource, InputManager, KeyboardSource
 from jojo_arena.engine.scene import SceneManager
+from jojo_arena.settings import Settings, save_settings, settings_path
 
 
 @dataclass
@@ -19,6 +20,7 @@ class GameContext:
     scenes: SceneManager
     controls: ControlsConfig
     controls_path: Path
+    settings: Settings = field(default_factory=Settings)
     _menu_sources: list[KeyboardSource | GamepadSource] = field(default_factory=menu_sources)
 
     def read_menu(self) -> InputFrame:
@@ -27,3 +29,6 @@ class GameContext:
 
     def save_controls(self) -> None:
         save_controls(self.controls, self.controls_path)
+
+    def save_settings(self) -> None:
+        save_settings(self.settings, settings_path(self.controls_path))

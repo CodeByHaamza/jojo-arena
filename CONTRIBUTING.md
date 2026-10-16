@@ -28,7 +28,7 @@ Pour aller plus loin :
 
 ## Style
 
-- Code, noms et commentaires en anglais ; textes du jeu en français, dans `ui/text.py`.
+- Code, noms et commentaires en anglais ; textes du jeu en français et en anglais, dans `ui/text.py` (tables `FR` et `EN`, lues au moment de dessiner : `text.FIGHT`). Dans les données, la traduction anglaise d'un champ texte s'écrit à côté avec le suffixe `_en` (`label_en`, `info_en`, `role_en`…).
 - Messages de commit courts et conventionnels : `feat: ...`, `fix: ...`, `refactor: ...`, `docs: ...`, `test: ...`, `chore: ...`. Un commit par étape logique.
 - Formatage et lint : `ruff` (`make format` corrige ce qui peut l'être).
 

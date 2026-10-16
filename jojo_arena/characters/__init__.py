@@ -7,6 +7,7 @@ from pathlib import Path
 
 from jojo_arena.combat.kit import Kit, load_kit
 from jojo_arena.engine.data import load_toml
+from jojo_arena.engine.i18n import localized
 from jojo_arena.engine.sprites import Color, parse_color
 
 _DIR = Path(__file__).parent
@@ -45,7 +46,7 @@ def load_roster() -> list[FighterDef]:
         roster.append(
             FighterDef(
                 id=entry["id"],
-                name=entry["name"],
+                name=localized(entry, "name"),
                 kit=kits[kit_id],
                 sprite=entry.get("sprite", ""),
                 color=parse_color(entry["color"]),
@@ -53,8 +54,8 @@ def load_roster() -> list[FighterDef]:
                 palette=palette,
                 stand_sprite=entry.get("stand_sprite", ""),
                 stand_name=entry.get("stand_name", ""),
-                role=entry.get("role", ""),
-                blurb=entry.get("blurb", ""),
+                role=localized(entry, "role"),
+                blurb=localized(entry, "blurb"),
                 selectable=entry.get("selectable", True),
             )
         )

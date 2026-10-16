@@ -8,6 +8,7 @@ from pathlib import Path
 from jojo_arena.combat.arena import Arena, Obstacle
 from jojo_arena.engine.data import load_toml, seconds_to_frames
 from jojo_arena.engine.geometry import Rect, RoundedRect, Vec2
+from jojo_arena.engine.i18n import localized
 
 
 @dataclass(frozen=True)
@@ -66,5 +67,5 @@ def load_stage_def(path: Path, stage_id: str) -> StageDef:
     props = tuple(props)
     lanterns = tuple(Vec2(*lamp["pos"]) for lamp in data.get("lanterns", []))
     return StageDef(
-        stage_id, data["name"], bounds, spawns, props, data.get("palette", {}), lanterns
+        stage_id, localized(data, "name"), bounds, spawns, props, data.get("palette", {}), lanterns
     )

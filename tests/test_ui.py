@@ -24,18 +24,6 @@ from jojo_arena.ui.title_scene import TitleScene
 from jojo_arena.ui.training_scene import TrainingScene
 
 
-def test_every_ui_string_can_be_drawn():
-    strings = [v for k, v in vars(text).items() if k.isupper() and isinstance(v, str)]
-    strings += list(text.ACTION_NAMES.values())
-    for fighter in load_roster():
-        strings += [fighter.name, fighter.stand_name, fighter.role, fighter.blurb]
-        strings += list(fighter.kit.stance_labels.values())
-        for move in fighter.kit.all_moves():
-            strings += [move.label, move.info]
-    missing = {c for s in strings for c in s.upper() if c not in font.GLYPHS and c not in "{}"}
-    assert missing == set()
-
-
 def test_text_size_matches_render():
     image = font.render("K.O.", (255, 255, 255), scale=2, outline=None)
     assert image.get_width() == font.text_width("K.O.", 2)

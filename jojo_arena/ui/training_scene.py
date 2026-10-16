@@ -21,13 +21,11 @@ from jojo_arena.ui.labels import action_label
 from jojo_arena.ui.menu import MenuItem
 from jojo_arena.ui.widgets import DIM, FAINT, GOLD, WHITE
 
-DUMMY_LABELS = {
-    Dummy.STAND: text.DUMMY_STAND,
-    Dummy.GUARD: text.DUMMY_GUARD,
-    Dummy.PLAYER: text.DUMMY_PLAYER,
+DUMMY_LABELS = {  # names in ui/text.py
+    Dummy.STAND: "DUMMY_STAND",
+    Dummy.GUARD: "DUMMY_GUARD",
+    Dummy.PLAYER: "DUMMY_PLAYER",
 }
-SWITCH = [text.INFINITE, text.NORMAL]
-SHOW = [text.SHOWN, text.HIDDEN]
 
 
 class TrainingScene(FightScene):
@@ -78,19 +76,21 @@ class TrainingScene(FightScene):
 
     def _pause_items(self) -> list[MenuItem]:
         dummies = list(Dummy)
+        switch = [text.INFINITE, text.NORMAL]
+        show = [text.SHOWN, text.HIDDEN]
         return [
             MenuItem("resume", text.RESUME),
             MenuItem("moves", text.MOVE_LIST),
             MenuItem(
                 "dummy",
                 text.DUMMY_MODE,
-                [DUMMY_LABELS[d] for d in dummies],
+                [getattr(text, DUMMY_LABELS[d]) for d in dummies],
                 dummies.index(self.dummy),
             ),
-            MenuItem("life", text.LIFE, SWITCH, 0 if self.training.infinite_life else 1),
-            MenuItem("hh", text.HH_GAUGE, SWITCH, 0 if self.training.infinite_hh else 1),
-            MenuItem("inputs", text.INPUTS, SHOW, 0 if self.inputs_shown else 1),
-            MenuItem("frames", text.FRAMES, SHOW, 0 if self.frames_shown else 1),
+            MenuItem("life", text.LIFE, switch, 0 if self.training.infinite_life else 1),
+            MenuItem("hh", text.HH_GAUGE, switch, 0 if self.training.infinite_hh else 1),
+            MenuItem("inputs", text.INPUTS, show, 0 if self.inputs_shown else 1),
+            MenuItem("frames", text.FRAMES, show, 0 if self.frames_shown else 1),
             MenuItem("reset", text.RESET_POSITIONS),
             MenuItem("change", text.CHANGE_FIGHTERS),
             MenuItem("menu", text.MAIN_MENU),

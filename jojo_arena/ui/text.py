@@ -1,167 +1,474 @@
-"""Every on-screen string, in one place (French for now, ready for translation)."""
+"""Every on-screen string, in French and English.
 
-TITLE = "JOJO ARENA"
-DISCLAIMER = "FAN GAME NON OFFICIEL, GRATUIT ET SANS BUT LUCRATIF"
-PRESS_START = "ENTRÉE OU A POUR COMMENCER"
+`text.TITLE` gives the string in the current language (engine.i18n), so read it when
+drawing or building a screen, never once at import time. A string missing from a
+language falls back to French.
+"""
 
-SETUP_TITLE = "COMBAT LOCAL"
-P1 = "J1"
-P2 = "J2"
-ROUNDS_TO_WIN = "ROUNDS GAGNANTS"
-CONTROLS = "CONTRÔLES"
-FIGHT = "COMBATTRE"
-BACK = "RETOUR"
-QUIT = "QUITTER"
-PADS_MISSING = "MANETTE NON DÉTECTÉE : BRANCHE-LA OU CHOISIS CLAVIER PARTAGÉ"
-CONTROLS_FILE_HINT = "TOUCHES MODIFIABLES DANS CONTROLS.JSON"
+from __future__ import annotations
 
-ROUND_N = "ROUND {n}"
-SUDDEN_DEATH = "MORT SUBITE"
-GO = "COMBATTEZ !"
-KO = "K.O."
-DOUBLE_KO = "DOUBLE K.O."
-TIME_UP = "TEMPS ÉCOULÉ"
-DRAW = "ÉGALITÉ"
-ROUND_WINNER = "{name} GAGNE LE ROUND"
-VICTORY = "VICTOIRE !"
-WINNER = "{name} REMPORTE LE COMBAT"
+from jojo_arena.engine import i18n
 
-STYLISH = "STYLISH !"
-GUARD_BREAK = "GUARD BREAK"
-FLASH_CANCEL = "FLASH CANCEL"
-RESOLVE = "RÉSOLUTION"
-CLASH = "CLASH !"
-MASH = "MARTÈLE !"
-STANCE_ON = "STAND"
-REMOTE_ON = "CONTRÔLE"
-TIME_STOP_READY = "STOP"
-TIME_STOPPED = "TEMPS ARRÊTÉ"
-
-PAUSE = "PAUSE"
-RESUME = "REPRENDRE"
-RESTART = "RECOMMENCER"
-LEAVE_FIGHT = "QUITTER LE COMBAT"
-REMATCH = "REVANCHE"
-SETTINGS = "RÉGLAGES"
-TO_TITLE = "RETOUR AU TITRE"
-MOVE_LIST = "LISTE DES COUPS"
-CHANGE_FIGHTERS = "CHANGER DE PERSOS"
-MAIN_MENU = "MENU PRINCIPAL"
-
-# Main menu
-MENU_STORY = "HISTOIRE"
-MENU_ARCADE = "ARCADE"
-MENU_VERSUS = "COMBAT LOCAL"
-MENU_VS_CPU = "CONTRE L'IA"
-MENU_TRAINING = "ENTRAÎNEMENT"
-MENU_ONLINE = "EN LIGNE"
-MENU_OPTIONS = "OPTIONS"
-DESC_STORY = "Les grands combats de la saga, partie après partie."
-DESC_ARCADE = "Une série de combats contre l'ordinateur, jusqu'au boss final."
-DESC_VERSUS = "Deux joueurs sur la même machine, au clavier ou à la manette."
-DESC_VS_CPU = "Affronte l'ordinateur, du plus calme au plus coriace."
-DESC_TRAINING = "Apprends tes coups contre un mannequin : vie et jauge infinies."
-DESC_ONLINE = "Affronte d'autres joueurs en ligne."
-DESC_OPTIONS = "Contrôles et affichage."
-DESC_QUIT = "À bientôt !"
-SOON = "BIENTÔT"
-SOON_TOAST = "BIENTÔT DISPONIBLE !"
-
-# Character select
-PICK_P1 = "J1 : CHOISIS TON PERSONNAGE"
-PICK_P2 = "J2 : CHOISIS TON PERSONNAGE"
-PICK_DUMMY = "CHOISIS LE PERSONNAGE DU MANNEQUIN"
-DUMMY = "MANNEQUIN"
-READY = "PRÊT !"
-WAITING = "EN ATTENTE DE J1"
-LOCKED_NAME = "???"
-HP = "VIE {hp}"
-STAND_LABEL = "STAND"
-HINT_CONFIRM = "CHOISIR"
-HINT_INFO = "LISTE DES COUPS"
-HINT_BACK = "RETOUR"
-HINT_PAGE = "PAGE"
-HINT_CLOSE = "FERMER"
-
-# Move list
-DIRECTION = "DIRECTION"
-WHEN_STRUCK = "SI FRAPPÉ"
-PAGE_SUPER = "SUPER"
-PAGE_BASICS = "BASES"
-PAGE_TECH = "TECHNIQUES"
-BAR = "BARRE"
-BARS_ONE = "1 BARRE"
-BARS_MANY = "{n} BARRES"
-SYS_MOVE = "DÉPLACEMENT"
-SYS_MOVE_INFO = "Huit directions"
-SYS_STAND = "STAND"
-SYS_STAND_INFO = "Sortir ou rentrer {stand} : les coups changent"
-SYS_STYLE_INFO = "Changer de style de combat : les coups changent"
-SYS_REMOTE = "MODE CONTRÔLE"
-SYS_REMOTE_INFO = (
-    "Maintenir {secs} s : pilote {stand} à distance. Le manieur reste sans défense ;"
-    " touché, il est sonné"
-)
-SYS_GUARD = "GARDE"
-SYS_GUARD_INFO = "Maintenir : bloque les coups de face. La jauge bleue s'use"
-SYS_DASH = "DASH"
-SYS_DASH_INFO = "Invincible au début. Esquive au dernier moment : STYLISH !"
-SYS_POSE = "POSE"
-SYS_POSE_INFO = "Maintenir : remplit la jauge Heart Heat"
-SYS_PROP = "OBJETS"
-SYS_PROP_INFO = "Près d'une caisse ou d'une jarre : le Stand la prend. Encore : il la lance"
-SYS_SUPER_INFO = "Touche seule : HHA. Avec une direction et 2 barres : GHA"
-SYS_FLASH = "FLASH CANCEL"
-SYS_FLASH_INFO = "Garde pendant un coup : l'annule ({cost})"
-SYS_CLASH = "CLASH"
-SYS_CLASH_KEYS = "ATTAQUES"
-SYS_CLASH_INFO = "Deux coups au même instant : martèle les attaques !"
-SYS_GUARD_BREAK = "GUARD BREAK"
-SYS_GUARD_BREAK_INFO = "Jauge de garde vide : sonné un instant"
-SYS_RESOLVE = "RÉSOLUTION"
-SYS_RESOLVE_INFO = "Sous {threshold} % de vie : +{bonus} % de dégâts, la garde ne coûte plus de vie"
-
-# Training
-TRAINING = "ENTRAÎNEMENT"
-DUMMY_MODE = "MANNEQUIN"
-DUMMY_STAND = "IMMOBILE"
-DUMMY_GUARD = "GARDE"
-DUMMY_PLAYER = "JOUÉ PAR J2"
-LIFE = "VIE"
-HH_GAUGE = "JAUGE HH"
-INFINITE = "INFINIE"
-NORMAL = "NORMALE"
-RESET_POSITIONS = "REPLACER"
-INPUTS = "TOUCHES"
-FRAMES = "DONNÉES DE FRAMES"
-FRAME_DATA = (
-    "{name}  DÉMARRAGE {startup}  ACTIF {active}  RÉCUP {recovery}  TOUCHÉ {hit}  GARDE {block}"
-)
-SHOWN = "AFFICHÉES"
-HIDDEN = "CACHÉES"
-COMBO_HITS = "{n} COUPS"
-COMBO_DAMAGE = "{n} DÉGÂTS"
-TRAINING_HINT = "{key} : RÉGLAGES   F3 : ZONES DE FRAPPE"
-
-# Options
-OPTIONS_TITLE = "OPTIONS"
-FULLSCREEN = "PLEIN ÉCRAN"
-YES = "OUI"
-NO = "NON"
-BINDINGS_ACTION = "ACTION"
-ACTION_NAMES = {
-    "move": "DÉPLACEMENT",
-    "light": "COUP LÉGER",
-    "heavy": "COUP LOURD",
-    "special": "SPÉCIAL",
-    "stand": "STAND",
-    "dash": "DASH",
-    "guard": "GARDE",
-    "heart_heat": "HEART HEAT",
-    "pose": "POSE",
-    "pause": "PAUSE",
+FR = {
+    "TITLE": "JOJO ARENA",
+    "DISCLAIMER": "FAN GAME NON OFFICIEL, GRATUIT ET SANS BUT LUCRATIF",
+    "PRESS_START": "ENTRÉE OU A POUR COMMENCER",
+    "SETUP_TITLE": "COMBAT LOCAL",
+    "P1": "J1",
+    "P2": "J2",
+    "PLAYER_N": "J{n}",
+    "ROUNDS_TO_WIN": "ROUNDS GAGNANTS",
+    "CONTROLS": "CONTRÔLES",
+    "FIGHT": "COMBATTRE",
+    "BACK": "RETOUR",
+    "QUIT": "QUITTER",
+    "PADS_MISSING": "MANETTE NON DÉTECTÉE : BRANCHE-LA OU CHOISIS CLAVIER PARTAGÉ",
+    "CONTROLS_FILE_HINT": "TOUCHES MODIFIABLES DANS CONTROLS.JSON",
+    "ROUND_N": "ROUND {n}",
+    "SUDDEN_DEATH": "MORT SUBITE",
+    "GO": "COMBATTEZ !",
+    "KO": "K.O.",
+    "DOUBLE_KO": "DOUBLE K.O.",
+    "TIME_UP": "TEMPS ÉCOULÉ",
+    "DRAW": "ÉGALITÉ",
+    "ROUND_WINNER": "{name} GAGNE LE ROUND",
+    "VICTORY": "VICTOIRE !",
+    "WINNER": "{name} REMPORTE LE COMBAT",
+    "STYLISH": "STYLISH !",
+    "GUARD_BREAK": "GUARD BREAK",
+    "FLASH_CANCEL": "FLASH CANCEL",
+    "RESOLVE": "RÉSOLUTION",
+    "CLASH": "CLASH !",
+    "MASH": "MARTÈLE !",
+    "STANCE_ON": "STAND",
+    "REMOTE_ON": "CONTRÔLE",
+    "TIME_STOP_READY": "STOP",
+    "TIME_STOPPED": "TEMPS ARRÊTÉ",
+    "PUNISHMENT_TIME": "L'HEURE DU CHÂTIMENT !",
+    "PAUSE": "PAUSE",
+    "RESUME": "REPRENDRE",
+    "RESTART": "RECOMMENCER",
+    "LEAVE_FIGHT": "QUITTER LE COMBAT",
+    "REMATCH": "REVANCHE",
+    "SETTINGS": "RÉGLAGES",
+    "TO_TITLE": "RETOUR AU TITRE",
+    "MOVE_LIST": "LISTE DES COUPS",
+    "CHANGE_FIGHTERS": "CHANGER DE PERSOS",
+    "MAIN_MENU": "MENU PRINCIPAL",
+    # Main menu
+    "MENU_STORY": "HISTOIRE",
+    "MENU_ARCADE": "ARCADE",
+    "MENU_VERSUS": "COMBAT LOCAL",
+    "MENU_VS_CPU": "CONTRE L'IA",
+    "MENU_TRAINING": "ENTRAÎNEMENT",
+    "MENU_ONLINE": "EN LIGNE",
+    "MENU_GLOSSARY": "GLOSSAIRE",
+    "MENU_OPTIONS": "OPTIONS",
+    "DESC_STORY": "Les grands combats de la saga, partie après partie.",
+    "DESC_ARCADE": "Une série de combats contre l'ordinateur, jusqu'au boss final.",
+    "DESC_VERSUS": "Deux joueurs sur la même machine, au clavier ou à la manette.",
+    "DESC_VS_CPU": "Affronte l'ordinateur, du plus calme au plus coriace.",
+    "DESC_TRAINING": "Apprends tes coups contre un mannequin : vie et jauge infinies.",
+    "DESC_ONLINE": "Affronte d'autres joueurs en ligne.",
+    "DESC_GLOSSARY": "Le lore de JoJo : termes, personnages et Stands, partie par partie.",
+    "DESC_OPTIONS": "Contrôles, affichage et langue.",
+    "DESC_QUIT": "À bientôt !",
+    "SOON": "BIENTÔT",
+    "SOON_TOAST": "BIENTÔT DISPONIBLE !",
+    # Character select
+    "PICK_P1": "J1 : CHOISIS TON PERSONNAGE",
+    "PICK_P2": "J2 : CHOISIS TON PERSONNAGE",
+    "PICK_DUMMY": "CHOISIS LE PERSONNAGE DU MANNEQUIN",
+    "DUMMY": "MANNEQUIN",
+    "READY": "PRÊT !",
+    "WAITING": "EN ATTENTE DE J1",
+    "LOCKED_NAME": "???",
+    "HP": "VIE {hp}",
+    "STAND_LABEL": "STAND",
+    "HINT_CONFIRM": "CHOISIR",
+    "HINT_INFO": "LISTE DES COUPS",
+    "HINT_BACK": "RETOUR",
+    "HINT_PAGE": "PAGE",
+    "HINT_CLOSE": "FERMER",
+    "HINT_PART": "PARTIE",
+    "PART_N": "PARTIE {n}",
+    "PART_SHORT": "P{n}",
+    # Move list
+    "DIRECTION": "DIRECTION",
+    "WHEN_STRUCK": "SI FRAPPÉ",
+    "PAGE_SUPER": "SUPER",
+    "PAGE_BASICS": "BASES",
+    "PAGE_TECH": "TECHNIQUES",
+    "BAR": "BARRE",
+    "BARS_ONE": "1 BARRE",
+    "BARS_MANY": "{n} BARRES",
+    "SYS_MOVE": "DÉPLACEMENT",
+    "SYS_MOVE_INFO": "Huit directions",
+    "SYS_STAND": "STAND",
+    "SYS_STAND_INFO": "Sortir ou rentrer {stand} : les coups changent",
+    "SYS_STYLE_INFO": "Changer de style de combat : les coups changent",
+    "SYS_REMOTE": "MODE CONTRÔLE",
+    "SYS_REMOTE_INFO": (
+        "Maintenir {secs} s : pilote {stand} à distance. Le manieur reste sans défense ;"
+        " touché, il est sonné"
+    ),
+    "SYS_GUARD": "GARDE",
+    "SYS_GUARD_INFO": "Maintenir : bloque les coups de face. La jauge bleue s'use",
+    "SYS_DASH": "DASH",
+    "SYS_DASH_INFO": "Invincible au début. Esquive au dernier moment : STYLISH !",
+    "SYS_POSE": "POSE",
+    "SYS_POSE_INFO": "Maintenir : remplit la jauge Heart Heat",
+    "SYS_PROP": "OBJETS",
+    "SYS_PROP_INFO": "Près d'une caisse ou d'une jarre : le Stand la prend. Encore : il la lance",
+    "SYS_SUPER_INFO": "Touche seule : HHA. Avec une direction et 2 barres : GHA",
+    "SYS_FLASH": "FLASH CANCEL",
+    "SYS_FLASH_INFO": "Garde pendant un coup : l'annule ({cost})",
+    "SYS_CLASH": "CLASH",
+    "SYS_CLASH_KEYS": "ATTAQUES",
+    "SYS_CLASH_INFO": "Deux coups au même instant : martèle les attaques !",
+    "SYS_GUARD_BREAK": "GUARD BREAK",
+    "SYS_GUARD_BREAK_INFO": "Jauge de garde vide : sonné un instant",
+    "SYS_RESOLVE": "RÉSOLUTION",
+    "SYS_RESOLVE_INFO": (
+        "Sous {threshold} % de vie : +{bonus} % de dégâts, la garde ne coûte plus de vie"
+    ),
+    # Training
+    "TRAINING": "ENTRAÎNEMENT",
+    "DUMMY_MODE": "MANNEQUIN",
+    "DUMMY_STAND": "IMMOBILE",
+    "DUMMY_GUARD": "GARDE",
+    "DUMMY_PLAYER": "JOUÉ PAR J2",
+    "LIFE": "VIE",
+    "HH_GAUGE": "JAUGE HH",
+    "INFINITE": "INFINIE",
+    "NORMAL": "NORMALE",
+    "RESET_POSITIONS": "REPLACER",
+    "INPUTS": "TOUCHES",
+    "FRAMES": "DONNÉES DE FRAMES",
+    "FRAME_DATA": (
+        "{name}  DÉMARRAGE {startup}  ACTIF {active}  RÉCUP {recovery}  TOUCHÉ {hit}  GARDE {block}"
+    ),
+    "SHOWN": "AFFICHÉES",
+    "HIDDEN": "CACHÉES",
+    "COMBO_HITS": "{n} COUPS",
+    "COMBO_DAMAGE": "{n} DÉGÂTS",
+    "TRAINING_HINT": "{key} : RÉGLAGES   F3 : ZONES DE FRAPPE",
+    # Options
+    "OPTIONS_TITLE": "OPTIONS",
+    "FULLSCREEN": "PLEIN ÉCRAN",
+    "LANGUAGE": "LANGUE",
+    "LANGUAGE_NAMES": {"fr": "FRANÇAIS", "en": "ENGLISH"},
+    "YES": "OUI",
+    "NO": "NON",
+    "BINDINGS_ACTION": "ACTION",
+    "ACTION_NAMES": {
+        "move": "DÉPLACEMENT",
+        "light": "COUP LÉGER",
+        "heavy": "COUP LOURD",
+        "special": "SPÉCIAL",
+        "stand": "STAND",
+        "dash": "DASH",
+        "guard": "GARDE",
+        "heart_heat": "HEART HEAT",
+        "pose": "POSE",
+        "pause": "PAUSE",
+    },
+    "PRESET_NAMES": {
+        "keyboard_gamepad": "J1 CLAVIER  J2 MANETTE",
+        "shared_keyboard": "CLAVIER PARTAGÉ",
+        "two_gamepads": "DEUX MANETTES",
+    },
+    "VS": "VS",
+    "REPLAY": "REPLAY - ÉCHAP POUR QUITTER",
+    "REPLAY_OVER": "FIN DU REPLAY - ÉCHAP",
+    "REPLAY_SAVED": "REPLAY ENREGISTRÉ",
+    # Glossary
+    "GLOSSARY": "GLOSSAIRE",
+    "TAB_TERMS": "TERMES",
+    "TAB_CHARACTERS": "PERSONNAGES",
+    "TAB_STANDS": "STANDS",
+    "EMPTY_PART": "RIEN ENCORE : CETTE PARTIE ARRIVE AVEC SES PERSONNAGES.",
+    "GLOSSARY_FAMILY": "FAMILLE",
+    "GLOSSARY_NAME": "LE NOM",
+    "GLOSSARY_USER": "MANIEUR : {name}",
+    "GLOSSARY_STAND": "STAND : {name}",
+    "GLOSSARY_STATS": "PUISSANCE {power}  VITESSE {speed}  PORTÉE {range}",
+    "GLOSSARY_STATS2": "ENDURANCE {durability}  PRÉCISION {precision}  POTENTIEL {potential}",
+    "GLOSSARY_SOURCE": "SOURCES : JOJOWIKI, MANGA ET ANIME",
+    "HINT_CATEGORY": "RUBRIQUE",
+    "HINT_SCROLL": "DÉFILER",
+    # How keys and buttons are named on screen
+    "KEY_NAMES": {
+        "Space": "ESPACE",
+        "Return": "ENTRÉE",
+        "Escape": "ÉCHAP",
+        "Backspace": "EFFACER",
+        "Tab": "TAB",
+        "CapsLock": "VERR MAJ",
+        "LShift": "MAJ G",
+        "RShift": "MAJ D",
+        "LCtrl": "CTRL G",
+        "RCtrl": "CTRL D",
+        "LAlt": "ALT",
+        "RAlt": "ALT GR",
+        "Up": "HAUT",
+        "Down": "BAS",
+        "Left": "GAUCHE",
+        "Right": "DROITE",
+        "Insert": "INSER",
+        "Delete": "SUPPR",
+        "Home": "DÉBUT",
+        "End": "FIN",
+        "PageUp": "PAGE HAUT",
+        "PageDown": "PAGE BAS",
+    },
+    "KEYPAD": "PAVÉ {key}",
+    "KEYPAD_ENTER": "ENTRÉE",
+    "PAD_XBOX": {"misc1": "PARTAGE", "touchpad": "PAVÉ"},
+    "PAD_PLAYSTATION": {
+        "a": "CROIX",
+        "b": "ROND",
+        "x": "CARRÉ",
+        "y": "TRIANGLE",
+        "misc1": "MICRO",
+        "touchpad": "PAVÉ TACTILE",
+    },
+    "STICK": "STICK",
+    "DIRECTIONS": "DIRECTIONS",
+    "DEVICE_GAMEPAD": "MANETTE",
+    "DEVICE_KEYBOARD": "CLAVIER",
 }
-VS = "VS"
-REPLAY = "REPLAY - ÉCHAP POUR QUITTER"
-REPLAY_OVER = "FIN DU REPLAY - ÉCHAP"
-REPLAY_SAVED = "REPLAY ENREGISTRÉ"
+
+EN = {
+    "TITLE": "JOJO ARENA",
+    "DISCLAIMER": "UNOFFICIAL FAN GAME, FREE AND NON-PROFIT",
+    "PRESS_START": "PRESS ENTER OR A TO START",
+    "SETUP_TITLE": "LOCAL VERSUS",
+    "P1": "P1",
+    "P2": "P2",
+    "PLAYER_N": "P{n}",
+    "ROUNDS_TO_WIN": "ROUNDS TO WIN",
+    "CONTROLS": "CONTROLS",
+    "FIGHT": "FIGHT",
+    "BACK": "BACK",
+    "QUIT": "QUIT",
+    "PADS_MISSING": "NO GAMEPAD FOUND: PLUG ONE IN OR CHOOSE SHARED KEYBOARD",
+    "CONTROLS_FILE_HINT": "KEYS CAN BE CHANGED IN CONTROLS.JSON",
+    "ROUND_N": "ROUND {n}",
+    "SUDDEN_DEATH": "SUDDEN DEATH",
+    "GO": "FIGHT!",
+    "KO": "K.O.",
+    "DOUBLE_KO": "DOUBLE K.O.",
+    "TIME_UP": "TIME UP",
+    "DRAW": "DRAW",
+    "ROUND_WINNER": "{name} WINS THE ROUND",
+    "VICTORY": "VICTORY!",
+    "WINNER": "{name} WINS THE FIGHT",
+    "STYLISH": "STYLISH!",
+    "GUARD_BREAK": "GUARD BREAK",
+    "FLASH_CANCEL": "FLASH CANCEL",
+    "RESOLVE": "RESOLVE",
+    "CLASH": "CLASH!",
+    "MASH": "MASH!",
+    "STANCE_ON": "STAND",
+    "REMOTE_ON": "REMOTE",
+    "TIME_STOP_READY": "STOP",
+    "TIME_STOPPED": "TIME STOPPED",
+    "PUNISHMENT_TIME": "TIME FOR JUDGMENT!",
+    "PAUSE": "PAUSE",
+    "RESUME": "RESUME",
+    "RESTART": "RESTART",
+    "LEAVE_FIGHT": "LEAVE THE FIGHT",
+    "REMATCH": "REMATCH",
+    "SETTINGS": "SETTINGS",
+    "TO_TITLE": "BACK TO TITLE",
+    "MOVE_LIST": "MOVE LIST",
+    "CHANGE_FIGHTERS": "CHANGE FIGHTERS",
+    "MAIN_MENU": "MAIN MENU",
+    "MENU_STORY": "STORY",
+    "MENU_ARCADE": "ARCADE",
+    "MENU_VERSUS": "LOCAL VERSUS",
+    "MENU_VS_CPU": "VS CPU",
+    "MENU_TRAINING": "TRAINING",
+    "MENU_ONLINE": "ONLINE",
+    "MENU_GLOSSARY": "GLOSSARY",
+    "MENU_OPTIONS": "OPTIONS",
+    "DESC_STORY": "The great fights of the saga, part after part.",
+    "DESC_ARCADE": "A run of fights against the computer, up to the final boss.",
+    "DESC_VERSUS": "Two players on the same machine, on keyboard or gamepad.",
+    "DESC_VS_CPU": "Fight the computer, from easygoing to relentless.",
+    "DESC_TRAINING": "Learn your moves on a dummy: endless life and gauge.",
+    "DESC_ONLINE": "Fight other players online.",
+    "DESC_GLOSSARY": "The lore of JoJo: terms, characters and Stands, part by part.",
+    "DESC_OPTIONS": "Controls, display and language.",
+    "DESC_QUIT": "See you soon!",
+    "SOON": "SOON",
+    "SOON_TOAST": "COMING SOON!",
+    "PICK_P1": "P1: CHOOSE YOUR FIGHTER",
+    "PICK_P2": "P2: CHOOSE YOUR FIGHTER",
+    "PICK_DUMMY": "CHOOSE THE DUMMY'S FIGHTER",
+    "DUMMY": "DUMMY",
+    "READY": "READY!",
+    "WAITING": "WAITING FOR P1",
+    "LOCKED_NAME": "???",
+    "HP": "HP {hp}",
+    "STAND_LABEL": "STAND",
+    "HINT_CONFIRM": "SELECT",
+    "HINT_INFO": "MOVE LIST",
+    "HINT_BACK": "BACK",
+    "HINT_PAGE": "PAGE",
+    "HINT_CLOSE": "CLOSE",
+    "HINT_PART": "PART",
+    "PART_N": "PART {n}",
+    "PART_SHORT": "P{n}",
+    "DIRECTION": "DIRECTION",
+    "WHEN_STRUCK": "WHEN HIT",
+    "PAGE_SUPER": "SUPER",
+    "PAGE_BASICS": "BASICS",
+    "PAGE_TECH": "TECHNIQUES",
+    "BAR": "BAR",
+    "BARS_ONE": "1 BAR",
+    "BARS_MANY": "{n} BARS",
+    "SYS_MOVE": "MOVE",
+    "SYS_MOVE_INFO": "Eight directions",
+    "SYS_STAND": "STAND",
+    "SYS_STAND_INFO": "Call or dismiss {stand}: the moves change",
+    "SYS_STYLE_INFO": "Switch fighting style: the moves change",
+    "SYS_REMOTE": "REMOTE MODE",
+    "SYS_REMOTE_INFO": (
+        "Hold {secs} s: steer {stand} from afar. The user is left defenceless;"
+        " hit, they are stunned"
+    ),
+    "SYS_GUARD": "GUARD",
+    "SYS_GUARD_INFO": "Hold: blocks attacks from the front. The blue gauge wears down",
+    "SYS_DASH": "DASH",
+    "SYS_DASH_INFO": "Invincible at the start. Dodge at the last moment: STYLISH!",
+    "SYS_POSE": "POSE",
+    "SYS_POSE_INFO": "Hold: fills the Heart Heat gauge",
+    "SYS_PROP": "PROPS",
+    "SYS_PROP_INFO": "Near a crate or a jar: the Stand picks it up. Again: it throws it",
+    "SYS_SUPER_INFO": "Key alone: HHA. With a direction and 2 bars: GHA",
+    "SYS_FLASH": "FLASH CANCEL",
+    "SYS_FLASH_INFO": "Guard during a move: cancels it ({cost})",
+    "SYS_CLASH": "CLASH",
+    "SYS_CLASH_KEYS": "ATTACKS",
+    "SYS_CLASH_INFO": "Two blows at the same instant: mash the attacks!",
+    "SYS_GUARD_BREAK": "GUARD BREAK",
+    "SYS_GUARD_BREAK_INFO": "Empty guard gauge: stunned for a moment",
+    "SYS_RESOLVE": "RESOLVE",
+    "SYS_RESOLVE_INFO": (
+        "Under {threshold} % life: +{bonus} % damage, guarding no longer costs life"
+    ),
+    "TRAINING": "TRAINING",
+    "DUMMY_MODE": "DUMMY",
+    "DUMMY_STAND": "STILL",
+    "DUMMY_GUARD": "GUARD",
+    "DUMMY_PLAYER": "PLAYED BY P2",
+    "LIFE": "LIFE",
+    "HH_GAUGE": "HH GAUGE",
+    "INFINITE": "ENDLESS",
+    "NORMAL": "NORMAL",
+    "RESET_POSITIONS": "RESET POSITIONS",
+    "INPUTS": "INPUTS",
+    "FRAMES": "FRAME DATA",
+    "FRAME_DATA": (
+        "{name}  STARTUP {startup}  ACTIVE {active}  RECOVERY {recovery}  HIT {hit}  BLOCK {block}"
+    ),
+    "SHOWN": "SHOWN",
+    "HIDDEN": "HIDDEN",
+    "COMBO_HITS": "{n} HITS",
+    "COMBO_DAMAGE": "{n} DAMAGE",
+    "TRAINING_HINT": "{key}: SETTINGS   F3: HITBOXES",
+    "OPTIONS_TITLE": "OPTIONS",
+    "FULLSCREEN": "FULLSCREEN",
+    "LANGUAGE": "LANGUAGE",
+    "LANGUAGE_NAMES": {"fr": "FRANÇAIS", "en": "ENGLISH"},
+    "YES": "YES",
+    "NO": "NO",
+    "BINDINGS_ACTION": "ACTION",
+    "ACTION_NAMES": {
+        "move": "MOVE",
+        "light": "LIGHT",
+        "heavy": "HEAVY",
+        "special": "SPECIAL",
+        "stand": "STAND",
+        "dash": "DASH",
+        "guard": "GUARD",
+        "heart_heat": "HEART HEAT",
+        "pose": "POSE",
+        "pause": "PAUSE",
+    },
+    "PRESET_NAMES": {
+        "keyboard_gamepad": "P1 KEYBOARD  P2 GAMEPAD",
+        "shared_keyboard": "SHARED KEYBOARD",
+        "two_gamepads": "TWO GAMEPADS",
+    },
+    "VS": "VS",
+    "REPLAY": "REPLAY - ESC TO LEAVE",
+    "REPLAY_OVER": "END OF REPLAY - ESC",
+    "REPLAY_SAVED": "REPLAY SAVED",
+    "GLOSSARY": "GLOSSARY",
+    "TAB_TERMS": "TERMS",
+    "TAB_CHARACTERS": "CHARACTERS",
+    "TAB_STANDS": "STANDS",
+    "EMPTY_PART": "NOTHING YET: THIS PART COMES WITH ITS CHARACTERS.",
+    "GLOSSARY_FAMILY": "FAMILY",
+    "GLOSSARY_NAME": "THE NAME",
+    "GLOSSARY_USER": "USER: {name}",
+    "GLOSSARY_STAND": "STAND: {name}",
+    "GLOSSARY_STATS": "POWER {power}  SPEED {speed}  RANGE {range}",
+    "GLOSSARY_STATS2": "DURABILITY {durability}  PRECISION {precision}  POTENTIAL {potential}",
+    "GLOSSARY_SOURCE": "SOURCES: JOJOWIKI, MANGA AND ANIME",
+    "HINT_CATEGORY": "SECTION",
+    "HINT_SCROLL": "SCROLL",
+    "KEY_NAMES": {
+        "Space": "SPACE",
+        "Return": "ENTER",
+        "Escape": "ESC",
+        "Backspace": "BACKSPACE",
+        "Tab": "TAB",
+        "CapsLock": "CAPS LOCK",
+        "LShift": "L SHIFT",
+        "RShift": "R SHIFT",
+        "LCtrl": "L CTRL",
+        "RCtrl": "R CTRL",
+        "LAlt": "ALT",
+        "RAlt": "ALT GR",
+        "Up": "UP",
+        "Down": "DOWN",
+        "Left": "LEFT",
+        "Right": "RIGHT",
+        "Insert": "INS",
+        "Delete": "DEL",
+        "Home": "HOME",
+        "End": "END",
+        "PageUp": "PAGE UP",
+        "PageDown": "PAGE DOWN",
+    },
+    "KEYPAD": "KEYPAD {key}",
+    "KEYPAD_ENTER": "ENTER",
+    "PAD_XBOX": {"misc1": "SHARE", "touchpad": "TOUCHPAD"},
+    "PAD_PLAYSTATION": {
+        "a": "CROSS",
+        "b": "CIRCLE",
+        "x": "SQUARE",
+        "y": "TRIANGLE",
+        "misc1": "MIC",
+        "touchpad": "TOUCHPAD",
+    },
+    "STICK": "STICK",
+    "DIRECTIONS": "DIRECTIONS",
+    "DEVICE_GAMEPAD": "GAMEPAD",
+    "DEVICE_KEYBOARD": "KEYBOARD",
+}
+
+TABLES = {"fr": FR, "en": EN}
+
+
+def __getattr__(name: str):
+    table = TABLES.get(i18n.language(), FR)
+    if name in table:
+        return table[name]
+    if name in FR:
+        return FR[name]
+    raise AttributeError(f"no text named {name}")

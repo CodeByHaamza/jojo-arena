@@ -8,6 +8,7 @@ from pathlib import Path
 
 from jojo_arena.combat.rules import HZ, per_frame
 from jojo_arena.engine.data import load_toml, seconds_to_frames
+from jojo_arena.engine.i18n import localized
 
 # Input slots that start a move; the stance decides which move each slot maps to.
 # "special" (or "heavy") pressed while a direction is held uses the "special_alt" (or
@@ -244,9 +245,9 @@ class MoveDef:
             guard_damage=data.get("guard_damage", 1.0),
             stand_flash=data.get("stand_flash", False),
             fx=data.get("fx", ""),
-            shout=data.get("shout", ""),
-            label=data.get("label", ""),
-            info=data.get("info", ""),
+            shout=localized(data, "shout"),
+            label=localized(data, "label"),
+            info=localized(data, "info"),
         )
 
 
@@ -330,6 +331,7 @@ def parse_kit(data: dict, kit_id: str, source: str = "kit") -> Kit:
         shared_moves=shared,
         buffs=buffs,
         stance_labels={
-            name: stance.get("label", name.upper()) for name, stance in data["stances"].items()
+            name: localized(stance, "label", name.upper())
+            for name, stance in data["stances"].items()
         },
     )

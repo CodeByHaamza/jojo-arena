@@ -55,7 +55,7 @@ Les touches sont liées à leur **position** sur le clavier : ZQSD en AZERTY cor
 | Pose (près d'un objet : le Stand le prend, puis le lance) | P | Select / Touchpad | Y | 7 |
 | Power Up (pas encore utilisé) | U | LT / L2 | B | 3 |
 
-Choisis la configuration (J1 clavier + J2 manette, clavier partagé, deux manettes) dans **Options** ou sur l'écran VS du **Combat local**. Options affiche aussi le tableau des touches des deux joueurs.
+Choisis la configuration (J1 clavier + J2 manette, clavier partagé, deux manettes) dans **Options** ou sur l'écran VS du **Combat local**. Options affiche aussi le tableau des touches des deux joueurs, et règle la langue du jeu (français ou anglais), gardée dans `settings.json` à côté de `controls.json`.
 
 Pour changer les touches, modifie `controls.json` dans `%APPDATA%\JoJoArena\` puis relance le jeu. Le fichier explique les noms de touches. Supprime-le pour revenir aux réglages par défaut.
 
@@ -108,6 +108,7 @@ Options utiles :
 | `--scene menu`, `select`, `setup`, `options` | ouvre directement un écran (`--mode training` pour la sélection de l'entraînement) |
 | `--p1 jotaro_p3 --p2 mannequin_red` | choisit les persos (avec `--scene fight`, `training`, `setup` ou `--demo`) |
 | `--fullscreen` | démarre en plein écran |
+| `--lang en` | textes en anglais (`fr` ou `en` ; sinon la langue choisie dans Options) |
 | `--frames 300 --screenshot capture.png` | joue 300 images puis enregistre l'image 480 × 270 (tests rapides) |
 
 > Si Python vient du Microsoft Store, Windows range `controls.json` dans `%LOCALAPPDATA%\Packages\PythonSoftwareFoundation.Python.3.xx_...\LocalCache\Roaming\JoJoArena\` quand le jeu tourne depuis les sources. Le `.exe`, lui, utilise bien `%APPDATA%\JoJoArena\`.

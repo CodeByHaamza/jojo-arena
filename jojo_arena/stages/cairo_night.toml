@@ -2,6 +2,7 @@
 # Coordinates are internal pixels (screen is 480 x 270). Rects are [x, y, width, height].
 
 name = "Le Caire, rue de nuit"
+name_en = "Cairo, a street at night"
 
 [bounds]
 rect = [16, 40, 448, 212]

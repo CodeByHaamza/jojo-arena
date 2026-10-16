@@ -236,7 +236,11 @@ class FightScene(Scene):
     def _open_move_list(self, index: int) -> None:
         player = self.ctx.controls.active_preset.players[index]
         self.move_list = MoveListPanel(
-            self.fighter_defs[index], player, self.rules, f"J{index + 1}", self.ctx.inputs
+            self.fighter_defs[index],
+            player,
+            self.rules,
+            text.PLAYER_N.format(n=index + 1),
+            self.ctx.inputs,
         )
 
     def _change_fighters(self) -> None:

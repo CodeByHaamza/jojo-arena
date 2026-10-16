@@ -20,7 +20,7 @@ from jojo_arena.combat.traps import web_layout
 from jojo_arena.engine.effects import blit_glow, blit_shadow, radial_glow
 from jojo_arena.engine.geometry import Vec2
 from jojo_arena.engine.sprites import frame_index
-from jojo_arena.ui import sfx, vfx
+from jojo_arena.ui import sfx, text, vfx
 
 SCREEN = (480, 270)
 OUTLINE = (23, 18, 31)
@@ -630,7 +630,7 @@ class HierophantInside(CutscenePlayer):
         if f == 22:
             self.world_words.menace(hit, 1)
         if f == 50:
-            self.shout("L'HEURE DU CHÂTIMENT !", (240, 56), 2, 50)
+            self.shout(text.PUNISHMENT_TIME, (240, 56), 2, 50)
         if 56 <= f < 110 and f % 18 == 0:
             spot = mouth + Vec2(self.rng.uniform(-8, 8), -10)
             style = sfx.shout_style(aura)

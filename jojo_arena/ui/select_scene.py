@@ -123,7 +123,11 @@ class CharacterSelectScene(Scene):
             side = 0 if self.mode == "training" else min(self.picking, 1)
             player = self.ctx.controls.active_preset.players[side]
             self.move_list = MoveListPanel(
-                self._hovered(), player, self.rules, f"J{side + 1}", self.ctx.inputs
+                self._hovered(),
+                player,
+                self.rules,
+                text.PLAYER_N.format(n=side + 1),
+                self.ctx.inputs,
             )
 
     def _pick(self) -> None:

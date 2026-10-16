@@ -3,36 +3,12 @@ buttons (Xbox or PlayStation names, depending on the pad plugged in)."""
 
 from __future__ import annotations
 
-from jojo_arena.controls import MENU_GAMEPAD, MENU_KEYBOARD, PlayerControls
+from jojo_arena.controls import MENU_GAMEPAD, MENU_KEYBOARD, PlayerControls, Preset
 from jojo_arena.engine import font
 from jojo_arena.engine.input import InputManager, key_label
+from jojo_arena.ui import text
 
-KEY_NAMES = {
-    "Space": "ESPACE",
-    "Return": "ENTRÉE",
-    "Escape": "ÉCHAP",
-    "Backspace": "EFFACER",
-    "Tab": "TAB",
-    "CapsLock": "VERR MAJ",
-    "LShift": "MAJ G",
-    "RShift": "MAJ D",
-    "LCtrl": "CTRL G",
-    "RCtrl": "CTRL D",
-    "LAlt": "ALT",
-    "RAlt": "ALT GR",
-    "Up": "HAUT",
-    "Down": "BAS",
-    "Left": "GAUCHE",
-    "Right": "DROITE",
-    "Insert": "INSER",
-    "Delete": "SUPPR",
-    "Home": "DÉBUT",
-    "End": "FIN",
-    "PageUp": "PAGE HAUT",
-    "PageDown": "PAGE BAS",
-}
 KEYPAD_NAMES = {
-    "Enter": "ENTRÉE",
     "Plus": "+",
     "Minus": "-",
     "Divide": "/",
@@ -53,13 +29,13 @@ XBOX = {
     "guide": "XBOX",
     "leftstick": "LS",
     "rightstick": "RS",
-    "misc1": "PARTAGE",
-    "touchpad": "PAVÉ",
+    "misc1": "SHARE",
+    "touchpad": "TOUCHPAD",
 }
 PLAYSTATION = {
-    "a": "CROIX",
-    "b": "ROND",
-    "x": "CARRÉ",
+    "a": "CROSS",
+    "b": "CIRCLE",
+    "x": "SQUARE",
     "y": "TRIANGLE",
     "leftshoulder": "L1",
     "rightshoulder": "R1",
@@ -70,19 +46,20 @@ PLAYSTATION = {
     "guide": "PS",
     "leftstick": "L3",
     "rightstick": "R3",
-    "misc1": "MICRO",
-    "touchpad": "PAVÉ TACTILE",
+    "misc1": "MIC",
+    "touchpad": "TOUCHPAD",
 }
 PLAYSTATION_HINTS = ("ps3", "ps4", "ps5", "playstation", "dualshock", "dualsense", "sony")
 
 
 def keyboard_label(name: str) -> str:
     """A key by its position name ("W"), as printed on this keyboard ("Z" in AZERTY)."""
-    if name in KEY_NAMES:
-        return KEY_NAMES[name]
+    if name in text.KEY_NAMES:
+        return text.KEY_NAMES[name]
     if name.startswith("KP_"):
         rest = name[3:]
-        return "PAVÉ " + KEYPAD_NAMES.get(rest, rest)
+        key = text.KEYPAD_ENTER if rest == "Enter" else KEYPAD_NAMES.get(rest, rest)
+        return text.KEYPAD.format(key=key)
     label = key_label(name)
     if all(c in font.GLYPHS for c in label):
         return label
@@ -100,7 +77,10 @@ def pad_family(inputs: InputManager | None, slot: int | None) -> str:
 
 
 def pad_label(name: str, family: str = "xbox") -> str:
-    names = PLAYSTATION if family == "playstation" else XBOX
+    if family == "playstation":
+        names = {**PLAYSTATION, **text.PAD_PLAYSTATION}
+    else:
+        names = {**XBOX, **text.PAD_XBOX}
     return names.get(name, name.upper())
 
 
@@ -117,7 +97,7 @@ def action_label(player: PlayerControls, action: str, inputs: InputManager | Non
 def move_label(player: PlayerControls) -> str:
     """The four directions: "ZQSD" on an AZERTY keyboard, "STICK" on a pad."""
     if player.device == "gamepad":
-        return "STICK"
+        return text.STICK
     keys = [player.bindings.get(a, []) for a in ("up", "left", "down", "right")]
     if all(keys):
         labels = [keyboard_label(k[0]) for k in keys]
@@ -125,11 +105,20 @@ def move_label(player: PlayerControls) -> str:
             return "".join(labels)
         if [k[0] for k in keys] == ["Up", "Left", "Down", "Right"]:
             return "↑←↓→"
-    return "DIRECTIONS"
+    return text.DIRECTIONS
 
 
 def device_label(player: PlayerControls) -> str:
-    return "MANETTE" if player.device == "gamepad" else "CLAVIER"
+    return text.DEVICE_GAMEPAD if player.device == "gamepad" else text.DEVICE_KEYBOARD
+
+
+def preset_label(preset: Preset) -> str:
+    """A built-in control preset by its name in the current language; one written in
+    controls.json by the player keeps the label given there."""
+    names = text.FR["PRESET_NAMES"]
+    if names.get(preset.key) == preset.label:
+        return text.PRESET_NAMES.get(preset.key, preset.label)
+    return preset.label
 
 
 def menu_key(action: str, inputs: InputManager | None = None) -> str:

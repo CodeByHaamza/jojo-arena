@@ -56,6 +56,14 @@ Chaque perso doit avoir un ressenti unique, et chaque coup qui touche doit être
 - [x] **Bot d'équilibrage** : `make balance` fait combattre les bots sur chaque duel et donne les taux de victoire.
   Le bot ne joue ni le zoning ni le contrôle à distance : ses chiffres mesurent la force brute, pas plus.
 
+## En cours : tout JoJo, pas seulement la partie 3 (retours du 16/10/2026)
+
+- [x] **Persos de la partie 3 redessinés** d'après l'anime : crinière et épaulières de Star Platinum, Hierophant vert et blanc, cheveux dressés de DIO, ceintures de Jotaro.
+- [x] **Français et anglais** : langue dans Options (gardée dans `settings.json`), `--lang en`, traductions des coups dans les kits.
+- [ ] **Écrans pour tout JoJo** : fond des menus commun aux 9 parties, sélection des persos rangée par partie.
+- [ ] **Glossaire** : termes du lore, personnages et Stands (description, famille, origine du nom), par partie, avec visuels en pixel art.
+- [ ] **Partie 1** : Jonathan, Dio, Zeppeli, Speedwagon... (styles Hamon et Vampire).
+
 ## Ensuite
 
 - [ ] **Sons** : bruitages synthétisés (impacts, whoosh, temps arrêté), et musique libre de droits.

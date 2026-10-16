@@ -25,16 +25,16 @@ from jojo_arena.ui.widgets import (
     draw_wrapped,
 )
 
-# key, label, description, available yet
+# key, label and description (names in ui/text.py), available yet
 ENTRIES = (
-    ("story", text.MENU_STORY, text.DESC_STORY, False),
-    ("arcade", text.MENU_ARCADE, text.DESC_ARCADE, False),
-    ("versus", text.MENU_VERSUS, text.DESC_VERSUS, True),
-    ("vs_cpu", text.MENU_VS_CPU, text.DESC_VS_CPU, False),
-    ("training", text.MENU_TRAINING, text.DESC_TRAINING, True),
-    ("online", text.MENU_ONLINE, text.DESC_ONLINE, False),
-    ("options", text.MENU_OPTIONS, text.DESC_OPTIONS, True),
-    ("quit", text.QUIT, text.DESC_QUIT, True),
+    ("story", "MENU_STORY", "DESC_STORY", False),
+    ("arcade", "MENU_ARCADE", "DESC_ARCADE", False),
+    ("versus", "MENU_VERSUS", "DESC_VERSUS", True),
+    ("vs_cpu", "MENU_VS_CPU", "DESC_VS_CPU", False),
+    ("training", "MENU_TRAINING", "DESC_TRAINING", True),
+    ("online", "MENU_ONLINE", "DESC_ONLINE", False),
+    ("options", "MENU_OPTIONS", "DESC_OPTIONS", True),
+    ("quit", "QUIT", "DESC_QUIT", True),
 )
 SHOWCASE_F = 300  # each fighter stays in the showcase this long
 SLIDE_F = 14
@@ -47,10 +47,10 @@ class MainMenuScene(Scene):
         super().__init__()
         self.ctx = ctx
         self.backdrop = MenuBackdrop()
-        self.descriptions = {key: desc for key, _, desc, _ in ENTRIES}
+        self.descriptions = {key: getattr(text, desc) for key, _, desc, _ in ENTRIES}
         self.menu = Menu(
             [
-                MenuItem(key, label, enabled=ready, tag="" if ready else text.SOON)
+                MenuItem(key, getattr(text, label), enabled=ready, tag="" if ready else text.SOON)
                 for key, label, _, ready in ENTRIES
             ]
         )

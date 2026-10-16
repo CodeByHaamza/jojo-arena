@@ -147,13 +147,13 @@ class MoveListPanel:
         fdef: FighterDef,
         player: PlayerControls,
         rules: Rules,
-        player_name: str = "J1",
+        player_name: str = "",
         inputs: InputManager | None = None,
     ) -> None:
         self.fdef = fdef
         self.pages = build_pages(fdef, player, rules, inputs)
         self.page = 0
-        self.owner = f"{player_name} - {device_label(player)}"
+        self.owner = f"{player_name or text.P1} - {device_label(player)}"
         self.hints = [
             ("←→", text.HINT_PAGE),
             (menu_key("back", inputs), text.HINT_CLOSE),

@@ -13,11 +13,14 @@ style = { type = "stance_toggle", off = "base", on = "stand", stand_body = true 
 
 [stances.base]
 label = "SANS STAND"
+label_en = "NO STAND"
 
 # Claw, cross claw, vampire kick: the same button three times.
 [stances.base.moves.light]
 label = "GRIFFE"
+label_en = "CLAW"
 info = "Rapide. Encore : griffe croisée, puis coup de pied vampire"
+info_en = "Fast. Again: cross claw, then vampire kick"
 startup_f = 4
 active_f = 3
 recovery_f = 10
@@ -32,7 +35,9 @@ chain = "light2"
 
 [stances.base.moves.light2]
 label = "GRIFFE CROISÉE"
+label_en = "CROSS CLAW"
 info = "S'enchaîne sur la griffe"
+info_en = "Follows the claw"
 startup_f = 5
 active_f = 3
 recovery_f = 11
@@ -48,7 +53,9 @@ anim = "heavy"
 
 [stances.base.moves.light3]
 label = "COUP DE PIED VAMPIRE"
+label_en = "VAMPIRE KICK"
 info = "Fin de l'enchaînement : envoie contre le mur"
+info_en = "Chain ender: sends into the wall"
 startup_f = 8
 active_f = 4
 recovery_f = 18
@@ -66,7 +73,9 @@ anim = "kick_high"
 [stances.base.moves.heavy]
 shout = "WRYYY !"
 label = "SUCCION DE SANG"
-info = "Saisie imparable, rend la moitié en vie. Lente : punie si elle rate"
+label_en = "BLOOD SUCK"
+info = "Saisie imparable, draine un tiers des dégâts en vie. Lente : punie si elle rate"
+info_en = "Unblockable grab, drains a third of the damage as life. Slow: punished on a miss"
 startup_f = 14
 active_f = 3
 recovery_f = 34
@@ -84,7 +93,9 @@ anim = "grab"
 # With a direction: two slashes on the run.
 [stances.base.moves.heavy_alt]
 label = "GRIFFES EN COURSE"
+label_en = "RUNNING CLAWS"
 info = "Avec une direction : fonce en lacérant deux fois"
+info_en = "With a direction: rushes in slashing twice"
 startup_f = 8
 active_f = 8
 recovery_f = 18
@@ -105,7 +116,9 @@ anim = "heavy"
 [stances.base.moves.special]
 anim = "special_knives"
 label = "COUTEAUX"
+label_en = "KNIVES"
 info = "3 couteaux en éventail"
+info_en = "3 knives in a fan"
 startup_f = 10
 active_f = 1
 recovery_f = 16
@@ -125,7 +138,9 @@ spread_deg = 24
 # Vampire leap: up in the air, then down on the opponent heel first.
 [stances.base.moves.special_alt]
 label = "BOND DE VAMPIRE"
+label_en = "VAMPIRE LEAP"
 info = "Bondit sur l'adversaire et retombe en piqué, intouchable en l'air"
+info_en = "Leaps at the opponent and dives down, untouchable in the air"
 startup_f = 18
 active_f = 4
 recovery_f = 16
@@ -144,12 +159,15 @@ anim = "leap"
 
 [stances.stand]
 label = "AVEC THE WORLD"
+label_en = "WITH THE WORLD"
 walk_speed_mult = 0.92
 
 # Muda, Muda Muda, MUDAAA: the same button three times.
 [stances.stand.moves.light]
 label = "MUDA !"
+label_en = "MUDA!"
 info = "Poing de The World. Encore : MUDA MUDA, puis le coup de pied du monde"
+info_en = "The World's fist. Again: MUDA MUDA, then The World's kick"
 startup_f = 4
 active_f = 3
 recovery_f = 9
@@ -165,6 +183,7 @@ chain = "light2"
 [stances.stand.moves.light2]
 label = "MUDA MUDA"
 info = "Deux poings d'un coup"
+info_en = "Two fists at once"
 startup_f = 5
 active_f = 6
 recovery_f = 10
@@ -182,8 +201,10 @@ anim = "heavy"
 
 [stances.stand.moves.light3]
 label = "MUDAAA !"
+label_en = "MUDAAA!"
 shout = "MUDAAA !"
 info = "Coup de pied de The World : envoie contre le mur"
+info_en = "The World's kick: sends into the wall"
 startup_f = 8
 active_f = 4
 recovery_f = 20
@@ -202,6 +223,7 @@ anim = "kick_high"
 shout = "MUDA"
 label = "MUDA MUDA MUDA"
 info = "Rafale de 13 coups qui pousse, le dernier envoie contre le mur"
+info_en = "A 13-hit barrage that pushes, the last hit sends into the wall"
 startup_f = 10
 active_f = 39
 recovery_f = 20
@@ -223,7 +245,9 @@ anim = "light"
 [stances.stand.moves.heavy_alt]
 shout = "MUDA !"
 label = "GENOU DU MONDE"
+label_en = "WORLD KNEE"
 info = "Avec une direction : The World fonce, coup de genou qui envoie au mur"
+info_en = "With a direction: The World charges, a knee into the wall"
 startup_f = 10
 active_f = 5
 recovery_f = 20
@@ -243,6 +267,7 @@ anim = "kick"
 shout = "ZA WARUDO !"
 label = "THE WORLD"
 info = "Arrête le temps 5 s (recharge 30 s)"
+info_en = "Stops time for 5 s (30 s cooldown)"
 startup_f = 26
 active_f = 1
 recovery_f = 10
@@ -254,7 +279,9 @@ anim = "pose"
 [stances.stand.moves.special_alt]
 shout = "MUDA !"
 label = "PLUIE DE COUTEAUX"
+label_en = "KNIFE RAIN"
 info = "Une douzaine de couteaux en deux salves ; en temps arrêté, ils restent en l'air"
+info_en = "A dozen knives in two volleys; in stopped time, they hang in the air"
 startup_f = 12
 active_f = 6
 recovery_f = 18
@@ -279,7 +306,9 @@ wave_every_f = 4
 [moves.hha]
 shout = "MUDA !"
 label = "COUP DE PIED DU MONDE"
+label_en = "THE WORLD'S KICK"
 info = "Invincible au démarrage, projette"
+info_en = "Invincible on startup, launches"
 stand_flash = true
 startup_f = 18
 active_f = 5
@@ -302,6 +331,7 @@ anim = "kick_high"
 shout = "MUDA !"
 label = "ROAD ROLLER"
 info = "Un coup de The World. S'il touche : temps arrêté, et le rouleau compresseur tombe"
+info_en = "One blow from The World. On hit: time stops, and the road roller falls"
 stand_flash = true
 startup_f = 12
 active_f = 4
