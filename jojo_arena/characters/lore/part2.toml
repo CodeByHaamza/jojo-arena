@@ -64,3 +64,15 @@ family = "De son vrai nom Elizabeth. Orpheline recueillie et élevée par Straiz
 family_en = "Her real name is Elizabeth. An orphan taken in and raised by Straizo. Wife of George Joestar II, mother of Joseph Joestar."
 name_origin = "Son nom ferait référence au groupe américain Lisa Lisa and Cult Jam."
 name_origin_en = "Her name is thought to refer to the American band Lisa Lisa and Cult Jam."
+
+[[characters]]
+id = "straizo"
+name = "STRAIZO"
+fighter = "straizo"
+power = "VAMPIRE"
+text = "Maître de l'onde qui combattit Dio aux côtés de Jonathan en 1889. Cinquante ans plus tard, vieillissant, il trahit Speedwagon au Mexique et porte le masque de pierre pour rester jeune à jamais. Vampire, il tire des jets sous pression de ses yeux. Vaincu par Joseph, il se détruit avec sa propre onde."
+text_en = "A Ripple master who fought Dio alongside Jonathan in 1889. Fifty years later, growing old, he betrays Speedwagon in Mexico and puts on the Stone Mask to stay young forever. As a vampire he fires pressurized jets from his eyes. Defeated by Joseph, he destroys himself with his own Ripple."
+family = "Élève de Tonpetty, comme Zeppeli et Dire. Il a recueilli et élevé Lisa Lisa."
+family_en = "A student of Tonpetty, like Zeppeli and Dire. He took in and raised Lisa Lisa."
+name_origin = "Son nom vient du groupe de rock Dire Straits, tout comme celui de Dire."
+name_origin_en = "His name comes from the rock band Dire Straits, just like Dire's."

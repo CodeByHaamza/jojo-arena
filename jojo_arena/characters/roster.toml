@@ -127,6 +127,18 @@ blurb_en = "Her scarf lashes from afar, turns into a spear, and her parry sends 
 color = "#a8283a"
 aura = "#ffd040"
 
+[[fighters]]
+id = "straizo"
+part = 2
+name = "STRAIZO"
+kit = "straizo"
+sprite = "straizo/straizo"
+role = "SNIPER - VAMPIRE"
+blurb = "Ancien maître du Hamon devenu vampire : des jets des yeux qui traversent l'arène."
+blurb_en = "A former Hamon master turned vampire: jets from the eyes that cross the arena."
+color = "#7a5636"
+aura = "#e03030"
+
 # Part 3: Stardust Crusaders --------------------------------------------------------------
 
 [[fighters]]

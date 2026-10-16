@@ -1,0 +1,290 @@
+# Straizo (Part 2), a Hamon master turned vampire by the Stone Mask. GDD: "Vampire ·
+# Sniper": fast, at range. Space Ripper Stingy Eyes, pressurized jets from the eyes
+# that reach very far. Great Heat Attack: an eye barrage that sweeps the whole screen.
+# Frames (_f) are at 60 per second; speeds and knockback in px per second.
+#
+# Style key: the sniper stance (he slows down and takes aim; every shot is a jet from the
+# eyes, and the stance burns blood while it lasts). Blood fills by draining; Hamon and
+# sunlight burn him.
+# Feel: keeps away, picks you off, and bites when you come close.
+
+name = "Straizo"
+max_hp = 880
+walk_speed = 112
+nature = "vampire"
+style = { type = "vampire", off = "base", on = "sniper" }
+
+[stances.base]
+label = "VAMPIRE"
+
+# Claw, cross claw, finger stab: the same button three times, once the first one lands.
+[stances.base.moves.light]
+label = "GRIFFE"
+label_en = "CLAW"
+info = "Rapide. Encore la touche : griffe croisée, puis doigts qui percent"
+info_en = "Fast. Press again: cross claw, then piercing fingers"
+startup_f = 5
+active_f = 3
+recovery_f = 11
+damage = 28
+reach = 15
+radius = 10
+hitstun_f = 19
+knockback = 80
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.base.moves.light2]
+label = "GRIFFE CROISÉE"
+label_en = "CROSS CLAW"
+info = "S'enchaîne sur la griffe"
+info_en = "Follows the claw"
+startup_f = 7
+active_f = 3
+recovery_f = 13
+damage = 32
+reach = 16
+radius = 11
+hitstun_f = 22
+knockback = 110
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "heavy"
+
+[stances.base.moves.light3]
+label = "DOIGTS QUI PERCENT"
+label_en = "PIERCING FINGERS"
+info = "Fin de l'enchaînement : les doigts s'enfoncent et boivent un peu de sang"
+info_en = "Chain ender: the fingers sink in and drink a little blood"
+startup_f = 9
+active_f = 4
+recovery_f = 18
+damage = 42
+drain = 0.4
+reach = 17
+radius = 12
+hitstun_f = 30
+knockback = 300
+hitstop_f = 9
+wall_bounce = true
+anim = "uppercut"
+
+# The vampire's grip: he holds on and drinks.
+[stances.base.moves.heavy]
+label = "ÉTREINTE DU VAMPIRE"
+label_en = "VAMPIRE GRIP"
+info = "Saisie à bout portant : il boit le sang, qui remplit sa jauge"
+info_en = "A point-blank grab: he drinks the blood, which fills his gauge"
+unblockable = true
+startup_f = 12
+active_f = 3
+recovery_f = 24
+damage = 52
+drain = 0.6
+reach = 13
+radius = 10
+hitstun_f = 30
+knockback = 160
+hitstop_f = 10
+anim = "grab"
+
+# With a direction: a vampire's leap toward where he aims.
+[stances.base.moves.heavy_alt]
+label = "BOND DE VAMPIRE"
+label_en = "VAMPIRE LEAP"
+info = "Avec une direction : bondit vers le point visé et retombe griffes en avant"
+info_en = "With a direction: leaps to the aimed spot and lands claws first"
+startup_f = 14
+active_f = 4
+recovery_f = 16
+leap = 170
+leap_height = 30
+damage = 44
+reach = 12
+radius = 13
+hitstun_f = 26
+knockback = 240
+hitstop_f = 8
+anim = "uppercut"
+
+# Space Ripper Stingy Eyes: two pressurized jets from the eyes.
+[stances.base.moves.special]
+shout = "SPACE RIPPER STINGY EYES !"
+label = "SPACE RIPPER STINGY EYES"
+info = "Deux jets sous pression jaillissent des yeux et portent très loin"
+info_en = "Two pressurized jets burst from the eyes and reach very far"
+blood_cost = 15
+shape = "line"
+fx = "beam"
+startup_f = 14
+active_f = 6
+recovery_f = 18
+damage = 50
+reach = 180
+radius = 3
+hitstun_f = 26
+knockback = 240
+hitstop_f = 6
+clashable = false
+anim = "special_eyes"
+
+# With a direction: three short jets in a fan.
+[stances.base.moves.special_alt]
+label = "JETS EN ÉVENTAIL"
+label_en = "JET FAN"
+info = "Avec une direction : trois jets courts en éventail"
+info_en = "With a direction: three short jets in a fan"
+blood_cost = 15
+startup_f = 12
+active_f = 1
+recovery_f = 18
+anim = "special_eyes"
+
+[stances.base.moves.special_alt.projectile]
+look = "jet"
+speed = 560
+radius = 3
+damage = 24
+lifetime_s = 0.35
+hitstun_f = 18
+knockback = 100
+hitstop_f = 3
+count = 3
+spread_deg = 36
+
+# The sniper stance ------------------------------------------------------------------------
+# He slows down and takes aim; every button is a jet from the eyes.
+
+[stances.sniper]
+label = "VISÉE"
+label_en = "SNIPER"
+walk_speed_mult = 0.55
+
+[stances.sniper.moves.light]
+label = "TIR RAPIDE"
+label_en = "QUICK SHOT"
+info = "En visée : un jet fin et rapide, à très longue portée"
+info_en = "Aiming: a thin, quick jet, very long range"
+blood_cost = 5
+shape = "line"
+fx = "beam"
+startup_f = 10
+active_f = 4
+recovery_f = 14
+damage = 30
+reach = 210
+radius = 3
+hitstun_f = 18
+knockback = 120
+hitstop_f = 4
+clashable = false
+anim = "special_eyes"
+
+[stances.sniper.moves.heavy]
+shout = "PERCE !"
+shout_en = "PIERCE!"
+label = "TIR CHARGÉ"
+label_en = "CHARGED SHOT"
+info = "En visée : il concentre la pression ; lent, mais traverse l'arène et casse la garde"
+info_en = "Aiming: he builds up the pressure; slow, but crosses the arena and crushes guards"
+blood_cost = 18
+shape = "line"
+fx = "beam"
+startup_f = 26
+active_f = 5
+recovery_f = 20
+damage = 78
+reach = 280
+radius = 4
+hitstun_f = 32
+knockback = 360
+hitstop_f = 10
+wall_bounce = true
+guard_damage = 2.0
+clashable = false
+anim = "special_eyes"
+
+[stances.sniper.moves.special]
+label = "RAFALE DE JETS"
+label_en = "JET BURST"
+info = "En visée : quatre salves de jets qui filent droit"
+info_en = "Aiming: four volleys of jets flying straight"
+blood_cost = 20
+startup_f = 12
+active_f = 16
+recovery_f = 18
+anim = "special_eyes"
+
+[stances.sniper.moves.special.projectile]
+look = "jet"
+speed = 600
+radius = 3
+damage = 16
+lifetime_s = 0.6
+hitstun_f = 14
+knockback = 60
+hitstop_f = 2
+count = 2
+spread_deg = 8
+waves = 4
+wave_every_f = 5
+
+# Super moves -----------------------------------------------------------------------------
+
+# Heart Heat Attack (1 bar): a wide fan of jets, twice.
+[moves.hha]
+shout = "SPACE RIPPER STINGY EYES !"
+label = "ÉVENTAIL D'YEUX"
+label_en = "EYE FAN"
+info = "Un large éventail de jets, deux fois, invincible au démarrage"
+info_en = "A wide fan of jets, twice, invincible on startup"
+startup_f = 12
+active_f = 10
+recovery_f = 22
+invincible_f = 12
+anim = "special_eyes"
+
+[moves.hha.projectile]
+look = "jet"
+speed = 620
+radius = 3
+damage = 22
+lifetime_s = 0.6
+hitstun_f = 22
+knockback = 160
+hitstop_f = 3
+count = 7
+spread_deg = 90
+waves = 2
+wave_every_f = 8
+
+# Great Heat Attack (2 bars): the eye barrage. One jet must strike first; then he fires
+# jet after jet over the whole screen.
+[moves.gha]
+shout = "TU VAS VOIR !"
+shout_en = "WATCH THIS!"
+label = "RAFALE D'YEUX"
+label_en = "EYE BARRAGE"
+info = "Un jet qui porte loin. S'il touche : une rafale de jets sur tout l'écran"
+info_en = "A far-reaching jet. On hit: a barrage of jets over the whole screen"
+shape = "line"
+fx = "beam"
+startup_f = 14
+active_f = 5
+recovery_f = 26
+invincible_f = 14
+damage = 30
+reach = 220
+radius = 4
+hitstun_f = 40
+hitstop_f = 8
+clashable = false
+anim = "special_eyes"
+cinematic = "eye_barrage"
+cinematic_s = 2.9
+finish_damage = 240
+finish_hitstun_f = 50
+finish_knockback = 420
+finish_wall_bounce = true
