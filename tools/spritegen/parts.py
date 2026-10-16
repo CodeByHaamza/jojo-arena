@@ -340,9 +340,23 @@ def _ragged_back(sk: Skeleton) -> set[Pixel]:
 
 def headband(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     """Band around the forehead. Options: gem (color of a stone at the front),
-    gem_shape (oval | heart)."""
+    gem_shape (oval | heart), triangles (color of a row of triangles along the band),
+    feather (color of a feather sticking up from the side)."""
     band = {q for q in disc(*sk.at(0, 0), 7.4 * sk.k) if -5.5 <= _rel(sk, q)[1] <= -3.5}
     parts = [Part(p["material"], band, z=55.5)]
+    triangles = p.get("triangles")
+    if triangles and band:
+        top = min(y for _, y in band)
+        # Teeth pointing down: wide on the band's top row, a point on the bottom one.
+        teeth = {(x, y) for x, y in band if (x % 4) < 3 - (y - top)}
+        parts.append(Part(triangles, teeth, z=55.55, tone=1))
+    feather = p.get("feather")
+    if feather and sk.view != "up":
+        side = 1 if sk.view == "down" else -1
+        fx, fy = sk.at(side * 6.2, -5.5)
+        quill = {(round(fx + side * (i // 3)), round(fy) - i) for i in range(7)}
+        quill |= {(x + side, y) for x, y in quill if y < fy - 2}
+        parts.append(Part(feather, quill, z=55.7))
     gem = p.get("gem")
     if gem and sk.view == "down":
         if p.get("gem_shape", "oval") == "heart":
@@ -684,8 +698,19 @@ def _wavy(a: Point, b: Point, amp: float = 0.8, period: float = 4.0) -> set[Pixe
 
 def scarf(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     """Short scarf wrapped around the neck, hanging in a point on the chest; in profile a
-    tail flies behind."""
+    tail flies behind. Options: stripes (color of diagonal stripes), tail (extra px of
+    the tail flying behind, in profile)."""
+    parts = _scarf_shape(sk, p)
+    stripes = p.get("stripes")
+    if stripes:
+        lines = {(x, y) for x, y in parts[0].pixels if (x + y) % 4 < 2}
+        parts.append(Part(stripes, lines, z=parts[0].z + 0.01, tone=1))
+    return parts
+
+
+def _scarf_shape(sk: Skeleton, p: dict) -> list[Part]:
     mat = p["material"]
+    tail = p.get("tail", 0)
     hx, r, shoulder, cx = sk.head[0], sk.head_r, sk.shoulder_y, sk.center_x
     if sk.view == "down":
         wrap = polygon(
@@ -729,8 +754,8 @@ def scarf(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     wrap |= polygon(
         [
             (hx - 0.8 * r, shoulder - 3),
-            (hx - r - 6, shoulder - 1),
-            (hx - r - 5, shoulder + 2.5),
+            (hx - r - 6 - tail, shoulder - 1 + tail / 3),
+            (hx - r - 5 - tail, shoulder + 2.5 + tail / 3),
             (hx - 0.8 * r, shoulder + 1),
         ]
     )
