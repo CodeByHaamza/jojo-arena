@@ -126,7 +126,12 @@ def _play(tour: Tour, title) -> None:
     tour.keys("E", wait=5)  # the next part's tab
     tour.shot("select_next_part")
     tour.keys("Q", wait=5)
-    tour.keys("Up", "Return", wait=30)
+    tour.keys("Up", "Return", wait=20)
+    tour.shot("stage_select")  # the arena, chosen after the fighters
+    tour.keys("Right", wait=8)
+    tour.shot("stage_select_other")
+    tour.keys("Left", wait=8)
+    tour.keys("Return", wait=30)
     training = tour.scene
     attacker, dummy = training.rounds.match.fighters
     attacker.pos = dummy.pos - Vec2(24, 0)
@@ -143,6 +148,7 @@ def _play(tour: Tour, title) -> None:
     # Local fight: select, VS screen, fight, pause, result.
     tour.choose(tour.scene.menu, "versus", wait=10)
     tour.keys("Return", "Right", "Return", wait=20)
+    tour.keys("Return", wait=20)  # the arena
     tour.shot("vs_screen")
     tour.keys("Return", wait=60)
     tour.shot("fight_intro")

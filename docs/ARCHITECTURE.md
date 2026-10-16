@@ -65,8 +65,8 @@ Les appuis sont mémorisés quelques images (le *buffer*), pour qu'un coup appuy
 Chaque écran est une `Scene` (`update` à chaque pas logique, `draw` à chaque image). Elles se trouvent dans `ui/` :
 
 ```
-TitleScene → MainMenuScene → CharacterSelectScene ─┬→ TrainingScene
-                          ↘ OptionsScene           └→ SetupScene (VS) → FightScene
+TitleScene → MainMenuScene → CharacterSelectScene → StageSelectScene ─┬→ TrainingScene
+                          ↘ OptionsScene                                └→ SetupScene (VS) → FightScene
 ```
 
 Les textes à l'écran sont tous dans `ui/text.py`, en français et en anglais ; la langue courante est dans `engine/i18n.py`, et les fichiers de données donnent leurs traductions avec le suffixe `_en`.

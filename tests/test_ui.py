@@ -22,6 +22,7 @@ from jojo_arena.ui.movelist import build_pages
 from jojo_arena.ui.options_scene import OptionsScene
 from jojo_arena.ui.select_scene import CharacterSelectScene
 from jojo_arena.ui.setup_scene import SetupScene
+from jojo_arena.ui.stage_scene import StageSelectScene
 from jojo_arena.ui.title_scene import TitleScene
 from jojo_arena.ui.training_scene import TrainingScene
 
@@ -131,9 +132,13 @@ def test_title_to_local_fight_to_pause_and_back(ctx):
     select = ctx.scenes.current
     assert isinstance(select, CharacterSelectScene) and select.mode == "versus"
     keys(ctx, "Return", "Right", "Return")  # J1 and J2 pick
+    arenas = ctx.scenes.current
+    assert isinstance(arenas, StageSelectScene)  # the arena comes next
+    keys(ctx, "Return")
     setup = ctx.scenes.current
     assert isinstance(setup, SetupScene)
     assert setup.fighter_ids == (select.roster[0].id, select.roster[1].id)
+    assert setup.stage_id == arenas.choice
     keys(ctx, "Return")  # cursor starts on "fight"
     fight = ctx.scenes.current
     assert isinstance(fight, FightScene)
@@ -170,6 +175,8 @@ def test_training_flow(ctx):
     keys(ctx, "Escape")  # changed my mind
     assert select.picks == []
     keys(ctx, "Return", "Right", "Return")  # player 1, then the dummy (first tab)
+    assert isinstance(ctx.scenes.current, StageSelectScene)
+    keys(ctx, "Return")  # the arena of player 1's part, offered first
     training = ctx.scenes.current
     assert isinstance(training, TrainingScene)
     assert isinstance(training.rounds, Training)
@@ -338,3 +345,40 @@ def test_while_recording_the_keys_shown_are_player_twos(ctx):
     steps(ctx, 2)
     training.dummy.stop_recording()
     assert training.watched == 0
+
+
+def test_the_arena_screen_walks_through_the_arenas_and_back_to_the_fighters(ctx):
+    arenas = start(ctx, StageSelectScene(ctx, "versus", ("joseph_p2", "caesar")))
+    assert arenas.choice == "swiss_castle"  # player 1 plays at home first
+    seen = [arenas.choice]
+    for _ in range(len(arenas.choices) - 1):
+        keys(ctx, "Right")
+        seen.append(arenas.choice)
+    assert len(set(seen)) == len(arenas.choices)  # every arena, then "at random"
+    keys(ctx, "Right")
+    assert arenas.choice == seen[0]  # and it comes back round
+    keys(ctx, "Escape")
+    back = ctx.scenes.current
+    assert isinstance(back, CharacterSelectScene)
+    assert back.fighter_ids[:1] == ("joseph_p2",)  # player 1 keeps their pick
+
+
+def test_backing_out_of_the_vs_screen_returns_to_the_arena_it_was_on(ctx):
+    start(ctx, SetupScene(ctx, fighter_ids=("jonathan", "dio_p1"), stage_id="cairo_night"))
+    ctx.scenes.current.menu.select("back")
+    keys(ctx, "Return")
+    arenas = ctx.scenes.current
+    assert isinstance(arenas, StageSelectScene) and arenas.choice == "cairo_night"
+
+
+def test_every_arena_has_a_preview_drawn_from_the_real_stage(ctx):
+    from jojo_arena.stages import STAGE_IDS
+    from jojo_arena.ui.stage_scene import PREVIEW, stage_thumbnail
+
+    for stage_id in STAGE_IDS:
+        thumb = stage_thumbnail(stage_id)
+        assert thumb.get_size() == PREVIEW
+        colors = {
+            thumb.get_at((x, y))[:3] for x in range(0, PREVIEW[0], 7) for y in range(0, 100, 7)
+        }
+        assert len(colors) > 8, stage_id  # a real picture, not a flat rectangle

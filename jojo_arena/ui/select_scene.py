@@ -201,18 +201,10 @@ class CharacterSelectScene(Scene):
 
             self.ctx.scenes.switch(ArcadeScene(self.ctx, ids[0]))
             return
-        if self.mode == "training":
-            from jojo_arena.stages import stage_for_part
-            from jojo_arena.ui.training_scene import TrainingScene
+        # Fighters chosen: now the arena, then the VS screen (or straight to training).
+        from jojo_arena.ui.stage_scene import StageSelectScene
 
-            stage = stage_for_part(self.roster[self.picks[0]].part)
-            scene = TrainingScene(self.ctx, fighter_ids=(ids[0], ids[1]), stage_id=stage)
-            self.ctx.scenes.switch(scene)
-        else:
-            from jojo_arena.ui.setup_scene import SetupScene
-
-            cpu = self.mode == "vs_cpu"
-            self.ctx.scenes.switch(SetupScene(self.ctx, fighter_ids=(ids[0], ids[1]), cpu=cpu))
+        self.ctx.scenes.switch(StageSelectScene(self.ctx, self.mode, fighter_ids=(ids[0], ids[1])))
 
     # Draw -------------------------------------------------------------------------------
 

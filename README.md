@@ -27,7 +27,7 @@ Ce qui marche déjà :
 - trois arènes : le Caire de nuit (P3), le manoir Joestar en flammes (P1) et le **château suisse** des Hommes du Pilier (P2 : dalles froides, neige, braseros, piliers sculptés) ;
 - **l'aube** dans le manoir Joestar et au château : les rais de soleil tombent sous les fenêtres, puis s'allongent jusqu'au mur du fond et s'élargissent — 39 % du manoir, 77 % du château, où il ne reste presque plus d'ombre ; un vampire, un zombie ou un Homme du Pilier qui s'y attarde brûle de plus en plus vite et y laisse le round ;
 - clavier et manette (Xbox, DualShock 4, DualSense), touches modifiables ;
-- menus : écran titre partie par partie, menu principal, sélection des persos en onglets par partie (fiche, Stand, rôle), écran VS, pause, options (dont la langue : français ou anglais) ;
+- menus : écran titre partie par partie, menu principal, sélection des persos en onglets par partie (fiche, Stand, rôle), **choix de l'arène avec un aperçu de chaque décor**, écran VS, pause, options (dont la langue : français ou anglais) ;
 - glossaire : termes du lore, personnages et Stands, partie par partie ;
 - modes : combat local, contre l'IA (quatre niveaux), Arcade (six combats jusqu'à DIO), entraînement ;
 - liste des coups de chaque perso, avec les vraies touches du joueur (sélection des persos et pause) ;

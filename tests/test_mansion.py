@@ -17,6 +17,7 @@ from jojo_arena.engine.scene import SceneManager
 from jojo_arena.stages import STAGE_IDS, load_stage, stage_for_part, stage_renderer
 from jojo_arena.ui.fight_view import sun_amount
 from jojo_arena.ui.setup_scene import SetupScene
+from jojo_arena.ui.stage_scene import StageSelectScene
 
 
 def test_dawn_comes_in_through_the_windows_late_in_the_round():
@@ -70,13 +71,21 @@ def ctx(tmp_path, monkeypatch):
     pygame.display.quit()
 
 
-def test_the_vs_screen_picks_the_arena_of_player_one(ctx):
-    setup = SetupScene(ctx, fighter_ids=("jonathan", "jotaro_p3"))
-    assert setup.stage_id == "joestar_mansion"
-    setup = SetupScene(ctx, fighter_ids=("jotaro_p3", "jonathan"))
-    assert setup.stage_id == "cairo_night"
-    setup.menu.item("stage").index = len(STAGE_IDS)  # at random
-    assert setup.stage_id in STAGE_IDS
+def test_the_arena_screen_opens_on_the_home_ground_of_player_one(ctx):
+    arenas = StageSelectScene(ctx, "versus", ("jonathan", "jotaro_p3"))
+    assert arenas.choice == "joestar_mansion"
+    arenas = StageSelectScene(ctx, "versus", ("joseph_p2", "caesar"))
+    assert arenas.choice == "swiss_castle"
+    arenas = StageSelectScene(ctx, "versus", ("jotaro_p3", "jonathan"))
+    assert arenas.choice == "cairo_night" and arenas.stage_id == "cairo_night"
+    arenas.index = arenas.choices.index("random")
+    assert arenas.stage_id in STAGE_IDS  # the last entry draws one
+
+
+def test_the_vs_screen_shows_the_arena_it_was_given(ctx):
+    setup = SetupScene(ctx, fighter_ids=("jonathan", "jotaro_p3"), stage_id="swiss_castle")
+    assert setup.stage_id == "swiss_castle" and setup.stage.part == 2
+    assert all(item.key != "stage" for item in setup.menu.items)  # not chosen here anymore
 
 
 def test_the_swiss_castle_is_the_arena_of_part_two():

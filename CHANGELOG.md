@@ -40,6 +40,9 @@ des corrections seules une patch.
   d'ombre. Et un mort-vivant qui s'attarde dans la lumière brûle de plus en plus vite
   (jusqu'à 3,5 fois) ; sortir de la lumière le calme. Un vampire qui ne bouge pas à l'aube
   perd le round.
+- **Écran de choix de l'arène**, après le choix des persos : un aperçu grandeur demie du
+  vrai décor (dessiné par le décor lui-même, pas une image), son nom, sa partie, et une
+  entrée « au hasard ». Il s'ouvre sur l'arène de la partie du joueur 1.
 - **Le château suisse**, l'arène de la partie 2 : dalles froides, neige qui traverse le
   hall, braseros, et les piliers sculptés de ceux qui dormaient dedans. L'aube des Alpes
   y finit par remplir 77 % du sol — contre 39 % au manoir : chaque hall a son propre
@@ -53,6 +56,9 @@ des corrections seules une patch.
   son enchaînement est un fouet de mèches qui porte plus loin que la lame.
 
 ### Corrigé
+
+- La grille de sélection des persos affichait une rangée de cases vides sous la partie 1 :
+  elle s'arrête maintenant à la dernière rangée occupée.
 
 - **Avantage de frame faux d'une image.** `TOUCHÉ` et `GARDE` comptaient l'image du coup
   deux fois côté attaquant : le direct de Jotaro annonçait +7 et −1 au lieu de +6 et −2.

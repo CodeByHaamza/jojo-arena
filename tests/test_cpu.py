@@ -118,6 +118,7 @@ def test_versus_the_computer_from_the_menu(ctx):
     assert isinstance(select, CharacterSelectScene) and select.mode == "vs_cpu"
     assert select.side_label(1) == "IA"
     keys(ctx, "Return", "Right", "Return")
+    keys(ctx, "Return")  # the arena
     setup = ctx.scenes.current
     assert isinstance(setup, SetupScene) and setup.cpu
     setup.menu.select("level")
