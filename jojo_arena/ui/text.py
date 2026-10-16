@@ -45,6 +45,11 @@ FR = {
     "TIME_STOP_READY": "STOP",
     "TIME_STOPPED": "TEMPS ARRÊTÉ",
     "HAMON": "HAMON",
+    "DAWN": "L'AUBE SE LÈVE !",
+    "STAGE": "ARÈNE",
+    "STAGE_RANDOM": "AU HASARD",
+    "BLOOD": "SANG",
+    "FREEZE_ON": "GEL",
     "PUNISHMENT_TIME": "L'HEURE DU CHÂTIMENT !",
     "PAUSE": "PAUSE",
     "RESUME": "REPRENDRE",
@@ -114,6 +119,14 @@ FR = {
         " frapper plus fort ; double dégâts aux vampires"
     ),
     "HAMON_TAG": "HAMON {cost}",
+    "BLOOD_TAG": "SANG {cost}",
+    "SYS_FREEZE": "GEL VAPORISANT",
+    "SYS_FREEZE_INFO": "Ses coups gèlent l'adversaire sur place ; brûle du sang tant qu'il dure",
+    "SYS_BLOOD": "SANG",
+    "SYS_BLOOD_INFO": (
+        "Se remplit en drainant. Intact un instant, il cicatrise en dépensant du sang."
+        " Le Hamon et le soleil le brûlent"
+    ),
     "SYS_REMOTE": "MODE CONTRÔLE",
     "SYS_REMOTE_INFO": (
         "Maintenir {secs} s : pilote {stand} à distance. Le manieur reste sans défense ;"
@@ -284,6 +297,11 @@ EN = {
     "TIME_STOP_READY": "STOP",
     "TIME_STOPPED": "TIME STOPPED",
     "HAMON": "HAMON",
+    "DAWN": "DAWN BREAKS!",
+    "STAGE": "ARENA",
+    "STAGE_RANDOM": "RANDOM",
+    "BLOOD": "BLOOD",
+    "FREEZE_ON": "FREEZE",
     "PUNISHMENT_TIME": "TIME FOR JUDGMENT!",
     "PAUSE": "PAUSE",
     "RESUME": "RESUME",
@@ -350,6 +368,14 @@ EN = {
         " harder; double damage to vampires"
     ),
     "HAMON_TAG": "HAMON {cost}",
+    "BLOOD_TAG": "BLOOD {cost}",
+    "SYS_FREEZE": "VAPORIZATION FREEZING",
+    "SYS_FREEZE_INFO": "His blows freeze the opponent solid; it burns blood while it lasts",
+    "SYS_BLOOD": "BLOOD",
+    "SYS_BLOOD_INFO": (
+        "Fills by draining. Untouched a moment, he heals by spending blood."
+        " Hamon and sunlight burn him"
+    ),
     "SYS_REMOTE": "REMOTE MODE",
     "SYS_REMOTE_INFO": (
         "Hold {secs} s: steer {stand} from afar. The user is left defenceless;"

@@ -138,6 +138,12 @@ class Fighter:
         self.evaded = False  # this dash already earned a Stylish Evade
         self.hh = 0.0  # Heart Heat gauge
         self.hamon = rules.hamon_start if kit.style == "hamon" else 0.0
+        self.blood = rules.blood_start if kit.style == "vampire" else 0.0
+        self.regen_wait = 0  # vampires: steps before their wounds start to close
+        self._regen_left = 0.0
+        self._sun_left = 0.0
+        self.iced_f = 0  # frozen solid by Vaporization Freezing (for the view)
+        self.in_sun = False
         self.style = make_style(kit.style, kit.style_params)
         self.switch_target = self.stance
         self.resolve_announced = False
@@ -300,6 +306,8 @@ class Fighter:
         move = move or self.kit.move(stance, slot)
         if move is not None and self.cooldowns.get(move, 0) > 0:
             return None
+        if move is not None and move.blood_cost > self.blood:
+            return None  # not enough blood for it
         return move
 
     def time_stop_ready(self) -> bool | None:
@@ -385,7 +393,10 @@ class Fighter:
             self.set_state(State.IDLE)
         if self.state == State.BREATHE:
             if frame.is_held("stand"):
-                self.hamon = min(self.rules.hamon_max, self.hamon + self.rules.hamon_breath_per_f)
+                gain = self.rules.hamon_breath_per_f
+                if self.in_sun:
+                    gain *= self.rules.sun_hamon_mult
+                self.hamon = min(self.rules.hamon_max, self.hamon + gain)
                 return []
             self.set_state(State.IDLE)
         if self.state == State.GUARD:
@@ -525,6 +536,7 @@ class Fighter:
         )
         self.attack.dest = dest
         self.attack.hamon = move.hamon
+        self.blood = max(0.0, self.blood - move.blood_cost)
         if move.hamon_cost and self.hamon >= move.hamon_cost:
             # Enough Hamon: the move spends it and strikes harder. Without, it stays normal.
             self.hamon -= move.hamon_cost
@@ -535,6 +547,50 @@ class Fighter:
         if move.buff:
             self.buff = self.kit.buffs[move.buff]
             self.buff_f = self.buff.duration_f
+
+    def feed(self, life_drained: int) -> None:
+        """A vampire drinks: the life drained fills its blood gauge."""
+        if self.kit.style == "vampire":
+            self.blood = min(
+                self.rules.blood_max, self.blood + life_drained * self.rules.blood_per_drain
+            )
+
+    def burn_in_sun(self) -> bool:
+        """One step of sunlight on an undead body: the blood boils away, then the sun
+        burns. Returns True when this step's burn knocked the fighter out."""
+        rules = self.rules
+        if self.blood > 0:
+            self.blood = max(0.0, self.blood - rules.sun_blood_per_f)
+            return False
+        self._sun_left += rules.sun_damage_per_f
+        whole = int(self._sun_left)
+        if whole:
+            self._sun_left -= whole
+            alive = self.alive
+            self.hurt(whole)
+            return alive and not self.alive
+        return False
+
+    def _vampire_step(self) -> None:
+        """The freezing stance burns blood; untouched, the wounds close on blood."""
+        rules = self.rules
+        on = self.style.params.get("on")
+        if on and self.stance == on:
+            self.blood = max(0.0, self.blood - rules.vampire_stance_blood_per_f)
+            if self.blood == 0 and self.can_act():
+                self.begin_stance_switch(self.base_stance)  # dry: back to normal
+        if self.regen_wait > 0:
+            self.regen_wait -= 1
+            return
+        if self.hp >= self.max_hp or self.state in (State.HITSTUN, State.GUARD_BROKEN):
+            return
+        self._regen_left = min(1.0, self._regen_left + rules.vampire_regen_per_f)
+        affordable = int(self.blood / rules.regen_blood_per_hp)
+        whole = min(int(self._regen_left), self.max_hp - self.hp, affordable)
+        if whole > 0:
+            self.hp += whole
+            self._regen_left -= whole
+            self.blood -= whole * rules.regen_blood_per_hp
 
     def begin_breath(self) -> None:
         """Hamon breathing starts; it lasts while the style key is held."""
@@ -741,10 +797,16 @@ class Fighter:
             self.buff_f -= 1
             if self.buff_f <= 0:
                 self.buff = None
+        if self.iced_f > 0:
+            self.iced_f -= 1
+        if self.kit.style == "vampire" and self.alive:
+            self._vampire_step()
 
     # Taking damage ----------------------------------------------------------------------
 
     def hurt(self, damage: int) -> None:
+        if damage > 0:
+            self.regen_wait = max(self.regen_wait, self.rules.vampire_regen_delay_f)
         self.hp = max(self.min_hp, self.hp - damage)
         if self.hp == 0 and self.state != State.KO:
             self.set_state(State.KO)

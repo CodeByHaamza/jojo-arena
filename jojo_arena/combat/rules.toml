@@ -102,8 +102,27 @@ max = 100
 start = 40                    # each round starts with this much Hamon
 breath_per_s = 25             # breathing fills the gauge, standing still and open to hits
 boost_mult = 1.4              # a boosted move (its hamon_cost paid) hits this much harder
-weak_natures = ["vampire", "pillar_man"]
-vs_weak_mult = 2.0            # Hamon on vampires and Pillar Men
+weak_natures = ["vampire", "zombie", "pillar_man"]
+vs_weak_mult = 2.0            # Hamon on vampires, zombies and Pillar Men
+regen_block_s = 3.0           # a Hamon hit stops a vampire's healing this long
+
+[vampire]
+# Vampires (GDD "Vampire / Pillar Man"): the blood gauge.
+blood_max = 100
+blood_start = 30
+blood_per_drain = 1.0         # blood gained per point of life drained
+regen_delay_s = 1.5           # untouched this long, they start to heal...
+regen_per_s = 14              # ...this much life per second...
+regen_blood_per_hp = 0.5      # ...spending this much blood per point healed
+stance_min_blood = 10         # the freezing stance needs at least this much blood...
+stance_blood_per_s = 6        # ...and burns this much per second while it lasts
+
+[sun]
+# Sunlight (some arenas, late in the round): it burns the undead and fuels the Hamon.
+undead_natures = ["vampire", "zombie", "pillar_man"]
+blood_per_s = 25              # it boils their blood away...
+damage_per_s = 30             # ...then burns them
+hamon_breath_mult = 1.5       # Hamon breathing fills faster in the sun
 
 [stance]
 switch_f = 12                 # time to bring the Stand out or call it back

@@ -25,7 +25,7 @@ from jojo_arena.engine.sprites import (
 )
 from jojo_arena.paths import SPRITES_DIR
 from jojo_arena.stages.base import StageDef
-from jojo_arena.ui import sfx, vfx
+from jojo_arena.ui import sfx, text, vfx
 from jojo_arena.ui.cutscenes import make_cutscene
 from jojo_arena.ui.duel_view import DuelScreen
 from jojo_arena.ui.widgets import draw_cap
@@ -74,6 +74,16 @@ STATE_ANIMS = {
     State.HITSTUN: "hurt",
     State.KO: "ko",
 }
+
+
+def sun_amount(match: Match) -> float:
+    """How bright the dawn is: the windows start to glow a few seconds before the sun
+    comes in, then it rises to full light in a second."""
+    after, now = match.arena.sun_after_f, match.tick
+    if now >= after:
+        return min(1.0, 0.4 + 0.6 * (now - after) / 60)
+    lead = 300
+    return max(0.0, 0.3 * (now - (after - lead)) / lead)
 
 
 class FighterView:
@@ -132,6 +142,12 @@ class FighterView:
         if fighter.state in (State.HITSTUN, State.GUARD_BROKEN) and fighter.state_f < 3:
             image = image.copy()
             image.fill((255, 255, 255, 0), special_flags=pygame.BLEND_RGB_MAX)
+        elif fighter.iced_f > 0:
+            # Frozen solid: an icy blue, glinting.
+            image = image.copy()
+            image.fill((60, 110, 160, 0), special_flags=pygame.BLEND_RGB_ADD)
+            if (fighter.iced_f // 6) % 2 == 0:
+                image.fill((30, 30, 30, 0), special_flags=pygame.BLEND_RGB_ADD)
         elif fighter.possessed_f > 0 and (fighter.possessed_f // 4) % 2 == 0:
             image = image.copy()
             image.fill((0, 70, 30, 0), special_flags=pygame.BLEND_RGB_ADD)
@@ -508,6 +524,18 @@ class FightView:
                 fx.add(vfx.Ring(pos, (255, 220, 80), 3.5 if burns else 2.5, 14, 2))
                 fx.add(vfx.Flash(pos, 20 if burns else 14, (255, 210, 60), 8))
                 words.add(sfx.CRACKLE, pos + Vec2(0, -12), sfx.HAMON, 2, 26, 0.5, 1)
+            elif kind == "dawn":
+                words.add(text.DAWN, Vec2(240, 96), sfx.HAMON, 3, 110, 0.05, 0)
+                self.flash = max(self.flash, 10)
+            elif kind == "freeze" and event.fighter is not None:
+                fx.add(vfx.Ring(pos, (190, 230, 255), 2.5, 14, 2))
+                fx.add(vfx.Flash(pos, 16, (200, 236, 255), 8))
+                fx.dust(event.pos, 6, 1.2, 2, (220, 240, 255), 18)
+                words.add(sfx.FREEZE, pos + Vec2(0, -14), sfx.ICE, 2, 30, 0.4, 1)
+            elif kind == "sunburn" and event.fighter is not None:
+                fx.dust(event.pos + Vec2(0, -10), 3, 0.8, 1, (120, 110, 110), 22)
+                if event.value:
+                    words.add(sfx.SIZZLE, pos + Vec2(0, -16), "impact", 2, 24, 0.5, 1)
             elif kind == "armor":
                 fx.add(vfx.Flash(pos, 16, (255, 150, 60), 6))
                 fx.add(vfx.Ring(pos, (255, 170, 80), 2.0, 10))
@@ -601,6 +629,9 @@ class FightView:
             return
         self.renderer.draw_background(surface)
         self.renderer.draw_floor_details(surface, match.arena)
+        draw_sun = getattr(self.renderer, "draw_sun", None)
+        if draw_sun is not None and match.arena.sun_windows:
+            draw_sun(surface, match.arena, sun_amount(match))
         for fighter in match.fighters:
             shadow = self.fighter_views[fighter.index].shadow
             blit_shadow(surface, (fighter.pos.x, fighter.pos.y), *shadow)
@@ -964,6 +995,13 @@ class FightView:
             return
         move = attack.move
         view = self.fighter_views[fighter.index]
+        if move.fx == "beam":
+            # From the eyes, straight ahead, at once.
+            eyes = fighter.pos + Vec2(attack.aim.x * 2, -view.height + 9)
+            tip = eyes + attack.aim * move.reach
+            width = 2 if move.radius > 4 else 1
+            vfx.draw_reach(surface, eyes, tip, self.fighter_defs[fighter.index].aura, "beam", width)
+            return
         if view.stand_presence(fighter) > 0 and view.stand is not None:
             start = fighter.stand_spot() + Vec2(0, -view.stand.chest - 6)
         else:

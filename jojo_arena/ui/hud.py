@@ -23,6 +23,8 @@ TRAIL = (255, 245, 220)
 GUARD = (110, 170, 255)
 GOLD = (255, 214, 90)
 HAMON = (255, 200, 60)
+BLOOD = (220, 40, 64)
+ICE = (150, 210, 255)
 SCREEN_W = 480
 
 LIFE_W, LIFE_H, LIFE_Y = 180, 9, 6
@@ -195,6 +197,9 @@ class Hud:
         if fighter.kit.style == "hamon":
             self._draw_hamon(surface, fighter, bars)
             return
+        if fighter.kit.style == "vampire":
+            self._draw_blood(surface, fighter, bars)
+            return
         if fighter.aura_active:
             label = text.REMOTE_ON if fighter.remote else text.STANCE_ON
             font.draw(surface, label, (label_x, HH_Y - 11), shade(aura, 40), align=align)
@@ -220,6 +225,23 @@ class Hud:
         label_x = 8 if i == 0 else SCREEN_W - 8
         align = "left" if i == 0 else "right"
         font.draw(surface, text.HAMON, (label_x, y - 11), color, align=align)
+
+    def _draw_blood(self, surface: pygame.Surface, fighter: Fighter, bars: int) -> None:
+        """The blood gauge of a vampire, a thin red bar over the Heart Heat bars."""
+        i = fighter.index
+        width = bars * (HH_SEGMENT_W + 2) - 2
+        x = self._mirror(i, 8, width)
+        y = HH_Y - 7
+        surface.fill(OUTLINE, (x - 1, y - 1, width + 2, 5))
+        surface.fill((40, 16, 22), (x, y, width, 3))
+        fill = round(width * fighter.blood / fighter.rules.blood_max)
+        surface.fill(BLOOD, (x if i == 0 else x + width - fill, y, fill, 3))
+        label_x = 8 if i == 0 else SCREEN_W - 8
+        align = "left" if i == 0 else "right"
+        font.draw(surface, text.BLOOD, (label_x, y - 11), BLOOD, align=align)
+        if fighter.aura_active:
+            freeze_x = label_x + (36 if i == 0 else -36)
+            font.draw(surface, text.FREEZE_ON, (freeze_x, y - 11), ICE, align=align)
 
     def _draw_timer(self, surface: pygame.Surface, rounds: Rounds) -> None:
         seconds = rounds.timer_seconds

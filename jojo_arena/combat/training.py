@@ -108,6 +108,8 @@ class Training:
                 fighter.hh = self.rules.hh_max
                 if fighter.kit.style == "hamon":
                     fighter.hamon = self.rules.hamon_max
+                if fighter.kit.style == "vampire":
+                    fighter.blood = self.rules.blood_max
 
     def step(self, inputs: tuple[InputFrame, InputFrame]) -> list[Event]:
         self.phase_f += 1

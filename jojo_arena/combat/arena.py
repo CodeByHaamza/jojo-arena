@@ -80,6 +80,12 @@ class Arena:
     bounds: RoundedRect
     spawns: tuple[Vec2, Vec2]
     obstacles: list[Obstacle] = field(default_factory=list)
+    # Sunlight: patches of the floor where the sun shines in, from this step of the round.
+    sun_windows: list[Rect] = field(default_factory=list)
+    sun_after_f: int = 0
+
+    def in_sun(self, pos: Vec2) -> bool:
+        return any(window.contains(pos) for window in self.sun_windows)
 
     def constrain(self, pos: Vec2, radius: float) -> tuple[Vec2, Vec2 | None, Obstacle | None]:
         """Keep a body inside the walls and out of solid obstacles.

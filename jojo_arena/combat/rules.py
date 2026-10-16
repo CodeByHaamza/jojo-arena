@@ -106,6 +106,19 @@ class Rules:
     hamon_boost_mult: float
     hamon_weak_natures: tuple[str, ...]
     hamon_vs_weak_mult: float
+    hamon_regen_block_f: int
+    blood_max: float
+    blood_start: float
+    blood_per_drain: float
+    vampire_regen_delay_f: int
+    vampire_regen_per_f: float
+    regen_blood_per_hp: float
+    vampire_stance_min_blood: float
+    vampire_stance_blood_per_f: float
+    sun_undead_natures: tuple[str, ...]
+    sun_blood_per_f: float
+    sun_damage_per_f: float
+    sun_hamon_mult: float
 
     @classmethod
     def from_data(cls, data: dict) -> Rules:
@@ -128,6 +141,19 @@ class Rules:
             hamon_boost_mult=data["hamon"]["boost_mult"],
             hamon_weak_natures=tuple(data["hamon"]["weak_natures"]),
             hamon_vs_weak_mult=data["hamon"]["vs_weak_mult"],
+            hamon_regen_block_f=seconds_to_frames(data["hamon"]["regen_block_s"]),
+            blood_max=data["vampire"]["blood_max"],
+            blood_start=data["vampire"]["blood_start"],
+            blood_per_drain=data["vampire"]["blood_per_drain"],
+            vampire_regen_delay_f=seconds_to_frames(data["vampire"]["regen_delay_s"]),
+            vampire_regen_per_f=data["vampire"]["regen_per_s"] / HZ,
+            regen_blood_per_hp=data["vampire"]["regen_blood_per_hp"],
+            vampire_stance_min_blood=data["vampire"]["stance_min_blood"],
+            vampire_stance_blood_per_f=data["vampire"]["stance_blood_per_s"] / HZ,
+            sun_undead_natures=tuple(data["sun"]["undead_natures"]),
+            sun_blood_per_f=data["sun"]["blood_per_s"] / HZ,
+            sun_damage_per_f=data["sun"]["damage_per_s"] / HZ,
+            sun_hamon_mult=data["sun"]["hamon_breath_mult"],
             round_timer_f=seconds_to_frames(rnd["timer_s"]),
             round_intro_f=seconds_to_frames(rnd["intro_s"]),
             round_outro_f=seconds_to_frames(rnd["outro_s"]),

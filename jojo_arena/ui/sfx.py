@@ -37,6 +37,10 @@ HEARTBEAT = "ドクン"
 BREATH = "コォォォ"  # Hamon breathing
 CRACKLE = "バチッ"  # Hamon sparks on a hit
 HAMON = ((255, 236, 120), (220, 140, 30), (60, 30, 10))  # word colors for Hamon
+FREEZE = "ピキッ"  # frozen solid
+SIZZLE = "ジュウ"  # burning in the sun
+ICE = ((236, 250, 255), (120, 190, 240), (20, 40, 70))
+BLOOD = ((255, 150, 160), (190, 20, 50), (50, 6, 16))
 
 
 def shout_style(aura: Color) -> tuple[Color, Color, Color]:

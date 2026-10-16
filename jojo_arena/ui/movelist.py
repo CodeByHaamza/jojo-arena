@@ -95,8 +95,12 @@ def _bars(amount: float) -> str:
 
 def _info(move) -> str:
     """A move's line in the list, with its Hamon cost in front when it has one."""
+    tag = ""
     if move.hamon_cost:
         tag = text.HAMON_TAG.format(cost=move.hamon_cost)
+    elif move.blood_cost:
+        tag = text.BLOOD_TAG.format(cost=move.blood_cost)
+    if tag:
         return f"{tag} - {move.info}" if move.info else tag
     return move.info
 
@@ -159,7 +163,10 @@ def build_pages(
     ]
     if kit.style == "hamon":
         basics.insert(1, MoveEntry((key("stand"),), text.SYS_BREATH, text.SYS_BREATH_INFO))
-    if len(kit.stances) > 1:
+    if kit.style == "vampire":
+        basics.insert(1, MoveEntry((key("stand"),), text.SYS_FREEZE, text.SYS_FREEZE_INFO))
+        basics.insert(2, MoveEntry((), text.SYS_BLOOD, text.SYS_BLOOD_INFO))
+    elif len(kit.stances) > 1:
         basics.insert(1, MoveEntry((key("stand"),), text.SYS_STAND, stand_info))
     if kit.style_params.get("remote"):
         secs = f"{rules.remote_hold_f / 60:.1f}".replace(".", ",")

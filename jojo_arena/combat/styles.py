@@ -57,6 +57,21 @@ class StanceToggle(Style):
         return fighter.stance == self.on or (self.remote and fighter.stance == self.remote)
 
 
+class Vampire(StanceToggle):
+    """A stance toggle fed by the blood gauge: the "on" stance (Vaporization Freezing)
+    needs some blood to start, burns it while it lasts and ends when it runs dry. The
+    blood fills by draining and heals the vampire when untouched (GDD "Vampire").
+
+    Example in a character file:
+        style = { type = "vampire", off = "base", on = "freeze" }
+    """
+
+    def on_pressed(self, fighter: Fighter) -> bool:
+        if fighter.stance != self.on and fighter.blood < fighter.rules.vampire_stance_min_blood:
+            return False
+        return super().on_pressed(fighter)
+
+
 class Hamon(Style):
     """Hold the button to breathe: the Hamon gauge fills, but the fighter stands still,
     open to hits. Moves with a `hamon_cost` spend it to strike harder (GDD "Hamon").
@@ -79,6 +94,7 @@ STYLES: dict[str, type[Style]] = {
     "none": Style,
     "stance_toggle": StanceToggle,
     "hamon": Hamon,
+    "vampire": Vampire,
 }
 
 

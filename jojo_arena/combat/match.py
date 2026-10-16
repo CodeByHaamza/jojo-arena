@@ -43,6 +43,7 @@ class Strike:
     key: tuple | None = None  # which move it belongs to, for combo scaling
     super_move: bool = False  # supers are built around stopped time: not softened in it
     hamon: bool = False  # Hamon burns vampires and Pillar Men
+    freeze_f: int = 0  # frozen solid this long on a clean hit
 
 
 class Match:
@@ -66,6 +67,7 @@ class Match:
         self.time_stop: interactions.TimeStop | None = None
         self.time_stops_endured = [0, 0]  # per fighter, for the time stopper rule
         self.tick = 0
+        self.dawn_announced = False
 
     def opponent(self, fighter: Fighter) -> Fighter:
         return self.fighters[1 - fighter.index]
@@ -138,6 +140,7 @@ class Match:
         events += self._update_webs()
         events += self._resolve_melee()
         events += self._resolve_projectile_hits()
+        events += self._apply_sunlight()
         for fighter in self.fighters:
             if fighter.frozen:
                 continue
@@ -384,6 +387,7 @@ class Match:
                 melee=True,
                 hamon=attack.hamon,
                 guard_mult=move.guard_damage,
+                freeze_f=move.freeze_f,
                 key=(attacker.index, attack.serial),
                 super_move=move.name in ("hha", "gha"),
             )
@@ -539,6 +543,29 @@ class Match:
         cued = move.cinematic and move.cinematic_at == "hit" and not attack.cutscene_done
         return bool(cued) and self.cutscene is None
 
+    @property
+    def sun_active(self) -> bool:
+        """The sun shines in through the arena's windows (late in the round)."""
+        return bool(self.arena.sun_windows) and self.tick >= self.arena.sun_after_f
+
+    def _apply_sunlight(self) -> list[Event]:
+        """Sunlight on the floor: it burns the undead standing in it."""
+        events: list[Event] = []
+        active = self.sun_active
+        if active and not self.dawn_announced:
+            self.dawn_announced = True
+            events.append(Event("dawn", None))
+        for fighter in self.fighters:
+            fighter.in_sun = active and fighter.alive and self.arena.in_sun(fighter.pos)
+            undead = fighter.kit.nature in self.rules.sun_undead_natures
+            if not fighter.in_sun or not undead or fighter.frozen:
+                continue
+            if fighter.burn_in_sun():
+                events.append(Event("ko", fighter.pos, fighter.index))
+            if self.tick % 10 == 0:
+                events.append(Event("sunburn", fighter.pos, fighter.index, int(fighter.blood == 0)))
+        return events
+
     def _start_cutscene(self, user: Fighter, target: Fighter, attack: Attack) -> list[Event]:
         move = attack.move
         attack.cutscene_done = True
@@ -578,6 +605,7 @@ class Match:
                 source=user.pos,
                 where=target.pos,
                 unblockable=True,
+                drain=move.finish_drain,
                 key=(user.index, scene.serial),
                 super_move=True,
                 hamon=move.hamon,
@@ -767,8 +795,13 @@ class Match:
             return True, events
         damage = round(damage * self._combo_scale(defender, strike))
         armored = defender.take_hit(damage, strike.hitstun_f, strike.knockback, strike.wall_bounce)
+        if burns:
+            # Hamon in an undead body: the wound will not close for a while.
+            defender.regen_wait = max(defender.regen_wait, rules.hamon_regen_block_f)
         if strike.drain:
-            attacker.hp = min(attacker.max_hp, attacker.hp + round(damage * strike.drain))
+            drained = round(damage * strike.drain)
+            attacker.hp = min(attacker.max_hp, attacker.hp + drained)
+            attacker.feed(drained)
         attacker.gain_hh(damage * rules.hh_per_damage_dealt)
         defender.gain_hh(damage * rules.hh_per_damage_taken)
         if not defender.frozen:
@@ -776,6 +809,10 @@ class Match:
         events = [Event("hit", strike.where, defender.index, damage), *sparks]
         if armored:
             events.append(Event("armor", defender.pos, defender.index))
+        if strike.freeze_f and not armored and defender.alive and not defender.frozen:
+            defender.stun_f = max(defender.stun_f, strike.freeze_f)
+            defender.iced_f = strike.freeze_f
+            events.append(Event("freeze", defender.pos, defender.index, strike.freeze_f))
         if strike.drain:
             events.append(
                 Event("drain", attacker.pos, attacker.index, round(damage * strike.drain))

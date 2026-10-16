@@ -30,6 +30,9 @@ class StageDef:
     props: tuple[PropDef, ...]
     palette: dict
     lanterns: tuple[Vec2, ...] = ()
+    sun_windows: tuple[Rect, ...] = ()  # where the sun shines in, late in the round
+    sun_after_f: int = 0
+    part: int = 0  # the JoJo part it belongs to
 
     def build_arena(self) -> Arena:
         obstacles = [
@@ -43,7 +46,13 @@ class StageDef:
             )
             for p in self.props
         ]
-        return Arena(self.bounds, (self.spawns[0].copy(), self.spawns[1].copy()), obstacles)
+        return Arena(
+            self.bounds,
+            (self.spawns[0].copy(), self.spawns[1].copy()),
+            obstacles,
+            sun_windows=list(self.sun_windows),
+            sun_after_f=self.sun_after_f,
+        )
 
 
 def load_stage_def(path: Path, stage_id: str) -> StageDef:
@@ -66,6 +75,16 @@ def load_stage_def(path: Path, stage_id: str) -> StageDef:
         )
     props = tuple(props)
     lanterns = tuple(Vec2(*lamp["pos"]) for lamp in data.get("lanterns", []))
+    sun = data.get("sun", {})
     return StageDef(
-        stage_id, localized(data, "name"), bounds, spawns, props, data.get("palette", {}), lanterns
+        stage_id,
+        localized(data, "name"),
+        bounds,
+        spawns,
+        props,
+        data.get("palette", {}),
+        lanterns,
+        sun_windows=tuple(Rect(*w["rect"]) for w in sun.get("windows", [])),
+        sun_after_f=seconds_to_frames(sun.get("after_s", 0)),
+        part=data.get("part", 0),
     )

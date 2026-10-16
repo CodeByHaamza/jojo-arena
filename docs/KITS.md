@@ -15,7 +15,8 @@ Unités : les durées en `_f` sont en images (60 par seconde) ; celles en `_s` e
 | `style` | Ce que fait la touche Stand. `{ type = "stance_toggle", off = "base", on = "stand", stand_body = true }` : bascule entre deux postures, et `stand_body` donne au Stand un corps qui peut être touché |
 | `remote`, `remote_range`, `remote_speed` | Dans `style` : maintenir la touche Stand envoie le Stand seul, dans cette posture, jusqu'à cette distance, à cette vitesse (mode contrôle) |
 | `style = { type = "hamon" }` | Style Hamon : maintenir la touche Stand fait respirer (la jauge de Hamon se remplit, immobile et vulnérable) ; les coups à `hamon_cost` la dépensent. Réglages dans `[hamon]` de `combat/rules.toml` |
-| `nature` | `human` par défaut ; `vampire` ou `pillar_man` : le Hamon fait double dégâts |
+| `style = { type = "vampire", off = "base", on = "freeze" }` | Style vampire : la touche Stand passe dans la posture `on` (gel vaporisant), qui demande un peu de sang, en brûle tant qu'elle dure et s'arrête quand il n'y en a plus. Le sang se remplit en drainant ; intact un moment, le vampire cicatrise en dépensant du sang. Réglages dans `[vampire]` des règles |
+| `nature` | `human` par défaut ; `vampire`, `zombie` ou `pillar_man` : le Hamon fait double dégâts et bloque leur régénération, le soleil les brûle |
 
 ## Les postures
 
@@ -84,6 +85,9 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `hamon_mult` | Dégâts du coup boosté (par défaut `boost_mult` des règles) |
 | `hamon_unblockable` | Boosté, le coup traverse la garde (l'onde passe à travers) |
 | `hamon` | Le coup est toujours du Hamon (les supers d'un manieur du Hamon), sans rien dépenser |
+| `blood_cost` | Style vampire : le coup ne sort qu'avec assez de sang, et le dépense |
+| `freeze_f` | Touché net, l'adversaire est gelé sur place ce nombre d'images (gel vaporisant) |
+| `finish_drain` | Part des dégâts du coup final d'une cinématique rendue en vie |
 | `guard_damage` | Multiplie l'usure de la jauge de garde quand le coup est bloqué (casse-garde) |
 | `clashable` | Peut déclencher un clash contre un autre coup (vrai par défaut pour les coups au corps à corps) |
 

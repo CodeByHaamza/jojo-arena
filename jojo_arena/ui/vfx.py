@@ -117,6 +117,16 @@ def draw_reach(
     """
     if (tip - start).length_sq() < 1:
         return
+    if kind == "beam":
+        # Two jets, one from each eye, white hot in the core.
+        d = (tip - start).normalized()
+        side = _side(d) * 1.5
+        for offset in (side, side * -1):
+            a, b = start + offset, tip + offset
+            pygame.draw.line(surface, shade(color, -40), _ints(a), _ints(b), width + 1)
+            pygame.draw.line(surface, (255, 255, 255), _ints(a), _ints(b), 1)
+        blit_glow(surface, radial_glow(6 + 2 * width, tuple(c // 2 for c in color)), _ints(tip))
+        return
     if kind == "blade":
         pygame.draw.line(surface, OUTLINE, _ints(start), _ints(tip), 3)
         pygame.draw.line(surface, STEEL, _ints(start), _ints(tip), 1)

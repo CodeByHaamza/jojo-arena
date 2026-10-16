@@ -170,6 +170,7 @@ class MoveDef:
     finish_hitstun_f: int = 0
     finish_knockback: float = 0.0  # px/frame
     finish_wall_bounce: bool = False
+    finish_drain: float = 0.0  # share of the finish damage drained back as life
     web: WebDef | None = None  # threads laid over the arena once the cutscene ends
     counter: str = ""  # struck in melee while active: answer at once with this move
     leap: float = 0.0  # px: during startup, travel up to this far...
@@ -184,6 +185,8 @@ class MoveDef:
     hamon_cost: int = 0  # Hamon spent, when there is enough, to boost the move
     hamon_mult: float = 0.0  # damage of the boosted move (0: the rules' boost_mult)
     hamon_unblockable: bool = False  # boosted, it goes through the guard
+    blood_cost: int = 0  # vampires: the move needs and spends this much blood
+    freeze_f: int = 0  # the blow freezes the opponent solid this long (Vaporization Freezing)
     shout: str = ""  # written on screen when used (each hit of a rush: "ORA", "MUDA")
     label: str = ""  # display name in the move list
     info: str = ""  # one-line description in the move list
@@ -253,6 +256,9 @@ class MoveDef:
             hamon_cost=data.get("hamon_cost", 0),
             hamon_mult=data.get("hamon_mult", 0.0),
             hamon_unblockable=data.get("hamon_unblockable", False),
+            blood_cost=data.get("blood_cost", 0),
+            freeze_f=data.get("freeze_f", 0),
+            finish_drain=data.get("finish_drain", 0.0),
             shout=localized(data, "shout"),
             label=localized(data, "label"),
             info=localized(data, "info"),
