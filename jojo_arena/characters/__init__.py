@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from jojo_arena.combat.kit import Kit, load_kit
+from jojo_arena.combat.rules import load_rules
 from jojo_arena.engine.data import load_toml
 from jojo_arena.engine.i18n import localized
 from jojo_arena.engine.sprites import Color, parse_color
@@ -62,11 +63,12 @@ def load_parts() -> list[PartDef]:
 def load_roster() -> list[FighterDef]:
     data = load_toml(_DIR / "roster.toml")
     kits: dict[str, Kit] = {}
+    hh_bar = load_rules().hh_bar  # an awakening is priced in bars, so it needs the size
     roster = []
     for entry in data["fighters"]:
         kit_id = entry["kit"]
         if kit_id not in kits:
-            kits[kit_id] = load_kit(_DIR / f"{kit_id}.toml")
+            kits[kit_id] = load_kit(_DIR / f"{kit_id}.toml", hh_bar)
         palette = {
             slot: [parse_color(c) for c in colors]
             for slot, colors in entry.get("palette", {}).items()

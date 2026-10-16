@@ -112,7 +112,7 @@ class Match:
         moving = [f for f in self.fighters if not f.frozen]
         for fighter in moving:
             for event in fighter.control(inputs[fighter.index], self.opponent(fighter).pos):
-                if event.kind in ("hha", "gha"):
+                if event.kind in ("hha", "gha", "awaken"):
                     self.super_freeze = self.rules.super_freeze_f
                     self.super_user = fighter.index
                 elif event.kind == "flash_cancel":
@@ -666,7 +666,7 @@ class Match:
         spread = self.arena.sun_spread(self.tick)
         for fighter in self.fighters:
             fighter.in_sun = active and fighter.alive and self.arena.in_sun(fighter.pos, spread)
-            undead = fighter.kit.nature in self.rules.sun_undead_natures
+            undead = fighter.kit.nature in self.rules.sun_undead_natures and not fighter.sun_proof
             if not fighter.in_sun or not undead or fighter.frozen:
                 if undead and not fighter.frozen:
                     # In stopped time nothing happens at all, not even cooling down.

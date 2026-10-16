@@ -3,7 +3,7 @@
 frame_size = [64, 64]
 anchor = [32, 60]
 chest = 30
-height = 49
+height = 48
 directions = ["down", "up", "right"]
 
 [anims.idle]

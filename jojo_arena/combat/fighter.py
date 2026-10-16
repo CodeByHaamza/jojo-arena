@@ -37,7 +37,7 @@ class State(StrEnum):
 ACTIONABLE = frozenset({State.IDLE, State.WALK})
 GUARDING = frozenset({State.GUARD, State.BLOCKSTUN})
 # "guard" is buffered only for Flash Cancel; holding it is read directly.
-BUFFERED_ACTIONS = (*ATTACK_SLOTS, "dash", "heart_heat", "stand", "guard")
+BUFFERED_ACTIONS = (*ATTACK_SLOTS, "dash", "heart_heat", "stand", "guard", "power_up")
 SUPER_MOVES = ("hha", "gha")
 
 
@@ -145,6 +145,7 @@ class Fighter:
         self.iced_f = 0  # frozen solid by Vaporization Freezing (for the view)
         self._pose_heal_left = 0.0
         self.in_sun = False
+        self.awakened = False  # the Power Up key was used: there is no going back
         self.sun_f = 0  # frames of sunlight on the skin, with no shade to break it
         self.style = make_style(kit.style, kit.style_params)
         self.switch_target = self.stance
@@ -459,6 +460,9 @@ class Fighter:
             return None
         if self._try_dash(frame, target):
             return []
+        events = self._try_awaken()
+        if events is not None:
+            return events
         events = self._try_super(frame, target)
         if events is not None:
             return events
@@ -467,6 +471,31 @@ class Fighter:
         if self._take_buffered(("stand",)) and self.style.on_pressed(self):
             return [Event(self.style.event, self.pos, self.index)]
         return None
+
+    def _try_awaken(self) -> list[Event] | None:
+        """The Power Up key: become the other thing, once, for the rest of the round."""
+        awakening = self.kit.awakening
+        if awakening is None or self.awakened or "power_up" not in self.buffer:
+            return None
+        if self.hh < awakening.hh_cost:
+            return None
+        del self.buffer["power_up"]
+        self.hh -= awakening.hh_cost
+        self.awakened = True
+        self.begin_stance_switch(awakening.stance)
+        return [Event("awaken", self.pos, self.index)]
+
+    @property
+    def sun_proof(self) -> bool:
+        """Awakened into something the daylight no longer touches."""
+        awakening = self.kit.awakening
+        return self.awakened and awakening is not None and awakening.sun_immune
+
+    @property
+    def can_awaken(self) -> bool:
+        """For the HUD: the Power Up key would do something right now."""
+        awakening = self.kit.awakening
+        return awakening is not None and not self.awakened and self.hh >= awakening.hh_cost
 
     def _try_super(self, frame: InputFrame, target: Vec2) -> list[Event] | None:
         """The Heart Heat key alone: Heart Heat Attack (1 bar). With a direction held:

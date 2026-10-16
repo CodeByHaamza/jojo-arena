@@ -246,6 +246,28 @@ def _draw_wave(surface: pygame.Surface, pos: Vec2, d: Vec2) -> None:
     blit_glow(surface, radial_glow(20, (130, 80, 16)), _ints(pos))
 
 
+def draw_stone_mask(surface: pygame.Surface, center: Vec2, scale: float, stone=None) -> None:
+    """A stone mask seen face on, the Red Stone set in its brow: the thing that turns a
+    Pillar Man into the other thing. `scale` 0 to 1 grows it into place."""
+    if scale <= 0:
+        return
+    stone = stone or (210, 204, 186)
+    w, h = round(9 * scale), round(12 * scale)
+    if w < 2 or h < 3:
+        return
+    cx, cy = round(center.x), round(center.y)
+    face = pygame.Rect(cx - w // 2, cy - h // 2, w, h)
+    pygame.draw.ellipse(surface, OUTLINE, face.inflate(2, 2))
+    pygame.draw.ellipse(surface, stone, face)
+    if h >= 8:
+        # The eye holes, and the Red Stone of Aja above them.
+        for dx in (-w // 4, w // 4):
+            surface.fill(OUTLINE, (cx + dx - 1, cy - h // 6, 2, 2))
+        surface.fill((23, 18, 31), (cx - 1, face.y + 1, 3, 3))
+        surface.fill((226, 60, 70), (cx, face.y + 2, 1, 1))
+    blit_glow(surface, radial_glow(round(16 * scale), (120, 96, 40)), (cx, cy))
+
+
 def draw_reach(
     surface: pygame.Surface, start: Vec2, tip: Vec2, color, kind: str = "limb", width: int = 2
 ) -> None:

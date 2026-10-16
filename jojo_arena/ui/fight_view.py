@@ -31,6 +31,7 @@ from jojo_arena.ui.duel_view import DuelScreen
 from jojo_arena.ui.widgets import draw_cap
 
 OUTLINE = (23, 18, 31)
+AWAKEN_F = 70  # how long the mask hangs over whoever awakened
 STAND_ALPHA = 215  # Stands look a little spectral
 STAND_FLOAT = 6  # Stands hover this many pixels above the ground
 
@@ -320,6 +321,8 @@ class FightView:
         # then a short punch-in of the camera on the point of impact.
         self.impact_f = 0
         self.punch_f = 0
+        self.awaken_f = 0  # frames left of the awakening flourish
+        self.awaken_at = 0  # which fighter is awakening
         self.impact_at = Vec2(240, 135)
         self._block_word_f = [0, 0]
         self._burst_word_f = 0
@@ -489,6 +492,20 @@ class FightView:
                 words.add(sfx.DOGO, pos, "impact", 3, 40, 0.4, 2)
                 fx.add(vfx.Ring(pos, (255, 240, 200), 4.0, 16, 3))
                 fx.focus(pos, heavy=True)
+            elif kind == "awaken" and event.fighter is not None:
+                user = match.fighters[event.fighter]
+                aura = self.fighter_defs[user.index].aura
+                self.awaken_f = AWAKEN_F
+                self.awaken_at = event.fighter
+                self.flash = 10
+                self.shake = max(self.shake, 10)
+                for radius in (3.0, 5.0):
+                    fx.add(vfx.Ring(pos, aura, radius, 24, 3))
+                fx.focus(pos, heavy=True)
+                label = user.kit.awakening.label if user.kit.awakening else ""
+                if label:
+                    words.add(label, self._head(user), self._shout_style(user.index), 2, 70)
+                words.add(sfx.DODODO, self._head(user) + Vec2(0, -10), "menace", 2, 60, 0.25, 1)
             elif kind in ("hha", "gha") and event.fighter is not None:
                 user = match.fighters[event.fighter]
                 aura = self.fighter_defs[user.index].aura
@@ -657,6 +674,7 @@ class FightView:
             view.throw_f = max(0, view.throw_f - 1)
         self.impact_f = max(0, self.impact_f - 1)
         self.punch_f = max(0, self.punch_f - 1)
+        self.awaken_f = max(0, self.awaken_f - 1)
         self._burst_word_f = max(0, self._burst_word_f - 1)
         if match is not None:
             for view, fighter in zip(self.fighter_views, match.fighters, strict=True):
@@ -739,6 +757,12 @@ class FightView:
         for projectile in match.projectiles:
             self._draw_projectile(surface, projectile, match)
         self._draw_carried_props(surface, match)
+        if self.awaken_f and self.awaken_at < len(match.fighters):
+            # The mask and the Red Stone, growing over the one who put them on.
+            user = match.fighters[self.awaken_at]
+            grow = min(1.0, (AWAKEN_F - self.awaken_f) / 18)
+            head = user.pos + Vec2(0, -self.fighter_views[user.index].height - 10)
+            vfx.draw_stone_mask(surface, head, grow)
         self.renderer.draw_lights(surface, self.tick)
         for fighter in match.fighters:
             if fighter.state in (State.GUARD, State.BLOCKSTUN):

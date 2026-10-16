@@ -171,8 +171,8 @@ fx = "blade"
 startup_f = 6
 active_f = 3
 recovery_f = 12
-damage = 30
-reach = 42
+damage = 28
+reach = 36
 radius = 6
 hitstun_f = 20
 knockback = 100
@@ -190,8 +190,8 @@ fx = "blade"
 startup_f = 7
 active_f = 4
 recovery_f = 18
-damage = 46
-reach = 44
+damage = 44
+reach = 38
 radius = 7
 hitstun_f = 28
 knockback = 340
@@ -215,8 +215,8 @@ recovery_f = 24
 hits = 8
 hit_every_f = 3
 damage = 12
-last_damage = 48
-reach = 46
+last_damage = 46
+reach = 40
 radius = 7
 hitstun_f = 14
 knockback = 40
@@ -255,11 +255,11 @@ info = "Un balayage de lames, très large"
 info_en = "A sweep of blades, very wide"
 shape = "line"
 fx = "blade"
-startup_f = 12
+startup_f = 13
 active_f = 5
-recovery_f = 22
-damage = 60
-reach = 48
+recovery_f = 24
+damage = 54
+reach = 42
 radius = 8
 hitstun_f = 30
 knockback = 300
@@ -288,12 +288,151 @@ hitstop_f = 6
 cooldown_s = 5
 anim = "dash"
 
-[buffs.ultimate]
-duration_s = 12
-damage_dealt_mult = 1.35
-damage_taken_mult = 0.75
-heal_per_s = 18
-afterimages = true
+# The Ultimate Life Form -------------------------------------------------------------
+# Power Up (2 barres) : il pose le masque de pierre et la Super Aja. Il ne peut plus en
+# sortir, le soleil ne lui fait plus rien, et tout ce qu'il a change. Chaque coup se
+# régénère : il reprend de la vie sur ce qu'il touche.
+
+[awakening]
+stance = "ultimate"
+bars = 2
+sun_immune = true
+label = "FORME ULTIME"
+label_en = "ULTIMATE FORM"
+
+[stances.ultimate]
+label = "FORME DE VIE ULTIME"
+label_en = "ULTIMATE LIFE FORM"
+tag = "ULTIME"
+tag_en = "ULTIMATE"
+walk_speed_mult = 1.15
+
+[stances.ultimate.moves.light]
+label = "GRIFFE ADAPTÉE"
+label_en = "ADAPTED CLAW"
+info = "Son corps prend la forme qu'il faut. Encore : la seconde griffe"
+info_en = "His body takes whatever shape it needs. Again: the other claw"
+shape = "line"
+fx = "limb"
+startup_f = 4
+active_f = 3
+recovery_f = 10
+damage = 34
+drain = 0.2
+reach = 34
+radius = 7
+hitstun_f = 20
+knockback = 100
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.ultimate.moves.light2]
+label = "DOUBLE GRIFFE"
+label_en = "DOUBLE CLAW"
+info = "Fin de l'enchaînement : il projette et se soigne"
+info_en = "Chain ender: it launches, and it feeds him"
+shape = "line"
+fx = "limb"
+startup_f = 5
+active_f = 4
+recovery_f = 16
+damage = 50
+drain = 0.25
+reach = 36
+radius = 8
+hitstun_f = 30
+knockback = 380
+hitstop_f = 9
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "heavy"
+
+# The animal he turns a hand into, to see what it does.
+[stances.ultimate.moves.heavy]
+shout = "INUTILE !"
+shout_en = "USELESS!"
+label = "MAIN QUI DÉVORE"
+label_en = "DEVOURING HAND"
+info = "Sa main devient une bête qui mord huit fois et lui rend la vie prise"
+info_en = "His hand becomes a beast that bites eight times and gives him back what it takes"
+startup_f = 11
+active_f = 26
+recovery_f = 22
+hits = 8
+hit_every_f = 3
+damage = 13
+last_damage = 44
+drain = 0.3
+reach = 24
+radius = 14
+hitstun_f = 14
+knockback = 40
+last_knockback = 420
+last_wall_bounce = true
+hitstop_f = 1
+anim = "light"
+
+[stances.ultimate.moves.heavy_alt]
+label = "AILES"
+label_en = "WINGS"
+info = "Avec une direction : il se fait des ailes et fond sur le point visé"
+info_en = "With a direction: he grows wings and drops on the point you aim at"
+startup_f = 9
+active_f = 6
+recovery_f = 16
+invincible_f = 9
+leap = 150
+leap_to = "cursor"
+leap_height = 34
+damage = 56
+drain = 0.2
+reach = 15
+radius = 13
+hitstun_f = 28
+knockback = 300
+hitstop_f = 8
+anim = "leap"
+
+# What he is for: the Ripple, his own, hotter than anything Joseph ever made.
+[stances.ultimate.moves.special]
+shout = "MON ONDE !"
+shout_en = "MY RIPPLE!"
+label = "ONDE DE KARS"
+label_en = "KARS'S RIPPLE"
+info = "Son onde à lui : elle fond la chair, et elle brûle les morts-vivants"
+info_en = "His own Ripple: it melts flesh, and it burns the undead"
+hamon = true
+shape = "line"
+fx = "beam"
+startup_f = 14
+active_f = 6
+recovery_f = 22
+damage = 64
+reach = 120
+radius = 6
+hitstun_f = 30
+knockback = 220
+hitstop_f = 8
+anim = "special"
+
+[stances.ultimate.moves.special_alt]
+label = "PEAU DE PIERRE"
+label_en = "STONE SKIN"
+info = "Avec une direction : il se referme sur lui-même, blindé, et se régénère"
+info_en = "With a direction: he closes over himself, armored, and regenerates"
+startup_f = 10
+active_f = 20
+recovery_f = 16
+armor = 3
+buff = "regrowth"
+cooldown_s = 10
+anim = "pose"
+
+[buffs.regrowth]
+duration_s = 4
+damage_taken_mult = 0.55
+heal_per_s = 40
 
 # Super moves -----------------------------------------------------------------------------
 
@@ -309,8 +448,8 @@ startup_f = 16
 active_f = 6
 recovery_f = 26
 invincible_f = 16
-damage = 160
-reach = 56
+damage = 158
+reach = 48
 radius = 9
 hitstun_f = 36
 knockback = 450
@@ -319,15 +458,14 @@ wall_bounce = true
 clashable = false
 anim = "heavy"
 
-# Great Heat Attack (2 bars): not a blow - what he spent a hundred thousand years on.
-# The first strike has to land; then he becomes the Ultimate Thing for twelve seconds.
+# Great Heat Attack (2 bars): the light that comes out of him. Awakened it is his own
+# Ripple, which the wiki puts at hundreds of times Joseph's - so it burns the undead.
 [moves.gha]
-shout = "LA FORME DE VIE ULTIME !"
-shout_en = "THE ULTIMATE LIFE FORM!"
-label = "ULTIMATE THING"
-label_en = "ULTIMATE THING"
-info = "Un coup. S'il touche : il devient la forme de vie ultime, 12 s de régénération et de puissance"
-info_en = "One blow. On hit: he becomes the ultimate life form, 12 s of regeneration and power"
+shout = "KISAI KATTO !"
+label = "DÉLUGE DE LUMIÈRE"
+label_en = "DELUGE OF LIGHT"
+info = "Un coup. S'il touche : toutes les lames et toute la lumière, d'un coup"
+info_en = "One blow. On hit: every blade and all the light, at once"
 startup_f = 14
 active_f = 4
 recovery_f = 28
@@ -338,11 +476,10 @@ radius = 13
 hitstun_f = 40
 hitstop_f = 10
 clashable = false
-buff = "ultimate"
 anim = "pose"
 cinematic = "ultimate_thing"
 cinematic_s = 4.2
-finish_damage = 180
+finish_damage = 250
 finish_hitstun_f = 50
 finish_knockback = 420
 finish_wall_bounce = true

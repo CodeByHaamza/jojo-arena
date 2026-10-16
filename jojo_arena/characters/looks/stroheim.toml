@@ -1,6 +1,7 @@
-# Rudol von Stroheim (Part 2): the German officer who came back as a machine. Look file
-# for tools/make_sprites.py. Uniform grey-green, the left half of his face a steel plate
-# with a lens where the eye was, and a cybernetic arm that is mostly gun.
+# Rudol von Stroheim (Part 2): drawn from the JoJo Wiki description. Tall and well
+# built, a flattop haircut that is particularly wide, and after Santana a rebuilt body:
+# the facial corset round his RIGHT eye under a monocle, both arms and the whole abdomen
+# replaced, and the machine gun housed in his torso.
 
 name = "Rudol von Stroheim"
 
@@ -10,30 +11,30 @@ neck = 1.4
 torso = 14
 legs = 17
 arms = 14.5
-shoulders = 9.6
+shoulders = 10.0
 hips = 3.4
-torso_r = 6.6
-arm_r = 2.9
+torso_r = 6.8
+arm_r = 3.0
 leg_r = 2.7
 hand_r = 2.5
 foot_r = 2.6
 
 [palette]
 skin = "#e8c4a0"
-hair = "#d8c070"
-steel = "#b4bcc8"
+hair = "#e0cc84"
+steel = "#c0c8d4"
 steel_dark = "#6e7684"
-coat = "#4a5440"
-coat_dark = "#38402f"
-boots = "#2a2620"
-lens = "#ff4a4a"
-brass = "#c8a048"
-eyes = "#4a6a9a"
+coat = "#4a5a3a"
+coat_dark = "#36422c"
+trim = "#d8c060"
+boots = "#24201c"
+lens = "#ff5a5a"
+eyes = "#4a9ab4"
 
 [body]
 head = "skin"
 torso = "coat"
-arms = "coat"
+arms = "steel"
 hands = "steel"
 legs = "coat_dark"
 feet = "boots"
@@ -45,21 +46,19 @@ brows = true
 nose = true
 ear = true
 
+# The flattop, wide and flat on top.
 [[parts]]
 type = "hair"
 material = "hair"
-style = "short"
-volume = 5.4
+style = "tower"
+volume = 5.6
 
-# The steel half of the head, the lens where the eye was.
+# The facial corset and monocle over the right eye.
 [[parts]]
-type = "mask"
+type = "face_mark"
 material = "steel"
-
-[[parts]]
-type = "headband"
-material = "steel_dark"
-gem = "lens"
+shape = "monocle"
+side = 1
 
 [[parts]]
 type = "coat"
@@ -67,27 +66,28 @@ material = "coat"
 length = 0.4
 open = false
 collar = true
-buttons = "brass"
+buttons = "trim"
+lining = "trim"
 
 [[parts]]
 type = "pauldrons"
 material = "steel"
-size = 4.4
+size = 4.2
 rim = "steel_dark"
+
+# The machine gun housed in the torso, muzzle out of the chest.
+[[parts]]
+type = "emblem"
+material = "steel_dark"
+shape = "diamond"
+on = "chest"
 
 [[parts]]
 type = "belt"
 material = "boots"
-buckle = "brass"
+buckle = "trim"
 
 [[parts]]
 type = "boots"
 material = "boots"
 tall = true
-
-# The machine arm: it ends in a barrel.
-[[parts]]
-type = "sword"
-material = "steel_dark"
-length = 10
-guard = "steel"

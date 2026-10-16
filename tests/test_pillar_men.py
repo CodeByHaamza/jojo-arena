@@ -22,6 +22,11 @@ def hits_on(events, defender: int):
     return [e for e in events if e.kind == "hit" and e.fighter == defender]
 
 
+def step(match: Match, frames: int) -> None:
+    for _ in range(frames):
+        match.step((NONE, NONE))
+
+
 def in_stance(match: Match, index: int, stance: str) -> None:
     match.fighters[index].stance = stance
 
@@ -44,8 +49,10 @@ def test_the_pillar_men_are_pillar_men_and_stroheim_is_not():
 
 def test_only_three_of_them_ever_mastered_a_mode():
     for fighter_id in ("wamuu", "esidisi", "kars"):
-        assert len(kit(fighter_id).stances) == 2, fighter_id
-        assert kit(fighter_id).style == "stance_toggle"
+        assert kit(fighter_id).style == "stance_toggle", fighter_id
+        assert len(kit(fighter_id).stances) >= 2, fighter_id
+    assert len(kit("wamuu").stances) == 2
+    assert len(kit("kars").stances) == 3  # and a third one he awakens into
     assert len(kit("santana").stances) == 1  # he never learned one
     assert kit("santana").style == "none"
 
@@ -148,13 +155,12 @@ def test_esidisi_pays_for_his_own_blood():
 
 def test_kars_blades_reach_and_his_thrown_one_bounces():
     blade = kit("kars").move("light", "light")
-    assert blade.shape == "line" and blade.reach > 40
+    assert blade.shape == "line" and blade.reach > 30  # still the longest reach of the cast
     thrown = kit("kars").move("light", "heavy_alt")
     assert thrown.projectile is not None and thrown.projectile.wall_bounce
-    ultimate = kit("kars").shared_moves["gha"]
-    assert ultimate.buff == "ultimate"
-    buff = kit("kars").buffs["ultimate"]
-    assert buff.heal_per_s > 0 and buff.damage_dealt_mult > 1
+    awakening = kit("kars").awakening
+    assert awakening is not None and awakening.stance == "ultimate"
+    assert awakening.sun_immune and awakening.hh_cost > 0
 
 
 def test_santana_gets_inside_and_walks_you_about():
@@ -207,3 +213,73 @@ def test_a_thrown_blade_comes_off_the_walls_and_keeps_going():
             break
     assert shot.bounced == 1 and shot.alive  # it turned round instead of dying
     assert shot.velocity.x < 0
+
+
+# The Power Up key: an awakening ------------------------------------------------------------
+
+
+def test_the_power_up_key_turns_kars_into_the_ultimate_life_form():
+    match = make_duel("kars", "joseph_p2", p1=(150, 100), p2=(260, 100))
+    kars = match.fighters[0]
+    awakening = kars.kit.awakening
+    kars.hh = awakening.hh_cost
+    assert kars.can_awaken and not kars.awakened
+    events = run(match, RULES.stance_switch_f + 30, p1=press("power_up"))
+    assert any(e.kind == "awaken" for e in events)
+    assert kars.awakened and kars.stance == "ultimate"
+    assert kars.hh == 0  # it cost him both bars
+    assert not kars.can_awaken  # and it only happens once
+
+
+def test_without_the_bars_nothing_happens():
+    match = make_duel("kars", "joseph_p2")
+    kars = match.fighters[0]
+    kars.hh = kars.kit.awakening.hh_cost - 1
+    run(match, 20, p1=press("power_up"))
+    assert not kars.awakened and kars.stance == "base"
+
+
+def test_the_mode_key_can_no_longer_take_him_out_of_it():
+    match = make_duel("kars", "joseph_p2")
+    kars = match.fighters[0]
+    kars.hh = kars.kit.awakening.hh_cost
+    run(match, RULES.stance_switch_f + 30, p1=press("power_up"))
+    assert kars.stance == "ultimate"
+    run(match, RULES.stance_switch_f + 30, p1=press("stand"))
+    assert kars.stance == "ultimate"  # there is no going back
+
+
+def test_the_sun_stops_mattering_once_he_has_awakened():
+    stage = load_stage("swiss_castle")
+    arena = stage.build_arena()
+    match = Match((kit("kars"), kit("joseph_p2")), RULES, arena)
+    match.tick = arena.sun_after_f + arena.sun_spread_f
+    kars = match.fighters[0]
+    patch = arena.sun_patch(arena.sun_windows[0], 1.0)
+    kars.pos = Vec2(patch.center.x, patch.center.y)
+    kars.blood = 0
+    step(match, 120)
+    burned = kars.max_hp - kars.hp
+    assert burned > 0  # not awakened: the sun has him
+
+    kars.awakened = True
+    kars.hp = kars.max_hp
+    assert kars.sun_proof
+    step(match, 240)
+    assert kars.hp == kars.max_hp  # the ultimate life form walks in daylight
+
+
+def test_the_ultimate_moveset_is_its_own_thing():
+    ultimate = kit("kars").stances["ultimate"].moves
+    light_mode = kit("kars").stances["light"].moves
+    assert {m.label for m in ultimate.values()} & {m.label for m in light_mode.values()} == set()
+    assert all(m.drain > 0 for m in (ultimate["light"], ultimate["light2"], ultimate["heavy"]))
+    assert ultimate["special"].hamon  # his own Ripple burns the undead
+    assert kit("kars").stance_tags["ultimate"]
+
+
+def test_nobody_else_awakens_yet():
+    from jojo_arena.characters import load_roster
+
+    with_awakening = [f.id for f in load_roster() if f.kit.awakening is not None]
+    assert with_awakening == ["kars"]

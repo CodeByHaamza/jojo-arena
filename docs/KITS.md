@@ -13,6 +13,7 @@ Unités : les durées en `_f` sont en images (60 par seconde) ; celles en `_s` e
 | `walk_speed` | Vitesse de marche |
 | `strength` | Force physique du Stand (1 = normale). Multiplie la vitesse, les dégâts et le recul des objets qu'il lance ; à partir de 1,5 l'objet fait rebondir sur les murs (Star Platinum, The World : 1,8) |
 | `style` | Ce que fait la touche Stand. `{ type = "stance_toggle", off = "base", on = "stand", stand_body = true }` : bascule entre deux postures, et `stand_body` donne au Stand un corps qui peut être touché |
+| `awakening` | Table `[awakening]`, la touche Power Up : `stance` (la posture où il bascule), `bars` (coût en barres de Heart Heat), `sun_immune` (le soleil ne le brûle plus), `label`/`label_en` (nom affiché). Une fois par round, sans retour possible : la touche Stand ne peut plus l'en sortir |
 | `style` (suite) | `{ type = "stance_cycle", stances = ["base", "tattoo", "amato"] }` : la touche fait défiler plusieurs postures l'une après l'autre, pour un perso qui appelle plusieurs alliés ou un Homme du Pilier à plusieurs Modes |
 | `remote`, `remote_range`, `remote_speed` | Dans `style` : maintenir la touche Stand envoie le Stand seul, dans cette posture, jusqu'à cette distance, à cette vitesse (mode contrôle) |
 | `style = { type = "hamon" }` | Style Hamon : maintenir la touche Stand fait respirer (la jauge de Hamon se remplit, immobile et vulnérable) ; les coups à `hamon_cost` la dépensent. Réglages dans `[hamon]` de `combat/rules.toml` |

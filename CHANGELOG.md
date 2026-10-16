@@ -35,6 +35,17 @@ des corrections seules une patch.
 
 ### Ajouté (combat)
 
+- **La touche Power Up sert enfin : l'éveil.** Kars pose le masque de pierre et la Super
+  Aja pour deux barres et devient la **forme de vie ultime** : le soleil ne lui fait plus
+  rien, son moveset entier change (griffes qui s'adaptent, main qui dévore, ailes, sa
+  propre onde), chaque coup lui rend de la vie, et il ne peut plus revenir en arrière.
+  La mécanique est générique : n'importe quel kit peut déclarer son `[awakening]`.
+- **Les persos de la partie 2 redessinés d'après JoJo Wiki.** Wamuu est bronzé avec une
+  seule corne et le tatouage en barre, pas pâle avec deux cornes ; Esidisi a sa croix sur
+  le visage ; Kars a les cheveux noirs ondulés sous un bandeau, pas une crête violette ;
+  Santana a deux petites cornes et des cheveux jusqu'aux épaules ; Stroheim a un monocle
+  sur l'œil droit, pas un demi-masque. Le générateur sait maintenant dessiner une corne
+  unique et des marques de visage.
 - **La partie 2 est complète** : Wamuu, Esidisi, Kars, Santana et Stroheim rejoignent
   Joseph, Caesar, Lisa Lisa et Straizo. Les quatre Hommes du Pilier ont la nature
   `pillar_man` — l'onde leur fait double, et le soleil les tue — et trois d'entre eux ont

@@ -1116,11 +1116,18 @@ def top(sk: Skeleton, p: dict, look: Look) -> list[Part]:
 
 
 def horns(sk: Skeleton, p: dict, look: Look) -> list[Part]:
-    """Two horns curving up and out from the sides of the head (a helmet's, or a
-    demon's). Options: size (head units), tip (color of the tips)."""
+    """Horns on the head (a helmet's, a demon's, a Pillar Man's).
+
+    Options: size (head units), tip (color of the tips), single (true: one horn rising
+    straight from the middle of the brow instead of a pair at the sides).
+    """
     mat = p["material"]
     size = p.get("size", 1.0)
-    if sk.view == "right":
+    if p.get("single"):
+        # One horn, from the middle of the brow, leaning a little forward.
+        lean = 1.6 if sk.view == "right" else 0.0
+        pairs = [((lean, -4.6), (lean + 0.8 * size, -12 * size - 4), 56.8)]
+    elif sk.view == "right":
         pairs = [((1.5, -5), (6 * size + 1.5, -12 * size - 3), 60.6)]
     else:
         pairs = [
@@ -1135,6 +1142,40 @@ def horns(sk: Skeleton, p: dict, look: Look) -> list[Part]:
             point = _tuft(sk, ((base[0] + 2 * tip[0]) / 3, (base[1] + 2 * tip[1]) / 3), tip, 2.0)
             parts.append(Part(p["tip"], point & horn, z=z + 0.1))
     return parts
+
+
+def face_mark(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """A mark painted or cut into the face, over the skin and under the hair.
+
+    Options: shape - "x" (a cross from brow to jaw, Esidisi), "bar" (a thick band
+    across the eyes, Wamuu), "monocle" (a ring round one eye, Stroheim), "eyelid" (a
+    small block under one eye, Santana); side (-1 left, 1 right) for the one-eyed ones.
+    """
+    if sk.view == "up":
+        return []
+    shape = p.get("shape", "bar")
+    mat = p["material"]
+    at = sk.at
+    side = p.get("side", 1) * (1 if sk.view == "down" else 1)
+    head = disc(*at(0, 0), sk.head_r)
+    if shape == "x":
+        arms = capsule(*at(-3.4, -3.6), *at(3.4, 3.2), 0.9) | capsule(
+            *at(3.4, -3.6), *at(-3.4, 3.2), 0.9
+        )
+        area = arms & head
+    elif shape == "bar":
+        area = capsule(*at(-4.2, -1.4), *at(4.2, -1.4), 1.3) & head
+    elif shape == "monocle":
+        x = 2.1 * side
+        ring = disc(*at(x, -1.2), 3.0) - disc(*at(x, -1.2), 1.9)
+        area = ring & head
+    else:  # "eyelid": a short crenelated block under one eye
+        x = 2.0 * side
+        area = capsule(*at(x - 1.2, 1.0), *at(x + 1.2, 1.0), 0.9) & head
+    if sk.view == "right":
+        # In profile only the near half of the face shows.
+        area = {q for q in area if _rel(sk, q)[0] > -1.0}
+    return [Part(mat, area, z=52.5)]
 
 
 def top_hat(sk: Skeleton, p: dict, look: Look) -> list[Part]:
@@ -1301,4 +1342,5 @@ PART_TYPES: dict[str, Callable[[Skeleton, dict, Look], list[Part]]] = {
     "horns": horns,
     "tanks": tanks,
     "cheek_guards": cheek_guards,
+    "face_mark": face_mark,
 }

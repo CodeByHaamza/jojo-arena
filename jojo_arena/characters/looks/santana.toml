@@ -1,29 +1,32 @@
-# Santana (Part 2): the Pillar Man who never mastered a Mode. Look file for
-# tools/make_sprites.py. The smallest and the rawest of them: no ornament, no cloth, a
-# body that opens where it likes, and the rib blades under the skin of his chest.
+# Santana (Part 2): the Pillar Man who never mastered a Mode, drawn from the JoJo Wiki
+# description. Imposing and beautifully muscled, Araki drew him from Roman statues: a
+# smooth glossy olive skin, wavy light hair down to the shoulders, two small horns,
+# bushy brows, a mark under one eye, and nothing on him but a loincloth.
 
 name = "Santana"
 
 [build]
-head_r = 5.4
-neck = 1.2
-torso = 14
-legs = 16.5
-arms = 15
-shoulders = 9.8
-hips = 3.6
-torso_r = 7.0
-arm_r = 2.9
-leg_r = 2.8
+head_r = 5.5
+neck = 1.3
+torso = 14.4
+legs = 17
+arms = 15.4
+shoulders = 10.2
+hips = 3.8
+torso_r = 7.2
+arm_r = 3.0
+leg_r = 2.9
 hand_r = 2.5
 foot_r = 2.5
 
 [palette]
-skin = "#9aa88e"
-skin_dark = "#6e7a66"
-seam = "#4a5246"
-eyes = "#e8e0a0"
-bone = "#e4dcc0"
+skin = "#c8a870"
+skin_dark = "#96794c"
+hair = "#e0c88a"
+horn = "#e8e0c8"
+mark = "#3a4a74"
+cloth = "#b03a3a"
+eyes = "#8a7a50"
 
 [body]
 head = "skin"
@@ -36,22 +39,33 @@ feet = "skin"
 [face]
 eyes = "eyes"
 eye_style = "dot"
-brows = false
+brows = true
 nose = true
-ear = false
+ear = true
 
-# The seams where his body comes apart when he wants it to.
+# Wavy light hair down to the shoulders.
 [[parts]]
-type = "body_lines"
-material = "seam"
+type = "hair"
+material = "hair"
+style = "long"
+volume = 6.4
+back_length = 9
+curl = true
+
+# Two small horns.
+[[parts]]
+type = "horns"
+material = "horn"
+size = 0.42
+
+# The crenelated mark under his left eye.
+[[parts]]
+type = "face_mark"
+material = "mark"
+shape = "eyelid"
+side = -1
 
 [[parts]]
-type = "veins"
-material = "skin_dark"
-
-# The rib blades, showing through the chest.
-[[parts]]
-type = "emblem"
-material = "bone"
-shape = "diamond"
-on = "chest"
+type = "loincloth"
+material = "cloth"
+length = 0.55

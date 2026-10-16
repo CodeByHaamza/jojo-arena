@@ -1,6 +1,7 @@
-# Kars (Part 2): the Pillar Man of the light, and the one who wants to be free of the
-# sun. Look file for tools/make_sprites.py. A great feathered crest, a long mane, pale
-# skin, and the blades that come out of his forearms.
+# Kars (Part 2): the Pillar Man of the light, drawn from the JoJo Wiki description.
+# Taller and paler than the others, with abundant jet-black wavy hair usually held under
+# a dark fitted headband - taking it off means something. High boots, arm guards, a
+# loincloth, and the blades he brings out of his forearms.
 
 name = "Kars"
 
@@ -10,7 +11,7 @@ neck = 1.5
 torso = 14.5
 legs = 18
 arms = 16
-shoulders = 10.0
+shoulders = 10.2
 hips = 3.8
 torso_r = 7.0
 arm_r = 3.0
@@ -19,12 +20,12 @@ hand_r = 2.5
 foot_r = 2.6
 
 [palette]
-skin = "#e0d4e8"
-hair = "#2a2438"
-crest = "#b060c0"
-crest_light = "#e0a0e8"
-band = "#3a3050"
-cloth = "#5a2a6a"
+skin = "#eadce8"
+skin_dark = "#b8a4b8"
+hair = "#1a1622"
+band = "#2a2434"
+guard = "#8a6ab0"
+cloth = "#5a3a7a"
 blade = "#dfe6f4"
 eyes = "#f0e060"
 
@@ -34,60 +35,61 @@ torso = "skin"
 arms = "skin"
 hands = "skin"
 legs = "skin"
-feet = "skin"
+feet = "band"
 
 [face]
 eyes = "eyes"
 eye_style = "tall"
 brows = true
 nose = true
-ear = false
+ear = true
 
-# The long mane, and the great crest over it.
+# Abundant black hair, long and wavy, down the back.
 [[parts]]
 type = "hair"
 material = "hair"
 style = "long"
-volume = 7.2
-back_length = 14
+volume = 7.8
+back_length = 15
+curl = true
 
-[[parts]]
-type = "hair"
-material = "crest"
-style = "crest"
-volume = 8.4
-
+# The dark fitted headband that holds it.
 [[parts]]
 type = "headband"
-material = "crest_light"
-gem = "eyes"
+material = "band"
 
-[[parts]]
-type = "pauldrons"
-material = "crest"
-size = 5.2
-rim = "band"
-spiral = "crest_light"
-
+# Arm guards.
 [[parts]]
 type = "gloves"
-material = "band"
+material = "guard"
 long = true
 ringed = true
 
 [[parts]]
+type = "pauldrons"
+material = "guard"
+size = 4.4
+rim = "band"
+
+[[parts]]
 type = "loincloth"
 material = "cloth"
-length = 0.6
+length = 0.62
 
 [[parts]]
 type = "belt"
 material = "band"
-buckle = "crest_light"
+buckle = "guard"
+
+# High boots.
+[[parts]]
+type = "boots"
+material = "band"
+tall = true
 
 # A light blade already out of the forearm.
 [[parts]]
 type = "sword"
 material = "blade"
 length = 13
-guard = "crest_light"
+guard = "guard"

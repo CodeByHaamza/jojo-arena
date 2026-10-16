@@ -46,6 +46,8 @@ class StanceToggle(Style):
         self.remote_speed = params.get("remote_speed", 150)
 
     def on_pressed(self, fighter: Fighter) -> bool:
+        if fighter.awakened:
+            return False  # what it awakened into is what it stays
         if fighter.remote:
             fighter.leave_remote()  # the Stand comes back to its user
             return True
@@ -54,6 +56,9 @@ class StanceToggle(Style):
         return True
 
     def aura_active(self, fighter: Fighter) -> bool:
+        # Awakened into a third stance, the aura stays on: it is not going off again.
+        if fighter.awakened:
+            return True
         return fighter.stance == self.on or (self.remote and fighter.stance == self.remote)
 
 

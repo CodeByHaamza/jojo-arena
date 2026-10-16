@@ -29,6 +29,7 @@ Ce qui marche déjà :
 - clavier et manette (Xbox, DualShock 4, DualSense), touches modifiables ;
 - menus : écran titre partie par partie, menu principal, sélection des persos en onglets par partie (fiche, Stand, rôle), **choix de l'arène avec un aperçu de chaque décor**, écran VS, pause, options (dont la langue : français ou anglais) ;
 - glossaire : termes du lore, personnages et Stands, partie par partie ;
+- **éveil** sur la touche Power Up : Kars pose le masque de pierre et la Super Aja (2 barres), devient la **forme de vie ultime** — le soleil ne lui fait plus rien et tout son moveset change, sans retour en arrière ;
 - roster : 21 persos sur les parties 1, 2 et 3 — la **partie 2 est complète**, Hommes du Pilier compris (Wamuu, Esidisi, Kars, Santana) et Stroheim avec ses lampes à ultraviolets ;
 - modes : combat local, contre l'IA (quatre niveaux), Arcade (six combats jusqu'à DIO), entraînement ;
 - liste des coups de chaque perso, avec les vraies touches du joueur (sélection des persos et pause) ;
@@ -76,7 +77,7 @@ Les touches sont liées à leur **position** sur le clavier : ZQSD en AZERTY cor
 | Garde (Flash Cancel pendant une attaque) | Maj gauche | LB / L1 | C | 1 |
 | Heart Heat : HHA ; direction + Heart Heat : GHA (2 barres) | O | RT / R2 | T | 9 |
 | Pose (près d'un objet : le Stand le prend, puis le lance) | P | Select / Touchpad | Y | 7 |
-| Power Up (pas encore utilisé) | U | LT / L2 | B | 3 |
+| Power Up : **éveil** (Kars : la Super Aja, 2 barres) | U | LT / L2 | B | 3 |
 
 Choisis la configuration (J1 clavier + J2 manette, clavier partagé, deux manettes) dans **Options** ou sur l'écran VS du **Combat local**, qui permet aussi de choisir l'arène (le Caire de nuit, le manoir Joestar en flammes, ou au hasard). Options affiche aussi le tableau des touches des deux joueurs (modifiables avec « Changer les touches »), et règle la langue du jeu (français ou anglais), gardée dans `settings.json` à côté de `controls.json`.
 

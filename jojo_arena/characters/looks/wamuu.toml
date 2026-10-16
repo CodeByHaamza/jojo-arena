@@ -1,15 +1,16 @@
-# Wamuu (Part 2): the Pillar Man of the wind. Look file for tools/make_sprites.py.
-# Huge and bare-chested, skin the colour of old stone, the horn on his brow that reads
-# the wind, his banded headpiece with the anti-Ripple wires in it, gold at the shoulders
-# and a long loincloth. Built like a statue because that is where he came from.
+# Wamuu (Part 2): the Pillar Man of the wind, drawn from the JoJo Wiki description.
+# Tall and powerfully built, tan skin, short upright indigo hair, and the one big
+# drill-like horn above his brow that reads the wind. The metal crown opens at the front
+# to let it out, the anti-Ripple wires are wound inside it, and the thick square tattoo
+# crosses his face through the left eye.
 
 name = "Wamuu"
 
 [build]
 head_r = 5.8
 neck = 1.6
-torso = 15
-legs = 18.5
+torso = 14.8
+legs = 18
 arms = 16
 shoulders = 10.6
 hips = 4.0
@@ -20,67 +21,80 @@ hand_r = 2.6
 foot_r = 2.6
 
 [palette]
-skin = "#c0b4c8"
-skin_dark = "#8e8498"
+skin = "#d8a878"
+skin_dark = "#a87c54"
+hair = "#4a4a8a"
 horn = "#efe4c4"
-band = "#4a4660"
-gold = "#d8b256"
-cloth = "#3a4a74"
-eyes = "#e8d060"
-mouth = "#6a5a78"
+crown = "#d8b256"
+tattoo = "#2a3a7a"
+vest = "#3a5a9a"
+cloth = "#2a3a66"
+wrist = "#8a6a46"
+eyes = "#4a8ad0"
 
 [body]
 head = "skin"
-torso = "skin"
+torso = "vest"
 arms = "skin"
 hands = "skin"
 legs = "skin"
-feet = "skin"
+feet = "cloth"
 
 [face]
 eyes = "eyes"
 eye_style = "tall"
 brows = true
 nose = true
-ear = false
+ear = true
 
-# The horn of a Pillar Man: it reads the wind, and it fires it back.
+# Short, upright hair under the crown.
+[[parts]]
+type = "hair"
+material = "hair"
+style = "spiky"
+volume = 5.2
+
+# The tattoo: a thick band across the face, through the left eye.
+[[parts]]
+type = "face_mark"
+material = "tattoo"
+shape = "bar"
+
+# The one horn, rising from the middle of the brow.
 [[parts]]
 type = "horns"
 material = "horn"
-size = 0.92
-tip = "gold"
+single = true
+size = 0.78
+tip = "crown"
 
-# The banded headpiece, the anti-Ripple wires wound inside it.
+# The crown it comes out of.
 [[parts]]
 type = "headband"
-material = "gold"
+material = "crown"
 gem = "horn"
 
 [[parts]]
-type = "pauldrons"
-material = "gold"
-size = 5.0
-rim = "band"
-ring = "horn"
+type = "earring"
+material = "crown"
 
-# The markings of his people, running down the arms and the chest.
 [[parts]]
-type = "body_lines"
-material = "skin_dark"
+type = "pauldrons"
+material = "crown"
+size = 4.6
+rim = "cloth"
 
 [[parts]]
 type = "gloves"
-material = "band"
-long = true
-studs = "gold"
+material = "wrist"
+studs = "crown"
 
 [[parts]]
 type = "loincloth"
 material = "cloth"
-length = 0.62
+length = 0.6
 
 [[parts]]
 type = "belt"
-material = "band"
-buckle = "gold"
+material = "crown"
+buckle = "horn"

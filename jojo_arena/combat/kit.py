@@ -287,6 +287,30 @@ class MoveDef:
 
 
 @dataclass(frozen=True)
+class AwakeningDef:
+    """What the Power Up key does for a character who has one.
+
+    It is one way, and once per round: the fighter moves into `stance` for good, the
+    style key can no longer take them out of it, and `sun_immune` says whether daylight
+    still means anything to them afterwards.
+    """
+
+    stance: str
+    hh_cost: float
+    sun_immune: bool = False
+    label: str = ""  # what the HUD calls it while it is ready
+
+    @classmethod
+    def from_data(cls, data: dict, hh_bar: float) -> AwakeningDef:
+        return cls(
+            stance=data["stance"],
+            hh_cost=data.get("bars", 2) * hh_bar,
+            sun_immune=data.get("sun_immune", False),
+            label=localized(data, "label"),
+        )
+
+
+@dataclass(frozen=True)
 class Stance:
     moves: dict[str, MoveDef]
     walk_speed_mult: float = 1.0
@@ -305,6 +329,7 @@ class Kit:
     buffs: dict[str, BuffDef] = field(default_factory=dict)
     stance_labels: dict[str, str] = field(default_factory=dict)  # move list headings
     stance_tags: dict[str, str] = field(default_factory=dict)  # short name for the HUD
+    awakening: AwakeningDef | None = None  # what the Power Up key turns them into
     strength: float = 1.0  # the Stand's raw power: how fast and hard it throws props
     nature: str = "human"  # "vampire", "pillar_man"...: what Hamon burns
     pose_heal_per_s: float = 0.0  # posing heals this much life per second
@@ -330,11 +355,11 @@ class Kit:
         return any(move.time_stop_f > 0 for move in self.all_moves())
 
 
-def load_kit(path: Path) -> Kit:
-    return parse_kit(load_toml(path), path.stem, path.name)
+def load_kit(path: Path, hh_bar: float = 100.0) -> Kit:
+    return parse_kit(load_toml(path), path.stem, path.name, hh_bar)
 
 
-def parse_kit(data: dict, kit_id: str, source: str = "kit") -> Kit:
+def parse_kit(data: dict, kit_id: str, source: str = "kit", hh_bar: float = 100.0) -> Kit:
     """Build a kit from its data (the content of a kit file); `source` names it in errors."""
     stances = {
         name: Stance(
@@ -365,6 +390,11 @@ def parse_kit(data: dict, kit_id: str, source: str = "kit") -> Kit:
         pose_counter in s.moves or pose_counter in shared for s in stances.values()
     ):
         raise ValueError(f"{source}: pose_counter leads to unknown move '{pose_counter}'")
+    awakening = None
+    if "awakening" in data:
+        awakening = AwakeningDef.from_data(data["awakening"], hh_bar)
+        if awakening.stance not in stances:
+            raise ValueError(f"{source}: awakening leads to unknown stance '{awakening.stance}'")
     walk = data.get("walk_speed")
     style = data.get("style", "none")
     style_name, style_params = (style, {}) if isinstance(style, str) else (style["type"], style)
@@ -387,6 +417,7 @@ def parse_kit(data: dict, kit_id: str, source: str = "kit") -> Kit:
             name: localized(stance, "label", name.upper())
             for name, stance in data["stances"].items()
         },
+        awakening=awakening,
         stance_tags={
             name: localized(stance, "tag", "")
             for name, stance in data["stances"].items()
