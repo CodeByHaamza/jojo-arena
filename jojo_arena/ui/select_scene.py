@@ -117,6 +117,11 @@ class CharacterSelectScene(Scene):
         """Roster indexes of the fighters in the current tab, in order."""
         return [i for i in range(len(self.roster)) if self.part_of(i) == self.tab]
 
+    def rows(self) -> int:
+        """Rows this tab needs. A part whose fighters fill two rows shows two, not
+        three: an empty row at the bottom says nothing and eats the screen."""
+        return max(1, min(GRID_ROWS, -(-len(self.grid()) // GRID_COLS)))
+
     @property
     def cursor(self) -> int | None:
         """Roster index under the cursor, or None on an empty cell."""
@@ -135,6 +140,7 @@ class CharacterSelectScene(Scene):
     def _open_tab(self, part: int) -> None:
         self.tab = part
         self.backdrop.part = part
+        self.cell = min(self.cell, GRID_COLS * self.rows() - 1)
 
     # Update -----------------------------------------------------------------------------
 
@@ -151,9 +157,10 @@ class CharacterSelectScene(Scene):
         if step:
             at = self.part_numbers.index(self.tab)
             self._open_tab(self.part_numbers[(at + step) % len(self.part_numbers)])
-        col, row = self.cell % GRID_COLS, self.cell // GRID_COLS
+        rows = self.rows()
+        col, row = self.cell % GRID_COLS, min(self.cell // GRID_COLS, rows - 1)
         col = (col + frame.presses("right") - frame.presses("left")) % GRID_COLS
-        row = (row + frame.presses("down") - frame.presses("up")) % GRID_ROWS
+        row = (row + frame.presses("down") - frame.presses("up")) % rows
         if row * GRID_COLS + col != self.cell or step:
             audio.play("menu_move")
         self.cell = row * GRID_COLS + col
@@ -233,7 +240,9 @@ class CharacterSelectScene(Scene):
         part = self.parts.get(self.tab)
         if part is not None:
             name = f"{text.PART_SHORT.format(n=part.number)} - {part.title}"
-            font.draw(surface, name, (width // 2, 159), shade(part.colors[0], 50), align="center")
+            # Right under the grid, so it follows a tab with fewer rows.
+            y = GRID_Y + self.rows() * (CELL + GAP) + 5
+            font.draw(surface, name, (width // 2, y), shade(part.colors[0], 50), align="center")
         font.draw(surface, text.VS, (width // 2, 172), GOLD, scale=3, align="center")
         for side in (0, 1):
             self._draw_side(surface, side)
@@ -254,7 +263,7 @@ class CharacterSelectScene(Scene):
     def _draw_grid(self, surface: pygame.Surface) -> None:
         grid = self.grid()
         part = self.parts.get(self.tab)
-        for cell in range(GRID_COLS * GRID_ROWS):
+        for cell in range(GRID_COLS * self.rows()):
             rect = self._cell_rect(cell)
             if cell < len(grid):
                 index = grid[cell]

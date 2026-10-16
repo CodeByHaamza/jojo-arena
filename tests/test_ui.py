@@ -198,7 +198,13 @@ def test_locked_cells_and_the_move_list_in_the_select_screen(ctx):
     assert select.move_list.page == 1
     keys(ctx, "Escape")
     assert select.move_list is None
-    keys(ctx, "Down", "Down", "Return")  # an empty cell, bottom row
+    keys(ctx, "Down")  # the last row of the tab, where the slots still to come are
+    for _ in range(4):
+        if select.cursor is None:
+            break
+        keys(ctx, "Right")
+    assert select.cursor is None, "the tab has no empty slot left to try"
+    keys(ctx, "Return")
     assert select.picks == [] and select.toast_f > 0
     keys(ctx, "Escape")
     assert isinstance(ctx.scenes.current, MainMenuScene)
