@@ -286,8 +286,9 @@ class Fighter:
         if self.disarmed_f > 0 and slot in ATTACK_SLOTS:
             stance = self.base_stance  # the Stand's weapon is gone for a moment
         move = None
-        if slot == "special" and frame is not None and frame.move != (0.0, 0.0):
-            move = self.kit.stances[stance].moves.get("special_alt")
+        if slot in ("special", "heavy") and frame is not None and frame.move != (0.0, 0.0):
+            # With a direction held: the variant of the move (special_alt, heavy_alt).
+            move = self.kit.stances[stance].moves.get(f"{slot}_alt")
         move = move or self.kit.move(stance, slot)
         if move is not None and self.cooldowns.get(move, 0) > 0:
             return None
@@ -353,6 +354,14 @@ class Fighter:
                 return [Event("flash_cancel", self.pos, self.index)]
             if self.attack.connected:
                 attack = self.attack
+                if attack.move.name not in SUPER_MOVES:
+                    # Super cancel: a blow that lands goes straight into a Heart Heat attack.
+                    events = self._try_super(frame, target)
+                    if events is not None:
+                        return events
+                    dash_ok = self.rules.dash_cancel_on_hit and attack.move.hits <= 1
+                    if dash_ok and self._try_dash(frame, target):
+                        return []
                 slot = self._take_buffered(attack.move.cancel_on_hit)
                 move = None
                 if slot and slot == attack.slot and attack.move.chain:
@@ -414,23 +423,30 @@ class Fighter:
             return None
         if self._try_dash(frame, target):
             return []
-        if "heart_heat" in self.buffer:
-            # The Heart Heat key alone: Heart Heat Attack (1 bar). With a direction held:
-            # Great Heat Attack (2 bars), or the HHA if there is only one bar.
-            supers = [("hha", self.rules.hha_cost)]
-            if frame.move != (0.0, 0.0):
-                supers.insert(0, ("gha", self.rules.gha_cost))
-            for slot, cost in supers:
-                move = self.kit.move(self.stance, slot)
-                if move is not None and self.hh >= cost:
-                    del self.buffer["heart_heat"]
-                    self.hh -= cost
-                    self.start_attack(move, target)
-                    return [Event(slot, self.pos, self.index)]
+        events = self._try_super(frame, target)
+        if events is not None:
+            return events
         if self._try_attack(frame, target):
             return []
         if self._take_buffered(("stand",)) and self.style.on_pressed(self):
             return [Event("stance_switch", self.pos, self.index)]
+        return None
+
+    def _try_super(self, frame: InputFrame, target: Vec2) -> list[Event] | None:
+        """The Heart Heat key alone: Heart Heat Attack (1 bar). With a direction held:
+        Great Heat Attack (2 bars), or the HHA if there is only one bar."""
+        if "heart_heat" not in self.buffer:
+            return None
+        supers = [("hha", self.rules.hha_cost)]
+        if frame.move != (0.0, 0.0):
+            supers.insert(0, ("gha", self.rules.gha_cost))
+        for slot, cost in supers:
+            move = self.kit.move(self.stance, slot)
+            if move is not None and self.hh >= cost:
+                del self.buffer["heart_heat"]
+                self.hh -= cost
+                self.start_attack(move, target)
+                return [Event(slot, self.pos, self.index)]
         return None
 
     def _try_flash_cancel(self) -> bool:

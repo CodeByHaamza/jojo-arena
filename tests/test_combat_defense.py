@@ -96,9 +96,10 @@ def test_dash_moves_fast_then_recovers():
     run(match, 1, p1=press("dash", move=(0.0, 1.0)))
     fighter = match.fighters[0]
     assert fighter.state == State.DASH
-    run(match, 13)
-    assert fighter.pos.y == pytest.approx(100 + 14 * 5.5)  # 14 frames at 330 px/s
-    run(match, 8)
+    rules = match.rules
+    run(match, rules.dash_duration_f)
+    assert fighter.pos.y == pytest.approx(100 + rules.dash_duration_f * rules.dash_speed)
+    run(match, rules.dash_recovery_f + 1)
     assert fighter.state == State.IDLE
 
 
@@ -137,7 +138,7 @@ def test_slowmo_halves_the_game_speed():
     match = make_match(p1=(100, 100), p2=(300, 100))
     match.slowmo = 60
     run_held(match, 60, p1=walk(1, 0))
-    assert match.fighters[0].pos.x == pytest.approx(100 + 30 * 1.6)
+    assert match.fighters[0].pos.x == pytest.approx(100 + 30 * match.rules.walk_speed)
 
 
 def test_dash_goes_through_the_opponent():

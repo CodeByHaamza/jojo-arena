@@ -5,7 +5,7 @@
 
 name = "DIO (P3)"
 max_hp = 1000
-walk_speed = 100
+walk_speed = 112
 strength = 1.8  # The World: overwhelming strength, it hurls props
 style = { type = "stance_toggle", off = "base", on = "stand", stand_body = true }
 
@@ -80,6 +80,26 @@ unblockable = true
 drain = 0.5
 clashable = false
 anim = "grab"
+
+# With a direction: two slashes on the run.
+[stances.base.moves.heavy_alt]
+label = "GRIFFES EN COURSE"
+info = "Avec une direction : fonce en lacérant deux fois"
+startup_f = 8
+active_f = 8
+recovery_f = 18
+lunge = 260
+hits = 2
+hit_every_f = 4
+damage = 26
+reach = 14
+radius = 11
+hitstun_f = 22
+knockback = 80
+last_knockback = 320
+hitstop_f = 5
+cancel_on_hit = ["special"]
+anim = "heavy"
 
 # Three knives in a fan.
 [stances.base.moves.special]
@@ -197,6 +217,25 @@ last_knockback = 460
 last_wall_bounce = true
 hitstop_f = 1
 anim = "light"
+
+# With a direction: The World drives its knee in and launches.
+[stances.stand.moves.heavy_alt]
+shout = "MUDA !"
+label = "GENOU DU MONDE"
+info = "Avec une direction : The World fonce, coup de genou qui envoie au mur"
+startup_f = 10
+active_f = 5
+recovery_f = 20
+lunge = 220
+damage = 66
+reach = 20
+radius = 13
+hitstun_f = 30
+knockback = 420
+hitstop_f = 10
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "kick"
 
 # The World: time stops for 5 seconds.
 [stances.stand.moves.special]

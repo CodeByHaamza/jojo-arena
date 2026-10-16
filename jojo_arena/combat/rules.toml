@@ -4,7 +4,7 @@
 [body]
 radius = 8            # collision circle at the feet
 hurt_radius = 10      # hurtbox circle, on the ground plane
-walk_speed = 96       # default; a character file can override it
+walk_speed = 108      # default; a character file can override it
 
 [knockback]
 friction = 900        # px/s² slowdown of a body sent flying
@@ -22,10 +22,11 @@ pushback_ratio = 0.5     # knockback × this when blocked
 arc_deg = 180            # the guard covers the front half; hits from behind get through
 
 [dash]
-duration_f = 14
-speed = 330
+duration_f = 13
+speed = 360
 invincible_f = 10        # first frames of the dash
-recovery_f = 8
+recovery_f = 5
+cancel_on_hit = true     # a blow that lands can be cancelled into a dash
 stylish_window_f = 6     # an attack dodged during these first frames = Stylish Evade
 stylish_slowmo_s = 0.5   # the game runs at half speed this long
 

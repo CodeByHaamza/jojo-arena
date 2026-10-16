@@ -44,6 +44,7 @@ class Rules:
     dash_speed: float  # px/frame
     dash_invincible_f: int
     dash_recovery_f: int
+    dash_cancel_on_hit: bool
     stylish_window_f: int
     stylish_slowmo_f: int
     hh_bar: float
@@ -181,6 +182,7 @@ class Rules:
             dash_speed=per_frame(dash["speed"]),
             dash_invincible_f=dash["invincible_f"],
             dash_recovery_f=dash["recovery_f"],
+            dash_cancel_on_hit=dash.get("cancel_on_hit", False),
             stylish_window_f=dash["stylish_window_f"],
             stylish_slowmo_f=seconds_to_frames(dash["stylish_slowmo_s"]),
         )

@@ -6,7 +6,7 @@
 
 name = "Jean Pierre Polnareff"
 max_hp = 880
-walk_speed = 104
+walk_speed = 118
 strength = 1.1  # Silver Chariot: quick rather than strong
 style = { type = "stance_toggle", off = "base", on = "stand", stand_body = true }
 
@@ -93,6 +93,23 @@ knockback = 320
 hitstop_f = 8
 wall_bounce = true
 anim = "leap"
+
+# With a direction: a low slide that sweeps the legs.
+[stances.base.moves.heavy_alt]
+label = "GLISSADE"
+info = "Avec une direction : glisse au ras du sol et fauche"
+startup_f = 7
+active_f = 10
+recovery_f = 16
+lunge = 300
+damage = 40
+reach = 12
+radius = 10
+hitstun_f = 26
+knockback = 220
+hitstop_f = 6
+cancel_on_hit = ["special"]
+anim = "sweep"
 
 # Silver Chariot flashes out for one long thrust, without staying.
 [stances.base.moves.special]
@@ -208,6 +225,27 @@ last_knockback = 400
 last_wall_bounce = true
 hitstop_f = 1
 anim = "light"
+
+# With a direction: Silver Chariot leaps and thrusts down.
+[stances.stand.moves.heavy_alt]
+shape = "line"
+fx = "blade"
+label = "ESTOC PLONGEANT"
+info = "Avec une direction : bondit sur l'adversaire, estoc qui envoie au mur"
+startup_f = 14
+active_f = 5
+recovery_f = 18
+leap = 120
+leap_height = 18
+invincible_f = 10
+damage = 60
+reach = 26
+radius = 7
+hitstun_f = 28
+knockback = 360
+hitstop_f = 9
+wall_bounce = true
+anim = "leap"
 
 # Shoots the rapier's blade; Silver Chariot is disarmed for 2 seconds.
 [stances.stand.moves.special]

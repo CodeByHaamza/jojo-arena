@@ -24,7 +24,7 @@ Unités : les durées en `_f` sont en images (60 par seconde) ; celles en `_s` e
 | `label` | Titre de la page dans la liste des coups |
 | `walk_speed_mult` | Multiplie la vitesse de marche dans cette posture |
 
-Les coups d'une posture : `[stances.<nom>.moves.<touche>]`, où la touche est `light`, `heavy`, `special` ou `special_alt` (spéciale avec une direction tenue). Les coups partagés par toutes les postures vont dans `[moves.<nom>]` : `hha` (Heart Heat Attack, 1 barre) et `gha` (Great Heat Attack, 2 barres).
+Les coups d'une posture : `[stances.<nom>.moves.<touche>]`, où la touche est `light`, `heavy`, `heavy_alt` (coup lourd avec une direction tenue : attaque en mouvement), `special` ou `special_alt` (spéciale avec une direction tenue). Les coups partagés par toutes les postures vont dans `[moves.<nom>]` : `hha` (Heart Heat Attack, 1 barre) et `gha` (Great Heat Attack, 2 barres).
 
 ## Un coup
 

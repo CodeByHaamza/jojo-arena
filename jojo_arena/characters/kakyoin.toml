@@ -7,7 +7,7 @@
 
 name = "Noriaki Kakyoin"
 max_hp = 950
-walk_speed = 96
+walk_speed = 108
 strength = 0.8  # Hierophant Green: slender, it throws softly
 # Hold the Stand key: Hierophant Green leaves him and is steered from afar (GDD "Mode
 # contrôle"), up to remote_range px away, at remote_speed px/s.
@@ -65,6 +65,24 @@ hitstun_f = 30
 knockback = 260
 hitstop_f = 8
 anim = "sweep"
+
+# With a direction: "Let's shake on it" - an elbow that lifts the opponent.
+[stances.base.moves.heavy_alt]
+label = "POIGNÉE DE MAIN"
+info = "Avec une direction : un coup de coude qui soulève"
+startup_f = 9
+active_f = 4
+recovery_f = 18
+lunge = 120
+damage = 40
+reach = 13
+radius = 11
+hitstun_f = 30
+knockback = 320
+hitstop_f = 7
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "heavy"
 
 # A small Emerald Splash that curves toward the target.
 [stances.base.moves.special]
@@ -159,6 +177,23 @@ hitstun_f = 32
 knockback = -280
 hitstop_f = 6
 cancel_on_hit = ["light", "special"]
+
+# With a direction: "You're already in my grasp!" - tentacles spike up from the ground
+# right under the opponent.
+[stances.stand.moves.heavy_alt]
+label = "TENTACULES DU SOL"
+info = "Avec une direction : les tentacules jaillissent du sol sous l'adversaire"
+startup_f = 18
+active_f = 6
+recovery_f = 18
+at_target = true
+fx = "tentacle"
+damage = 45
+radius = 12
+hitstun_f = 30
+knockback = 160
+hitstop_f = 7
+anim = "special"
 
 # Emerald Splash!
 [stances.stand.moves.special]

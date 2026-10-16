@@ -391,6 +391,8 @@ Un perso est « fini » quand il a : son kit codé et testé contre 3 autres per
 - Road Roller : coup de The World, ZA WARUDO, DIO s'envole hors champ, revient avec le rouleau compresseur, l'écrase, martèle de MUDA, le temps reprend, explosion.
 - Mode contrôle (Kakyoin) : maintenir Stand 0,5 s, HG va jusqu'à 150 px de Kakyoin ; fouet, Emerald Splash et fils depuis HG ; possession (coup lourd, imparable) : on dirige la marche de l'adversaire 1,5 s. Kakyoin ou HG touché : HG revient, Kakyoin sonné 0,8 s.
 - Objets : Pose près d'une caisse ou d'une jarre : c'est le Stand qui la prend, même rangé, et la tient pendant que son manieur se bat normalement ; Pose de nouveau : le Stand la lance sur l'adversaire. La force du Stand (`strength` dans le kit) règle la vitesse, les dégâts et le recul : Star Platinum et The World (1,8) lancent ultra vite et fort, avec rebond contre les murs ; Silver Chariot 1,1 ; Hierophant Green 0,8. Touché, on la lâche. Cassée, elle revient à sa place (caisse 10 s, jarre 8 s).
+- Gameplay nerveux : marche et dash plus rapides ; un coup qui touche peut s'annuler en dash ou en HHA/GHA (super cancel) ; direction + coup lourd = attaque en mouvement propre à chaque perso. Impact frames (2 images noir et blanc façon anime) puis coup de zoom sur les gros coups, contres, Guard Break et K.O.
+- HHA de Kakyoin : les tentacules frappent d'en haut ; s'ils touchent, Hierophant entre par la bouche de l'adversaire et le détruit de l'intérieur (comme contre Death 13 et dans ASBR).
 - Entraînement : pas d'IA. Mannequin immobile, en garde ou joué par J2 ; vie infinie (rechargée une fois le combo fini) et jauge Heart Heat infinie, désactivables ; un K.O. replace les deux persos sans score ; compteur de coups et de dégâts.
 
 ## Sources

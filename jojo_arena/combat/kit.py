@@ -10,7 +10,8 @@ from jojo_arena.combat.rules import HZ, per_frame
 from jojo_arena.engine.data import load_toml, seconds_to_frames
 
 # Input slots that start a move; the stance decides which move each slot maps to.
-# "special" pressed while a direction is held uses the "special_alt" move if there is one.
+# "special" (or "heavy") pressed while a direction is held uses the "special_alt" (or
+# "heavy_alt") move if there is one.
 ATTACK_SLOTS = ("light", "heavy", "special")
 
 

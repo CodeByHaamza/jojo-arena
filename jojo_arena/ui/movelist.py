@@ -30,7 +30,8 @@ from jojo_arena.ui.widgets import (
     veil,
 )
 
-STANCE_SLOTS = ("light", "heavy", "special", "special_alt")
+STANCE_SLOTS = ("light", "heavy", "heavy_alt", "special", "special_alt")
+VARIANTS = {"heavy_alt": "heavy", "special_alt": "special"}  # a direction + this button
 NAME_X = 128
 TOP = 64
 
@@ -74,7 +75,7 @@ def build_pages(
             move = stance.moves.get(slot)
             if move is None:
                 continue
-            keys = (text.DIRECTION, key("special")) if slot == "special_alt" else (key(slot),)
+            keys = (text.DIRECTION, key(VARIANTS[slot])) if slot in VARIANTS else (key(slot),)
             entries.append(MoveEntry(keys, move.label or slot.upper(), move.info))
             if move.counter and move.counter in stance.moves:
                 # The answer of a counter comes out on its own, when struck.

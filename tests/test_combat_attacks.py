@@ -11,7 +11,8 @@ SPECIAL = 55
 def test_walking_moves_at_walk_speed():
     match = make_match(p1=(100, 100), p2=(300, 100))
     run_held(match, 60, p1=walk(1, 0))
-    assert match.fighters[0].pos.x == pytest.approx(196)  # 96 px/s for one second
+    speed = match.rules.walk_speed  # px per frame
+    assert match.fighters[0].pos.x == pytest.approx(100 + 60 * speed)  # one second
     assert match.fighters[0].state == State.WALK
     assert match.fighters[0].facing.x == 1
 

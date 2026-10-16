@@ -9,7 +9,7 @@
 
 name = "Jotaro Kujo (P3)"
 max_hp = 1000
-walk_speed = 92
+walk_speed = 104
 strength = 1.8  # Star Platinum: overwhelming strength, it hurls props
 style = { type = "stance_toggle", off = "base", on = "stand", stand_body = true }
 
@@ -81,6 +81,24 @@ knockback = 220
 hitstop_f = 10
 guard_damage = 3.0
 anim = "headbutt"
+
+# With a direction: a running knee that lifts the opponent.
+[stances.base.moves.heavy_alt]
+label = "GENOU EN COURSE"
+info = "Avec une direction : fonce et soulève d'un coup de genou"
+startup_f = 9
+active_f = 6
+recovery_f = 18
+lunge = 240
+damage = 50
+reach = 12
+radius = 11
+hitstun_f = 28
+knockback = 300
+hitstop_f = 8
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "kick"
 
 # Shoulder charge: armored, it walks through a blow.
 [stances.base.moves.special]
@@ -206,6 +224,25 @@ last_knockback = 480
 last_wall_bounce = true
 hitstop_f = 1
 anim = "light"
+
+# With a direction: Star Platinum charges in with a huge straight.
+[stances.stand.moves.heavy_alt]
+shout = "ORA !"
+label = "DIRECT EN COURSE"
+info = "Avec une direction : Star Platinum fonce, gros direct qui envoie au mur"
+startup_f = 11
+active_f = 6
+recovery_f = 20
+lunge = 280
+damage = 70
+reach = 22
+radius = 13
+hitstun_f = 30
+knockback = 460
+hitstop_f = 10
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "heavy"
 
 # Star Platinum: The World - stops time for 3 seconds.
 [stances.stand.moves.special]

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+import random
 from dataclasses import dataclass
 
 import pygame
@@ -276,6 +277,11 @@ class FightView:
         self.debug = False  # F3: draw the circles the simulation hits with
         self.cutscene = None  # the ultimate's cutscene being played, if any
         self.pose_keys: tuple[str, str] = ("", "")  # shown over a prop that can be picked up
+        # Impact frames: a couple of stark black and white frames on the biggest blows,
+        # then a short punch-in of the camera on the point of impact.
+        self.impact_f = 0
+        self.punch_f = 0
+        self.impact_at = Vec2(240, 135)
         self._block_word_f = [0, 0]
 
     # Reacting to the simulation ------------------------------------------------------
@@ -338,6 +344,12 @@ class FightView:
             elif event.kind == "ko":
                 self.shake = max(self.shake, 14)
 
+    def impact(self, at: Vec2, frames: int = 2, punch: int = 5) -> None:
+        """Stark impact frames, then a punch-in of the camera, on a big blow."""
+        self.impact_f = max(self.impact_f, frames)
+        self.punch_f = max(self.punch_f, frames + punch)
+        self.impact_at = at
+
     def _shout_style(self, index: int):
         return sfx.shout_style(self.fighter_defs[index].aura)
 
@@ -360,6 +372,7 @@ class FightView:
                     center = base + self.chest(attacker.index) + Vec2(0, -24)
                     style = self._shout_style(attacker.index)
                     if attack.hits_done >= move.hits:
+                        self.impact(pos)
                         words.add(word + " !", center + Vec2(0, -12), style, 3, 44, 0.3, 2)
                         words.add(sfx.DOGO, pos + Vec2(0, -16), "impact", 3, 36, 0.4, 1)
                         fx.add(vfx.Ring(pos, (255, 240, 200), 3.0, 12, 3))
@@ -369,6 +382,7 @@ class FightView:
                     fx.add(vfx.Flash(pos, 12))
                     continue
                 if event.value >= 70:
+                    self.impact(pos)
                     words.add(sfx.DON if self.tick % 2 else sfx.DOGO, pos + Vec2(0, -14))
                     fx.add(vfx.Flash(pos, 18))
                     fx.add(vfx.Ring(pos, (255, 236, 190), 2.5, 10))
@@ -384,6 +398,7 @@ class FightView:
                     self._block_word_f[event.fighter] = 12
                 fx.add(vfx.Flash(pos, 8, (120, 170, 255)))
             elif kind == "guard_break":
+                self.impact(pos)
                 words.add(sfx.BAKI, pos + Vec2(0, -16), "white", 3, 40, 0.3, 2)
                 fx.add(vfx.Ring(pos, (200, 220, 255), 3.0, 14, 3))
                 fx.focus(pos, heavy=True)
@@ -396,6 +411,7 @@ class FightView:
                 fx.dust(event.pos, 10, 1.8, 4)
             elif kind == "ko" and event.fighter is not None:
                 loser = match.fighters[event.fighter]
+                self.impact(pos, frames=3, punch=10)
                 words.add(sfx.BAAN, self._head(loser) + Vec2(0, -6), "ko", 4, 80, 0.15, 1)
                 fx.add(vfx.Ring(pos, (255, 90, 90), 3.5, 18, 3))
                 fx.dust(loser.pos, 12, 2.0, 4)
@@ -405,6 +421,9 @@ class FightView:
                 self.cutscene = None
                 self.flash = 6
                 self.shake = max(self.shake, 12)
+                victim = match.fighters[1 - event.fighter] if event.fighter is not None else None
+                if victim is not None:
+                    self.impact(victim.pos + self.chest(victim.index), frames=3, punch=8)
             elif kind == "clash_start":
                 shouts = tuple(self._rush_word(f) for f in match.fighters)
                 self.duel = DuelScreen(self.fighter_views, self.fighter_defs, shouts)
@@ -416,6 +435,7 @@ class FightView:
                 self.duel = None
                 self.flash = 8
                 champion = match.fighters[event.fighter]
+                self.impact(pos, frames=3)
                 shout = self._rush_word(champion) + " !"
                 words.add(shout, self._head(champion), self._shout_style(champion.index), 3, 50)
                 words.add(sfx.DOGO, pos, "impact", 3, 40, 0.4, 2)
@@ -433,6 +453,7 @@ class FightView:
                     side = -1 if user.facing.x >= 0 else 1
                     words.menace(user.pos + self.chest(user.index), side)
             elif kind == "delayed_hits":
+                self.impact(pos, frames=3)
                 words.add(sfx.DOGO, pos + Vec2(0, -10), "impact", 3, 44, 0.3, 2)
                 fx.add(vfx.Ring(pos, (255, 230, 180), 3.5, 16, 3))
                 fx.focus(pos, heavy=True)
@@ -465,6 +486,7 @@ class FightView:
                 words.add(sfx.MENACE * 4, self._head(victim), "menace", 2, 60, 0.25, 1)
             elif kind == "counter" and event.fighter is not None:
                 user = match.fighters[event.fighter]
+                self.impact(pos)
                 aura = self.fighter_defs[user.index].aura
                 words.add(sfx.DON, self._head(user), "white", 3, 40, 0.3, 2)
                 fx.add(vfx.Ring(pos, aura, 3.5, 16, 3))
@@ -515,6 +537,8 @@ class FightView:
     def update(self, match: Match | None = None) -> None:
         for view in self.fighter_views:
             view.throw_f = max(0, view.throw_f - 1)
+        self.impact_f = max(0, self.impact_f - 1)
+        self.punch_f = max(0, self.punch_f - 1)
         if match is not None:
             self._observe(match)
             if match.clash is None:
@@ -621,11 +645,51 @@ class FightView:
             surface.blit(negative, (0, 0), special_flags=pygame.BLEND_RGB_SUB)
         if match.slowmo:
             surface.blit(self._overlay(surface.get_size(), (40, 30, 90, 50)), (0, 0))
+        if self.impact_f:
+            self._draw_impact_frame(surface, match)
         self.words.draw(surface)
         self._finish_frame(surface)
 
+    def _draw_impact_frame(self, surface: pygame.Surface, match: Match) -> None:
+        """An anime impact frame: the fighters as flat silhouettes, black on white or white
+        on black, with speed lines bursting from the blow."""
+        light = self.impact_f % 2 == 0
+        paper, ink = ((240, 236, 228), (16, 10, 20)) if light else ((16, 10, 20), (250, 246, 240))
+        surface.fill(paper)
+        center = self.impact_at
+        rng = random.Random(self.tick)
+        for _ in range(40):
+            angle = rng.uniform(0, math.tau)
+            inner = rng.uniform(18, 40)
+            a = center + Vec2.from_angle(angle, inner)
+            b = center + Vec2.from_angle(angle, inner + rng.uniform(120, 320))
+            pygame.draw.line(surface, ink, a.as_ints(), b.as_ints(), rng.choice((1, 2, 3)))
+        for fighter in match.fighters:
+            view = self.fighter_views[fighter.index]
+            image = view.current_frame(fighter)
+            mask = pygame.mask.from_surface(image)
+            silhouette = mask.to_surface(setcolor=(*ink, 255), unsetcolor=(0, 0, 0, 0))
+            ax, ay = view.sprites.anchor
+            _, flip = sprite_direction(fighter.facing.x, fighter.facing.y)
+            if flip:
+                ax = image.get_width() - 1 - ax
+            surface.blit(silhouette, (round(fighter.pos.x) - ax, round(fighter.pos.y) - ay))
+        blit_glow(surface, radial_glow(18, (255, 255, 255) if not light else (90, 80, 70)), center)
+
     def _finish_frame(self, surface: pygame.Surface) -> None:
-        """Screen-wide touches applied last: white flash and shake."""
+        """Screen-wide touches applied last: camera punch-in, white flash and shake."""
+        if self.punch_f and not self.impact_f:
+            width, height = surface.get_width() // 2, surface.get_height() // 2
+            x = round(min(max(self.impact_at.x - width / 2, 0), surface.get_width() - width))
+            y = round(min(max(self.impact_at.y - height / 2, 0), surface.get_height() - height))
+            zoomed = pygame.transform.scale(
+                surface.subsurface((x, y, width, height)),
+                (
+                    surface.get_width(),
+                    surface.get_height(),
+                ),
+            )
+            surface.blit(zoomed, (0, 0))
         if self.flash:
             surface.blit(
                 self._overlay(surface.get_size(), (255, 255, 255, 20 * self.flash)), (0, 0)
@@ -664,7 +728,12 @@ class FightView:
         """A heavy object dropping on a spot (moves that land on the target): its shadow
         grows on the floor while it falls."""
         attack = fighter.attack
-        if attack is None or not attack.move.at_target or attack.phase != 0:
+        if attack is None or not attack.move.at_target or attack.phase > 1:
+            return
+        if attack.move.fx == "tentacle":
+            self._draw_ground_tentacles(surface, fighter)
+            return
+        if attack.phase != 0:
             return
         progress = attack.frame / max(1, attack.move.startup_f)
         target = attack.target
@@ -676,6 +745,24 @@ class FightView:
         surface.fill(OUTLINE, block.inflate(2, 2))
         surface.fill((90, 96, 108), block)
         surface.fill((140, 146, 160), (block.x, block.y, block.w, 4))
+
+    def _draw_ground_tentacles(self, surface: pygame.Surface, fighter: Fighter) -> None:
+        """Tentacles about to burst from the ground under the target: a ring that tightens,
+        then the tentacles spike up."""
+        attack, move = fighter.attack, fighter.attack.move
+        aura = self.fighter_defs[fighter.index].aura
+        target = attack.target
+        if attack.phase == 0:
+            progress = attack.frame / max(1, move.startup_f)
+            radius = round(move.radius * (1.6 - 0.6 * progress))
+            pygame.draw.circle(surface, shade(aura, -60), target.as_ints(), radius, 1)
+            return
+        rise = min(1.0, (attack.active_offset + 1) / 3)
+        for i in range(5):
+            angle = i * math.tau / 5 + 0.4
+            root = target + Vec2(math.cos(angle) * move.radius * 0.6, math.sin(angle) * 4)
+            tip = root + Vec2(math.cos(angle) * 3, -26 * rise)
+            vfx.draw_reach(surface, root, tip, aura, "tentacle", 2)
 
     def _draw_clash(self, surface: pygame.Surface, match: Match) -> None:
         clash = match.clash
@@ -842,6 +929,8 @@ class FightView:
         attack = fighter.attack
         if fighter.state != State.ATTACK or attack is None or not attack.move.fx:
             return
+        if attack.move.at_target:
+            return  # drawn rising from the ground instead
         if attack.dest is not None and attack.phase == 0:
             # A grapple: the tentacle is anchored where the user is being pulled.
             view = self.fighter_views[fighter.index]

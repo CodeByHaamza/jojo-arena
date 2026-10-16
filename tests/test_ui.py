@@ -77,7 +77,7 @@ def test_move_list_shows_every_move_of_every_character():
         for move in fighter.kit.all_moves():
             assert move.label and move.label in names, (fighter.id, move.name)
         alts = [e for p in pages for e in p.entries if e.keys[:1] == (text.DIRECTION,)]
-        assert alts and all(e.keys[1] in ("L", "O") for e in alts)  # special or Heart Heat
+        assert alts and all(e.keys[1] in ("K", "L", "O") for e in alts)  # heavy, special, HH
 
 
 def test_input_labels():
