@@ -35,6 +35,8 @@ HAIR_SHEEN = (150, 120, 190)
 CHAIN = (170, 170, 184)
 CHAIN_DARK = (100, 100, 112)
 HAMON_EDGE = (255, 220, 110)
+SCARF = (168, 40, 58)
+SCARF_LIGHT = (226, 96, 104)
 
 
 def _side(d: Vec2) -> Vec2:
@@ -56,6 +58,18 @@ def draw_projectile(
         _draw_wine(surface, pos, d)
     elif look == "hat":
         _draw_hat(surface, pos, d)
+    elif look == "clacker":
+        _draw_clacker(surface, pos, d)
+    elif look == "grenade":
+        _draw_grenade(surface, pos)
+    elif look == "bubble":
+        _draw_bubble(surface, pos, radius)
+    elif look == "bullet":
+        _draw_bullet(surface, pos, d)
+    elif look == "spark":
+        _draw_spark(surface, pos, d)
+    elif look == "jet":
+        _draw_jet(surface, pos, d, aura)
     else:
         _draw_orb(surface, pos, radius, aura)
 
@@ -127,6 +141,71 @@ def _draw_hat(surface, pos: Vec2, d: Vec2) -> None:
         surface.set_at(_ints(tip), (240, 240, 255))
 
 
+def _draw_clacker(surface, pos: Vec2, d: Vec2) -> None:
+    """Hamon clackers: two steel balls on a cord, whirling around their middle."""
+    spin = (pos.x + pos.y) * 0.4
+    arm = Vec2(math.cos(spin), math.sin(spin) * 0.6) * 5
+    a, b = pos + arm, pos - arm
+    blit_glow(surface, radial_glow(8, (80, 64, 12)), (pos.x, pos.y))
+    pygame.draw.line(surface, OUTLINE, _ints(a), _ints(b), 3)
+    pygame.draw.line(surface, HAMON_EDGE, _ints(a), _ints(b), 1)
+    for ball in (a, b):
+        pygame.draw.circle(surface, OUTLINE, _ints(ball), 3)
+        pygame.draw.circle(surface, STEEL_DARK, _ints(ball), 2)
+        surface.set_at(_ints(ball + Vec2(-1, -1)), STEEL)
+
+
+GRENADE = (70, 96, 52)
+GRENADE_DARK = (40, 58, 32)
+
+
+def _draw_grenade(surface, pos: Vec2) -> None:
+    """A pineapple grenade, pin pulled, rolling on the ground."""
+    x, y = _ints(pos)
+    pygame.draw.ellipse(surface, OUTLINE, (x - 4, y - 5, 9, 10))
+    pygame.draw.ellipse(surface, GRENADE, (x - 3, y - 4, 7, 8))
+    for row in (-2, 1):
+        surface.fill(GRENADE_DARK, (x - 2, y + row, 5, 1))
+    surface.fill(OUTLINE, (x - 1, y - 7, 3, 2))
+    surface.fill(STEEL_DARK, (x, y - 7, 1, 1))
+    surface.set_at((x - 1, y - 3), (150, 180, 120))
+
+
+def _draw_bubble(surface, pos: Vec2, radius: float) -> None:
+    """A soap bubble charged with Hamon: a thin iridescent ring with a bright glint."""
+    r = max(3, round(radius))
+    center = _ints(pos)
+    blit_glow(surface, radial_glow(r + 4, (40, 34, 10)), (pos.x, pos.y))
+    pygame.draw.circle(surface, (120, 200, 230), center, r, 1)
+    hue = int(pos.x + pos.y) % 3
+    tint = ((240, 150, 220), (150, 240, 200), (250, 230, 140))[hue]
+    pygame.draw.arc(surface, tint, (center[0] - r, center[1] - r, 2 * r, 2 * r), 3.6, 5.6, 1)
+    surface.set_at((center[0] - r // 2, center[1] - r // 2), (255, 255, 255))
+
+
+def _draw_bullet(surface, pos: Vec2, d: Vec2) -> None:
+    """A tommy gun bullet: a short bright streak."""
+    head, tail = pos + d * 2, pos - d * 5
+    pygame.draw.line(surface, (120, 90, 30), _ints(head), _ints(tail), 2)
+    pygame.draw.line(surface, (255, 236, 160), _ints(head), _ints(pos), 1)
+
+
+def _draw_spark(surface, pos: Vec2, d: Vec2) -> None:
+    """A Hamon spark running along a thread: a short zigzag of light."""
+    blit_glow(surface, radial_glow(7, (90, 70, 10)), (pos.x, pos.y))
+    side = _side(d)
+    points = [pos - d * 5, pos - d * 2 + side * 2, pos + d * 1 - side * 2, pos + d * 4]
+    pygame.draw.lines(surface, (255, 236, 120), False, [_ints(p) for p in points], 1)
+    surface.set_at(_ints(pos + d * 4), (255, 255, 255))
+
+
+def _draw_jet(surface, pos: Vec2, d: Vec2, aura) -> None:
+    """A pressurized jet from the eyes: a long thin streak, white-hot in the core."""
+    head, tail = pos + d * 5, pos - d * 10
+    pygame.draw.line(surface, shade(aura, -40), _ints(head), _ints(tail), 2)
+    pygame.draw.line(surface, (255, 255, 255), _ints(head), _ints(pos - d * 4), 1)
+
+
 def _draw_wine(surface, pos: Vec2, d: Vec2) -> None:
     """A jet of wine made sharp as a blade by Hamon: a red streak with a golden edge."""
     blit_glow(surface, radial_glow(8, (90, 66, 10)), (pos.x, pos.y))
@@ -173,6 +252,39 @@ def draw_reach(
         return
     if kind == "chain":
         draw_chain(surface, start, tip)
+        return
+    if kind == "lens":
+        # A bubble held up as a lens: sunlight focused through it into one hot ray.
+        d = (tip - start).normalized()
+        lens = start + d * 6
+        pygame.draw.line(surface, (255, 200, 80), _ints(lens), _ints(tip), width + 1)
+        pygame.draw.line(surface, (255, 255, 230), _ints(lens), _ints(tip), 1)
+        _draw_bubble(surface, lens, 4)
+        blit_glow(surface, radial_glow(8 + 2 * width, (120, 90, 20)), _ints(tip))
+        return
+    if kind in ("scarf", "scarf_spear"):
+        # Lisa Lisa's scarf: a red ribbon rippling with Hamon, or held stiff as a spear.
+        d = (tip - start).normalized()
+        side = _side(d)
+        length = (tip - start).length()
+        steps = max(3, round(length / 3))
+        points = []
+        for i in range(steps + 1):
+            t = i / steps
+            wave = 0.0 if kind == "scarf_spear" else math.sin(t * 10 - length * 0.2) * 2.2 * t
+            points.append(_ints(start + (tip - start) * t + side * wave))
+        pygame.draw.lines(surface, OUTLINE, False, points, width + 2)
+        pygame.draw.lines(surface, SCARF, False, points, width)
+        pygame.draw.lines(surface, SCARF_LIGHT, False, points[: len(points) * 2 // 3], 1)
+        if kind == "scarf_spear":
+            head = [tip + d * 4, tip + side * 3, tip - side * 3]
+            pygame.draw.polygon(surface, OUTLINE, [_ints(q) for q in head])
+            pygame.draw.polygon(
+                surface,
+                HAMON_EDGE,
+                [_ints(q) for q in (tip + d * 3, tip + side * 2, tip - side * 2)],
+            )
+        blit_glow(surface, radial_glow(7, (90, 70, 10)), _ints(tip))
         return
     if kind == "beam":
         # Two jets, one from each eye, white hot in the core.

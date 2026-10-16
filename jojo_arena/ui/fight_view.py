@@ -306,6 +306,7 @@ class FightView:
         self.punch_f = 0
         self.impact_at = Vec2(240, 135)
         self._block_word_f = [0, 0]
+        self._burst_word_f = 0
 
     # Reacting to the simulation ------------------------------------------------------
 
@@ -371,6 +372,9 @@ class FightView:
                 self.sparks.append(Spark(pos, 18, 18, color, 18 if event.value else 12, 8))
             elif event.kind == "ko":
                 self.shake = max(self.shake, 14)
+            elif event.kind == "explosion":
+                self.sparks.append(Spark(event.pos, 30, 30, (255, 170, 60), 26, 12))
+                self.shake = max(self.shake, 12)
 
     def impact(self, at: Vec2, frames: int = 2, punch: int = 5) -> None:
         """Stark impact frames, then a punch-in of the camera, on a big blow."""
@@ -547,6 +551,27 @@ class FightView:
                 fx.dust(event.pos + Vec2(0, -10), 3, 0.8, 1, (120, 110, 110), 22)
                 if event.value:
                     words.add(sfx.SIZZLE, pos + Vec2(0, -16), "impact", 2, 24, 0.5, 1)
+            elif kind == "explosion":
+                blast = event.pos + Vec2(0, -6)
+                self.impact(blast, frames=1, punch=4)
+                fx.add(vfx.Ring(blast, (255, 200, 90), event.value / 8, 16, 3))
+                fx.add(vfx.Flash(blast, round(event.value), (255, 150, 50), 12))
+                fx.dust(event.pos, 12, 2.2, 4, (90, 80, 76), 26)
+                words.add(sfx.BOOM, blast + Vec2(0, -14), "impact", 3, 40, 0.4, 2)
+            elif kind == "reflect" and event.fighter is not None:
+                aura = self.fighter_defs[event.fighter].aura
+                fx.add(vfx.Ring(pos, aura, 2.0, 12, 2))
+                fx.add(vfx.Flash(pos, 14, (255, 236, 150), 6))
+                words.add(sfx.CRACKLE, pos + Vec2(0, -12), sfx.HAMON, 2, 24, 0.5, 1)
+            elif kind == "burst":
+                fx.add(vfx.Ring(pos, (200, 240, 255), 1.2, 10, 1))
+                fx.add(vfx.Flash(pos, 10, (255, 236, 150), 6))
+                if self._burst_word_f <= 0:
+                    words.add(sfx.POP, pos + Vec2(0, -10), sfx.HAMON, 2, 24, 0.5, 1)
+                    self._burst_word_f = 8
+            elif kind == "foreseen" and event.fighter is not None:
+                seer = match.fighters[1 - event.fighter]
+                words.add(text.FORESEEN, self._head(seer), self._shout_style(seer.index), 2, 60)
             elif kind == "armor":
                 fx.add(vfx.Flash(pos, 16, (255, 150, 60), 6))
                 fx.add(vfx.Ring(pos, (255, 170, 80), 2.0, 10))
@@ -582,6 +607,20 @@ class FightView:
                 if fighter.state_f % 56 == 0:
                     words = sfx.BREATH
                     self.words.add(words, self._head(fighter), sfx.HAMON, 2, 46, 0.3, 0)
+            ready = fighter.kit.pose_counter_ready_f
+            if (
+                fighter.state == State.POSE
+                and fighter.kit.pose_counter
+                and fighter.state_f == ready
+            ):
+                # "Your next line is...!": he calls the opponent's next move.
+                opponent = match.opponent(fighter)
+                move = opponent.kit.move(opponent.stance, opponent.last_slot)
+                line = (move.shout or move.label) if move is not None else "!"
+                head = self._head(fighter)
+                style = self._shout_style(i)
+                self.words.add(text.NEXT_LINE, head + Vec2(0, -10), style, 1, 70, 0.1, 0)
+                self.words.add(line.rstrip(" !") + " !", head, style, 2, 70, 0.1, 0)
             if fighter.state == State.POSE and fighter.state_f % 16 == 0:
                 side = 1 if (fighter.state_f // 16) % 2 else -1
                 self.words.menace(fighter.pos + self.chest(i), side)
@@ -602,6 +641,7 @@ class FightView:
             view.throw_f = max(0, view.throw_f - 1)
         self.impact_f = max(0, self.impact_f - 1)
         self.punch_f = max(0, self.punch_f - 1)
+        self._burst_word_f = max(0, self._burst_word_f - 1)
         if match is not None:
             self._observe(match)
             if match.clash is None:
@@ -876,6 +916,11 @@ class FightView:
                 pygame.draw.line(surface, (220, 214, 232), a.as_ints(), b.as_ints(), 1)
             return
         look = projectile.defn.look
+        if look == "grenade":
+            pos = projectile.pos + Vec2(0, -3)  # a grenade rolls on the ground
+            if projectile.life < 30 and (projectile.life // 4) % 2 == 0:
+                # About to blow: it blinks, a red glow under it.
+                blit_glow(surface, radial_glow(10, (120, 20, 10)), (pos.x, pos.y))
         vfx.draw_projectile(surface, look, pos, projectile.velocity, projectile.radius, aura)
 
     def _draw_debug(self, surface: pygame.Surface, match: Match) -> None:

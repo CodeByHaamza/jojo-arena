@@ -161,6 +161,11 @@ def build_pages(
         MoveEntry((key("pose"),), text.SYS_POSE, text.SYS_POSE_INFO),
         MoveEntry((key("pose"),), text.SYS_PROP, prop_info),
     ]
+    if kit.pose_counter:
+        # Posing calls the opponent's next move: right, it is answered at once.
+        answer = kit.move(kit.base_stance_name, kit.pose_counter)
+        entry = MoveEntry((key("pose"),), answer.label or answer.name, _info(answer))
+        basics.insert(4, entry)
     if kit.style == "hamon":
         basics.insert(1, MoveEntry((key("stand"),), text.SYS_BREATH, text.SYS_BREATH_INFO))
     if kit.style == "vampire":

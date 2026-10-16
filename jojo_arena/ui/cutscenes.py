@@ -1074,6 +1074,118 @@ class NeckBreaker(CutscenePlayer):
                 vfx.draw_chain(world, link, link + Vec2(1, 0))
 
 
+# Lisa Lisa: the scarf trap ----------------------------------------------------------------
+
+
+class ScarfTrap(CutscenePlayer):
+    """The scarf caught: it wraps round and round the opponent, then Lisa Lisa runs her
+    Hamon through it, and the whole bundle blazes."""
+
+    length = 180
+    BLAZE = 120
+
+    def camera(self, f):
+        if f < 14:
+            return (self.u + self.v) * 0.5, 2
+        return self.v + Vec2(0, -18), 2
+
+    def cue(self, f):
+        fx = self.fx
+        hit = self.chest(self.scene.target, self.v)
+        if f == 1:
+            self.world_words.add(sfx.DON, self.head(self.scene.target, self.v), "impact", 2, 30)
+            fx.add(vfx.Flash(hit, 14))
+            self.shake = 6
+        if 30 <= f < self.BLAZE and f % 18 == 0:
+            self.world_words.menace(hit, 1 if f % 36 else -1)
+        if f == self.BLAZE - 20:
+            self.shout(text.SCARF_TRAP_LINE, scale=2, life=40)
+        if f == self.BLAZE:
+            fx.add(vfx.Flash(hit, 34, (255, 220, 80), 12))
+            fx.add(vfx.Ring(hit, (255, 220, 80), 4.0, 18, 3))
+            fx.focus(hit, heavy=True)
+            self.world_words.add(sfx.CRACKLE, hit + Vec2(0, -16), sfx.HAMON, 3, 46, 0.2, 2)
+            self.flash, self.shake = 8, 16
+        if f > self.BLAZE and f % 10 == 0:
+            fx.add(vfx.Ring(hit, (255, 214, 80), 2.0, 12, 1))
+
+    def negative(self, f):
+        return self.BLAZE <= f < self.BLAZE + 3
+
+    def scene_draw(self, world, f):
+        user, right = self.scene.user, self.side > 0
+        self.body(world, user, self.u, "special", 2, right)
+        self.victim(world, f)
+        hit = self.chest(self.scene.target, self.v)
+        hands = self.chest(user, self.u) + Vec2(self.side * 6, 0)
+        kind = "scarf_spear" if f >= self.BLAZE else "scarf"
+        vfx.draw_reach(world, hands, hit, (168, 40, 58), kind, 2)
+        # The scarf wound round the victim, more turns as it goes.
+        turns = min(5, f // 16)
+        for i in range(turns):
+            y = hit.y - 12 + i * 5
+            band = pygame.Rect(round(hit.x) - 8, round(y), 16, 3)
+            pygame.draw.rect(world, (23, 18, 31), band.inflate(2, 2))
+            color = (255, 220, 110) if f >= self.BLAZE and (f // 3 + i) % 2 else (168, 40, 58)
+            pygame.draw.rect(world, color, band)
+
+
+# Straizo: the eye barrage -----------------------------------------------------------------
+
+
+class EyeBarrage(CutscenePlayer):
+    """The first jet struck: Straizo opens his eyes wide and fires jet after jet,
+    sweeping the whole screen, until the last one pierces through."""
+
+    length = 170
+    LAST = 132
+
+    def camera(self, f):
+        if f < 30:
+            return self.u + Vec2(0, -24), 3  # close on the eyes
+        return (self.u + self.v) * 0.5, 2
+
+    def cue(self, f):
+        fx = self.fx
+        hit = self.chest(self.scene.target, self.v)
+        if f == 1:
+            self.shake = 4
+            self.world_words.add(
+                sfx.MENACE * 2, self.head(self.scene.user, self.u), "menace", 2, 30
+            )
+        if f == 18:
+            self.shout(text.EYE_BARRAGE_LINE, scale=2, life=40)
+        if 30 <= f < self.LAST and f % 6 == 0:
+            fx.add(vfx.Flash(hit + Vec2(self.rng.randint(-8, 8), self.rng.randint(-10, 6)), 10))
+            self.shake = max(self.shake, 3)
+        if f == self.LAST:
+            fx.add(vfx.Flash(hit, 34, (255, 255, 255), 10))
+            fx.focus(hit, heavy=True)
+            self.world_words.add(sfx.DOGO, hit + Vec2(0, -14), "impact", 3, 46, 0.2, 2)
+            self.flash, self.shake = 8, 16
+
+    def negative(self, f):
+        return self.LAST <= f < self.LAST + 3
+
+    def scene_draw(self, world, f):
+        user, right = self.scene.user, self.side > 0
+        self.body(world, user, self.u, "special", 1, right)
+        self.victim(world, f)
+        if f < 30:
+            return
+        eyes = self.head(user, self.u) + Vec2(self.side * 3, 9)
+        hit = self.chest(self.scene.target, self.v)
+        color = self.aura(user)
+        if f < self.LAST and f % 3 != 2:
+            # Jets sweeping across, most of them on target.
+            sweep = math.sin(f * 0.7) * 40
+            tip = hit + Vec2(self.side * 30, sweep)
+            vfx.draw_reach(world, eyes, tip, color, "beam", 1)
+        if f >= self.LAST and f < self.LAST + 10:
+            far = hit + (hit - eyes).normalized() * 120
+            vfx.draw_reach(world, eyes, far, color, "beam", 2)
+
+
 CUTSCENES = {
     "road_roller": RoadRoller,
     "star_finish": StarFinish,
@@ -1085,6 +1197,8 @@ CUTSCENES = {
     "absorption": Absorption,
     "hair_dance": HairDance,
     "neck_breaker": NeckBreaker,
+    "scarf_trap": ScarfTrap,
+    "eye_barrage": EyeBarrage,
 }
 
 

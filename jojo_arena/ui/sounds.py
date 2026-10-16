@@ -188,6 +188,25 @@ def _beam() -> array:
     return _render(0.28, voice)
 
 
+def _boom() -> array:
+    """An explosion: a deep falling thump under a long rumble of noise."""
+    state = {"low": 0.0}
+
+    def voice(t, p, rng):
+        state["low"] += (rng.uniform(-1, 1) - state["low"]) * 0.08
+        thump = math.sin(_sweep(t, 90, 30, 0.5)) * _decay(min(1.0, p * 2), 2)
+        return 0.6 * thump + 1.6 * state["low"] * _decay(p, 1.6)
+
+    return _render(0.5, voice, seed=11)
+
+
+def _pop() -> array:
+    def voice(t, p, rng):
+        return math.sin(_sweep(t, 1400, 500, 0.06)) * _decay(p, 2) * 0.5
+
+    return _render(0.06, voice)
+
+
 def build_sounds(player: AudioPlayer) -> None:
     """Make every sound once, at start-up."""
     library = {
@@ -206,6 +225,8 @@ def build_sounds(player: AudioPlayer) -> None:
         "sizzle": _sizzle(),
         "chain": _chain(),
         "beam": _beam(),
+        "boom": _boom(),
+        "pop": _pop(),
         "stylish": _ping((1320, 1760), 0.25, 2),
         "menu_move": _blip(660, 660, 0.035),
         "menu_ok": _blip(660, 990, 0.08),
@@ -236,6 +257,10 @@ EVENT_SOUNDS: dict[str, Callable[[Event], str]] = {
     "stylish": lambda e: "stylish",
     "throw": lambda e: "whoosh",
     "prop_break": lambda e: "hit",
+    "explosion": lambda e: "boom",
+    "burst": lambda e: "pop",
+    "reflect": lambda e: "hamon",
+    "foreseen": lambda e: "stylish",
 }
 
 
