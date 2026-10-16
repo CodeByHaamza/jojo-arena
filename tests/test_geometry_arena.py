@@ -73,7 +73,7 @@ def test_arena_constrain_reports_obstacle_hit():
 def test_cairo_stage_is_playable():
     stage = load_stage("cairo_night")
     arena = stage.build_arena()
-    assert len(arena.obstacles) == 7
+    assert len(arena.obstacles) == 11  # 4 stalls, 3 crates, 4 jars
     for spawn in arena.spawns:
         assert not arena.outside_walls(spawn, 8)
         assert arena.obstacle_at(spawn, 8) is None

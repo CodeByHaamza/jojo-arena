@@ -101,6 +101,12 @@ class Rect:
     def center(self) -> Vec2:
         return Vec2(self.x + self.w / 2, self.y + self.h / 2)
 
+    def distance_to(self, p: Vec2) -> float:
+        """Distance from a point to the rectangle (0 inside it)."""
+        dx = max(self.left - p.x, 0.0, p.x - self.right)
+        dy = max(self.top - p.y, 0.0, p.y - self.bottom)
+        return math.hypot(dx, dy)
+
     def inflate(self, amount: float) -> Rect:
         return Rect(self.x - amount, self.y - amount, self.w + 2 * amount, self.h + 2 * amount)
 

@@ -23,6 +23,7 @@ class Projectile:
     # time moves again (None = normal flight).
     stop_after: int | None = None
     key: tuple | None = None  # the move that fired it, for combo scaling
+    prop: int | None = None  # index of the arena prop being thrown, if it is one
 
     @property
     def radius(self) -> float:

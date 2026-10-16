@@ -148,6 +148,7 @@ class Fighter:
         self.remote_pos: Vec2 | None = None
         self.remote_dir = Vec2()
         self.stand_hold_f = 0
+        self.carrying: int | None = None  # index of the arena prop held overhead
         # Possessed: someone else steers this fighter's walk for a while.
         self.possessed_f = 0
         self.possessor: int | None = None
@@ -247,7 +248,10 @@ class Fighter:
     def walk_speed(self) -> float:
         base = self.kit.walk_speed or self.rules.walk_speed
         speed = base * self.kit.stances[self.stance].walk_speed_mult
-        return speed * (self.buff.speed_mult if self.buff else 1.0)
+        speed = speed * (self.buff.speed_mult if self.buff else 1.0)
+        if self.carrying is not None:
+            speed *= self.rules.carry_speed_mult  # a prop over the head
+        return speed
 
     def aim_at(self, target: Vec2) -> Vec2:
         direction = (target - self.strike_origin()).normalized()

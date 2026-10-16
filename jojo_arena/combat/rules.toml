@@ -68,6 +68,18 @@ freeze_f = 10                # both freeze when a counter catches a blow
 hold_s = 0.5                 # hold the Stand key this long to take control
 break_stun_s = 0.8           # hit while controlling: the Stand snaps back, stunned
 
+[throw]
+# Props picked up (Pose key near one) and thrown (any attack key).
+reach = 10                   # px between the body and a prop to pick it up
+carry_speed_mult = 0.85      # walking with a prop over the head
+speed = 380
+radius = 6
+lifetime_s = 1.2
+hitstun_f = 26
+knockback = 260
+hitstop_f = 8
+recovery_f = 14              # the thrower's own recovery
+
 [training]
 refill_after_s = 1.0          # infinite life: it refills once the fighter has recovered this long
 

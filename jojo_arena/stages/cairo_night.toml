@@ -14,8 +14,19 @@ p2 = [330, 146]
 [prop_kinds.stall]
 hp = 120
 
+# Crates and jars can be picked up (Pose key) and thrown (any attack); once broken
+# they come back to their place after respawn_s.
 [prop_kinds.crate]
 hp = 40
+throwable = true
+throw_damage = 45
+respawn_s = 10
+
+[prop_kinds.jar]
+hp = 20
+throwable = true
+throw_damage = 35
+respawn_s = 8
 
 # Market stalls in the four corners, a few crates; the center stays open.
 [[props]]
@@ -45,6 +56,22 @@ rect = [348, 216, 12, 11]
 [[props]]
 kind = "crate"
 rect = [234, 222, 12, 11]
+
+[[props]]
+kind = "jar"
+rect = [196, 60, 8, 8]
+
+[[props]]
+kind = "jar"
+rect = [278, 60, 8, 8]
+
+[[props]]
+kind = "jar"
+rect = [40, 140, 8, 8]
+
+[[props]]
+kind = "jar"
+rect = [432, 140, 8, 8]
 
 # Street lanterns on the walls: warm additive light pools.
 [[lanterns]]

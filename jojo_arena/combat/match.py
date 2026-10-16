@@ -16,12 +16,12 @@ from jojo_arena.combat.clash import Clash
 from jojo_arena.combat.cutscene import Cutscene
 from jojo_arena.combat.events import Event
 from jojo_arena.combat.fighter import Attack, Fighter, State
-from jojo_arena.combat.kit import Kit, ProjectileDef
+from jojo_arena.combat.kit import Kit, MoveDef, ProjectileDef
 from jojo_arena.combat.projectile import Projectile
 from jojo_arena.combat.rules import Rules
 from jojo_arena.combat.traps import Trap, Web, web_layout
 from jojo_arena.engine.actions import InputFrame
-from jojo_arena.engine.geometry import Vec2, circles_overlap
+from jojo_arena.engine.geometry import Rect, Vec2, circles_overlap
 
 
 @dataclass(frozen=True)
@@ -55,6 +55,11 @@ class Match:
         self.projectiles: list[Projectile] = []
         self.traps: list[Trap] = []
         self.webs: list[Web] = []
+        self._last_prop_pos: dict[int, Vec2] = {}
+        # Throwing a prop: a short move with no blow of its own, for the recovery.
+        self._throw_move = MoveDef(
+            "throw", startup_f=1, active_f=1, recovery_f=rules.throw_recovery_f, anim="special"
+        )
         self.cutscene: Cutscene | None = None
         self.hitstop = 0
         self.slowmo = 0  # steps left at half speed (Stylish Evade)
@@ -103,6 +108,8 @@ class Match:
             return []
         events: list[Event] = []
         inputs = self._possession_inputs(inputs)
+        inputs, prop_events = self._handle_props(inputs)
+        events += prop_events
         moving = [f for f in self.fighters if not f.frozen]
         for fighter in moving:
             for event in fighter.control(inputs[fighter.index], self.opponent(fighter).pos):
@@ -141,6 +148,7 @@ class Match:
             if fighter.in_resolve and not fighter.resolve_announced:
                 fighter.resolve_announced = True
                 events.append(Event("resolve", fighter.pos, fighter.index))
+        events += self._settle_props()
         for obstacle in self.arena.obstacles:
             obstacle.tick()
         events += interactions.tick_time_stop(self)
@@ -391,6 +399,108 @@ class Match:
         return events
 
     # Clash -------------------------------------------------------------------------------
+
+    # Props: pick up, throw, drop, respawn -----------------------------------------------
+
+    THROW_KEYS = ("light", "heavy", "special")
+
+    def _handle_props(
+        self, inputs: tuple[InputFrame, InputFrame]
+    ) -> tuple[tuple[InputFrame, InputFrame], list[Event]]:
+        """Pose near a prop picks it up; with a prop held, an attack throws it and Pose
+        puts it down. Those presses are used up and do nothing else."""
+        events: list[Event] = []
+        frames = list(inputs)
+        for fighter in self.fighters:
+            if fighter.frozen:
+                continue
+            frame = frames[fighter.index]
+            if fighter.carrying is not None:
+                if fighter.state in (State.HITSTUN, State.GUARD_BROKEN, State.KO):
+                    events += self._drop(fighter, fighter.pos)  # knocked: it falls
+                elif fighter.can_act() and any(frame.was_pressed(k) for k in self.THROW_KEYS):
+                    events += self._throw(fighter)
+                    frames[fighter.index] = _without(frame, (*self.THROW_KEYS, "pose"))
+                elif fighter.can_act() and frame.was_pressed("pose"):
+                    events += self._drop(fighter, fighter.pos + fighter.facing * 14)
+                    frames[fighter.index] = _without(frame, ("pose",))
+                else:
+                    frames[fighter.index] = _without(frame, ("pose",))  # no posing with it
+                continue
+            if fighter.remote or not fighter.can_act() or not frame.was_pressed("pose"):
+                continue
+            index = self._prop_within_reach(fighter)
+            if index is not None:
+                self.arena.obstacles[index].carried_by = fighter.index
+                fighter.carrying = index
+                frames[fighter.index] = _without(frame, ("pose",))
+                events.append(Event("pickup", fighter.pos, fighter.index))
+        return (frames[0], frames[1]), events
+
+    def _prop_within_reach(self, fighter: Fighter) -> int | None:
+        best, best_gap = None, self.rules.throw_reach + self.rules.body_radius
+        for i, obstacle in enumerate(self.arena.obstacles):
+            if not obstacle.free:
+                continue
+            gap = obstacle.rect.distance_to(fighter.pos)
+            if gap <= best_gap:
+                best, best_gap = i, gap
+        return best
+
+    def _throw(self, fighter: Fighter) -> list[Event]:
+        rules = self.rules
+        obstacle = self.arena.obstacles[fighter.carrying]
+        fighter.carrying = None
+        obstacle.carried_by, obstacle.flying = None, True
+        target = self.opponent(fighter).pos
+        aim = fighter.aim_at(target)
+        defn = ProjectileDef(
+            speed=rules.throw_speed,
+            radius=rules.throw_radius,
+            damage=obstacle.throw_damage,
+            lifetime_f=rules.throw_lifetime_f,
+            hitstun_f=rules.throw_hitstun_f,
+            knockback=rules.throw_knockback,
+            hitstop_f=rules.throw_hitstop_f,
+            look="prop",
+        )
+        start = fighter.pos + aim * (rules.body_radius + defn.radius + 2)
+        projectile = Projectile(fighter.index, start, aim * defn.speed, defn, defn.lifetime_f)
+        projectile.prop = self.arena.obstacles.index(obstacle)
+        projectile.key = (fighter.index, -1 - projectile.prop)
+        self.projectiles.append(projectile)
+        fighter.start_attack(self._throw_move, target)
+        return [Event("throw", fighter.pos, fighter.index)]
+
+    def _drop(self, fighter: Fighter, spot: Vec2) -> list[Event]:
+        """The held prop lands on the ground at `spot` (kept inside the arena)."""
+        obstacle = self.arena.obstacles[fighter.carrying]
+        fighter.carrying = None
+        obstacle.carried_by = None
+        w, h = obstacle.rect.w, obstacle.rect.h
+        center, _ = self.arena.bounds.constrain_circle(spot, max(w, h) / 2 + 1)
+        obstacle.rect = Rect(center.x - w / 2, center.y - h / 2, w, h)
+        return [Event("drop", center, fighter.index)]
+
+    def _settle_props(self) -> list[Event]:
+        """Thrown props break where their flight ends; broken props come back home."""
+        events: list[Event] = []
+        flying = {p.prop: p.pos for p in self.projectiles if p.prop is not None}
+        for i, obstacle in enumerate(self.arena.obstacles):
+            if obstacle.flying:
+                if i in flying:
+                    self._last_prop_pos[i] = flying[i]
+                    continue
+                spot = self._last_prop_pos.pop(i, obstacle.rect.center)
+                w, h = obstacle.rect.w, obstacle.rect.h
+                obstacle.shatter(Rect(spot.x - w / 2, spot.y - h / 2, w, h))
+                events.append(Event("prop_break", spot))
+            elif obstacle.ready_to_respawn:
+                home = obstacle.home
+                if all(home.distance_to(f.pos) > self.rules.body_radius for f in self.fighters):
+                    obstacle.respawn()
+                    events.append(Event("prop_respawn", home.center))
+        return events
 
     # Possession -------------------------------------------------------------------------
 
@@ -668,3 +778,10 @@ class Match:
         if defender.state == State.KO:
             events.append(Event("ko", defender.pos, defender.index))
         return True, events
+
+
+def _without(frame: InputFrame, actions: tuple[str, ...]) -> InputFrame:
+    """The same input, minus the presses (and holds) of some actions."""
+    counts = {a: n for a, n in frame.press_counts.items() if a not in actions}
+    held = frozenset(a for a in frame.held if a not in actions)
+    return InputFrame(frame.move, held, counts, frame.cursor, frame.stick)

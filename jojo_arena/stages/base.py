@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from jojo_arena.combat.arena import Arena, Obstacle
-from jojo_arena.engine.data import load_toml
+from jojo_arena.engine.data import load_toml, seconds_to_frames
 from jojo_arena.engine.geometry import Rect, RoundedRect, Vec2
 
 
@@ -15,6 +15,9 @@ class PropDef:
     kind: str
     rect: Rect
     hp: int
+    throwable: bool = False
+    throw_damage: int = 0
+    respawn_f: int = 0
 
 
 @dataclass(frozen=True)
@@ -28,7 +31,17 @@ class StageDef:
     lanterns: tuple[Vec2, ...] = ()
 
     def build_arena(self) -> Arena:
-        obstacles = [Obstacle(p.kind, p.rect, p.hp) for p in self.props]
+        obstacles = [
+            Obstacle(
+                p.kind,
+                p.rect,
+                p.hp,
+                throwable=p.throwable,
+                throw_damage=p.throw_damage,
+                respawn_f=p.respawn_f,
+            )
+            for p in self.props
+        ]
         return Arena(self.bounds, (self.spawns[0].copy(), self.spawns[1].copy()), obstacles)
 
 
@@ -37,10 +50,20 @@ def load_stage_def(path: Path, stage_id: str) -> StageDef:
     bounds = RoundedRect(Rect(*data["bounds"]["rect"]), data["bounds"]["corner_radius"])
     spawns = (Vec2(*data["spawns"]["p1"]), Vec2(*data["spawns"]["p2"]))
     kinds = data.get("prop_kinds", {})
-    props = tuple(
-        PropDef(p["kind"], Rect(*p["rect"]), p.get("hp", kinds.get(p["kind"], {}).get("hp", 0)))
-        for p in data.get("props", [])
-    )
+    props = []
+    for p in data.get("props", []):
+        kind = kinds.get(p["kind"], {})
+        props.append(
+            PropDef(
+                p["kind"],
+                Rect(*p["rect"]),
+                p.get("hp", kind.get("hp", 0)),
+                throwable=kind.get("throwable", False),
+                throw_damage=kind.get("throw_damage", 0),
+                respawn_f=seconds_to_frames(kind.get("respawn_s", 0)),
+            )
+        )
+    props = tuple(props)
     lanterns = tuple(Vec2(*lamp["pos"]) for lamp in data.get("lanterns", []))
     return StageDef(
         stage_id, data["name"], bounds, spawns, props, data.get("palette", {}), lanterns

@@ -52,6 +52,7 @@ class FightScene(Scene):
         self.hud = Hud(self.fighter_defs, [view.height for view in self.view.fighter_views])
         players = ctx.controls.active_preset.players
         self.hud.mash_keys = tuple(action_label(p, "light", ctx.inputs) for p in players)
+        self.view.pose_keys = tuple(action_label(p, "pose", ctx.inputs) for p in players)
         self.pause_menu: Menu | None = None
         self.result_menu: Menu | None = None
         self.move_list: MoveListPanel | None = None

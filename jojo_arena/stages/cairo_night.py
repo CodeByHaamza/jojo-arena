@@ -15,6 +15,9 @@ OUTLINE = (23, 18, 31)
 WOOD_LIGHT = (128, 94, 66)
 WOOD = (104, 74, 52)
 WOOD_DARK = (78, 54, 40)
+CLAY = (168, 92, 58)
+CLAY_LIGHT = (206, 130, 86)
+CLAY_DARK = (122, 62, 42)
 AWNING_COLORS = [
     ((138, 62, 60), (186, 166, 136)),
     ((60, 92, 128), (186, 166, 136)),
@@ -156,6 +159,8 @@ class CairoNightRenderer:
         index = self.stage_index(obstacle)
         if obstacle.kind == "stall":
             self._draw_stall(surface, rect, index, obstacle.hp < obstacle.max_hp / 2)
+        elif obstacle.kind == "jar":
+            self._draw_jar(surface, rect, obstacle.hp < obstacle.max_hp / 2)
         else:
             self._draw_crate(surface, rect, obstacle.hp < obstacle.max_hp / 2)
 
@@ -214,6 +219,24 @@ class CairoNightRenderer:
         pygame.draw.rect(surface, OUTLINE, top.union(front), 1)
         if damaged:
             surface.fill(OUTLINE, (front.x + 3, front.y + 2, 1, 4))
+
+    def _draw_jar(self, surface, rect: pygame.Rect, damaged: bool) -> None:
+        """A clay jar: round belly, narrow neck, a lighter rim."""
+        shadow = pygame.Surface((rect.w + 4, 5), pygame.SRCALPHA)
+        pygame.draw.ellipse(shadow, (0, 0, 0, 90), shadow.get_rect())
+        surface.blit(shadow, (rect.x - 2, rect.bottom - 3))
+        belly = pygame.Rect(rect.x - 1, rect.y - 2, rect.w + 2, rect.h + 2)
+        neck = pygame.Rect(0, 0, 4, 4)
+        neck.midbottom = (belly.centerx, belly.y + 1)
+        pygame.draw.ellipse(surface, OUTLINE, belly.inflate(2, 2))
+        pygame.draw.rect(surface, OUTLINE, neck.inflate(2, 2))
+        pygame.draw.ellipse(surface, CLAY, belly)
+        surface.fill(CLAY, neck)
+        surface.fill(CLAY_LIGHT, (neck.x, neck.y, neck.w, 1))
+        surface.fill(CLAY_LIGHT, (belly.x + 2, belly.y + 2, 2, 2))
+        surface.fill(CLAY_DARK, (belly.x + 1, belly.bottom - 3, belly.w - 2, 2))
+        if damaged:
+            surface.fill(OUTLINE, (belly.centerx, belly.y + 3, 1, 3))
 
     def _draw_debris(self, surface: pygame.Surface, obstacle: Obstacle) -> None:
         rng = random.Random(self.stage_index(obstacle))

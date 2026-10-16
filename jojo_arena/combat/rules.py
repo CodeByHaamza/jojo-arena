@@ -81,6 +81,15 @@ class Rules:
     counter_freeze_f: int
     remote_hold_f: int
     remote_break_stun_f: int
+    throw_reach: float
+    carry_speed_mult: float
+    throw_speed: float  # px/frame
+    throw_radius: float
+    throw_lifetime_f: int
+    throw_hitstun_f: int
+    throw_knockback: float  # px/frame
+    throw_hitstop_f: int
+    throw_recovery_f: int
     time_stop_damage_mult: float
     stand_hurt_radius: float
     stand_front: float
@@ -118,6 +127,15 @@ class Rules:
             combo_min_scale=data["combo"]["min_scale"],
             counter_freeze_f=data["counter"]["freeze_f"],
             remote_hold_f=seconds_to_frames(data["control"]["hold_s"]),
+            throw_reach=data["throw"]["reach"],
+            carry_speed_mult=data["throw"]["carry_speed_mult"],
+            throw_speed=per_frame(data["throw"]["speed"]),
+            throw_radius=data["throw"]["radius"],
+            throw_lifetime_f=seconds_to_frames(data["throw"]["lifetime_s"]),
+            throw_hitstun_f=data["throw"]["hitstun_f"],
+            throw_knockback=per_frame(data["throw"]["knockback"]),
+            throw_hitstop_f=data["throw"]["hitstop_f"],
+            throw_recovery_f=data["throw"]["recovery_f"],
             remote_break_stun_f=seconds_to_frames(data["control"]["break_stun_s"]),
             time_stop_damage_mult=stop["damage_mult"],
             clash_window_f=clash["window_f"],

@@ -11,6 +11,7 @@ from jojo_arena.characters import FighterDef
 from jojo_arena.combat.events import Event
 from jojo_arena.combat.fighter import Fighter, State
 from jojo_arena.combat.match import Match
+from jojo_arena.engine import font
 from jojo_arena.engine.effects import blit_glow, blit_shadow, radial_glow
 from jojo_arena.engine.geometry import Vec2
 from jojo_arena.engine.sprites import (
@@ -26,6 +27,7 @@ from jojo_arena.stages.base import StageDef
 from jojo_arena.ui import sfx, vfx
 from jojo_arena.ui.cutscenes import make_cutscene
 from jojo_arena.ui.duel_view import DuelScreen
+from jojo_arena.ui.widgets import draw_cap
 
 OUTLINE = (23, 18, 31)
 STAND_ALPHA = 215  # Stands look a little spectral
@@ -260,6 +262,7 @@ class FightView:
         self.duel: DuelScreen | None = None  # the rush duel close-up, while a clash lasts
         self.debug = False  # F3: draw the circles the simulation hits with
         self.cutscene = None  # the ultimate's cutscene being played, if any
+        self.pose_keys: tuple[str, str] = ("", "")  # shown over a prop that can be picked up
         self._block_word_f = [0, 0]
 
     # Reacting to the simulation ------------------------------------------------------
@@ -422,6 +425,14 @@ class FightView:
                 fx.focus(pos, heavy=True)
             elif kind == "stylish":
                 fx.add(vfx.Ring(pos, (255, 210, 90), 2.5, 14))
+            elif kind == "throw" and event.fighter is not None:
+                thrower = match.fighters[event.fighter]
+                fx.add(vfx.SpeedLines(pos, thrower.facing))
+            elif kind in ("pickup", "drop"):
+                fx.dust(event.pos, 4, 0.8, 2)
+            elif kind == "prop_respawn":
+                fx.add(vfx.Ring(event.pos + Vec2(0, -4), (255, 236, 180), 1.5, 14, 1))
+                fx.add(vfx.Flash(event.pos + Vec2(0, -4), 10, (255, 236, 180), 10))
             elif kind == "remote_start" and event.fighter is not None:
                 aura = self.fighter_defs[event.fighter].aura
                 fx.add(vfx.Ring(event.pos + Vec2(0, -14), aura, 2.5, 16, 2))
@@ -534,7 +545,7 @@ class FightView:
                 vfx.draw_thread(surface, web.nodes[a], web.nodes[b], aura, self.tick)
         for fighter in match.fighters:
             self._draw_falling_strike(surface, fighter)
-        drawables = [(o.rect.bottom, 0, o) for o in match.arena.obstacles if not o.broken]
+        drawables = [(o.rect.bottom, 0, o) for o in match.arena.obstacles if o.solid]
         drawables += [(f.pos.y, 1, f) for f in match.fighters]
         for fighter in match.fighters:
             view = self.fighter_views[fighter.index]
@@ -553,7 +564,8 @@ class FightView:
             self._draw_reticle(surface, fighter)
             self._draw_remote(surface, fighter)
         for projectile in match.projectiles:
-            self._draw_projectile(surface, projectile)
+            self._draw_projectile(surface, projectile, match)
+        self._draw_carried_props(surface, match)
         self.renderer.draw_lights(surface, self.tick)
         for fighter in match.fighters:
             if fighter.state in (State.GUARD, State.BLOCKSTUN):
@@ -672,9 +684,19 @@ class FightView:
         left = round(width * clash.frames_left / clash.duration_f)
         surface.fill((255, 255, 255), (bar.x, bar.bottom + 3, left, 1))
 
-    def _draw_projectile(self, surface: pygame.Surface, projectile) -> None:
+    def _draw_projectile(self, surface: pygame.Surface, projectile, match: Match) -> None:
         aura = self.fighter_defs[projectile.owner].aura
         pos = projectile.pos + self.chest(projectile.owner) * 0.8
+        if projectile.prop is not None:
+            # A thrown prop: the prop itself flies, streaks behind it.
+            obstacle = match.arena.obstacles[projectile.prop]
+            self._draw_prop_at(surface, obstacle, pos)
+            back = projectile.velocity.normalized() * -1
+            for offset in (-3, 0, 3):
+                side = Vec2(-back.y, back.x) * offset
+                a, b = pos + side + back * 6, pos + side + back * 14
+                pygame.draw.line(surface, (220, 214, 232), a.as_ints(), b.as_ints(), 1)
+            return
         look = projectile.defn.look
         vfx.draw_projectile(surface, look, pos, projectile.velocity, projectile.radius, aura)
 
@@ -688,6 +710,39 @@ class FightView:
         for projectile in match.projectiles:
             pos, radius = projectile.pos.as_ints(), round(projectile.radius)
             pygame.draw.circle(surface, (255, 220, 60), pos, radius, 1)
+
+    def _draw_prop_at(self, surface: pygame.Surface, obstacle, center: Vec2) -> None:
+        """Draw an arena prop somewhere else than its place (held, or flying)."""
+        from dataclasses import replace
+
+        from jojo_arena.engine.geometry import Rect
+
+        w, h = obstacle.rect.w, obstacle.rect.h
+        moved = replace(obstacle, rect=Rect(center.x - w / 2, center.y - h / 2, w, h), flash=0)
+        self.renderer.draw_obstacle(surface, moved)
+
+    def _draw_carried_props(self, surface: pygame.Surface, match: Match) -> None:
+        """Props held over the head, and the key that picks up the nearest one."""
+        reach = match.rules.throw_reach + match.rules.body_radius
+        for fighter in match.fighters:
+            view = self.fighter_views[fighter.index]
+            if fighter.carrying is not None:
+                obstacle = match.arena.obstacles[fighter.carrying]
+                lift = FighterView.lift(fighter)
+                top = fighter.pos + Vec2(0, -view.height - obstacle.rect.h / 2 - 1 - lift)
+                self._draw_prop_at(surface, obstacle, top)
+                continue
+            key = self.pose_keys[fighter.index]
+            if not key or not fighter.can_act():
+                continue
+            near = [o for o in match.arena.obstacles if o.free]
+            near = [o for o in near if o.rect.distance_to(fighter.pos) <= reach]
+            if near:
+                prop = min(near, key=lambda o: o.rect.distance_to(fighter.pos))
+                x = round(prop.rect.center.x)
+                y = round(prop.rect.top) - 20
+                width = font.text_width(key) + 6
+                draw_cap(surface, key, (x - width // 2, y))
 
     def _draw_remote(self, surface: pygame.Surface, fighter: Fighter) -> None:
         """Remote control: the thread to the Stand, and the gauge while the key is held."""
