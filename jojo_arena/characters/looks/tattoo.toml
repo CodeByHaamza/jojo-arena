@@ -1,0 +1,77 @@
+# Tattoo (Part 1): the Ogre Street knife man Speedwagon calls in. Look file for
+# tools/make_sprites.py. Short, thickset, bare arms, a red bandana, the tattoo across
+# his face that gave him his name, and a blade already in his hand.
+
+name = "Tattoo"
+
+[build]
+head_r = 5.4
+neck = 1.1
+torso = 12.5
+legs = 15
+arms = 13
+shoulders = 9.4
+hips = 3.6
+torso_r = 6.6
+arm_r = 2.7
+leg_r = 2.6
+hand_r = 2.3
+foot_r = 2.4
+
+[palette]
+skin = "#d8a478"
+hair = "#2a2230"
+ink = "#2e4a8a"
+bandana = "#a8323c"
+vest = "#4a4038"
+shirt = "#8a7a62"
+trousers = "#38323c"
+shoes = "#201c24"
+steel = "#d6dcea"
+brass = "#c8a048"
+eyes = "#4a3826"
+
+[body]
+head = "skin"
+torso = "shirt"
+arms = "skin"
+hands = "skin"
+legs = "trousers"
+feet = "shoes"
+
+[face]
+eyes = "eyes"
+eye_style = "dot"
+brows = true
+nose = true
+ear = true
+scar = "ink"
+
+[[parts]]
+type = "hair"
+material = "hair"
+style = "short"
+volume = 6.4
+
+[[parts]]
+type = "headband"
+material = "bandana"
+
+# A sleeveless waistcoat over the shirt: the arms stay bare and the knife reads.
+[[parts]]
+type = "top"
+material = "vest"
+neckline = 3
+length = 0.8
+
+[[parts]]
+type = "belt"
+material = "trousers"
+buckle = "brass"
+
+# The knife, short, held along the forearm.
+[[parts]]
+type = "sword"
+material = "steel"
+length = 9
+guard = "brass"

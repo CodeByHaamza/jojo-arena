@@ -201,7 +201,9 @@ class Hud:
             self._draw_blood(surface, fighter, bars)
             return
         if fighter.aura_active:
-            label = text.REMOTE_ON if fighter.remote else text.STANCE_ON
+            # Whoever is out: a Stand, or the friend a character calls in.
+            tag = fighter.kit.stance_tags.get(fighter.stance, "")
+            label = text.REMOTE_ON if fighter.remote else (tag or text.STANCE_ON)
             font.draw(surface, label, (label_x, HH_Y - 11), shade(aura, 40), align=align)
         ready = fighter.time_stop_ready()
         if ready is not None:

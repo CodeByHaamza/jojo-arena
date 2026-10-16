@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from jojo_arena.combat.kit import Kit, load_kit
@@ -25,6 +25,8 @@ class FighterDef:
     aura: Color
     palette: dict[str, list[Color]]
     stand_sprite: str = ""  # sheet of the Stand shown while it is out (if any)
+    # Characters who call in more than one helper: a sheet per stance.
+    stand_sprites: dict[str, str] = field(default_factory=dict)
     stand_name: str = ""
     role: str = ""  # one line, for the character select screen
     blurb: str = ""  # a short presentation
@@ -79,6 +81,7 @@ def load_roster() -> list[FighterDef]:
                 aura=parse_color(entry.get("aura", entry["color"])),
                 palette=palette,
                 stand_sprite=entry.get("stand_sprite", ""),
+                stand_sprites=dict(entry.get("stand_sprites", {})),
                 stand_name=entry.get("stand_name", ""),
                 role=localized(entry, "role"),
                 blurb=localized(entry, "blurb"),

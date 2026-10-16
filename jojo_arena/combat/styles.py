@@ -72,6 +72,32 @@ class Vampire(StanceToggle):
         return super().on_pressed(fighter)
 
 
+class StanceCycle(Style):
+    """The style button walks through a list of movesets, one after the other.
+
+    Where `stance_toggle` flips between two, this one cycles: a character who can call
+    in two different helpers, or a Pillar Man with several Modes, needs no new code.
+
+    Example in a character file:
+        style = { type = "stance_cycle", stances = ["base", "tattoo", "amato"] }
+    """
+
+    def __init__(self, params: dict) -> None:
+        super().__init__(params)
+        self.order: list[str] = list(params.get("stances", []))
+
+    def on_pressed(self, fighter: Fighter) -> bool:
+        if len(self.order) < 2:
+            return False
+        here = self.order.index(fighter.stance) if fighter.stance in self.order else 0
+        fighter.begin_stance_switch(self.order[(here + 1) % len(self.order)])
+        return True
+
+    def aura_active(self, fighter: Fighter) -> bool:
+        """Lit up whenever someone other than the fighter is out."""
+        return bool(self.order) and fighter.stance != self.order[0]
+
+
 class Hamon(Style):
     """Hold the button to breathe: the Hamon gauge fills, but the fighter stands still,
     open to hits. Moves with a `hamon_cost` spend it to strike harder (GDD "Hamon").
@@ -93,6 +119,7 @@ class Hamon(Style):
 STYLES: dict[str, type[Style]] = {
     "none": Style,
     "stance_toggle": StanceToggle,
+    "stance_cycle": StanceCycle,
     "hamon": Hamon,
     "vampire": Vampire,
 }

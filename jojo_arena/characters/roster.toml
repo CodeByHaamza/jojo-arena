@@ -81,10 +81,12 @@ part = 1
 name = "SPEEDWAGON"
 kit = "speedwagon"
 sprite = "speedwagon/speedwagon"
-role = "BONUS - SANS POUVOIR"
-role_en = "BONUS - NO POWER"
-blurb = "Ni Hamon ni Stand : un chapeau à lames qui revient, des coups de rue, et un grand coeur."
-blurb_en = "No Hamon, no Stand: a bladed hat that comes back, street blows, and a big heart."
+# No Stand: the friends of Ogre Street, called in one after the other with the style key.
+stand_sprites = { tattoo = "tattoo/tattoo", amato = "amato/amato" }
+role = "BONUS - LA BANDE D'OGRE STREET"
+role_en = "BONUS - THE OGRE STREET GANG"
+blurb = "Ni Hamon ni Stand : un chapeau à lames, des coups de rue, et deux amis qu'il siffle quand ça tourne mal."
+blurb_en = "No Hamon, no Stand: a bladed hat, street blows, and two friends he whistles for when it turns bad."
 color = "#3c3a7a"
 aura = "#e86a9a"
 

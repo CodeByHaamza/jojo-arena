@@ -2,12 +2,17 @@
 # with blades (a boomerang), street blows. Pose: a cheer that heals a little. Ultimate:
 # "Speedwagon withdraws coolly", an invincible comic exit. Frames (_f) at 60 per second.
 #
-# No power, no style key: the street, the hat, and a lot of heart.
+# No power of his own: the street, the hat, a lot of heart - and the friends he came
+# with. The style key whistles them in, one after the other, and each brings a moveset:
+# Speedwagon alone -> Tattoo and his knives -> Amato and his kempo -> Speedwagon again.
+# Neither friend is strictly better: Tattoo trades close-range power for reach, Amato
+# trades reach for the hardest blows in the kit. Switching costs real frames.
 
 name = "Speedwagon"
 max_hp = 900
 walk_speed = 112
 pose_heal_per_s = 12  # his cheer: "JoJo, I'm with you!"
+style = { type = "stance_cycle", stances = ["base", "tattoo", "amato"] }
 
 [stances.base]
 label = "VOYOU D'OGRE STREET"
@@ -141,6 +146,203 @@ hitstun_f = 26
 knockback = 120
 hitstop_f = 6
 anim = "sweep"
+
+# Tattoo, the knife man of Ogre Street ---------------------------------------------------
+# He keeps his distance and throws; up close his blade is quick but it does not hurt much.
+
+[stances.tattoo]
+label = "TATTOO ET SES LAMES"
+label_en = "TATTOO AND HIS BLADES"
+tag = "TATTOO"
+walk_speed_mult = 0.95
+
+[stances.tattoo.moves.light]
+label = "COUP DE LAME"
+label_en = "KNIFE SLASH"
+info = "Rapide et court. Encore la touche : lame retournée"
+info_en = "Quick and short. Press again: the blade comes back the other way"
+shape = "line"
+fx = "blade"
+startup_f = 4
+active_f = 3
+recovery_f = 10
+damage = 20
+reach = 22
+radius = 6
+hitstun_f = 18
+knockback = 70
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+anim = "light"
+
+[stances.tattoo.moves.light2]
+label = "LAME RETOURNÉE"
+label_en = "BACKHAND BLADE"
+info = "Fin de l'enchaînement : il ouvre la garde et recule"
+info_en = "Chain ender: it opens a guard and he steps back"
+shape = "line"
+fx = "blade"
+startup_f = 6
+active_f = 3
+recovery_f = 14
+damage = 32
+reach = 24
+radius = 6
+hitstun_f = 26
+knockback = 240
+hitstop_f = 7
+guard_damage = 1.8
+cancel_on_hit = ["special"]
+anim = "heavy"
+
+[stances.tattoo.moves.heavy]
+shout = "TIENS !"
+shout_en = "HERE!"
+label = "LANCER DE COUTEAUX"
+label_en = "THROWN KNIVES"
+info = "Trois couteaux en éventail"
+info_en = "Three knives in a fan"
+startup_f = 12
+active_f = 1
+recovery_f = 22
+anim = "special"
+
+[stances.tattoo.moves.heavy.projectile]
+look = "knife"
+speed = 280
+radius = 5
+damage = 24
+lifetime_s = 1.2
+hitstun_f = 20
+knockback = 110
+hitstop_f = 5
+count = 3
+spread_deg = 26
+
+[stances.tattoo.moves.special]
+label = "PLUIE DE LAMES"
+label_en = "RAIN OF BLADES"
+info = "Deux volées de couteaux, l'une après l'autre : de quoi couvrir la salle"
+info_en = "Two volleys of knives, one after the other: enough to cover the room"
+startup_f = 16
+active_f = 1
+recovery_f = 28
+cooldown_s = 3
+anim = "special"
+
+[stances.tattoo.moves.special.projectile]
+look = "knife"
+speed = 250
+radius = 5
+damage = 20
+lifetime_s = 1.4
+hitstun_f = 18
+knockback = 90
+hitstop_f = 4
+count = 2
+spread_deg = 14
+waves = 2
+wave_every_f = 10
+
+# Amato, the kempo fighter ----------------------------------------------------------------
+# No reach at all: he has to be in your face. In exchange, his palms hit like a truck and
+# his stance answers anything that touches him.
+
+[stances.amato]
+label = "AMATO ET SON KEMPO"
+label_en = "AMATO AND HIS KEMPO"
+tag = "AMATO"
+walk_speed_mult = 1.08
+
+[stances.amato.moves.light]
+label = "PAUME DE FER"
+label_en = "IRON PALM"
+info = "Très rapide. Encore la touche : double paume"
+info_en = "Very fast. Press again: a double palm"
+startup_f = 3
+active_f = 3
+recovery_f = 9
+damage = 22
+reach = 14
+radius = 10
+hitstun_f = 18
+knockback = 70
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+anim = "light"
+
+[stances.amato.moves.light2]
+label = "DOUBLE PAUME"
+label_en = "DOUBLE PALM"
+info = "Fin de l'enchaînement : deux paumes qui projettent"
+info_en = "Chain ender: two palms that send flying"
+startup_f = 5
+active_f = 6
+recovery_f = 16
+hits = 2
+hit_every_f = 3
+damage = 20
+last_damage = 36
+reach = 15
+radius = 11
+hitstun_f = 20
+knockback = 60
+last_knockback = 340
+last_wall_bounce = true
+hitstop_f = 5
+cancel_on_hit = ["special"]
+anim = "heavy"
+
+[stances.amato.moves.heavy]
+label = "COUP DE PIED CIRCULAIRE"
+label_en = "ROUNDHOUSE KICK"
+info = "Lent et large ; casse la garde et envoie contre le mur"
+info_en = "Slow and wide; crushes guards and sends into the wall"
+startup_f = 14
+active_f = 4
+recovery_f = 22
+damage = 70
+reach = 16
+radius = 14
+hitstun_f = 34
+knockback = 360
+hitstop_f = 11
+wall_bounce = true
+guard_damage = 2.6
+anim = "kick"
+
+[stances.amato.moves.special]
+label = "POSTURE DU KEMPO"
+label_en = "KEMPO STANCE"
+info = "Il se met en garde : qui le frappe au corps à corps se prend la riposte"
+info_en = "He takes his stance: whoever strikes him in melee eats the answer"
+startup_f = 4
+active_f = 24
+recovery_f = 18
+counter = "kempo_riposte"
+anim = "counter_yare"
+
+[stances.amato.moves.kempo_riposte]
+shout = "HOUUU !"
+label = "RIPOSTE DU KEMPO"
+label_en = "KEMPO ANSWER"
+info = "La réponse de la posture : paume dans le plexus"
+info_en = "The answer from the stance: a palm to the chest"
+startup_f = 2
+active_f = 4
+recovery_f = 16
+invincible_f = 10
+damage = 80
+reach = 16
+radius = 12
+hitstun_f = 34
+knockback = 400
+hitstop_f = 12
+wall_bounce = true
+clashable = false
+anim = "light"
 
 # Super moves -----------------------------------------------------------------------------
 

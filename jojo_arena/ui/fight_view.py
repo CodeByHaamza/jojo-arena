@@ -101,10 +101,17 @@ class FighterView:
         self.height = self.sprites.height
         self.shadow = (round(14 + self.height * 0.25), 7)
         self.stand: SheetSprites | None = None
+        self.stands: dict[str, SheetSprites] = {}
         self.throw_f = 0  # frames left of the Stand's throw pose (view only)
         if fighter_def.stand_sprite:
             base = SPRITES_DIR / fighter_def.stand_sprite
             self.stand = SheetSprites.load(base.with_suffix(".png"), base.with_suffix(".toml"))
+        for stance, sheet in fighter_def.stand_sprites.items():
+            base = SPRITES_DIR / sheet
+            self.stands[stance] = SheetSprites.load(
+                base.with_suffix(".png"), base.with_suffix(".toml")
+            )
+        self.stand = self.stand or next(iter(self.stands.values()), None)
 
     @staticmethod
     def resolve(sprites, anim: str) -> tuple[str, AnimSpec]:
@@ -154,6 +161,15 @@ class FighterView:
         return image
 
     # The Stand ---------------------------------------------------------------------------
+
+    def use_stance(self, fighter: Fighter) -> None:
+        """Several helpers: show the one this stance calls in (the next one while
+        switching, so the arriving one is the one fading in)."""
+        if not self.stands:
+            return
+        switching = fighter.state == State.SWITCH
+        wanted = fighter.switch_target if switching else fighter.stance
+        self.stand = self.stands.get(wanted, self.stand)
 
     def stand_presence(self, fighter: Fighter) -> float:
         """0 = no Stand on screen, 1 = fully out (it fades in and out while switching)."""
@@ -643,6 +659,8 @@ class FightView:
         self.punch_f = max(0, self.punch_f - 1)
         self._burst_word_f = max(0, self._burst_word_f - 1)
         if match is not None:
+            for view, fighter in zip(self.fighter_views, match.fighters, strict=True):
+                view.use_stance(fighter)
             self._observe(match)
             if match.clash is None:
                 self.duel = None

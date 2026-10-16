@@ -1,0 +1,66 @@
+# Amato (Part 1): the kempo fighter of Ogre Street, the second friend Speedwagon calls
+# in. Look file for tools/make_sprites.py. Lean and upright, a long braid down his back,
+# a high-collared changshan over a sash, bare hands - his weapons are his palms.
+
+name = "Amato"
+
+[build]
+head_r = 5.3
+neck = 1.4
+torso = 13
+legs = 16.5
+arms = 14
+shoulders = 7.8
+hips = 3.0
+torso_r = 5.4
+arm_r = 2.1
+leg_r = 2.2
+hand_r = 2.2
+foot_r = 2.2
+
+[palette]
+skin = "#e8c096"
+hair = "#1e1a24"
+robe = "#2a6a56"
+trim = "#e8d08a"
+sash = "#c8a040"
+trousers = "#20303a"
+shoes = "#17121f"
+eyes = "#2a2018"
+
+[body]
+head = "skin"
+torso = "robe"
+arms = "robe"
+hands = "skin"
+legs = "trousers"
+feet = "shoes"
+
+[face]
+eyes = "eyes"
+eye_style = "tall"
+brows = true
+nose = true
+ear = true
+
+# Shaved at the front, one long braid at the back.
+[[parts]]
+type = "hair"
+material = "hair"
+style = "short"
+volume = 4.4
+back_length = 13
+
+# The changshan: closed, high collar, a pale trim down the opening.
+[[parts]]
+type = "coat"
+material = "robe"
+length = 0.42
+open = false
+collar = true
+lining = "trim"
+
+[[parts]]
+type = "belt"
+material = "sash"
+buckle = "trim"

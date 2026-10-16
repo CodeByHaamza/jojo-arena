@@ -119,3 +119,51 @@ def test_the_hair_still_drinks_what_it_pierces():
     events = run(match, 60, p1=press("special"))  # the grasping hair, which drains
     assert match.fighters[0].hp > hurt  # what it took, it drank
     assert hits_on(events, 1)
+
+
+# Speedwagon: the friends of Ogre Street --------------------------------------------------
+
+
+def test_the_style_key_walks_through_speedwagon_and_his_two_friends():
+    match = make_duel("speedwagon", "jonathan")
+    speedwagon = match.fighters[0]
+    seen = [speedwagon.stance]
+    for _ in range(3):
+        run(match, RULES.stance_switch_f + 2, p1=press("stand"))
+        seen.append(match.fighters[0].stance)
+    assert seen == ["base", "tattoo", "amato", "base"]  # a cycle, not a toggle
+
+
+def test_each_friend_brings_a_moveset_of_their_own():
+    kit_ = kit("speedwagon")
+    street = kit_.move("base", "heavy")
+    knives = kit_.move("tattoo", "heavy")
+    kempo = kit_.move("amato", "heavy")
+    assert len({street.label, knives.label, kempo.label}) == 3  # three different blows
+    assert knives.projectile is not None and knives.projectile.count == 3  # thrown knives
+    assert kempo.damage > street.damage  # the kempo kick hits hardest
+    assert kempo.reach <= street.reach + 6  # but he has to be right there
+
+
+def test_tattoo_throws_and_amato_answers():
+    match = make_duel("speedwagon", "jonathan", p1=(60, 100), p2=(240, 100))
+    speedwagon = match.fighters[0]
+    speedwagon.stance = "tattoo"
+    events = run(match, 120, p1=press("heavy"))
+    assert hits_on(events, 1), "the knives never crossed the arena"
+    counter = kit("speedwagon").stances["amato"].moves["special"]
+    assert counter.counter == "kempo_riposte"
+    assert kit("speedwagon").stances["amato"].moves["kempo_riposte"].damage >= 70
+
+
+def test_the_hud_says_which_friend_is_out():
+    kit_ = kit("speedwagon")
+    assert kit_.stance_tags == {"tattoo": "TATTOO", "amato": "AMATO"}
+    assert "tattoo" not in kit_.stance_tags.get("base", "")
+
+
+def test_the_hat_supers_stay_his_whoever_is_out():
+    kit_ = kit("speedwagon")
+    for stance in kit_.stances:
+        assert kit_.move(stance, "hha").projectile.look == "hat"
+        assert kit_.move(stance, "gha").buff == "cool"

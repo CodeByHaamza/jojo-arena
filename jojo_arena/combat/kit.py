@@ -299,6 +299,7 @@ class Kit:
     shared_moves: dict[str, MoveDef] = field(default_factory=dict)  # same in every stance
     buffs: dict[str, BuffDef] = field(default_factory=dict)
     stance_labels: dict[str, str] = field(default_factory=dict)  # move list headings
+    stance_tags: dict[str, str] = field(default_factory=dict)  # short name for the HUD
     strength: float = 1.0  # the Stand's raw power: how fast and hard it throws props
     nature: str = "human"  # "vampire", "pillar_man"...: what Hamon burns
     pose_heal_per_s: float = 0.0  # posing heals this much life per second
@@ -380,5 +381,10 @@ def parse_kit(data: dict, kit_id: str, source: str = "kit") -> Kit:
         stance_labels={
             name: localized(stance, "label", name.upper())
             for name, stance in data["stances"].items()
+        },
+        stance_tags={
+            name: localized(stance, "tag", "")
+            for name, stance in data["stances"].items()
+            if localized(stance, "tag", "")
         },
     )

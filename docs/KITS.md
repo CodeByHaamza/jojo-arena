@@ -13,6 +13,7 @@ Unités : les durées en `_f` sont en images (60 par seconde) ; celles en `_s` e
 | `walk_speed` | Vitesse de marche |
 | `strength` | Force physique du Stand (1 = normale). Multiplie la vitesse, les dégâts et le recul des objets qu'il lance ; à partir de 1,5 l'objet fait rebondir sur les murs (Star Platinum, The World : 1,8) |
 | `style` | Ce que fait la touche Stand. `{ type = "stance_toggle", off = "base", on = "stand", stand_body = true }` : bascule entre deux postures, et `stand_body` donne au Stand un corps qui peut être touché |
+| `style` (suite) | `{ type = "stance_cycle", stances = ["base", "tattoo", "amato"] }` : la touche fait défiler plusieurs postures l'une après l'autre, pour un perso qui appelle plusieurs alliés ou un Homme du Pilier à plusieurs Modes |
 | `remote`, `remote_range`, `remote_speed` | Dans `style` : maintenir la touche Stand envoie le Stand seul, dans cette posture, jusqu'à cette distance, à cette vitesse (mode contrôle) |
 | `style = { type = "hamon" }` | Style Hamon : maintenir la touche Stand fait respirer (la jauge de Hamon se remplit, immobile et vulnérable) ; les coups à `hamon_cost` la dépensent. Réglages dans `[hamon]` de `combat/rules.toml` |
 | `style = { type = "vampire", off = "base", on = "freeze" }` | Style vampire : la touche Stand passe dans la posture `on` (gel vaporisant), qui demande un peu de sang, en brûle tant qu'elle dure et s'arrête quand il n'y en a plus. Le sang se remplit en drainant ; intact un moment, le vampire cicatrise en dépensant du sang. Réglages dans `[vampire]` des règles |
@@ -27,6 +28,7 @@ Unités : les durées en `_f` sont en images (60 par seconde) ; celles en `_s` e
 | Champ | Effet |
 | --- | --- |
 | `label` | Titre de la page dans la liste des coups |
+| `tag` | Nom court affiché dans le HUD quand cette posture est active (sinon « STAND ») |
 | `walk_speed_mult` | Multiplie la vitesse de marche dans cette posture |
 
 Les coups d'une posture : `[stances.<nom>.moves.<touche>]`, où la touche est `light`, `heavy`, `heavy_alt` (coup lourd avec une direction tenue : attaque en mouvement), `special` ou `special_alt` (spéciale avec une direction tenue). Les coups partagés par toutes les postures vont dans `[moves.<nom>]` : `hha` (Heart Heat Attack, 1 barre) et `gha` (Great Heat Attack, 2 barres).
