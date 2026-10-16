@@ -73,7 +73,7 @@ Chaque perso doit avoir un ressenti unique, et chaque coup qui touche doit être
 - [x] **Musique** : boucles chiptune originales générées dans le code (menus, le Caire, le manoir Joestar), volume à part dans Options.
 - [x] **Contre l'IA** : une IA à quatre niveaux (facile, normal, difficile, JoJo) qui garde la distance de son kit, se défend, punit et enchaîne.
 - [x] **Arcade** : six combats contre l'IA, de plus en plus durs, chacun dans l'arène de l'adversaire, jusqu'à DIO ; on peut continuer après une défaite.
-- [ ] **Entraînement avancé** : enregistrer puis rejouer une action du mannequin, affichage des hitboxes, données de frames.
+- [x] **Entraînement avancé** : action du mannequin choisie dans son kit avec délai réglable entre chaque répétition (0 = riposte à la frame près), enchaînement, rapprochement, garde entre deux ; enregistrer une action jouée par J2 et la rejouer en boucle ; frise des frames des deux persos avec l'avantage mesuré ; données de frames des deux côtés.
 - [x] **Réglage des touches dans le jeu** : Options, « Changer les touches » (échange si la touche est déjà prise, retour aux touches par défaut).
 - [ ] **Power Up et jauge d'Éveil** (Jotaro : +1 s de temps arrêté).
 - [ ] **Flèche** et Chariot Requiem.

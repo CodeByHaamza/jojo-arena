@@ -29,7 +29,7 @@ Ce qui marche déjà :
 - glossaire : termes du lore, personnages et Stands, partie par partie ;
 - modes : combat local, contre l'IA (quatre niveaux), Arcade (six combats jusqu'à DIO), entraînement ;
 - liste des coups de chaque perso, avec les vraies touches du joueur (sélection des persos et pause) ;
-- entraînement : mannequin immobile, en garde ou joué par J2, vie et jauge infinies, compteur de combo et de dégâts.
+- entraînement poussé : mannequin immobile, en garde, joué par J2, qui **répète une action de son kit** (ORA ORA ORA, Star Finger, ultime...) avec le **délai de ton choix** entre chaque, ou qui **rejoue une suite enregistrée** ; vie et jauge infinies, compteur de combo et de dégâts, données de frames des deux côtés et **frise des frames** avec l'avantage mesuré.
 
 ## Jouer
 
@@ -39,6 +39,24 @@ Télécharge `JoJoArena.exe` dans la dernière [Release](../../releases) et lanc
 - **Échap** (ou Start) : pause. En entraînement, la pause contient les réglages (mannequin, vie, jauge, replacer).
 - **Tab** (ou Y) sur la sélection des persos : liste des coups du perso survolé. Elle est aussi dans la pause.
 - **F3** en combat : affiche les zones de frappe. En entraînement, les touches reconnues s'affichent en bas à gauche.
+
+### Mode entraînement
+
+La pause (**Échap**) contient les réglages, et l'entrée **Réglages du mannequin** ouvre tout ce qu'il faut pour travailler un coup :
+
+| Réglage | Effet |
+| --- | --- |
+| **Action** | ce que le mannequin répète, choisi parmi les coups de **son** kit (avec la posture qu'il faut : il sort son Stand tout seul), plus dash et pose |
+| **Délai** | images d'attente entre deux répétitions, comptées dès qu'il est libre d'agir. **0 = riposte à la frame près** (reversal) : de quoi vérifier si ton coup est vraiment sûr |
+| **Enchaîne** | il continue l'enchaînement du coup (ORA, ORA ORA, ORAAA) au lieu de s'arrêter au premier |
+| **Se rapproche** | il marche vers toi tant que son coup ne peut pas porter |
+| **Entre deux** | il ne fait rien, ou il tient la garde : pour travailler les combos sur un adversaire qui bloque |
+| **Enregistrer une action** | J2 joue le mannequin, puis **Échap** arrête : la suite enregistrée est rejouée en boucle (avec le même délai) |
+| **Frise des frames** | deux bandes, une par perso, une colonne par image |
+
+La frise se lit comme dans les jeux de combat : **jaune** = démarrage, **rouge** = actif (le coup peut toucher), **bleu** = récupération, **violet** = dégâts subis, **gris** = blocage, **vert** = garde, **blanc** = tout est figé (impact, temps arrêté, cinématique). À droite s'affiche l'avantage **mesuré** du dernier échange (`J1 TOUCHÉ +6`) : si ton coup est à −3 en garde et que le mannequin riposte avec un coup qui démarre en 4, tu le vois arriver.
+
+En bas à gauche, la ligne de données de frames donne le dernier coup de chaque côté au format habituel : `DIRECT 4/3/10 +6/-2` (démarrage / actif / récupération, puis avantage touché / en garde).
 
 ### Contrôles par défaut
 
@@ -59,6 +77,19 @@ Les touches sont liées à leur **position** sur le clavier : ZQSD en AZERTY cor
 
 Choisis la configuration (J1 clavier + J2 manette, clavier partagé, deux manettes) dans **Options** ou sur l'écran VS du **Combat local**, qui permet aussi de choisir l'arène (le Caire de nuit, le manoir Joestar en flammes, ou au hasard). Options affiche aussi le tableau des touches des deux joueurs (modifiables avec « Changer les touches »), et règle la langue du jeu (français ou anglais), gardée dans `settings.json` à côté de `controls.json`.
 
+### Les bonnes touches, quel que soit ton matériel
+
+Les touches sont liées à une **position physique**, pas à une lettre : le jeu se joue pareil en AZERTY et en QWERTY, et il **affiche partout le nom imprimé sur ta touche** (`W` devient `Z` en AZERTY). Pareil pour les manettes : le jeu lit le constructeur dans l'identifiant SDL de la manette, donc une **DualShock 4 / DualSense affiche CROIX, CARRÉ, OPTIONS** là où une **manette Xbox affiche A, X, MENU, VIEW**.
+
+Deux réglages dans Options si la détection se trompe (manette générique, disposition système différente du clavier physique) :
+
+| Réglage | Valeurs |
+| --- | --- |
+| **Clavier** | `AUTO (QWERTY)` — ce que le système annonce — ou `AZERTY` / `QWERTY` forcé |
+| **Manette** | `AUTO (XBOX)` — ce que la manette annonce — ou `XBOX` / `PLAYSTATION` forcé |
+
+Ça ne change **que les noms affichés** : les touches réelles ne bougent pas. Sous le tableau, le jeu affiche le nom exact des manettes qu'il voit, pour vérifier d'un coup d'œil qu'elles sont bien détectées.
+
 Pour changer les touches, modifie `controls.json` dans `%APPDATA%\JoJoArena\` puis relance le jeu. Le fichier explique les noms de touches. Supprime-le pour revenir aux réglages par défaut.
 
 ## Développement
@@ -68,7 +99,9 @@ Pour contribuer, commence par [CONTRIBUTING.md](CONTRIBUTING.md). La doc du proj
 - [docs/GDD.md](docs/GDD.md) : le game design, qui fait foi ;
 - [docs/ROADMAP.md](docs/ROADMAP.md) : ce qui est fait, en cours et à venir ;
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) : l'organisation du code ;
-- [docs/KITS.md](docs/KITS.md) : tous les champs d'un kit de perso.
+- [docs/KITS.md](docs/KITS.md) : tous les champs d'un kit de perso ;
+- [docs/INFRA.md](docs/INFRA.md) : tests, CI, Docker, crochets git, Releases ;
+- [docs/AGENTS.md](docs/AGENTS.md) : comment le travail se découpe entre agents.
 
 Il faut Python 3.12 ou plus récent.
 

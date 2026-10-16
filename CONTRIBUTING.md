@@ -24,7 +24,15 @@ Sans `make`, voir les commandes équivalentes dans le README.
 Pour aller plus loin :
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) : l'organisation du code ;
 - [docs/KITS.md](docs/KITS.md) : tous les champs d'un kit ;
-- [docs/ROADMAP.md](docs/ROADMAP.md) : ce qui reste à faire.
+- [docs/ROADMAP.md](docs/ROADMAP.md) : ce qui reste à faire ;
+- [docs/INFRA.md](docs/INFRA.md) : les tests, la CI, Docker, les crochets, les Releases ;
+- [docs/AGENTS.md](docs/AGENTS.md) : découper le travail entre agents, et les skills.
+
+`make hooks` installe aussi un crochet `commit-msg` : message conventionnel, sujet de
+72 caractères maximum, et aucune mention d'un outil d'IA dans l'historique.
+
+Sans Python local, `docker compose run --rm check` lance le lint et les tests dans un
+conteneur, exactement comme la CI.
 
 ## Style
 
