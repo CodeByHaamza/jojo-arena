@@ -9,7 +9,6 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
-from enum import StrEnum
 
 from jojo_arena.combat.arena import Arena
 from jojo_arena.combat.events import Event
@@ -23,21 +22,6 @@ from jojo_arena.engine.actions import NEUTRAL, InputFrame
 # States in which a combo goes on: the defender cannot do anything yet.
 COMBO_STATES = (State.HITSTUN, State.GUARD_BROKEN, State.KO)
 SHOW_COMBO_F = 120  # a finished combo stays on screen this long
-
-
-class Dummy(StrEnum):
-    STAND = "stand"  # does nothing
-    GUARD = "guard"  # holds guard all the time
-    PLAYER = "player"  # played by the second player
-
-
-def dummy_input(mode: Dummy) -> InputFrame | None:
-    """What the dummy does this step; None when a player controls it."""
-    if mode == Dummy.GUARD:
-        return InputFrame(held=frozenset({"guard"}))
-    if mode == Dummy.STAND:
-        return NEUTRAL
-    return None
 
 
 @dataclass

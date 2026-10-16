@@ -2,10 +2,11 @@ from helpers import NONE, OPEN_BOUNDS, press
 
 from jojo_arena.characters import get_fighter
 from jojo_arena.combat.arena import Arena
+from jojo_arena.combat.dummy import Dummy, dummy_input
 from jojo_arena.combat.fighter import State
 from jojo_arena.combat.rounds import Phase
 from jojo_arena.combat.rules import load_rules
-from jojo_arena.combat.training import Dummy, Training, dummy_input
+from jojo_arena.combat.training import Training
 from jojo_arena.engine.geometry import Vec2
 
 RULES = load_rules()
