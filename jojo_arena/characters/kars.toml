@@ -1,0 +1,348 @@
+# Kars (Part 2) - Pillar Man of the light, and the one who made the stone masks. GDD:
+# "Homme du Pilier - Lames de lumière": the longest reach of the cast, blades that come
+# out of his arms and legs and bounce off the walls. Frames (_f) are at 60 per second.
+#
+# Nature "pillar_man": the Ripple burns him double, and so does the sun - which is
+# exactly what he spent a hundred thousand years trying to be free of.
+# Style key: Light Mode. The blades come out, every blow gains reach, and his walk
+# slows: he is carrying edges.
+# Feel: the cleverest thing in the room, and it has knives for arms.
+
+name = "Kars"
+max_hp = 1100
+walk_speed = 104
+nature = "pillar_man"
+style = { type = "stance_toggle", off = "base", on = "light" }
+
+[stances.base]
+label = "SANS MODE"
+label_en = "NO MODE"
+
+[stances.base.moves.light]
+label = "REVERS"
+label_en = "BACKHAND"
+info = "Rapide et net. Encore : coup monté, puis talon"
+info_en = "Quick and clean. Again: a rising blow, then a heel"
+startup_f = 4
+active_f = 3
+recovery_f = 10
+damage = 26
+reach = 17
+radius = 11
+hitstun_f = 19
+knockback = 90
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.base.moves.light2]
+label = "COUP MONTÉ"
+label_en = "RISING BLOW"
+info = "S'enchaîne sur le revers"
+info_en = "Follows the backhand"
+startup_f = 5
+active_f = 3
+recovery_f = 12
+damage = 32
+reach = 17
+radius = 12
+hitstun_f = 21
+knockback = 110
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "heavy"
+
+[stances.base.moves.light3]
+label = "TALON RETOURNÉ"
+label_en = "REVERSE HEEL"
+info = "Fin de l'enchaînement : envoie contre le mur"
+info_en = "Chain ender: sends into the wall"
+startup_f = 8
+active_f = 4
+recovery_f = 19
+damage = 50
+reach = 18
+radius = 13
+hitstun_f = 31
+knockback = 380
+hitstop_f = 10
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "kick"
+
+[stances.base.moves.heavy]
+label = "ABSORPTION"
+label_en = "ABSORPTION"
+info = "Saisie imparable : il prend ce qu'il touche et se soigne"
+info_en = "An unblockable grab: he takes what he touches and heals"
+startup_f = 17
+active_f = 4
+recovery_f = 26
+unblockable = true
+damage = 66
+drain = 0.5
+reach = 15
+radius = 12
+hitstun_f = 32
+knockback = 110
+hitstop_f = 11
+anim = "grab"
+
+[stances.base.moves.heavy_alt]
+label = "COUP DE PIED FUYANT"
+label_en = "RECEDING KICK"
+info = "Avec une direction : un coup de pied retourné qui l'envoie au mur"
+info_en = "With a direction: a reverse kick that sends them into the wall"
+startup_f = 10
+active_f = 5
+recovery_f = 20
+lunge = 200
+damage = 56
+reach = 18
+radius = 12
+hitstun_f = 28
+knockback = 420
+hitstop_f = 9
+wall_bounce = true
+anim = "kick"
+
+[stances.base.moves.special]
+label = "MASQUE DE PIERRE"
+label_en = "STONE MASK"
+info = "Il pose son oeuvre au sol : qui s'en approche prend la morsure de pierre"
+info_en = "He lays his work on the ground: whoever comes near takes the stone bite"
+startup_f = 15
+active_f = 2
+recovery_f = 22
+anim = "special"
+
+[stances.base.moves.special.trap]
+distance = 36
+radius = 22
+lifetime_s = 11
+max_count = 2
+
+[stances.base.moves.special.trap.projectile]
+look = "spark"
+speed = 300
+radius = 5
+damage = 36
+lifetime_s = 0.6
+hitstun_f = 26
+knockback = 180
+hitstop_f = 6
+
+[stances.base.moves.special_alt]
+label = "BOND DU PRÉDATEUR"
+label_en = "PREDATOR'S LEAP"
+info = "Avec une direction : il bondit sur le point visé"
+info_en = "With a direction: he leaps to the point you aim at"
+startup_f = 11
+active_f = 6
+recovery_f = 18
+leap = 130
+leap_to = "cursor"
+leap_height = 30
+damage = 54
+reach = 14
+radius = 13
+hitstun_f = 28
+knockback = 280
+hitstop_f = 8
+anim = "leap"
+
+# Light Mode: the blades come out --------------------------------------------------------
+
+[stances.light]
+label = "MODE DE LA LUMIÈRE"
+label_en = "LIGHT MODE"
+tag = "LUMIÈRE"
+tag_en = "LIGHT"
+walk_speed_mult = 0.9
+
+[stances.light.moves.light]
+label = "LAME BRILLANTE"
+label_en = "LIGHT BLADE"
+info = "La lame sort de l'avant-bras et porte loin. Encore : la seconde lame"
+info_en = "The blade comes out of the forearm and reaches. Again: the second blade"
+shape = "line"
+fx = "blade"
+startup_f = 6
+active_f = 3
+recovery_f = 12
+damage = 30
+reach = 42
+radius = 6
+hitstun_f = 20
+knockback = 100
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.light.moves.light2]
+label = "LAMES CROISÉES"
+label_en = "CROSSED BLADES"
+info = "Fin de l'enchaînement : les deux lames, et il recule"
+info_en = "Chain ender: both blades, and he steps back"
+shape = "line"
+fx = "blade"
+startup_f = 7
+active_f = 4
+recovery_f = 18
+damage = 46
+reach = 44
+radius = 7
+hitstun_f = 28
+knockback = 340
+hitstop_f = 9
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "heavy"
+
+# Brilliant Bone Blades: the whole arm sweeps in one movement.
+[stances.light.moves.heavy]
+shout = "KISAI KATTO !"
+label = "LAMES ÉCLATANTES"
+label_en = "BRILLIANT BONE BLADES"
+info = "Huit tranches en un seul mouvement du bras ; la dernière envoie au mur"
+info_en = "Eight cuts in one movement of the arm; the last one hits the wall"
+shape = "line"
+fx = "blade"
+startup_f = 13
+active_f = 28
+recovery_f = 24
+hits = 8
+hit_every_f = 3
+damage = 12
+last_damage = 48
+reach = 46
+radius = 7
+hitstun_f = 14
+knockback = 40
+last_knockback = 440
+last_wall_bounce = true
+hitstop_f = 1
+anim = "light"
+
+# A blade thrown flat: it comes off the walls and keeps going.
+[stances.light.moves.heavy_alt]
+label = "LAME RICOCHANTE"
+label_en = "RICOCHET BLADE"
+info = "Avec une direction : une lame lancée qui rebondit sur les murs"
+info_en = "With a direction: a thrown blade that bounces off the walls"
+startup_f = 13
+active_f = 1
+recovery_f = 22
+anim = "special"
+
+[stances.light.moves.heavy_alt.projectile]
+look = "blade"
+speed = 280
+radius = 6
+damage = 44
+lifetime_s = 2.2
+hitstun_f = 26
+knockback = 200
+hitstop_f = 6
+bounces = 3
+wall_bounce = true
+
+[stances.light.moves.special]
+label = "LAMES DES JAMBES"
+label_en = "LEG BLADES"
+info = "Un balayage de lames, très large"
+info_en = "A sweep of blades, very wide"
+shape = "line"
+fx = "blade"
+startup_f = 12
+active_f = 5
+recovery_f = 22
+damage = 60
+reach = 48
+radius = 8
+hitstun_f = 30
+knockback = 300
+hitstop_f = 9
+wall_bounce = true
+anim = "sweep"
+
+[stances.light.moves.special_alt]
+label = "ÉCLAT AVEUGLANT"
+label_en = "BLINDING FLASH"
+info = "Avec une direction : il disparaît dans un éclair et se replace plus loin"
+info_en = "With a direction: he vanishes in a flash and reappears further off"
+startup_f = 8
+active_f = 4
+recovery_f = 16
+invincible_f = 12
+leap = 120
+leap_to = "cursor"
+leap_height = 8
+damage = 34
+reach = 14
+radius = 12
+hitstun_f = 24
+knockback = 200
+hitstop_f = 6
+cooldown_s = 5
+anim = "dash"
+
+[buffs.ultimate]
+duration_s = 12
+damage_dealt_mult = 1.35
+damage_taken_mult = 0.75
+heal_per_s = 18
+afterimages = true
+
+# Super moves -----------------------------------------------------------------------------
+
+[moves.hha]
+shout = "KISAI KATTO !"
+label = "ORAGE DE LAMES"
+label_en = "BLADE STORM"
+info = "Toutes les lames à la fois, sur toute la portée ; invincible au démarrage"
+info_en = "Every blade at once, over the whole reach; invincible on startup"
+shape = "line"
+fx = "blade"
+startup_f = 16
+active_f = 6
+recovery_f = 26
+invincible_f = 16
+damage = 160
+reach = 56
+radius = 9
+hitstun_f = 36
+knockback = 450
+hitstop_f = 12
+wall_bounce = true
+clashable = false
+anim = "heavy"
+
+# Great Heat Attack (2 bars): not a blow - what he spent a hundred thousand years on.
+# The first strike has to land; then he becomes the Ultimate Thing for twelve seconds.
+[moves.gha]
+shout = "LA FORME DE VIE ULTIME !"
+shout_en = "THE ULTIMATE LIFE FORM!"
+label = "ULTIMATE THING"
+label_en = "ULTIMATE THING"
+info = "Un coup. S'il touche : il devient la forme de vie ultime, 12 s de régénération et de puissance"
+info_en = "One blow. On hit: he becomes the ultimate life form, 12 s of regeneration and power"
+startup_f = 14
+active_f = 4
+recovery_f = 28
+invincible_f = 14
+damage = 30
+reach = 18
+radius = 13
+hitstun_f = 40
+hitstop_f = 10
+clashable = false
+buff = "ultimate"
+anim = "pose"
+cinematic = "ultimate_thing"
+cinematic_s = 4.2
+finish_damage = 180
+finish_hitstun_f = 50
+finish_knockback = 420
+finish_wall_bounce = true

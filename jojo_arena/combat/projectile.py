@@ -1,4 +1,5 @@
-"""Projectiles: fly straight, stop on walls and props, cancel each other."""
+"""Projectiles: fly straight, stop on walls and props (or come off them), cancel
+each other."""
 
 from __future__ import annotations
 
@@ -28,6 +29,7 @@ class Projectile:
     prop: int | None = None  # index of the arena prop being thrown, if it is one
     hamon: bool = False  # carries Hamon, like the move that fired it
     returning: bool = False  # a boomerang on its way back
+    bounced: int = 0  # walls it has come off so far
     spent: bool = False  # a boomerang that already hit: it only flies back now
     boost: float = 1.0  # damage multiplier of that move
 
@@ -76,6 +78,8 @@ class Projectile:
         if arena.outside_walls(self.pos, self.radius):
             if self.defn.returns:
                 return self.turn_back()  # a boomerang glances off and comes home
+            if self.bounced < self.defn.bounces:
+                return self.ricochet(arena)  # a blade thrown flat keeps going
             self.alive = False
             return [Event("projectile_wall", self.pos)]
         obstacle = arena.obstacle_at(self.pos, self.radius)
@@ -86,6 +90,17 @@ class Projectile:
             self.alive = False
             return [Event("prop_break" if broke else "projectile_wall", self.pos)]
         return []
+
+    def ricochet(self, arena: Arena) -> list[Event]:
+        """Come off the wall and carry on, at the angle it arrived."""
+        pos, normal, _ = arena.constrain(self.pos, self.radius)
+        if normal is None:  # pragma: no cover - a corner the wall gave no normal for
+            self.alive = False
+            return [Event("projectile_wall", self.pos)]
+        self.pos = pos
+        self.velocity = self.velocity.reflect(normal)
+        self.bounced += 1
+        return [Event("projectile_wall", self.pos)]
 
     def turn_back(self) -> list[Event]:
         """A boomerang starts back toward its owner, with time enough to get there."""

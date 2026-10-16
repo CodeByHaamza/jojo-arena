@@ -1,0 +1,57 @@
+# Santana (Part 2): the Pillar Man who never mastered a Mode. Look file for
+# tools/make_sprites.py. The smallest and the rawest of them: no ornament, no cloth, a
+# body that opens where it likes, and the rib blades under the skin of his chest.
+
+name = "Santana"
+
+[build]
+head_r = 5.4
+neck = 1.2
+torso = 14
+legs = 16.5
+arms = 15
+shoulders = 9.8
+hips = 3.6
+torso_r = 7.0
+arm_r = 2.9
+leg_r = 2.8
+hand_r = 2.5
+foot_r = 2.5
+
+[palette]
+skin = "#9aa88e"
+skin_dark = "#6e7a66"
+seam = "#4a5246"
+eyes = "#e8e0a0"
+bone = "#e4dcc0"
+
+[body]
+head = "skin"
+torso = "skin"
+arms = "skin"
+hands = "skin"
+legs = "skin"
+feet = "skin"
+
+[face]
+eyes = "eyes"
+eye_style = "dot"
+brows = false
+nose = true
+ear = false
+
+# The seams where his body comes apart when he wants it to.
+[[parts]]
+type = "body_lines"
+material = "seam"
+
+[[parts]]
+type = "veins"
+material = "skin_dark"
+
+# The rib blades, showing through the chest.
+[[parts]]
+type = "emblem"
+material = "bone"
+shape = "diamond"
+on = "chest"

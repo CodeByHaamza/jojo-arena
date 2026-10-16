@@ -29,6 +29,7 @@ Ce qui marche déjà :
 - clavier et manette (Xbox, DualShock 4, DualSense), touches modifiables ;
 - menus : écran titre partie par partie, menu principal, sélection des persos en onglets par partie (fiche, Stand, rôle), **choix de l'arène avec un aperçu de chaque décor**, écran VS, pause, options (dont la langue : français ou anglais) ;
 - glossaire : termes du lore, personnages et Stands, partie par partie ;
+- roster : 21 persos sur les parties 1, 2 et 3 — la **partie 2 est complète**, Hommes du Pilier compris (Wamuu, Esidisi, Kars, Santana) et Stroheim avec ses lampes à ultraviolets ;
 - modes : combat local, contre l'IA (quatre niveaux), Arcade (six combats jusqu'à DIO), entraînement ;
 - liste des coups de chaque perso, avec les vraies touches du joueur (sélection des persos et pause) ;
 - entraînement poussé : mannequin immobile, en garde, joué par J2, qui **répète une action de son kit** (ORA ORA ORA, Star Finger, ultime...) avec le **délai de ton choix** entre chaque, ou qui **rejoue une suite enregistrée** ; vie et jauge infinies, compteur de combo et de dégâts, données de frames des deux côtés et **frise des frames** avec l'avantage mesuré.

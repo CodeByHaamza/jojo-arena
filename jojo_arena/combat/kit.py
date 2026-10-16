@@ -32,6 +32,7 @@ class ProjectileDef:
     ring_radius: float = 0.0
     homing: float = 0.0  # radians per frame it turns toward the target (0 = straight)
     wall_bounce: bool = False  # what it hits rebounds off the walls
+    bounces: int = 0  # times the shot itself comes off a wall and keeps going
     waves: int = 1  # volleys thrown one after the other...
     wave_every_f: int = 4  # ...this many frames apart (each volley offset a little)
     look: str = "orb"  # how the view draws it: "orb", "knife", "gem", "blade"
@@ -55,6 +56,8 @@ class ProjectileDef:
             origin=data.get("origin", "self"),
             ring_radius=data.get("ring_radius", 0.0),
             homing=math.radians(data.get("homing_deg_s", 0.0)) / HZ,
+            wall_bounce=data.get("wall_bounce", False),
+            bounces=data.get("bounces", 0),
             waves=data.get("waves", 1),
             wave_every_f=data.get("wave_every_f", 4),
             look=data.get("look", "orb"),
@@ -194,6 +197,7 @@ class MoveDef:
     hamon_mult: float = 0.0  # damage of the boosted move (0: the rules' boost_mult)
     hamon_unblockable: bool = False  # boosted, it goes through the guard
     blood_cost: int = 0  # vampires: the move needs and spends this much blood
+    hp_cost: int = 0  # the user tears itself up to do it: it needs, and pays, this much life
     freeze_f: int = 0  # the blow freezes the opponent solid this long (Vaporization Freezing)
     cage_f: int = 0  # on a clean hit, a ring of chains closes around both this long
     cage_radius: float = 0.0
@@ -269,6 +273,7 @@ class MoveDef:
             hamon_mult=data.get("hamon_mult", 0.0),
             hamon_unblockable=data.get("hamon_unblockable", False),
             blood_cost=data.get("blood_cost", 0),
+            hp_cost=data.get("hp_cost", 0),
             freeze_f=data.get("freeze_f", 0),
             cage_f=seconds_to_frames(data.get("cage_s", 0)),
             cage_radius=data.get("cage_radius", 0.0),

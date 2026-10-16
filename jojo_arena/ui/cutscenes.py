@@ -1186,6 +1186,246 @@ class EyeBarrage(CutscenePlayer):
             vfx.draw_reach(world, eyes, far, color, "beam", 2)
 
 
+# Wamuu: Final Mode, Atmospheric Rift ------------------------------------------------------
+
+
+class AtmosphericRift(CutscenePlayer):
+    """Wamuu tears his own arms open so the air screams through them, winds up, and
+    throws a vacuum blade that splits the arena in half. It costs him a quarter of
+    himself, and the cutscene shows that first: his own blood goes before the blow."""
+
+    length = 240
+    WIND_UP = 70  # the air starts turning
+    RIFT = 150  # the blade leaves him
+    WIND = (196, 226, 236)
+    BLOOD = (168, 36, 48)
+
+    def camera(self, f):
+        if f < self.WIND_UP:
+            return self.u + Vec2(0, -20), 3  # close on him opening himself up
+        if f < self.RIFT:
+            return (self.u + self.v) * 0.5, 2
+        return self.v + Vec2(0, -14), 2
+
+    def cue(self, f):
+        fx, chest = self.fx, self.chest(self.scene.user, self.u)
+        if f == 1:
+            self.shout(text.FINAL_MODE_LINE, scale=2, life=46)
+        if 12 <= f < self.WIND_UP and f % 7 == 0:
+            # He opens his arms; the blood goes with the wind, not onto the floor.
+            drift = Vec2(self.rng.uniform(-0.7, 0.7), self.rng.uniform(-1.1, -0.3))
+            fx.add(vfx.Dust(chest + Vec2(self.rng.randint(-8, 8), 0), drift, 2, 16, self.BLOOD))
+        if f == self.WIND_UP:
+            fx.add(vfx.Ring(chest, self.WIND, 3.0, 20, 2))
+            self.world_words.menace(self.head(self.scene.user, self.u), 1)
+            self.shake = 4
+        if self.WIND_UP < f < self.RIFT and f % 9 == 0:
+            fx.add(vfx.Ring(chest, self.WIND, 2.2, 16, 1))
+        if f == self.RIFT:
+            hit = self.chest(self.scene.target, self.v)
+            fx.add(vfx.Flash(hit, 40, self.WIND, 12))
+            fx.add(vfx.Ring(hit, self.WIND, 5.0, 26, 3))
+            fx.focus(hit, heavy=True)
+            self.world_words.add(sfx.DON, hit + Vec2(0, -16), "impact", 3, 46, 0.2, 2)
+            self.flash, self.shake = 10, 18
+        if f > self.RIFT and f % 8 == 0:
+            drift = Vec2(self.rng.uniform(-1.4, 1.4), self.rng.uniform(-1.0, 0.2))
+            fx.add(vfx.Dust(self.chest(self.scene.target, self.v), drift, 2, 18, self.WIND))
+
+    def negative(self, f):
+        return self.RIFT <= f < self.RIFT + 3
+
+    def scene_draw(self, world, f):
+        user, right = self.scene.user, self.side > 0
+        anim = "pose" if f < self.WIND_UP else "heavy"
+        self.body(world, user, self.u, anim, 2, right)
+        if f >= self.RIFT:
+            self.victim(world, f)
+        chest = self.chest(user, self.u)
+        if 12 <= f < self.RIFT:
+            # The air turning between his opened arms, tighter as it winds up.
+            turn = min(1.0, (f - 12) / (self.RIFT - 12))
+            for i in range(5):
+                radius = round(16 - 10 * turn + i * 2)
+                offset = Vec2(math.sin(f * 0.3 + i) * 2, math.cos(f * 0.3 + i) * 2)
+                pygame.draw.circle(world, self.WIND, (chest + offset).as_ints(), radius, 1)
+        if f >= self.RIFT:
+            # The rift itself: a blade of vacuum laid across the arena.
+            reach = min(1.0, (f - self.RIFT) / 10)
+            tip = chest + Vec2(self.side * 240 * reach, 0)
+            pygame.draw.line(world, OUTLINE, chest.as_ints(), tip.as_ints(), 7)
+            pygame.draw.line(world, self.WIND, chest.as_ints(), tip.as_ints(), 3)
+            pygame.draw.line(world, (255, 255, 255), chest.as_ints(), tip.as_ints(), 1)
+
+
+# Esidisi: the tears ------------------------------------------------------------------------
+
+
+class EsidisiTears(CutscenePlayer):
+    """He holds them, and then he starts to cry - and what comes out of his eyes is the
+    same blood that runs in his arms, at five hundred degrees. It falls on them."""
+
+    length = 228
+    WEEP = 60
+    RAIN = 130
+    BLOOD = (224, 74, 44)
+    STEAM = (255, 196, 120)
+
+    def camera(self, f):
+        if f < self.WEEP:
+            return self.u + Vec2(0, -26), 3  # close on his face
+        return (self.u + self.v) * 0.5, 2
+
+    def cue(self, f):
+        fx = self.fx
+        eyes = self.head(self.scene.user, self.u, 4)
+        hit = self.chest(self.scene.target, self.v)
+        if f == 1:
+            self.shout(text.ESIDISI_LINE, scale=2, life=50)
+        if self.WEEP <= f < self.RAIN and f % 6 == 0:
+            fall = Vec2(self.rng.uniform(-0.3, 0.3), self.rng.uniform(0.6, 1.2))
+            fx.add(vfx.Dust(eyes + Vec2(self.rng.randint(-4, 4), 0), fall, 2, 20, self.BLOOD))
+        if f == self.RAIN:
+            self.world_words.add(sfx.CRACKLE, hit + Vec2(0, -18), "impact", 2, 44, 0.2, 2)
+            self.flash, self.shake = 7, 12
+        if f >= self.RAIN and f % 5 == 0:
+            drop = hit + Vec2(self.rng.randint(-26, 26), -40)
+            fx.add(vfx.Dust(drop, Vec2(0, self.rng.uniform(1.0, 1.8)), 2, 22, self.BLOOD))
+            fx.add(vfx.Ring(hit, self.STEAM, 2.4, 14, 1))
+
+    def negative(self, f):
+        return self.RAIN <= f < self.RAIN + 3
+
+    def scene_draw(self, world, f):
+        user, right = self.scene.user, self.side > 0
+        self.body(world, user, self.u, "special" if f < self.RAIN else "heavy", 2, right)
+        self.victim(world, f)
+        if f < self.WEEP:
+            return
+        # The tears, falling from his eyes onto the ground between them.
+        eyes = self.head(user, self.u, 4)
+        for i in range(4):
+            drop_y = eyes.y + ((f * 3 + i * 17) % 70)
+            x = round(eyes.x + (-3 if i % 2 else 3))
+            pygame.draw.line(world, self.BLOOD, (x, round(drop_y)), (x, round(drop_y) + 3), 1)
+        if f >= self.RAIN:
+            hit = self.chest(self.scene.target, self.v)
+            for i in range(7):
+                x = round(hit.x - 24 + i * 8 + (f % 3))
+                top = round(hit.y - 44 + ((f * 5 + i * 13) % 44))
+                pygame.draw.line(world, self.BLOOD, (x, top), (x, top + 5), 1)
+
+
+# Kars: the Ultimate Thing -------------------------------------------------------------------
+
+
+class UltimateThing(CutscenePlayer):
+    """The Red Stone goes into the mask, the mask goes on, and what stands up afterwards
+    is not a Pillar Man any more. The light comes out of him, not onto him."""
+
+    length = 252
+    MASK = 60
+    BURST = 140
+    LIGHT = (255, 244, 200)
+    HALO = (236, 160, 248)
+
+    def camera(self, f):
+        if f < self.BURST:
+            return self.u + Vec2(0, -22), 3
+        return (self.u + self.v) * 0.5, 2
+
+    def cue(self, f):
+        fx, chest = self.fx, self.chest(self.scene.user, self.u)
+        if f == 1:
+            self.shout(text.KARS_LINE, scale=2, life=50)
+        if f == self.MASK:
+            self.world_words.menace(self.head(self.scene.user, self.u), 1)
+            fx.add(vfx.Ring(chest, self.HALO, 2.0, 16, 2))
+            self.shake = 3
+        if self.MASK < f < self.BURST and f % 10 == 0:
+            fx.add(vfx.Ring(chest, self.HALO, 2.6, 20, 1))
+        if f == self.BURST:
+            fx.add(vfx.Flash(chest, 70, self.LIGHT, 16))
+            fx.focus(chest, heavy=True)
+            self.flash, self.shake = 14, 16
+        if f > self.BURST and f % 12 == 0:
+            fx.add(vfx.Ring(chest, self.LIGHT, 4.0, 26, 2))
+
+    def negative(self, f):
+        return self.BURST <= f < self.BURST + 4
+
+    def scene_draw(self, world, f):
+        user, right = self.scene.user, self.side > 0
+        self.body(world, user, self.u, "pose", 2, right)
+        if f >= self.BURST:
+            self.victim(world, f)
+        chest = self.chest(user, self.u)
+        if f >= self.MASK:
+            # Light coming out of him, in rays that get longer.
+            grow = min(1.0, (f - self.MASK) / 70)
+            for i in range(10):
+                angle = math.tau * i / 10 + f * 0.02
+                tip = chest + Vec2.from_angle(angle, 14 + 46 * grow)
+                color = self.LIGHT if f >= self.BURST else self.HALO
+                pygame.draw.line(world, color, chest.as_ints(), tip.as_ints(), 1)
+
+
+# Stroheim: the German spirit ------------------------------------------------------------
+
+
+class SelfDestruct(CutscenePlayer):
+    """He opens the plate on his chest, says the line, and the whole machine goes off.
+    What is left of him is standing, because of course it is."""
+
+    length = 204
+    OPEN = 46
+    BLOW = 110
+    FIRE = (255, 180, 70)
+    WHITE = (255, 246, 214)
+
+    def camera(self, f):
+        if f < self.BLOW:
+            return self.u + Vec2(0, -18), 3
+        return (self.u + self.v) * 0.5, 2
+
+    def cue(self, f):
+        fx, chest = self.fx, self.chest(self.scene.user, self.u)
+        if f == 1:
+            self.shout(text.STROHEIM_LINE, scale=2, life=50)
+        if self.OPEN <= f < self.BLOW and f % 8 == 0:
+            spit = Vec2(self.rng.uniform(-1.0, 1.0), self.rng.uniform(-1.2, -0.2))
+            fx.add(vfx.Dust(chest, spit, 2, 16, self.FIRE))
+        if f == self.BLOW:
+            fx.add(vfx.Flash(chest, 90, self.WHITE, 18))
+            fx.add(vfx.Ring(chest, self.FIRE, 6.0, 30, 4))
+            fx.focus(chest, heavy=True)
+            self.world_words.add(sfx.DON, chest + Vec2(0, -14), "impact", 3, 50, 0.2, 2)
+            self.flash, self.shake = 16, 22
+        if f > self.BLOW and f % 7 == 0:
+            fx.add(vfx.Ring(chest, self.FIRE, 3.4, 22, 2))
+            blast = Vec2(self.rng.uniform(-1.8, 1.8), self.rng.uniform(-1.4, 0.2))
+            fx.add(vfx.Dust(self.chest(self.scene.target, self.v), blast, 3, 20, self.FIRE))
+
+    def negative(self, f):
+        return self.BLOW <= f < self.BLOW + 4
+
+    def scene_draw(self, world, f):
+        user, right = self.scene.user, self.side > 0
+        self.body(world, user, self.u, "pose", 2, right)
+        if f >= self.BLOW:
+            self.victim(world, f)
+        chest = self.chest(user, self.u)
+        if self.OPEN <= f < self.BLOW:
+            # The chest plate hinged open, the charge glowing inside it.
+            plate = pygame.Rect(round(chest.x) - 5, round(chest.y) - 4, 10, 9)
+            pygame.draw.rect(world, OUTLINE, plate.inflate(2, 2))
+            pulse = 0.5 + 0.5 * math.sin(f * 0.4)
+            pygame.draw.rect(world, tuple(round(c * pulse) for c in self.FIRE), plate)
+        if f >= self.BLOW:
+            grow = min(1.0, (f - self.BLOW) / 16)
+            pygame.draw.circle(world, self.FIRE, chest.as_ints(), round(10 + 70 * grow), 2)
+
+
 CUTSCENES = {
     "road_roller": RoadRoller,
     "star_finish": StarFinish,
@@ -1199,6 +1439,10 @@ CUTSCENES = {
     "neck_breaker": NeckBreaker,
     "scarf_trap": ScarfTrap,
     "eye_barrage": EyeBarrage,
+    "atmospheric_rift": AtmosphericRift,
+    "esidisi_tears": EsidisiTears,
+    "ultimate_thing": UltimateThing,
+    "self_destruct": SelfDestruct,
 }
 
 

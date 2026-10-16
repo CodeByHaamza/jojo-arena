@@ -314,7 +314,13 @@ class Fighter:
             return None
         if move is not None and move.blood_cost > self.blood:
             return None  # not enough blood for it
+        if move is not None and not self.can_pay(move):
+            return None  # it would cost more life than there is left
         return move
+
+    def can_pay(self, move: MoveDef) -> bool:
+        """A move that tears its user up only comes out while there is life to give."""
+        return move.hp_cost <= 0 or self.hp > move.hp_cost
 
     def time_stop_ready(self) -> bool | None:
         """For the HUD: None if this kit cannot stop time, else whether it can right now."""
@@ -472,7 +478,7 @@ class Fighter:
             supers.insert(0, ("gha", self.rules.gha_cost))
         for slot, cost in supers:
             move = self.kit.move(self.stance, slot)
-            if move is not None and self.hh >= cost:
+            if move is not None and self.hh >= cost and self.can_pay(move):
                 del self.buffer["heart_heat"]
                 self.hh -= cost
                 self.start_attack(move, target)
@@ -545,6 +551,8 @@ class Fighter:
         self.attack.dest = dest
         self.attack.hamon = move.hamon
         self.blood = max(0.0, self.blood - move.blood_cost)
+        if move.hp_cost:
+            self.hurt(move.hp_cost)  # gated by can_pay: it never kills its own user
         if move.hamon_cost and self.hamon >= move.hamon_cost:
             # Enough Hamon: the move spends it and strikes harder. Without, it stays normal.
             self.hamon -= move.hamon_cost

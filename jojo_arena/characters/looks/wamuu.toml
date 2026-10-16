@@ -1,0 +1,86 @@
+# Wamuu (Part 2): the Pillar Man of the wind. Look file for tools/make_sprites.py.
+# Huge and bare-chested, skin the colour of old stone, the horn on his brow that reads
+# the wind, his banded headpiece with the anti-Ripple wires in it, gold at the shoulders
+# and a long loincloth. Built like a statue because that is where he came from.
+
+name = "Wamuu"
+
+[build]
+head_r = 5.8
+neck = 1.6
+torso = 15
+legs = 18.5
+arms = 16
+shoulders = 10.6
+hips = 4.0
+torso_r = 7.4
+arm_r = 3.1
+leg_r = 3.0
+hand_r = 2.6
+foot_r = 2.6
+
+[palette]
+skin = "#c0b4c8"
+skin_dark = "#8e8498"
+horn = "#efe4c4"
+band = "#4a4660"
+gold = "#d8b256"
+cloth = "#3a4a74"
+eyes = "#e8d060"
+mouth = "#6a5a78"
+
+[body]
+head = "skin"
+torso = "skin"
+arms = "skin"
+hands = "skin"
+legs = "skin"
+feet = "skin"
+
+[face]
+eyes = "eyes"
+eye_style = "tall"
+brows = true
+nose = true
+ear = false
+
+# The horn of a Pillar Man: it reads the wind, and it fires it back.
+[[parts]]
+type = "horns"
+material = "horn"
+size = 0.92
+tip = "gold"
+
+# The banded headpiece, the anti-Ripple wires wound inside it.
+[[parts]]
+type = "headband"
+material = "gold"
+gem = "horn"
+
+[[parts]]
+type = "pauldrons"
+material = "gold"
+size = 5.0
+rim = "band"
+ring = "horn"
+
+# The markings of his people, running down the arms and the chest.
+[[parts]]
+type = "body_lines"
+material = "skin_dark"
+
+[[parts]]
+type = "gloves"
+material = "band"
+long = true
+studs = "gold"
+
+[[parts]]
+type = "loincloth"
+material = "cloth"
+length = 0.62
+
+[[parts]]
+type = "belt"
+material = "band"
+buckle = "gold"

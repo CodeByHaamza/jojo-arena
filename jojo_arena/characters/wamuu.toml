@@ -1,0 +1,347 @@
+# Wamuu (Part 2) - Pillar Man of the wind. GDD: "Homme du Pilier - Guerrier d'honneur":
+# enormous reach and strength, slow to start, and a Mode that turns every blow into wind.
+# Frames (_f) are at 60 per second; speeds and knockback in pixels per second.
+#
+# Nature "pillar_man": the Ripple burns him double, and the sun burns him outright - in
+# the Swiss castle the dawn is his clock.
+# Style key: Wind Mode (流法). Bare-handed he is fast and short; in the Mode his blows
+# carry the wind, reaching across the arena, but they take longer to come out.
+# Feel: a warrior who will not strike a man who cannot answer, and who kills everything
+# that can.
+
+name = "Wamuu"
+max_hp = 1200
+walk_speed = 96
+nature = "pillar_man"
+style = { type = "stance_toggle", off = "base", on = "wind" }
+
+# Bare hands: the strength of a statue --------------------------------------------------
+
+[stances.base]
+label = "SANS MODE"
+label_en = "NO MODE"
+
+[stances.base.moves.light]
+label = "REVERS"
+label_en = "BACKHAND"
+info = "Rapide pour sa taille. Encore : coup montant, puis coup de corne"
+info_en = "Fast for his size. Again: an upward blow, then the horn"
+startup_f = 5
+active_f = 3
+recovery_f = 11
+damage = 32
+reach = 18
+radius = 12
+hitstun_f = 20
+knockback = 100
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.base.moves.light2]
+label = "COUP MONTANT"
+label_en = "RISING BLOW"
+info = "S'enchaîne sur le revers"
+info_en = "Follows the backhand"
+startup_f = 6
+active_f = 3
+recovery_f = 13
+damage = 38
+reach = 18
+radius = 13
+hitstun_f = 22
+knockback = 130
+hitstop_f = 6
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "heavy"
+
+[stances.base.moves.light3]
+shout = "SUMAKE !"
+label = "COUP DE CORNE"
+label_en = "HORN STRIKE"
+info = "Fin de l'enchaînement : la corne envoie contre le mur"
+info_en = "Chain ender: the horn sends into the wall"
+startup_f = 8
+active_f = 4
+recovery_f = 20
+damage = 52
+reach = 16
+radius = 13
+hitstun_f = 32
+knockback = 380
+hitstop_f = 10
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "headbutt"
+
+# The Pillar Men take what they touch: slow, unblockable, and it feeds him.
+[stances.base.moves.heavy]
+label = "ABSORPTION"
+label_en = "ABSORPTION"
+info = "Saisie imparable : il absorbe ce qu'il touche et se soigne"
+info_en = "An unblockable grab: he absorbs what he touches and heals"
+startup_f = 18
+active_f = 4
+recovery_f = 28
+unblockable = true
+damage = 70
+drain = 0.5
+reach = 16
+radius = 12
+hitstun_f = 34
+knockback = 120
+hitstop_f = 12
+anim = "grab"
+
+[stances.base.moves.heavy_alt]
+label = "CHARGE DU PILIER"
+label_en = "PILLAR CHARGE"
+info = "Avec une direction : il fonce, blindé, et encaisse deux coups sans broncher"
+info_en = "With a direction: he charges, armored, and walks through two blows"
+startup_f = 11
+active_f = 12
+recovery_f = 22
+lunge = 250
+armor = 2
+damage = 64
+reach = 14
+radius = 14
+hitstun_f = 28
+knockback = 330
+hitstop_f = 9
+wall_bounce = true
+anim = "tackle"
+
+# His horn reads the wind: anything that enters his shadow is answered before he sees it.
+[stances.base.moves.special]
+label = "LECTURE DU VENT"
+label_en = "READING THE WIND"
+info = "Contre : sa corne lit le vent, qui le frappe au corps à corps est renvoyé"
+info_en = "Counter: his horn reads the wind, whoever strikes him in melee is answered"
+startup_f = 5
+active_f = 28
+recovery_f = 18
+counter = "wind_answer"
+anim = "counter_yare"
+
+[stances.base.moves.wind_answer]
+shout = "TU AS PERDU !"
+shout_en = "YOU HAVE LOST!"
+label = "RÉPONSE DU VENT"
+label_en = "THE WIND ANSWERS"
+startup_f = 2
+active_f = 4
+recovery_f = 16
+invincible_f = 12
+damage = 95
+reach = 20
+radius = 14
+hitstun_f = 34
+knockback = 420
+hitstop_f = 12
+wall_bounce = true
+clashable = false
+anim = "light"
+
+# The wires wound inside his headpiece: they cut, and the Ripple does not run through them.
+[stances.base.moves.special_alt]
+label = "FILS ANTI-ONDE"
+label_en = "ANTI-RIPPLE WIRES"
+info = "Avec une direction : les fils de son casque fusent et tranchent de loin"
+info_en = "With a direction: the wires of his headpiece fly out and cut from afar"
+startup_f = 14
+active_f = 1
+recovery_f = 22
+anim = "special"
+
+[stances.base.moves.special_alt.projectile]
+look = "spark"
+speed = 330
+radius = 4
+damage = 34
+lifetime_s = 0.9
+hitstun_f = 22
+knockback = 130
+hitstop_f = 5
+count = 2
+spread_deg = 10
+
+# Wind Mode: the air itself does the hitting ---------------------------------------------
+
+[stances.wind]
+label = "MODE DU VENT"
+label_en = "WIND MODE"
+tag = "VENT"
+tag_en = "WIND"
+walk_speed_mult = 0.92
+
+[stances.wind.moves.light]
+label = "LAME DE VENT"
+label_en = "WIND BLADE"
+info = "Une lame d'air qui porte bien plus loin que son bras. Encore : la seconde lame"
+info_en = "A blade of air that reaches well past his arm. Again: the second blade"
+shape = "line"
+fx = "limb"
+startup_f = 8
+active_f = 3
+recovery_f = 14
+damage = 34
+reach = 48
+radius = 6
+hitstun_f = 20
+knockback = 110
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.wind.moves.light2]
+label = "LAME CROISÉE"
+label_en = "CROSSED BLADE"
+info = "Fin de l'enchaînement : la seconde lame projette"
+info_en = "Chain ender: the second blade sends flying"
+shape = "line"
+fx = "limb"
+startup_f = 9
+active_f = 4
+recovery_f = 20
+damage = 48
+reach = 50
+radius = 7
+hitstun_f = 30
+knockback = 360
+hitstop_f = 9
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "heavy"
+
+# Divine Sandstorm: the vortex between his arms, it grinds and it pushes.
+[stances.wind.moves.heavy]
+shout = "KAMIZUNA ARASHI !"
+label = "DIVINE SANDSTORM"
+info = "Tourbillon de 12 coups entre ses bras, qui pousse ; le dernier envoie au mur"
+info_en = "A 12-hit vortex between his arms that pushes; the last blow hits the wall"
+startup_f = 14
+active_f = 36
+recovery_f = 24
+hits = 12
+hit_every_f = 3
+lunge = 45
+damage = 9
+last_damage = 46
+reach = 26
+radius = 15
+hitstun_f = 14
+knockback = 40
+last_knockback = 460
+last_wall_bounce = true
+hitstop_f = 1
+anim = "light"
+
+# The horn as a cannon: it fires the wind it has been reading.
+[stances.wind.moves.heavy_alt]
+shout = "SUMAKE !"
+label = "CANON À VENT"
+label_en = "WIND CANNON"
+info = "Avec une direction : sa corne tire l'air comprimé à travers l'arène"
+info_en = "With a direction: his horn fires compressed air across the arena"
+startup_f = 16
+active_f = 1
+recovery_f = 26
+anim = "heavy"
+
+[stances.wind.moves.heavy_alt.projectile]
+look = "wave"
+speed = 240
+radius = 12
+damage = 58
+lifetime_s = 1.5
+hitstun_f = 30
+knockback = 300
+hitstop_f = 9
+
+# The Wind Suit: a sheath of whirling air. Harder to hurt, and it carries him.
+[stances.wind.moves.special]
+label = "ARMURE DE VAPEUR"
+label_en = "WIND SUIT"
+info = "Un manteau d'air tournoyant : moitié moins de dégâts reçus pendant 5 s"
+info_en = "A cloak of whirling air: half the damage taken for 5 s"
+startup_f = 12
+active_f = 4
+recovery_f = 20
+buff = "wind_suit"
+cooldown_s = 12
+anim = "pose"
+
+[stances.wind.moves.special_alt]
+label = "TOURBILLON ASCENDANT"
+label_en = "RISING VORTEX"
+info = "Avec une direction : une colonne d'air qui décolle l'adversaire"
+info_en = "With a direction: a column of air that lifts the opponent off the ground"
+startup_f = 13
+active_f = 5
+recovery_f = 24
+damage = 62
+reach = 20
+radius = 16
+hitstun_f = 36
+knockback = 420
+hitstop_f = 11
+wall_bounce = true
+anim = "uppercut"
+
+[buffs.wind_suit]
+duration_s = 5
+damage_taken_mult = 0.5
+afterimages = true
+
+# Super moves (same in both Modes) --------------------------------------------------------
+
+# Heart Heat Attack (1 bar): the sandstorm at full width, from one wall to the other.
+[moves.hha]
+shout = "KAMIZUNA ARASHI !"
+label = "SABLE DIVIN"
+label_en = "DIVINE SAND"
+info = "Le tourbillon à pleine largeur, invincible au démarrage"
+info_en = "The vortex at full width, invincible on startup"
+startup_f = 18
+active_f = 5
+recovery_f = 28
+invincible_f = 18
+damage = 165
+reach = 24
+radius = 20
+hitstun_f = 38
+knockback = 470
+hitstop_f = 13
+wall_bounce = true
+clashable = false
+anim = "heavy"
+
+# Great Heat Attack (2 bars): Final Mode, Atmospheric Rift. He tears his own body open to
+# make a blade of air nothing survives - so it costs him a quarter of his life to throw,
+# and it will not come out if he has not got it to give.
+[moves.gha]
+shout = "FINAL MODE !"
+label = "FINAL MODE : RIFT ATMOSPHÉRIQUE"
+label_en = "FINAL MODE: ATMOSPHERIC RIFT"
+info = "Il s'ouvre le corps pour faire un vide : 300 PV de dégâts, 300 de sa propre vie"
+info_en = "He tears himself open to make a void: 300 damage, and 300 of his own life"
+hp_cost = 300
+startup_f = 16
+active_f = 4
+recovery_f = 30
+invincible_f = 16
+damage = 40
+reach = 24
+radius = 16
+hitstun_f = 40
+hitstop_f = 12
+clashable = false
+anim = "heavy"
+cinematic = "atmospheric_rift"
+cinematic_s = 4.0
+finish_damage = 300
+finish_hitstun_f = 50
+finish_knockback = 500
+finish_wall_bounce = true

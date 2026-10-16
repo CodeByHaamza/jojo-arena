@@ -1,0 +1,344 @@
+# Esidisi (Part 2) - Pillar Man of the flame. GDD: "Homme du Pilier - Zoneur brûlant":
+# he fights at range by pumping his own blood out at five hundred degrees, and the
+# hotter it gets the more it costs him. Frames (_f) are at 60 per second.
+#
+# Nature "pillar_man": the Ripple burns him double, and so does the sun.
+# Style key: Flame Mode. In it his veins open and every blow carries boiling blood -
+# several of those moves take a little of his own life, because that is what they are.
+# Feel: the one who weeps while he kills you, and does not stop.
+
+name = "Esidisi"
+max_hp = 1150
+walk_speed = 100
+nature = "pillar_man"
+style = { type = "stance_toggle", off = "base", on = "flame" }
+
+[stances.base]
+label = "SANS MODE"
+label_en = "NO MODE"
+
+[stances.base.moves.light]
+label = "GRIFFE"
+label_en = "CLAW"
+info = "Rapide. Encore : revers, puis coup de coude"
+info_en = "Fast. Again: backhand, then elbow"
+startup_f = 4
+active_f = 3
+recovery_f = 10
+damage = 28
+reach = 17
+radius = 11
+hitstun_f = 19
+knockback = 90
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.base.moves.light2]
+label = "REVERS"
+label_en = "BACKHAND"
+info = "S'enchaîne sur la griffe"
+info_en = "Follows the claw"
+startup_f = 5
+active_f = 3
+recovery_f = 12
+damage = 34
+reach = 17
+radius = 12
+hitstun_f = 21
+knockback = 120
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "heavy"
+
+[stances.base.moves.light3]
+label = "COUP DE COUDE"
+label_en = "ELBOW"
+info = "Fin de l'enchaînement : envoie contre le mur"
+info_en = "Chain ender: sends into the wall"
+startup_f = 7
+active_f = 4
+recovery_f = 18
+damage = 48
+reach = 15
+radius = 13
+hitstun_f = 30
+knockback = 350
+hitstop_f = 9
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "uppercut"
+
+[stances.base.moves.heavy]
+label = "ÉTREINTE BRÛLANTE"
+label_en = "SCALDING GRIP"
+info = "Saisie imparable : il absorbe et se soigne"
+info_en = "An unblockable grab: he absorbs and heals"
+startup_f = 17
+active_f = 4
+recovery_f = 26
+unblockable = true
+damage = 64
+drain = 0.5
+reach = 15
+radius = 12
+hitstun_f = 32
+knockback = 110
+hitstop_f = 11
+anim = "grab"
+
+[stances.base.moves.heavy_alt]
+label = "CHARGE"
+label_en = "CHARGE"
+info = "Avec une direction : il fonce, blindé"
+info_en = "With a direction: he charges, armored"
+startup_f = 10
+active_f = 11
+recovery_f = 20
+lunge = 260
+armor = 1
+damage = 58
+reach = 14
+radius = 13
+hitstun_f = 26
+knockback = 310
+hitstop_f = 9
+wall_bounce = true
+anim = "tackle"
+
+[stances.base.moves.special]
+label = "VEINE FOUET"
+label_en = "VEIN WHIP"
+info = "Une veine jaillit du bras et claque à mi-distance"
+info_en = "A vein shoots out of his arm and cracks at mid range"
+shape = "line"
+fx = "tentacle"
+startup_f = 13
+active_f = 5
+recovery_f = 20
+damage = 46
+reach = 70
+radius = 6
+hitstun_f = 26
+knockback = 240
+hitstop_f = 7
+anim = "special"
+
+[stances.base.moves.special_alt]
+label = "BOND DE L'ANCIEN"
+label_en = "ELDER'S LEAP"
+info = "Avec une direction : il bondit sur l'adversaire"
+info_en = "With a direction: he leaps onto the opponent"
+startup_f = 12
+active_f = 6
+recovery_f = 20
+leap = 110
+leap_height = 26
+damage = 52
+reach = 13
+radius = 13
+hitstun_f = 28
+knockback = 260
+hitstop_f = 8
+anim = "leap"
+
+# Flame Mode: his own blood, pumped out at five hundred degrees -------------------------
+
+[stances.flame]
+label = "MODE DE LA FLAMME"
+label_en = "FLAME MODE"
+tag = "FLAMME"
+tag_en = "FLAME"
+walk_speed_mult = 1.05
+
+[stances.flame.moves.light]
+label = "GIFLE BRÛLANTE"
+label_en = "SCALDING SLAP"
+info = "La paume couverte de sang bouillant. Encore : la seconde main"
+info_en = "His palm running with boiling blood. Again: the other hand"
+startup_f = 5
+active_f = 3
+recovery_f = 11
+damage = 32
+reach = 19
+radius = 12
+hitstun_f = 20
+knockback = 100
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.flame.moves.light2]
+label = "DOUBLE GIFLE"
+label_en = "DOUBLE SLAP"
+info = "Fin de l'enchaînement : deux paumes et un recul"
+info_en = "Chain ender: two palms and a push"
+startup_f = 6
+active_f = 6
+recovery_f = 16
+hits = 2
+hit_every_f = 3
+damage = 22
+last_damage = 40
+reach = 19
+radius = 12
+hitstun_f = 20
+knockback = 70
+last_knockback = 340
+last_wall_bounce = true
+hitstop_f = 5
+cancel_on_hit = ["special"]
+anim = "heavy"
+
+# Boiling blood, fired from the fingertips. It is his blood: it costs him some.
+[stances.flame.moves.heavy]
+shout = "KYAAA !"
+label = "JET DE SANG BOUILLANT"
+label_en = "BOILING BLOOD JET"
+info = "Trois jets à 500 degrés, tirés de ses propres veines (lui coûte 25 PV)"
+info_en = "Three jets at five hundred degrees, from his own veins (costs him 25 HP)"
+hp_cost = 25
+startup_f = 14
+active_f = 1
+recovery_f = 24
+anim = "special"
+
+[stances.flame.moves.heavy.projectile]
+look = "jet"
+speed = 290
+radius = 6
+damage = 30
+lifetime_s = 1.1
+hitstun_f = 22
+knockback = 140
+hitstop_f = 5
+count = 3
+spread_deg = 20
+
+[stances.flame.moves.heavy_alt]
+label = "VEINES EN FAISCEAU"
+label_en = "VEIN VOLLEY"
+info = "Avec une direction : deux vagues de veines brûlantes qui traversent (lui coûte 30 PV)"
+info_en = "With a direction: two waves of scalding veins that cross the arena (costs 30 HP)"
+hp_cost = 30
+startup_f = 18
+active_f = 1
+recovery_f = 28
+cooldown_s = 4
+anim = "special"
+
+[stances.flame.moves.heavy_alt.projectile]
+look = "jet"
+speed = 230
+radius = 7
+damage = 26
+lifetime_s = 1.6
+hitstun_f = 20
+knockback = 120
+hitstop_f = 4
+count = 2
+spread_deg = 12
+waves = 2
+wave_every_f = 12
+
+[stances.flame.moves.special]
+label = "TOURBILLON DE VEINES"
+label_en = "VEIN VORTEX"
+info = "Les veines fouettent tout autour de lui, dix coups"
+info_en = "His veins whip all round him, ten blows"
+startup_f = 12
+active_f = 30
+recovery_f = 24
+hits = 10
+hit_every_f = 3
+damage = 10
+last_damage = 42
+reach = 22
+radius = 16
+hitstun_f = 14
+knockback = 40
+last_knockback = 400
+last_wall_bounce = true
+hitstop_f = 1
+anim = "light"
+
+[stances.flame.moves.special_alt]
+label = "SANG QUI COLLE"
+label_en = "CLINGING BLOOD"
+info = "Avec une direction : une flaque bouillante posée au sol qui gicle au passage"
+info_en = "With a direction: a scalding pool laid on the ground that spits when crossed"
+startup_f = 16
+active_f = 2
+recovery_f = 22
+anim = "special"
+
+[stances.flame.moves.special_alt.trap]
+distance = 34
+radius = 20
+lifetime_s = 9
+max_count = 2
+
+[stances.flame.moves.special_alt.trap.projectile]
+look = "jet"
+speed = 250
+radius = 6
+damage = 32
+lifetime_s = 0.7
+hitstun_f = 24
+knockback = 170
+hitstop_f = 6
+
+# Super moves -----------------------------------------------------------------------------
+
+[moves.hha]
+shout = "ÉBULLITION !"
+shout_en = "BOIL OVER!"
+label = "ÉBULLITION"
+label_en = "BOIL OVER"
+info = "Tout son sang sort d'un coup, en éventail ; invincible au démarrage"
+info_en = "All his blood at once, in a fan; invincible on startup"
+startup_f = 16
+active_f = 1
+recovery_f = 26
+invincible_f = 16
+anim = "special"
+
+[moves.hha.projectile]
+look = "jet"
+speed = 300
+radius = 7
+damage = 52
+lifetime_s = 1.3
+hitstun_f = 30
+knockback = 260
+hitstop_f = 7
+count = 5
+spread_deg = 44
+
+# Great Heat Attack (2 bars): the tears. He weeps, and what falls is boiling.
+[moves.gha]
+shout = "ATCHOUM !"
+shout_en = "ACHOO!"
+label = "LES LARMES D'ESIDISI"
+label_en = "THE TEARS OF ESIDISI"
+info = "Un coup. S'il touche : il pleure, et ce qui tombe est à 500 degrés"
+info_en = "One blow. On hit: he weeps, and what falls is at five hundred degrees"
+startup_f = 13
+active_f = 4
+recovery_f = 28
+invincible_f = 13
+damage = 34
+reach = 17
+radius = 13
+hitstun_f = 40
+hitstop_f = 10
+clashable = false
+anim = "light"
+cinematic = "esidisi_tears"
+cinematic_s = 3.8
+finish_damage = 265
+finish_drain = 0.25
+finish_hitstun_f = 50
+finish_knockback = 430
+finish_wall_bounce = true

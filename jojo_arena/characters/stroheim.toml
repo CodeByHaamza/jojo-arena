@@ -1,0 +1,218 @@
+# Rudol von Stroheim (Part 2) - the German officer who came back as a machine. GDD:
+# "Humain augmenté - Artillerie": no Ripple, no Mode, only engineering - a gun where his
+# arm was, a flamethrower, and the ultraviolet lamps that are the whole point of him.
+# Frames (_f) are at 60 per second.
+#
+# Nature "human": the Ripple does nothing special to him, and the sun is just daylight.
+# No style key. His ultraviolet moves carry the `hamon` flag: not because he breathes,
+# but because that flag is what the fight calls "light that burns the undead" - and a
+# Pillar Man caught in his lamps takes double, exactly as the GDD says.
+# Feel: a man who has replaced everything he lost with something louder.
+
+name = "Rudol von Stroheim"
+max_hp = 1000
+walk_speed = 100
+nature = "human"
+
+[stances.base]
+label = "CORPS DE MACHINE"
+label_en = "MACHINE BODY"
+
+[stances.base.moves.light]
+label = "POING D'ACIER"
+label_en = "STEEL FIST"
+info = "Le bras de métal, court et sec. Encore : revers, puis coup de crosse"
+info_en = "The metal arm, short and dry. Again: backhand, then the butt of the gun"
+startup_f = 4
+active_f = 3
+recovery_f = 10
+damage = 26
+reach = 16
+radius = 11
+hitstun_f = 19
+knockback = 90
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.base.moves.light2]
+label = "REVERS DE MÉTAL"
+label_en = "METAL BACKHAND"
+info = "S'enchaîne sur le poing"
+info_en = "Follows the fist"
+startup_f = 5
+active_f = 3
+recovery_f = 12
+damage = 32
+reach = 16
+radius = 12
+hitstun_f = 21
+knockback = 120
+hitstop_f = 6
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "heavy"
+
+[stances.base.moves.light3]
+shout = "DEUTSCHE WISSENSCHAFT !"
+label = "COUP DE CROSSE"
+label_en = "RIFLE BUTT"
+info = "Fin de l'enchaînement : envoie contre le mur"
+info_en = "Chain ender: sends into the wall"
+startup_f = 8
+active_f = 4
+recovery_f = 20
+damage = 50
+reach = 15
+radius = 12
+hitstun_f = 30
+knockback = 360
+hitstop_f = 10
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "uppercut"
+
+# The arm that is mostly gun.
+[stances.base.moves.heavy]
+label = "MITRAILLEUSE"
+label_en = "MACHINE GUN"
+info = "Trois rafales de balles, l'une après l'autre"
+info_en = "Three bursts of bullets, one after the other"
+startup_f = 12
+active_f = 1
+recovery_f = 26
+anim = "special"
+
+[stances.base.moves.heavy.projectile]
+look = "bullet"
+speed = 420
+radius = 4
+damage = 16
+lifetime_s = 1.0
+hitstun_f = 12
+knockback = 60
+hitstop_f = 2
+count = 2
+spread_deg = 8
+waves = 3
+wave_every_f = 6
+
+[stances.base.moves.heavy_alt]
+label = "LANCE-FLAMMES"
+label_en = "FLAMETHROWER"
+info = "Avec une direction : une nappe de feu à mi-distance"
+info_en = "With a direction: a sheet of fire at mid range"
+shape = "line"
+fx = "limb"
+startup_f = 14
+active_f = 10
+recovery_f = 24
+hits = 5
+hit_every_f = 3
+damage = 14
+last_damage = 34
+reach = 56
+radius = 8
+hitstun_f = 12
+knockback = 30
+last_knockback = 280
+hitstop_f = 2
+anim = "special"
+
+# The lamps. This is why he was built: a Pillar Man in them takes double.
+[stances.base.moves.special]
+shout = "LUMIÈRE ULTRAVIOLETTE !"
+shout_en = "ULTRAVIOLET LIGHT!"
+label = "LAMPES À ULTRAVIOLETS"
+label_en = "ULTRAVIOLET LAMPS"
+info = "Le soleil en boîte : double les dégâts sur vampires, zombies et Hommes du Pilier"
+info_en = "The sun in a box: double damage on vampires, zombies and Pillar Men"
+hamon = true
+startup_f = 16
+active_f = 8
+recovery_f = 26
+damage = 52
+reach = 40
+radius = 14
+hitstun_f = 30
+knockback = 160
+hitstop_f = 8
+anim = "pose"
+
+[stances.base.moves.special_alt]
+label = "PROJECTEUR BRAQUÉ"
+label_en = "AIMED FLOODLIGHT"
+info = "Avec une direction : un rayon d'ultraviolets qui traverse l'arène"
+info_en = "With a direction: a beam of ultraviolet across the arena"
+hamon = true
+fx = "beam"
+shape = "line"
+startup_f = 18
+active_f = 6
+recovery_f = 28
+damage = 56
+reach = 150
+radius = 5
+hitstun_f = 28
+knockback = 180
+hitstop_f = 7
+cooldown_s = 6
+anim = "special"
+
+# Super moves -----------------------------------------------------------------------------
+
+[moves.hha]
+shout = "FEU À VOLONTÉ !"
+shout_en = "OPEN FIRE!"
+label = "TIR DE BARRAGE"
+label_en = "BARRAGE FIRE"
+info = "Tout ce qu'il a, en éventail ; invincible au démarrage"
+info_en = "Everything he has, in a fan; invincible on startup"
+startup_f = 14
+active_f = 1
+recovery_f = 24
+invincible_f = 14
+anim = "special"
+
+[moves.hha.projectile]
+look = "bullet"
+speed = 430
+radius = 5
+damage = 24
+lifetime_s = 1.2
+hitstun_f = 20
+knockback = 150
+hitstop_f = 4
+count = 4
+spread_deg = 34
+waves = 2
+wave_every_f = 8
+
+# Great Heat Attack (2 bars): the German spirit. He turns himself into the bomb, and the
+# bomb costs him a third of what is left of him - it will not come out if it is not there.
+[moves.gha]
+shout = "MON CORPS EST ALLEMAND !"
+shout_en = "MY BODY IS GERMAN!"
+label = "AUTODESTRUCTION"
+label_en = "SELF-DESTRUCT"
+info = "Il s'ouvre la poitrine et saute : énorme, et lui coûte 280 PV"
+info_en = "He opens his chest and blows: enormous, and it costs him 280 HP"
+hamon = true
+hp_cost = 280
+startup_f = 18
+active_f = 4
+recovery_f = 34
+invincible_f = 18
+damage = 36
+reach = 20
+radius = 18
+hitstun_f = 40
+hitstop_f = 12
+clashable = false
+anim = "pose"
+cinematic = "self_destruct"
+cinematic_s = 3.4
+finish_damage = 290
+finish_hitstun_f = 50
+finish_knockback = 500
+finish_wall_bounce = true

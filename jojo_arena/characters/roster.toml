@@ -141,6 +141,71 @@ blurb_en = "A former Hamon master turned vampire: jets from the eyes that cross 
 color = "#7a5636"
 aura = "#e03030"
 
+[[fighters]]
+id = "wamuu"
+part = 2
+name = "WAMUU"
+kit = "wamuu"
+sprite = "wamuu/wamuu"
+role = "HOMME DU PILIER - VENT"
+role_en = "PILLAR MAN - WIND"
+blurb = "Un guerrier qui ne frappe pas un adversaire désarmé, et qui tue tous les autres. Le vent lui dit où tu es."
+blurb_en = "A warrior who will not strike a man who cannot answer, and kills every other. The wind tells him where you are."
+color = "#6a5a9a"
+aura = "#9ad8e8"
+
+[[fighters]]
+id = "esidisi"
+part = 2
+name = "ESIDISI"
+kit = "esidisi"
+sprite = "esidisi/esidisi"
+role = "HOMME DU PILIER - FLAMME"
+role_en = "PILLAR MAN - FLAME"
+blurb = "Il pleure, il crie, et il te tire dessus avec son propre sang porté à cinq cents degrés."
+blurb_en = "He weeps, he wails, and he shoots you with his own blood at five hundred degrees."
+color = "#b4463c"
+aura = "#ff8a3c"
+
+[[fighters]]
+id = "kars"
+part = 2
+name = "KARS"
+kit = "kars"
+sprite = "kars/kars"
+role = "HOMME DU PILIER - LUMIERE"
+role_en = "PILLAR MAN - LIGHT"
+blurb = "Celui qui a fait les masques de pierre. Des lames lui sortent des bras et ricochent sur les murs."
+blurb_en = "The one who made the stone masks. Blades come out of his arms and bounce off the walls."
+color = "#8a4ab0"
+aura = "#e0a0e8"
+
+[[fighters]]
+id = "santana"
+part = 2
+name = "SANTANA"
+kit = "santana"
+sprite = "santana/santana"
+role = "HOMME DU PILIER - BRUT"
+role_en = "PILLAR MAN - RAW"
+blurb = "Aucun Mode, aucune technique : un corps qui s'ouvre ou il veut, et qui entre dans le tien."
+blurb_en = "No Mode, no technique: a body that opens where it likes, and gets inside yours."
+color = "#6e8a5a"
+aura = "#b4d49a"
+
+[[fighters]]
+id = "stroheim"
+part = 2
+name = "STROHEIM"
+kit = "stroheim"
+sprite = "stroheim/stroheim"
+role = "HUMAIN AUGMENTE - ARTILLERIE"
+role_en = "AUGMENTED HUMAN - ARTILLERY"
+blurb = "Ni onde ni Mode : une mitrailleuse a la place du bras, et des lampes a ultraviolets pour le reste."
+blurb_en = "No Ripple, no Mode: a machine gun where his arm was, and ultraviolet lamps for the rest."
+color = "#5a6a4a"
+aura = "#ff6a6a"
+
 # Part 3: Stardust Crusaders --------------------------------------------------------------
 
 [[fighters]]

@@ -1,0 +1,93 @@
+# Kars (Part 2): the Pillar Man of the light, and the one who wants to be free of the
+# sun. Look file for tools/make_sprites.py. A great feathered crest, a long mane, pale
+# skin, and the blades that come out of his forearms.
+
+name = "Kars"
+
+[build]
+head_r = 5.7
+neck = 1.5
+torso = 14.5
+legs = 18
+arms = 16
+shoulders = 10.0
+hips = 3.8
+torso_r = 7.0
+arm_r = 3.0
+leg_r = 2.9
+hand_r = 2.5
+foot_r = 2.6
+
+[palette]
+skin = "#e0d4e8"
+hair = "#2a2438"
+crest = "#b060c0"
+crest_light = "#e0a0e8"
+band = "#3a3050"
+cloth = "#5a2a6a"
+blade = "#dfe6f4"
+eyes = "#f0e060"
+
+[body]
+head = "skin"
+torso = "skin"
+arms = "skin"
+hands = "skin"
+legs = "skin"
+feet = "skin"
+
+[face]
+eyes = "eyes"
+eye_style = "tall"
+brows = true
+nose = true
+ear = false
+
+# The long mane, and the great crest over it.
+[[parts]]
+type = "hair"
+material = "hair"
+style = "long"
+volume = 7.2
+back_length = 14
+
+[[parts]]
+type = "hair"
+material = "crest"
+style = "crest"
+volume = 8.4
+
+[[parts]]
+type = "headband"
+material = "crest_light"
+gem = "eyes"
+
+[[parts]]
+type = "pauldrons"
+material = "crest"
+size = 5.2
+rim = "band"
+spiral = "crest_light"
+
+[[parts]]
+type = "gloves"
+material = "band"
+long = true
+ringed = true
+
+[[parts]]
+type = "loincloth"
+material = "cloth"
+length = 0.6
+
+[[parts]]
+type = "belt"
+material = "band"
+buckle = "crest_light"
+
+# A light blade already out of the forearm.
+[[parts]]
+type = "sword"
+material = "blade"
+length = 13
+guard = "crest_light"

@@ -35,6 +35,19 @@ des corrections seules une patch.
 
 ### Ajouté (combat)
 
+- **La partie 2 est complète** : Wamuu, Esidisi, Kars, Santana et Stroheim rejoignent
+  Joseph, Caesar, Lisa Lisa et Straizo. Les quatre Hommes du Pilier ont la nature
+  `pillar_man` — l'onde leur fait double, et le soleil les tue — et trois d'entre eux ont
+  leur **Mode** sur la touche Stand : le vent, la flamme, la lumière. Santana n'en a
+  aucun, parce qu'il ne l'a jamais appris.
+- **Des coups qui coûtent de la vie** : le Final Mode de Wamuu prend 300 PV à Wamuu, les
+  jets de sang d'Esidisi lui coûtent le sien, et Stroheim s'ouvre la poitrine. Un tel coup
+  ne sort pas s'il tuerait son auteur.
+- **Lame qui ricoche** : un projectile peut maintenant repartir du mur au lieu de mourir
+  contre lui (la lame lancée de Kars, trois rebonds).
+- Quatre nouvelles cinématiques d'ultime : le Rift Atmosphérique, les Larmes d'Esidisi,
+  l'Ultimate Thing et l'autodestruction.
+
 - **L'aube tue pour de bon.** Les rais de soleil tombent d'abord sous les fenêtres, puis
   s'allongent jusqu'au mur du fond en 22 secondes : à la fin il ne reste que des bandes
   d'ombre. Et un mort-vivant qui s'attarde dans la lumière brûle de plus en plus vite

@@ -1,0 +1,83 @@
+# Esidisi (Part 2): the Pillar Man of the flame. Look file for tools/make_sprites.py.
+# The oldest-looking of them: a heavy brow, a crested headpiece, and the veins of his
+# arms standing out red-hot because the blood inside them is at five hundred degrees.
+
+name = "Esidisi"
+
+[build]
+head_r = 5.7
+neck = 1.5
+torso = 14.6
+legs = 16.6
+arms = 16.5
+shoulders = 11.0
+hips = 4.2
+torso_r = 7.8
+arm_r = 3.3
+leg_r = 3.1
+hand_r = 2.7
+foot_r = 2.7
+
+[palette]
+skin = "#c8b0a4"
+veins = "#e04a2c"
+crest = "#d8b256"
+band = "#5a3a40"
+cloth = "#7a2a30"
+eyes = "#ffd040"
+ember = "#ff8a3c"
+
+[body]
+head = "skin"
+torso = "skin"
+arms = "skin"
+hands = "skin"
+legs = "skin"
+feet = "skin"
+
+[face]
+eyes = "eyes"
+eye_style = "wide"
+brows = true
+nose = true
+ear = false
+
+# The tall crest of his headpiece.
+[[parts]]
+type = "hair"
+material = "crest"
+style = "crest"
+volume = 4.6
+
+[[parts]]
+type = "headband"
+material = "band"
+gem = "ember"
+
+# What makes him unmistakable: the boiling blood showing through the skin.
+[[parts]]
+type = "veins"
+material = "veins"
+
+[[parts]]
+type = "pauldrons"
+material = "crest"
+size = 5.4
+rim = "band"
+spikes = 2
+
+[[parts]]
+type = "loincloth"
+material = "cloth"
+length = 0.58
+
+[[parts]]
+type = "belt"
+material = "band"
+buckle = "crest"
+
+[[parts]]
+type = "emblem"
+material = "ember"
+shape = "diamond"
+on = "chest"

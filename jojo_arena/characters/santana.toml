@@ -1,0 +1,199 @@
+# Santana (Part 2) - the Pillar Man who never mastered a Mode. GDD: "Homme du Pilier -
+# Corps à corps brut": no technique, no ornament, no style key - only a body that opens
+# where it likes and gets inside yours. Frames (_f) are at 60 per second.
+#
+# Nature "pillar_man": the Ripple burns him double, and the sun burns him outright.
+# He has no Mode, so the style key does nothing: everything he has is in reach of his
+# arms. In exchange he is the hardest of them to put down.
+# Feel: an animal that happens to be older than language.
+
+name = "Santana"
+max_hp = 1250
+walk_speed = 98
+nature = "pillar_man"
+
+[stances.base]
+label = "SANS MODE"
+label_en = "NO MODE"
+
+[stances.base.moves.light]
+label = "COUP DE POING"
+label_en = "PUNCH"
+info = "Court et lourd. Encore : revers, puis coup de tête"
+info_en = "Short and heavy. Again: backhand, then headbutt"
+startup_f = 5
+active_f = 3
+recovery_f = 11
+damage = 30
+reach = 15
+radius = 11
+hitstun_f = 20
+knockback = 100
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.base.moves.light2]
+label = "REVERS"
+label_en = "BACKHAND"
+info = "S'enchaîne sur le poing"
+info_en = "Follows the punch"
+startup_f = 6
+active_f = 3
+recovery_f = 13
+damage = 36
+reach = 15
+radius = 12
+hitstun_f = 22
+knockback = 130
+hitstop_f = 6
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "heavy"
+
+[stances.base.moves.light3]
+label = "COUP DE TÊTE"
+label_en = "HEADBUTT"
+info = "Fin de l'enchaînement : envoie contre le mur"
+info_en = "Chain ender: sends into the wall"
+startup_f = 8
+active_f = 4
+recovery_f = 20
+damage = 52
+reach = 13
+radius = 12
+hitstun_f = 32
+knockback = 370
+hitstop_f = 10
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "headbutt"
+
+# The rib blades: they come out of the chest, and they go through a guard.
+[stances.base.moves.heavy]
+label = "LAMES DE CÔTES"
+label_en = "RIB BLADES"
+info = "Ses côtes sortent de sa poitrine et transpercent ; casse la garde"
+info_en = "His ribs come out of his chest and run you through; crushes guards"
+shape = "line"
+fx = "blade"
+startup_f = 15
+active_f = 4
+recovery_f = 22
+damage = 68
+reach = 34
+radius = 7
+hitstun_f = 32
+knockback = 300
+hitstop_f = 10
+wall_bounce = true
+guard_damage = 2.4
+anim = "special"
+
+[stances.base.moves.heavy_alt]
+label = "CORPS QUI COULE"
+label_en = "FLOWING BODY"
+info = "Avec une direction : son corps se déforme et le traverse, imparable"
+info_en = "With a direction: his body deforms and goes straight through, unblockable"
+startup_f = 13
+active_f = 10
+recovery_f = 22
+lunge = 240
+unblockable = true
+damage = 50
+reach = 13
+radius = 12
+hitstun_f = 26
+knockback = 220
+hitstop_f = 8
+anim = "dash"
+
+# What he did to a whole room of soldiers: he gets inside, and walks you about.
+[stances.base.moves.special]
+label = "INFILTRATION"
+label_en = "GETTING INSIDE"
+info = "Saisie : il entre dans le corps de l'adversaire et le dirige 1,5 s en buvant"
+info_en = "A grab: he gets inside the opponent and walks them about for 1.5 s, drinking"
+startup_f = 18
+active_f = 5
+recovery_f = 28
+unblockable = true
+damage = 44
+drain = 0.4
+possess_s = 1.5
+reach = 14
+radius = 12
+hitstun_f = 20
+knockback = 0
+hitstop_f = 12
+cooldown_s = 9
+anim = "grab"
+
+[stances.base.moves.special_alt]
+label = "BRAS ÉTIRÉ"
+label_en = "STRETCHED ARM"
+info = "Avec une direction : son bras s'allonge et le ramène à lui"
+info_en = "With a direction: his arm stretches out and drags them back to him"
+shape = "line"
+fx = "limb"
+startup_f = 14
+active_f = 5
+recovery_f = 22
+damage = 40
+drain = 0.25
+reach = 76
+radius = 6
+hitstun_f = 30
+knockback = -280
+hitstop_f = 7
+anim = "special"
+
+# Super moves -----------------------------------------------------------------------------
+
+[moves.hha]
+shout = "..."
+label = "ÉTREINTE DU PILIER"
+label_en = "PILLAR'S EMBRACE"
+info = "Il se referme sur l'adversaire et boit ; invincible au démarrage"
+info_en = "He closes around the opponent and drinks; invincible on startup"
+startup_f = 16
+active_f = 5
+recovery_f = 26
+invincible_f = 16
+unblockable = true
+damage = 150
+drain = 0.4
+reach = 16
+radius = 14
+hitstun_f = 36
+knockback = 400
+hitstop_f = 12
+wall_bounce = true
+clashable = false
+anim = "grab"
+
+# Great Heat Attack (2 bars): he takes the whole body in, the way he took the room.
+[moves.gha]
+label = "ABSORPTION TOTALE"
+label_en = "TOTAL ABSORPTION"
+info = "Un coup. S'il touche : il l'absorbe entièrement et se refait une santé"
+info_en = "One blow. On hit: he takes them in whole and makes himself new"
+startup_f = 12
+active_f = 4
+recovery_f = 28
+invincible_f = 12
+unblockable = true
+damage = 30
+reach = 15
+radius = 13
+hitstun_f = 40
+hitstop_f = 10
+clashable = false
+anim = "grab"
+cinematic = "absorption"
+cinematic_s = 3.6
+finish_damage = 250
+finish_drain = 0.5
+finish_hitstun_f = 50
+finish_knockback = 400
+finish_wall_bounce = true

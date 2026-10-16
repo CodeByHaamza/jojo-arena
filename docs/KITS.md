@@ -28,7 +28,7 @@ Unités : les durées en `_f` sont en images (60 par seconde) ; celles en `_s` e
 | Champ | Effet |
 | --- | --- |
 | `label` | Titre de la page dans la liste des coups |
-| `tag` | Nom court affiché dans le HUD quand cette posture est active (sinon « STAND ») |
+| `tag` (et `tag_en`) | Nom court affiché dans le HUD quand cette posture est active (sinon « STAND ») |
 | `walk_speed_mult` | Multiplie la vitesse de marche dans cette posture |
 
 Les coups d'une posture : `[stances.<nom>.moves.<touche>]`, où la touche est `light`, `heavy`, `heavy_alt` (coup lourd avec une direction tenue : attaque en mouvement), `special` ou `special_alt` (spéciale avec une direction tenue). Les coups partagés par toutes les postures vont dans `[moves.<nom>]` : `hha` (Heart Heat Attack, 1 barre) et `gha` (Great Heat Attack, 2 barres).
@@ -90,6 +90,7 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `hamon_unblockable` | Boosté, le coup traverse la garde (l'onde passe à travers) |
 | `hamon` | Le coup est toujours du Hamon (les supers d'un manieur du Hamon), sans rien dépenser |
 | `blood_cost` | Style vampire : le coup ne sort qu'avec assez de sang, et le dépense |
+| `hp_cost` | Le coup s'arrache à son auteur : il ne sort que s'il reste plus de vie que ça, et la prend au départ (Final Mode de Wamuu) |
 | `freeze_f` | Touché net, l'adversaire est gelé sur place ce nombre d'images (gel vaporisant) |
 | `finish_drain` | Part des dégâts du coup final d'une cinématique rendue en vie |
 | `detonate` | Au premier tir de son projectile, tous les pièges du perso explosent (avec ce même projectile) et ses grenades encore au sol sautent aussitôt (le plan caché de Joseph) |
@@ -150,6 +151,8 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `returns` | Boomerang : à mi-course (ou contre un mur, ou après avoir touché) il revient dans la main de son lanceur |
 | `explode_radius` | Grenade : ne touche pas au contact, roule, s'arrête contre les murs et les objets, et explose en fin de vie ; l'adversaire à ce rayon (plus son corps) est touché |
 | `drag` | Part de sa vitesse gardée à chaque image (sous 1 : il ralentit jusqu'à s'arrêter) |
+| `wall_bounce` | Ce qu'il touche rebondit contre les murs |
+| `bounces` | Ricochet : le tir lui-même repart du mur, ce nombre de fois (lame lancée de Kars) |
 | `look` | Dessin : `orb`, `knife`, `gem`, `blade`, `wine`, `hat`, `clacker`, `grenade`, `bubble`, `bullet`, `spark`, `jet` |
 
 ## Pièges
