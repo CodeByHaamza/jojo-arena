@@ -53,6 +53,8 @@ help:
 	$(info $(INDENT)make format       fix the formatting and the lint issues that can be fixed)
 	$(info $(INDENT)make check        lint then tests: run this before a commit)
 	$(info $(INDENT)make balance      bots fight every matchup, win rates (FIGHTS=$(FIGHTS)))
+	$(info $(INDENT)make coverage     tests with a coverage report, and htmlcov/index.html)
+	$(info $(INDENT)make docker-check lint and tests in a container, as on a clean machine)
 	$(info $(INDENT)make screens      screenshot tour of every screen into screenshots/tour/)
 	$(info $(INDENT)make screenshot   picture of one screen: SCENE=menu or select or options...)
 	$(info )
@@ -113,6 +115,13 @@ format: $(VENV_PY)
 	$(PY) -m ruff check --fix .
 
 check: lint test
+
+coverage: $(VENV_PY)
+	$(PY) -m pytest -q --cov --cov-report=term-missing --cov-report=html
+
+docker-check:
+	docker build -t jojo-arena .
+	docker run --rm jojo-arena
 
 balance: $(VENV_PY)
 	$(PY) tools/balance.py --fights $(FIGHTS)

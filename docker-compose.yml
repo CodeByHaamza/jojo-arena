@@ -1,0 +1,18 @@
+# Checking the code without installing anything: `docker compose run --rm check`.
+# The game is played from the Windows .exe or from the sources, never from here.
+services:
+  check:
+    build: .
+    image: jojo-arena:check
+
+  # The same box with the working copy mounted: edit on the host, re-run instantly.
+  dev:
+    build: .
+    image: jojo-arena:check
+    volumes:
+      - ./jojo_arena:/app/jojo_arena
+      - ./tests:/app/tests
+      - ./tools:/app/tools
+      - ./docs:/app/docs
+      - ./screenshots:/app/screenshots
+    command: sh -c "ruff check . && pytest -q"

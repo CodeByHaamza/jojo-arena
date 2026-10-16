@@ -1,0 +1,31 @@
+#!/bin/sh
+# Checks the commit message. Enable once with: make hooks
+# Skip in an emergency with: git commit --no-verify
+message_file="$1"
+subject=$(sed -n '1p' "$message_file")
+
+# A merge or a revert writes its own subject; leave those alone.
+case "$subject" in
+    "Merge "*|"Revert "*|"fixup!"*|"squash!"*) exit 0 ;;
+esac
+
+# Conventional and short: "feat: Lisa Lisa, elegant and acrobatic".
+if ! printf '%s' "$subject" | grep -Eq '^(feat|fix|refactor|docs|test|chore|perf|style|build|ci)(\([a-z0-9_/-]+\))?: .+'; then
+    echo "commit-msg: the subject must start with feat:, fix:, refactor:, docs:, test:, chore:," >&2
+    echo "            perf:, style:, build: or ci:  -  e.g. 'feat: Wamuu, the wind of the Pillar Men'" >&2
+    echo "            got: $subject" >&2
+    exit 1
+fi
+
+if [ "${#subject}" -gt 72 ]; then
+    echo "commit-msg: subject too long (${#subject} characters, 72 max). Put the detail in the body." >&2
+    exit 1
+fi
+
+# Project rule: no AI tool is ever mentioned in the history (see CLAUDE.md).
+if grep -Eiq 'co-authored-by:.*(claude|anthropic|copilot|chatgpt|openai|gemini|cursor)' "$message_file" \
+   || grep -Eiq 'generated with .*(claude|copilot|chatgpt|cursor)' "$message_file"; then
+    echo "commit-msg: this repository never credits an AI tool in its history." >&2
+    echo "            Remove the Co-Authored-By / generated-with line." >&2
+    exit 1
+fi

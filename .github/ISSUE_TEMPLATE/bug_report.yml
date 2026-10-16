@@ -1,0 +1,44 @@
+name: Bug
+description: Quelque chose ne marche pas comme prévu
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: Ce qui se passe
+      description: Et ce que tu attendais à la place.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Comment le reproduire
+      placeholder: |
+        1. Entraînement, Jotaro contre DIO
+        2. Stand sorti, coup lourd
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Le numéro de la Release, ou le commit si tu joues depuis les sources.
+    validations:
+      required: true
+  - type: input
+    id: replay
+    attributes:
+      label: Replay
+      description: >
+        F9 pendant le combat enregistre le replay dans %APPDATA%\JoJoArena\replays\.
+        Joins-le : il rejoue le combat à l'image près.
+  - type: dropdown
+    id: how
+    attributes:
+      label: Comment tu joues
+      options:
+        - JoJoArena.exe (Release)
+        - Depuis les sources
+    validations:
+      required: true

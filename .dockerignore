@@ -1,0 +1,13 @@
+.git
+.venv
+venv
+build
+dist
+screenshots
+htmlcov
+.coverage
+coverage.xml
+**/__pycache__
+.pytest_cache
+.ruff_cache
+*.spec

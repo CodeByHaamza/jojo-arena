@@ -14,7 +14,7 @@ requires-python = ">=3.12"
 dependencies = ["pygame-ce>=2.5.8"]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "ruff>=0.6", "pyinstaller>=6.10"]
+dev = ["pytest>=8", "pytest-cov>=5", "ruff>=0.6", "pyinstaller>=6.10"]
 
 [project.gui-scripts]
 jojo-arena = "jojo_arena.app:main"
@@ -29,6 +29,21 @@ jojo_arena = ["assets/**/*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["tools"]
+
+[tool.coverage.run]
+source = ["jojo_arena", "tools"]
+omit = ["jojo_arena/ui/test_pattern.py"]
+
+[tool.coverage.report]
+# The simulation and the data are the parts a test can really pin down; drawing code is
+# covered by the screens the tests open, not line by line.
+skip_covered = false
+exclude_also = [
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "# pragma: no cover",
+]
 
 [tool.ruff]
 line-length = 100

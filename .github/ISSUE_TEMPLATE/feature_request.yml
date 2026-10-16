@@ -1,0 +1,21 @@
+name: Idée
+description: Un perso, un coup, une mécanique, un écran
+labels: ["idea"]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: L'idée
+      description: Ce que ça apporte au jeu, côté joueur.
+    validations:
+      required: true
+  - type: input
+    id: part
+    attributes:
+      label: Partie de JoJo
+      placeholder: "Partie 2 : Wamuu"
+  - type: textarea
+    id: refs
+    attributes:
+      label: Références
+      description: Chapitre, épisode, ou comment ça marche dans ASBR / Eyes of Heaven.
