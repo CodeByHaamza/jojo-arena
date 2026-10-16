@@ -184,3 +184,16 @@ def test_the_move_list_tabs_slide_so_the_open_one_is_always_visible():
     assert offsets[-1] - last >= 16  # and the open tab lands inside the screen
     assert offsets[-1] - last + widths[-1] <= 464
     assert tab_slide([], [], 0, 16, 464) == 0
+
+
+def test_the_computer_calls_the_gang_in_too():
+    from jojo_arena.combat.ai import CpuPlayer
+
+    match = make_duel("speedwagon", "jonathan", p1=(60, 100), p2=(300, 100))
+    bot = CpuPlayer(2, seed=5)
+    me, foe = match.fighters
+    seen = {me.stance}
+    for _ in range(3000):
+        match.step((bot.think(me, foe), NONE))
+        seen.add(me.stance)
+    assert len(seen) >= 2, seen  # it does not stay on Speedwagon alone forever

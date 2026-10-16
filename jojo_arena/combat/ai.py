@@ -190,6 +190,10 @@ class CpuPlayer:
         toggles = style == "stance_toggle" and stance_on and me.stance != stance_on
         if toggles and rng.random() < 0.04:
             return InputFrame(press_counts={"stand": 1})
+        if style == "stance_cycle" and rng.random() < 0.012:
+            # Several movesets on one key: it calls the next one in now and then, so
+            # the whole kit shows up in Arcade and against the computer.
+            return InputFrame(press_counts={"stand": 1})
         if style == "vampire" and me.stance != stance_on and me.blood > 50 and rng.random() < 0.01:
             return InputFrame(press_counts={"stand": 1})
 
