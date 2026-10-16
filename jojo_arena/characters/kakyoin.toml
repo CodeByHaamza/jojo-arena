@@ -8,7 +8,9 @@
 name = "Noriaki Kakyoin"
 max_hp = 950
 walk_speed = 96
-style = { type = "stance_toggle", off = "base", on = "stand", stand_body = true }
+# Hold the Stand key: Hierophant Green leaves him and is steered from afar (GDD "Mode
+# contrôle"), up to remote_range px away, at remote_speed px/s.
+style = { type = "stance_toggle", off = "base", on = "stand", stand_body = true, remote = "remote", remote_range = 150, remote_speed = 150 }
 
 # Kakyoin alone --------------------------------------------------------------------------
 
@@ -195,6 +197,89 @@ lifetime_s = 15
 max_count = 3
 
 [stances.stand.moves.special_alt.trap.projectile]
+look = "gem"
+speed = 340
+radius = 3
+damage = 14
+lifetime_s = 0.8
+hitstun_f = 14
+knockback = 60
+hitstop_f = 2
+count = 4
+spread_deg = 30
+
+# Hierophant Green steered from afar ------------------------------------------------------
+# Kakyoin stands still and defenseless; every blow comes from Hierophant, wherever it is.
+
+[stances.remote]
+label = "HIEROPHANT À DISTANCE"
+
+[stances.remote.moves.light]
+shape = "line"
+fx = "tentacle"
+label = "FOUET À DISTANCE"
+info = "Hierophant fouette là où il est"
+startup_f = 7
+active_f = 4
+recovery_f = 12
+damage = 26
+reach = 28
+radius = 8
+hitstun_f = 20
+knockback = 120
+hitstop_f = 4
+
+# Hierophant unravels and slips into the opponent's body.
+[stances.remote.moves.heavy]
+label = "POSSESSION"
+info = "Entre dans l'adversaire : tu diriges sa marche 1,5 s"
+startup_f = 16
+active_f = 4
+recovery_f = 24
+damage = 20
+reach = 10
+radius = 9
+hitstun_f = 10
+unblockable = true
+clashable = false
+possess_s = 1.5
+anim = "grab"
+
+[stances.remote.moves.special]
+shout = "EMERALD SPLASH !"
+label = "EMERALD SPLASH À DISTANCE"
+info = "6 émeraudes tirées depuis Hierophant, sous n'importe quel angle"
+startup_f = 14
+active_f = 1
+recovery_f = 20
+
+[stances.remote.moves.special.projectile]
+look = "gem"
+speed = 300
+radius = 3
+damage = 14
+lifetime_s = 1.1
+hitstun_f = 12
+knockback = 50
+hitstop_f = 2
+count = 6
+spread_deg = 36
+
+[stances.remote.moves.special_alt]
+label = "FILS À DISTANCE"
+info = "Pose un piège là où se trouve Hierophant (3 max)"
+startup_f = 10
+active_f = 1
+recovery_f = 14
+anim = "special"
+
+[stances.remote.moves.special_alt.trap]
+distance = 4
+radius = 14
+lifetime_s = 15
+max_count = 3
+
+[stances.remote.moves.special_alt.trap.projectile]
 look = "gem"
 speed = 340
 radius = 3

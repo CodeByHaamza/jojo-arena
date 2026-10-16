@@ -173,6 +173,7 @@ class MoveDef:
     leap_to: str = "target"  # ...toward the opponent ("target") or the aimed point ("cursor")
     leap_height: float = 0.0  # px: height of the jump arc, for the view (0 = slide)
     armor: int = 0  # hits taken without flinching during startup and active frames
+    possess_f: int = 0  # on a clean hit, the user steers the opponent's walk this long
     guard_damage: float = 1.0  # multiplies the guard gauge damage when blocked
     stand_flash: bool = False  # the Stand appears for this move even when called back
     fx: str = ""  # drawn while active: "limb", "tentacle" or "blade" out to `reach`
@@ -237,6 +238,7 @@ class MoveDef:
             leap_to=data.get("leap_to", "target"),
             leap_height=data.get("leap_height", 0.0),
             armor=data.get("armor", 0),
+            possess_f=seconds_to_frames(data.get("possess_s", 0)),
             guard_damage=data.get("guard_damage", 1.0),
             stand_flash=data.get("stand_flash", False),
             fx=data.get("fx", ""),

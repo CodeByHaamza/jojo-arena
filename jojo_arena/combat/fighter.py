@@ -144,6 +144,13 @@ class Fighter:
         self.frozen = False  # caught in someone else's stopped time
         self.pending_hits: list[PendingHit] = []
         self.cursor: Vec2 | None = None  # where the player aims (mouse), if anywhere
+        # Remote control: the Stand away from its user, steered by the player.
+        self.remote_pos: Vec2 | None = None
+        self.remote_dir = Vec2()
+        self.stand_hold_f = 0
+        # Possessed: someone else steers this fighter's walk for a while.
+        self.possessed_f = 0
+        self.possessor: int | None = None
         # Combo scaling: moves landed in a row on this fighter, and the last one's id.
         self.combo_moves = 0
         self.combo_key: tuple | None = None
@@ -179,8 +186,20 @@ class Fighter:
         """The Stand is out with a body that can be hit (style setting `stand_body`)."""
         return self.aura_active and bool(self.style.params.get("stand_body"))
 
+    @property
+    def remote(self) -> bool:
+        """The Stand is away, under remote control."""
+        return self.remote_pos is not None
+
+    def strike_origin(self) -> Vec2:
+        """Where this fighter's blows and shots come from: the Stand when it is away."""
+        return self.remote_pos if self.remote_pos is not None else self.pos
+
     def stand_spot(self) -> Vec2:
-        """Where the Stand floats: in front of its user to strike, just behind otherwise."""
+        """Where the Stand floats: in front of its user to strike, just behind otherwise,
+        or wherever the player sent it."""
+        if self.remote_pos is not None:
+            return self.remote_pos
         if self.state in (State.ATTACK, State.CLASH):
             return self.pos + self.facing * self.rules.stand_front
         beside = Vec2(-self.facing.y, self.facing.x)
@@ -231,7 +250,7 @@ class Fighter:
         return speed * (self.buff.speed_mult if self.buff else 1.0)
 
     def aim_at(self, target: Vec2) -> Vec2:
-        direction = (target - self.pos).normalized()
+        direction = (target - self.strike_origin()).normalized()
         return direction if direction.length_sq() else self.facing
 
     def hitboxes(self) -> list[tuple[Vec2, float]]:
@@ -249,12 +268,12 @@ class Fighter:
             return []
         if move.at_target:
             return [(self.attack.target, move.radius)]
-        aim = self.attack.aim
+        aim, origin = self.attack.aim, self.strike_origin()
         if move.shape == "line":
             count = max(1, math.ceil(move.reach / move.radius))
             step = move.reach / count
-            return [(self.pos + aim * (step * (i + 1)), move.radius) for i in range(count)]
-        return [(self.pos + aim * move.reach, move.radius)]
+            return [(origin + aim * (step * (i + 1)), move.radius) for i in range(count)]
+        return [(origin + aim * move.reach, move.radius)]
 
     def move_for(self, slot: str, frame: InputFrame | None = None) -> MoveDef | None:
         """The move an input starts now: depends on stance, disarm, held direction and
@@ -305,8 +324,26 @@ class Fighter:
     def control(self, frame: InputFrame, target: Vec2) -> list[Event]:
         """Turn this step's input into actions. Only called while the fight is running."""
         self.walk_dir = Vec2()
-        self.guard_held = frame.is_held("guard")
+        self.remote_dir = Vec2()
+        self.guard_held = frame.is_held("guard") and not self.remote
         self.cursor = Vec2(*frame.cursor) if frame.cursor is not None else None
+        remote_stance = self.style.params.get("remote")
+        if remote_stance and frame.is_held("stand"):
+            self.stand_hold_f += 1
+            free = self.state in (State.IDLE, State.WALK, State.SWITCH)
+            if self.stand_hold_f == self.rules.remote_hold_f and not self.remote and free:
+                return self.enter_remote(remote_stance)
+        else:
+            self.stand_hold_f = 0
+        if self.possessed_f > 0:
+            # Steered by someone else: it walks where they push it, and nothing else.
+            if self.can_act():
+                move_dir = Vec2(*frame.move)
+                self.walk_dir = move_dir
+                if move_dir.length_sq():
+                    self.facing = move_dir
+                self.set_state(State.WALK if move_dir.length_sq() else State.IDLE)
+            return []
         if self.state == State.ATTACK and self.attack is not None:
             if self._try_flash_cancel():
                 return [Event("flash_cancel", self.pos, self.index)]
@@ -336,6 +373,13 @@ class Fighter:
         events = self._try_actions(frame, target)
         if events is not None:
             return events
+        move_dir = Vec2(*frame.move)
+        if self.remote:
+            # The user stands still, defenseless; the direction steers the Stand.
+            self.remote_dir = move_dir
+            if self.state != State.IDLE:
+                self.set_state(State.IDLE)
+            return []
         if self.guard_held:
             self.facing = self.aim_at(target)
             self.set_state(State.GUARD)
@@ -343,7 +387,6 @@ class Fighter:
         if frame.is_held("pose"):
             self.set_state(State.POSE)
             return []
-        move_dir = Vec2(*frame.move)
         if move_dir.length_sq():
             self.walk_dir = move_dir
             self.facing = move_dir
@@ -358,6 +401,13 @@ class Fighter:
 
         Returns the events of the action started, or None if nothing started.
         """
+        if self.remote:
+            # Away, the Stand can only strike, or come back.
+            if self._try_attack(frame, target):
+                return []
+            if self._take_buffered(("stand",)) and self.style.on_pressed(self):
+                return [Event("remote_end", self.pos, self.index)]
+            return None
         if self._try_dash(frame, target):
             return []
         if "heart_heat" in self.buffer:
@@ -446,6 +496,20 @@ class Fighter:
         if move.buff:
             self.buff = self.kit.buffs[move.buff]
             self.buff_f = self.buff.duration_f
+
+    def enter_remote(self, stance: str) -> list[Event]:
+        """The Stand leaves its user's side: the player now steers it."""
+        spot = self.pos + self.facing * self.rules.stand_front
+        self.stance = stance
+        self.remote_pos = spot
+        self.buffer.pop("stand", None)
+        self.set_state(State.IDLE)
+        return [Event("remote_start", spot, self.index)]
+
+    def leave_remote(self) -> None:
+        """The Stand snaps back to its user's side."""
+        self.remote_pos = None
+        self.stance = self.style.params.get("on", self.stance)
 
     def _leap_destination(self, move: MoveDef, target: Vec2, frame: InputFrame | None) -> Vec2:
         """Where a leap lands: next to the opponent, or on the aimed point (mouse, right
@@ -543,6 +607,15 @@ class Fighter:
             self.pos, _, _ = arena.constrain(self.pos + step, radius)
         elif self.walk_dir.length_sq():
             self.pos, _, _ = arena.constrain(self.pos + self.walk_dir * self.walk_speed(), radius)
+        if self.remote_pos is not None and self.remote_dir.length_sq():
+            # The Stand flies where it is steered, within its range of its user.
+            speed = self.style.params.get("remote_speed", 150) / HZ
+            spot = self.remote_pos + self.remote_dir * speed
+            leash = spot - self.pos
+            reach = self.style.params.get("remote_range", 140)
+            if leash.length() > reach:
+                spot = self.pos + leash.normalized() * reach
+            self.remote_pos, _, _ = arena.constrain(spot, self.rules.stand_hurt_radius)
         return events
 
     def _lunging(self) -> bool:
@@ -615,6 +688,10 @@ class Fighter:
                 )
         for move in [m for m, left in self.cooldowns.items() if left > 0]:
             self.cooldowns[move] -= 1
+        if self.possessed_f > 0:
+            self.possessed_f -= 1
+            if self.possessed_f == 0:
+                self.possessor = None
         if self.disarmed_f > 0:
             self.disarmed_f -= 1
         if self.buff is not None:
@@ -640,12 +717,17 @@ class Fighter:
             self.attack.armor_used += 1
             self.hurt(damage)
             return True
+        was_remote = self.remote
+        if was_remote:
+            self.leave_remote()  # struck: the Stand snaps back...
         self.velocity = knockback
         self.wall_bounce_armed = wall_bounce
         self.buffer.clear()
         self.hurt(damage)
         if self.state != State.KO:
             self.stun_f = hitstun_f
+            if was_remote:
+                self.stun_f = max(hitstun_f, self.rules.remote_break_stun_f)  # ...dazed
             self.set_state(State.HITSTUN)
         return False
 

@@ -192,7 +192,8 @@ class Hud:
         label_x = 8 if i == 0 else SCREEN_W - 8
         align = "left" if i == 0 else "right"
         if fighter.aura_active:
-            font.draw(surface, text.STANCE_ON, (label_x, HH_Y - 11), shade(aura, 40), align=align)
+            label = text.REMOTE_ON if fighter.remote else text.STANCE_ON
+            font.draw(surface, label, (label_x, HH_Y - 11), shade(aura, 40), align=align)
         ready = fighter.time_stop_ready()
         if ready is not None:
             # Time stoppers: is the time stop available, or still recharging?

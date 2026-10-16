@@ -102,6 +102,7 @@ class Match:
             self.hitstop -= 1
             return []
         events: list[Event] = []
+        inputs = self._possession_inputs(inputs)
         moving = [f for f in self.fighters if not f.frozen]
         for fighter in moving:
             for event in fighter.control(inputs[fighter.index], self.opponent(fighter).pos):
@@ -122,6 +123,10 @@ class Match:
         for fighter in self.fighters:
             if not fighter.frozen:
                 events += fighter.integrate(self.arena)
+        for fighter in self.fighters:
+            if fighter.possessed_f > 0 and fighter.possessor is not None:
+                # The Stand is inside the possessed body and moves with it.
+                self.fighters[fighter.possessor].remote_pos = fighter.pos.copy()
         self._separate_bodies()
         self._release_attacks()
         events += self._update_projectiles()
@@ -196,7 +201,8 @@ class Match:
                     # Every other volley fills the gaps of the previous one.
                     gap = math.radians(defn.spread_deg) / (defn.count - 1) / 2
                     aim = Vec2.from_angle(aim.angle() + gap)
-                volley = self._spawn(fighter.index, fighter.pos, aim, defn, target)
+                origin = fighter.strike_origin()
+                volley = self._spawn(fighter.index, origin, aim, defn, target)
                 for projectile in volley:
                     projectile.key = (fighter.index, attack.serial)
                 self.projectiles += volley
@@ -230,7 +236,8 @@ class Match:
 
     def _lay_trap(self, fighter: Fighter, attack: Attack) -> None:
         defn = attack.move.trap
-        pos, _, _ = self.arena.constrain(fighter.pos + attack.aim * defn.distance, defn.radius)
+        origin = fighter.strike_origin()
+        pos, _, _ = self.arena.constrain(origin + attack.aim * defn.distance, defn.radius)
         own = [t for t in self.traps if t.owner == fighter.index]
         if len(own) >= defn.max_count:
             self.traps.remove(own[0])  # the oldest gives way
@@ -377,11 +384,43 @@ class Match:
                 attack.connected = True
                 attack.hits_done += 1
             clean = any(e.kind == "hit" and e.fighter == defender.index for e in strike_events)
+            if clean and move.possess_f and defender.alive and attacker.remote:
+                events += self._possess(attacker, defender, move.possess_f)
             if clean and self._confirms(attack) and defender.alive:
                 events += self._start_cutscene(attacker, defender, attack)
         return events
 
     # Clash -------------------------------------------------------------------------------
+
+    # Possession -------------------------------------------------------------------------
+
+    def _possess(self, user: Fighter, victim: Fighter, frames: int) -> list[Event]:
+        """The Stand slips inside the victim: its user steers the victim's walk."""
+        victim.stun_f = 0
+        victim.velocity = Vec2()
+        victim.buffer.clear()
+        victim.set_state(State.IDLE)
+        victim.possessed_f = frames
+        victim.possessor = user.index
+        return [Event("possessed", victim.pos, victim.index)]
+
+    def _possession_inputs(
+        self, inputs: tuple[InputFrame, InputFrame]
+    ) -> tuple[InputFrame, InputFrame]:
+        """While possessed, a fighter walks where its possessor pushes; the possessor
+        can only let go (Stand key)."""
+        frames = list(inputs)
+        for victim in self.fighters:
+            if victim.possessed_f <= 0 or victim.possessor is None:
+                continue
+            user = self.fighters[victim.possessor]
+            if not user.remote:
+                victim.possessed_f, victim.possessor = 0, None
+                continue
+            frames[victim.index] = InputFrame(move=inputs[user.index].move)
+            presses = inputs[user.index].presses("stand")
+            frames[user.index] = InputFrame(press_counts={"stand": presses} if presses else {})
+        return frames[0], frames[1]
 
     # Cutscenes ---------------------------------------------------------------------------
 

@@ -37,14 +37,22 @@ class StanceToggle(Style):
         super().__init__(params)
         self.off = params.get("off", "base")
         self.on = params.get("on", "stand")
+        # Optional remote control (long-range Stands): holding the key sends the Stand
+        # off on its own, in this stance, within this range, at this speed (px/s).
+        self.remote = params.get("remote")
+        self.remote_range = params.get("remote_range", 140)
+        self.remote_speed = params.get("remote_speed", 150)
 
     def on_pressed(self, fighter: Fighter) -> bool:
+        if fighter.remote:
+            fighter.leave_remote()  # the Stand comes back to its user
+            return True
         target = self.off if fighter.stance == self.on else self.on
         fighter.begin_stance_switch(target)
         return True
 
     def aura_active(self, fighter: Fighter) -> bool:
-        return fighter.stance == self.on
+        return fighter.stance == self.on or (self.remote and fighter.stance == self.remote)
 
 
 STYLES: dict[str, type[Style]] = {"none": Style, "stance_toggle": StanceToggle}

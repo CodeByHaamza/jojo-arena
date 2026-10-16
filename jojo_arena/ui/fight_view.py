@@ -18,6 +18,7 @@ from jojo_arena.engine.sprites import (
     PlaceholderSprites,
     SheetSprites,
     frame_index,
+    shade,
     sprite_direction,
 )
 from jojo_arena.paths import SPRITES_DIR
@@ -120,6 +121,9 @@ class FighterView:
         if fighter.state in (State.HITSTUN, State.GUARD_BROKEN) and fighter.state_f < 3:
             image = image.copy()
             image.fill((255, 255, 255, 0), special_flags=pygame.BLEND_RGB_MAX)
+        elif fighter.possessed_f > 0 and (fighter.possessed_f // 4) % 2 == 0:
+            image = image.copy()
+            image.fill((0, 70, 30, 0), special_flags=pygame.BLEND_RGB_ADD)
         return image
 
     # The Stand ---------------------------------------------------------------------------
@@ -418,6 +422,15 @@ class FightView:
                 fx.focus(pos, heavy=True)
             elif kind == "stylish":
                 fx.add(vfx.Ring(pos, (255, 210, 90), 2.5, 14))
+            elif kind == "remote_start" and event.fighter is not None:
+                aura = self.fighter_defs[event.fighter].aura
+                fx.add(vfx.Ring(event.pos + Vec2(0, -14), aura, 2.5, 16, 2))
+                words.add(sfx.MENACE * 3, event.pos + Vec2(0, -34), "menace", 2, 40, 0.3, 1)
+            elif kind == "possessed" and event.fighter is not None:
+                victim = match.fighters[event.fighter]
+                aura = self.fighter_defs[1 - event.fighter].aura
+                fx.add(vfx.Ring(pos, aura, 3.0, 18, 3))
+                words.add(sfx.MENACE * 4, self._head(victim), "menace", 2, 60, 0.25, 1)
             elif kind == "counter" and event.fighter is not None:
                 user = match.fighters[event.fighter]
                 aura = self.fighter_defs[user.index].aura
@@ -538,6 +551,7 @@ class FightView:
             self._draw_reach(surface, fighter)
             self._draw_rush(surface, fighter)
             self._draw_reticle(surface, fighter)
+            self._draw_remote(surface, fighter)
         for projectile in match.projectiles:
             self._draw_projectile(surface, projectile)
         self.renderer.draw_lights(surface, self.tick)
@@ -674,6 +688,25 @@ class FightView:
         for projectile in match.projectiles:
             pos, radius = projectile.pos.as_ints(), round(projectile.radius)
             pygame.draw.circle(surface, (255, 220, 60), pos, radius, 1)
+
+    def _draw_remote(self, surface: pygame.Surface, fighter: Fighter) -> None:
+        """Remote control: the thread to the Stand, and the gauge while the key is held."""
+        view = self.fighter_views[fighter.index]
+        aura = self.fighter_defs[fighter.index].aura
+        if fighter.remote and view.stand is not None:
+            start = fighter.pos + view.chest
+            end = fighter.remote_pos + Vec2(0, -view.stand.chest - 6)
+            vfx.draw_reach(surface, start, end, shade(aura, -30), "tentacle", 1)
+            return
+        hold = fighter.stand_hold_f
+        need = fighter.rules.remote_hold_f
+        if fighter.style.params.get("remote") and 4 < hold < need:
+            center = (fighter.pos + view.chest).as_ints()
+            box = pygame.Rect(0, 0, 26, 26)
+            box.center = center
+            end = math.pi / 2 + math.tau * hold / need
+            pygame.draw.arc(surface, OUTLINE, box.inflate(2, 2), math.pi / 2, end, 3)
+            pygame.draw.arc(surface, aura, box, math.pi / 2, end, 2)
 
     def _draw_reticle(self, surface: pygame.Surface, fighter: Fighter) -> None:
         """Where an aimed move (a grapple) would go: the cursor, held within range."""

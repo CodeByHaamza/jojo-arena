@@ -12,6 +12,7 @@ Unités : les durées en `_f` sont en images (60 par seconde) ; celles en `_s` e
 | `max_hp` | Vie (1000 par défaut ; tanks jusqu'à 1150, glass cannons vers 850) |
 | `walk_speed` | Vitesse de marche |
 | `style` | Ce que fait la touche Stand. `{ type = "stance_toggle", off = "base", on = "stand", stand_body = true }` : bascule entre deux postures, et `stand_body` donne au Stand un corps qui peut être touché |
+| `remote`, `remote_range`, `remote_speed` | Dans `style` : maintenir la touche Stand envoie le Stand seul, dans cette posture, jusqu'à cette distance, à cette vitesse (mode contrôle) |
 
 ## Les postures
 
@@ -82,6 +83,7 @@ Les coups d'une posture : `[stances.<nom>.moves.<touche>]`, où la touche est `l
 | Champ | Effet |
 | --- | --- |
 | `counter` | Coup de contre : un coup au corps à corps reçu pendant la phase active est annulé, et ce coup-ci (le nom d'un autre coup) part aussitôt |
+| `possess_s` | Coup du Stand piloté : s'il touche, tu diriges la marche de l'adversaire pendant cette durée |
 | `armor` | Nombre de coups encaissés sans broncher pendant le démarrage et la phase active (on prend les dégâts) |
 
 ### Rafales

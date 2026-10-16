@@ -115,6 +115,11 @@ def build_pages(
     ]
     if len(kit.stances) > 1:
         basics.insert(1, MoveEntry((key("stand"),), text.SYS_STAND, stand_info))
+    if kit.style_params.get("remote"):
+        secs = f"{rules.remote_hold_f / 60:.1f}".replace(".", ",")
+        stand = fdef.stand_name or text.SYS_STAND
+        remote_info = text.SYS_REMOTE_INFO.format(secs=secs, stand=stand)
+        basics.insert(2, MoveEntry((key("stand"),), text.SYS_REMOTE, remote_info))
     pages.append(MovePage(text.PAGE_BASICS, tuple(basics)))
 
     flash = text.SYS_FLASH_INFO.format(cost=_bars(rules.flash_cancel_cost / rules.hh_bar))

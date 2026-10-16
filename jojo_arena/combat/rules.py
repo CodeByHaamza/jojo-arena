@@ -79,6 +79,8 @@ class Rules:
     combo_step: float
     combo_min_scale: float
     counter_freeze_f: int
+    remote_hold_f: int
+    remote_break_stun_f: int
     time_stop_damage_mult: float
     stand_hurt_radius: float
     stand_front: float
@@ -115,6 +117,8 @@ class Rules:
             combo_step=data["combo"]["step"],
             combo_min_scale=data["combo"]["min_scale"],
             counter_freeze_f=data["counter"]["freeze_f"],
+            remote_hold_f=seconds_to_frames(data["control"]["hold_s"]),
+            remote_break_stun_f=seconds_to_frames(data["control"]["break_stun_s"]),
             time_stop_damage_mult=stop["damage_mult"],
             clash_window_f=clash["window_f"],
             clash_duration_f=seconds_to_frames(clash["duration_s"]),
