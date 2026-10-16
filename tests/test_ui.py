@@ -3,9 +3,11 @@ import pytest
 
 from jojo_arena import controls
 from jojo_arena.characters import load_roster
+from jojo_arena.combat.dummy import DELAYS, Dummy
 from jojo_arena.combat.rules import load_rules
-from jojo_arena.combat.training import Dummy, Training
+from jojo_arena.combat.training import Training
 from jojo_arena.context import GameContext
+from jojo_arena.controls import PlayerControls
 from jojo_arena.engine import font
 from jojo_arena.engine.actions import InputFrame
 from jojo_arena.engine.display import Display
@@ -13,7 +15,7 @@ from jojo_arena.engine.input import KEY_SCANCODES, InputManager
 from jojo_arena.engine.scene import SceneManager
 from jojo_arena.ui import text
 from jojo_arena.ui.fight_scene import FightScene
-from jojo_arena.ui.labels import keyboard_label, move_label, pad_label
+from jojo_arena.ui.labels import action_label, keyboard_label, move_label, pad_label
 from jojo_arena.ui.main_menu import MainMenuScene
 from jojo_arena.ui.menu import Menu, MenuItem
 from jojo_arena.ui.movelist import build_pages
@@ -175,8 +177,8 @@ def test_training_flow(ctx):
     steps(ctx, 10)
     keys(ctx, "Escape")
     keys(ctx, "Down", "Down", "Right")  # dummy: stand still -> guard
-    assert training.dummy == Dummy.GUARD
-    keys(ctx, "Down", "Right")  # life: infinite -> normal
+    assert training.dummy.plan.mode == Dummy.GUARD
+    keys(ctx, "Down", "Down", "Right")  # past the dummy settings, life: infinite -> normal
     assert training.rounds.infinite_life is False
     keys(ctx, "Escape")
     steps(ctx, 10)
@@ -259,3 +261,74 @@ def test_a_lone_pad_plays_player_one_in_training(ctx):
     pad.held.add("dpad_right")
     steps(ctx, 30)
     assert scene.rounds.match.fighters[0].pos.x > x + 10  # ...but alone, it moves player 1
+
+
+def test_the_dummy_settings_page_picks_an_action_a_delay_and_plays_it(ctx):
+    training = start(ctx, TrainingScene(ctx, ("jotaro_p3", "jotaro_p3")))
+    keys(ctx, "Escape")
+    while training.pause_menu.selected.key != "dummy_setup":
+        keys(ctx, "Down")
+    keys(ctx, "Return")
+    assert training.pause_page == "dummy" and training.pause_title == text.DUMMY_SETTINGS
+    keys(ctx, "Right")  # action: none -> the first move of the kit
+    assert training.dummy.plan.mode == Dummy.ACTION
+    assert training.dummy.action.press  # a real action, not "none"
+    keys(ctx, "Down", "Left", "Left")  # delay: 60 frames -> 30
+    assert training.dummy.plan.delay_f == DELAYS[DELAYS.index(60) - 2]
+    keys(ctx, "Escape")  # back to the main pause page
+    assert training.pause_page == "main" and training.pause_menu.selected.key == "dummy_setup"
+    keys(ctx, "Escape")  # resume
+    assert training.pause_menu is None
+    steps(ctx, 90)
+    assert training.dummy.played  # it has been playing the move on its own
+    assert training.meter.bands  # and the frame meter has been filling up
+
+
+def test_recording_the_dummy_then_looping_it(ctx):
+    training = start(ctx, TrainingScene(ctx, ("jotaro_p3", "jotaro_p3")))
+    training.dummy.start_recording()
+    steps(ctx, 4)
+    assert training.dummy.recording_now and training.dummy.recording
+    keys(ctx, "Escape")  # while recording, pause stops it instead of opening the menu
+    assert training.pause_menu is None
+    assert training.dummy.recorded and training.dummy.plan.mode == Dummy.PLAYBACK
+    steps(ctx, 5)
+    # The recorded mode is offered in the pause menu once there is a recording.
+    keys(ctx, "Escape")
+    assert text.DUMMY_PLAYBACK_MODE in training.pause_menu.item("dummy").values
+
+
+def test_the_dummy_action_is_shown_with_player_twos_own_keys(ctx):
+    training = start(ctx, TrainingScene(ctx, ("jotaro_p3", "jotaro_p3")))
+    player2 = ctx.controls.active_preset.players[1]
+    training.dummy.select("stand/heavy")  # ORA ORA ORA: Star Platinum has to be out first
+    shown = training.action_keys(training.dummy.action)
+    assert action_label(player2, "stand", ctx.inputs) in shown
+    assert action_label(player2, "heavy", ctx.inputs) in shown
+    assert text.DUMMY_THEN in shown
+    training.dummy.select("stand/special_alt")  # Star Finger: a direction is held
+    assert move_label(player2) in training.action_keys(training.dummy.action)
+    training.dummy.select("none")
+    assert training.action_keys(training.dummy.action) == ""
+
+
+def test_the_keys_shown_follow_the_device_and_the_keyboard_layout():
+    xbox = PlayerControls(device="gamepad", bindings={"heavy": ["y"], "pause": ["start"]})
+    sony = PlayerControls(device="gamepad", bindings={"heavy": ["y"], "pause": ["back"]})
+    assert pad_label("y", "xbox") == "Y" and pad_label("y", "playstation") == "TRIANGLE"
+    assert pad_label("back", "xbox") == "VIEW" and pad_label("back", "playstation") == "SHARE"
+    assert action_label(xbox, "heavy") == "Y"
+    assert action_label(sony, "pause", None) == "VIEW"  # no pad plugged in: Xbox names
+    keyboard = PlayerControls(device="keyboard", bindings={"heavy": ["K"], "guard": ["LShift"]})
+    assert action_label(keyboard, "guard") == text.KEY_NAMES["LShift"]
+    assert action_label(keyboard, "nothing_bound") == "-"
+
+
+def test_while_recording_the_keys_shown_are_player_twos(ctx):
+    training = start(ctx, TrainingScene(ctx, ("jotaro_p3", "jotaro_p3")))
+    assert training.watched == 0
+    training.dummy.start_recording()
+    assert training.watched == 1
+    steps(ctx, 2)
+    training.dummy.stop_recording()
+    assert training.watched == 0

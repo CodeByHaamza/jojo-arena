@@ -22,7 +22,7 @@ from jojo_arena.stages import load_stage
 from jojo_arena.ui import text
 from jojo_arena.ui.fight_view import FightView
 from jojo_arena.ui.hud import Hud
-from jojo_arena.ui.labels import action_label
+from jojo_arena.ui.labels import action_label, menu_key
 from jojo_arena.ui.menu import Menu, MenuItem
 from jojo_arena.ui.movelist import MoveListPanel
 from jojo_arena.ui.music import track_for_stage
@@ -148,6 +148,7 @@ class FightScene(Scene):
         if self.playback is None:
             self.replay.record((frames[0], frames[1]))
         events = self.rounds.step((frames[0], frames[1]))
+        self.on_step(events)
         self.view.on_events(events, self.rounds.match)
         self.hud.on_events(events, self.rounds)
         self.view.update(self.rounds.match)
@@ -159,6 +160,9 @@ class FightScene(Scene):
             else:
                 self.save_replay()
                 self.result_menu = Menu(self._result_items())
+
+    def on_step(self, events: list) -> None:
+        """Called with the events of each logic step (training reads them)."""
 
     def _read_frames(self) -> list[InputFrame]:
         if self.playback is not None:
@@ -196,6 +200,16 @@ class FightScene(Scene):
         if not (0 <= x < width and 0 <= y < height):
             return None  # outside the picture (black bars, another screen)
         return float(x), float(y)
+
+    @property
+    def pause_title(self) -> str:
+        """Heading of the pause box (training names its settings pages)."""
+        return text.PAUSE
+
+    @property
+    def pause_width(self) -> int:
+        """Width of the pause box: wider for pages with long values."""
+        return 230
 
     def _pause_items(self) -> list[MenuItem]:
         return [
@@ -277,17 +291,20 @@ class FightScene(Scene):
             self.draw_overlay(surface)
             if self.playback is not None:
                 over = self.playback_step >= len(self.playback.frames)
-                label = text.REPLAY_OVER if over else text.REPLAY
+                template = text.REPLAY_OVER if over else text.REPLAY
+                label = template.format(key=menu_key("back", self.ctx.inputs))
                 font.draw(surface, label, (surface.get_width() // 2, 38), GOLD, align="center")
         draw_toast(surface, text.REPLAY_SAVED, self.toast_f, y=60)
         center = surface.get_width() // 2
         if self.pause_menu is not None:
             surface.blit(veil(surface.get_size(), (10, 8, 24, 160)), (0, 0))
             items = len(self.pause_menu.items)
-            box = pygame.Rect(0, 0, 230, 46 + items * 15)
+            box = pygame.Rect(0, 0, self.pause_width, 46 + items * 15)
             box.center = (center, surface.get_height() // 2)
             draw_box(surface, box)
-            font.draw(surface, text.PAUSE, (center, box.y + 8), GOLD, scale=2, align="center")
+            title = self.pause_title
+            scale = 2 if font.text_width(title, 2) < box.width - 16 else 1
+            font.draw(surface, title, (center, box.y + 8), GOLD, scale=scale, align="center")
             self.pause_menu.draw(surface, center, box.y + 36, spacing=15)
         elif self.result_menu is not None:
             box = pygame.Rect(0, 0, 200, 56)
