@@ -88,13 +88,15 @@ def test_polnareff_pride_sharpens_his_blows():
 
 
 def test_every_signature_move_is_reachable():
-    """No move in a kit is dead data: each is a button, a chain link or a counter answer."""
+    """No move in a kit is dead data: each is a button, a chain link or a counter answer
+    (of a move or of the pose)."""
     from jojo_arena.characters import load_roster
 
     for fighter in load_roster():
         kit = fighter.kit
         for stance in kit.stances.values():
             reachable = {"light", "heavy", "heavy_alt", "special", "special_alt"}
+            reachable |= {kit.pose_counter} - {""}
             for move in stance.moves.values():
                 reachable |= {move.chain, move.counter} - {""}
             assert set(stance.moves) <= reachable, (fighter.id, set(stance.moves) - reachable)

@@ -200,6 +200,8 @@ class Match:
                 self._lay_trap(fighter, attack)
             elif move.projectile is not None:
                 defn = move.projectile
+                if move.detonate and attack.volleys == 0:
+                    self._detonate(fighter, attack, defn)
                 if attack.active_offset < attack.volleys * defn.wave_every_f:
                     continue  # the next volley is not due yet
                 attack.volleys += 1
@@ -231,7 +233,7 @@ class Match:
                 angle = 2 * math.pi * i / defn.count
                 start = target + Vec2.from_angle(angle, defn.ring_radius)
                 start, _, _ = self.arena.constrain(start, defn.radius)
-                direction = (target - start).normalized()
+                direction = (target - start).normalized() if target != start else aim
             else:
                 offset = 0.0
                 if defn.count > 1:
@@ -244,6 +246,38 @@ class Match:
                 )
             )
         return spawned
+
+    def _reflects(self, fighter: Fighter) -> bool:
+        attack = fighter.attack
+        return (
+            fighter.state == State.ATTACK
+            and attack is not None
+            and attack.move.reflect
+            and attack.active
+            and not fighter.frozen
+        )
+
+    def _reflect(self, projectile: Projectile, fighter: Fighter) -> list[Event]:
+        """A parry sends the projectile back where it came from: it is the parrier's now."""
+        projectile.owner = fighter.index
+        projectile.velocity = projectile.velocity * -1
+        projectile.life = projectile.defn.lifetime_f
+        projectile.key = (fighter.index, fighter.attack.serial)
+        projectile.returning = projectile.spent = False
+        return [Event("reflect", projectile.pos, fighter.index)]
+
+    def _detonate(self, fighter: Fighter, attack: Attack, defn: ProjectileDef) -> None:
+        """The hidden plan: every trap the fighter laid turns into a blast, and every
+        grenade still rolling goes off now."""
+        for trap in [t for t in self.traps if t.owner == fighter.index]:
+            self.traps.remove(trap)
+            blast = Projectile(fighter.index, trap.pos.copy(), Vec2(), defn, 1)
+            blast.key = (fighter.index, attack.serial)
+            blast.hamon, blast.boost = attack.hamon, attack.boost
+            self.projectiles.append(blast)
+        for projectile in self.projectiles:
+            if projectile.owner == fighter.index and projectile.defn.explode_radius:
+                projectile.life = min(projectile.life, 1)
 
     def _lay_trap(self, fighter: Fighter, attack: Attack) -> None:
         defn = attack.move.trap
@@ -273,6 +307,29 @@ class Match:
             elif trap.life > 0:
                 kept.append(trap)
         self.traps = kept
+        return events
+
+    def _explode(self, projectile: Projectile, blast: Event) -> list[Event]:
+        """A grenade blows up: everyone but its thrower within the blast is hit."""
+        target = self.fighters[1 - projectile.owner]
+        reach = blast.value + self.rules.body_radius
+        if not target.alive or (target.pos - blast.pos).length() > reach:
+            return []
+        defn = projectile.defn
+        away = (target.pos - blast.pos).normalized() if target.pos != blast.pos else Vec2(1, 0)
+        strike = Strike(
+            damage=round(defn.damage * projectile.boost),
+            hitstun_f=defn.hitstun_f,
+            blockstun_f=defn.blockstun_f or round(defn.hitstun_f * self.rules.blockstun_ratio),
+            knockback=away * defn.knockback,
+            wall_bounce=defn.wall_bounce,
+            hitstop_f=defn.hitstop_f,
+            source=blast.pos,
+            where=target.pos,
+            key=projectile.key,
+            hamon=projectile.hamon,
+        )
+        _, events = self._strike(self.fighters[projectile.owner], target, strike)
         return events
 
     def _fly_home(self, projectile: Projectile) -> list[Event]:
@@ -305,8 +362,17 @@ class Match:
                 events += self._fly_home(projectile)
                 if not projectile.alive:
                     continue
-            events += projectile.update(self.arena)
-        live = [p for p in self.projectiles if p.alive and self._projectile_moves(p)]
+            update = projectile.update(self.arena)
+            events += update
+            for event in update:
+                if event.kind in ("explosion", "burst"):
+                    events += self._explode(projectile, event)
+        # Grenades roll on the ground, under the flying projectiles.
+        live = [
+            p
+            for p in self.projectiles
+            if p.alive and self._projectile_moves(p) and not p.defn.explode_radius
+        ]
         for i, a in enumerate(live):
             for b in live[i + 1 :]:
                 if (
@@ -330,7 +396,12 @@ class Match:
             target = self.fighters[1 - projectile.owner]
             if not target.alive or projectile.spent or not self._projectile_moves(projectile):
                 continue
+            if projectile.defn.explode_radius:
+                continue  # a grenade only hurts when it blows up
             if not self._touches(projectile.pos, projectile.radius, target):
+                continue
+            if self._reflects(target):
+                events += self._reflect(projectile, target)
                 continue
             defn = projectile.defn
             strike = Strike(
@@ -785,19 +856,34 @@ class Match:
             scale *= rules.time_stop_damage_mult
         return scale
 
+    def _foreseen(self, defender: Fighter, attacker: Fighter) -> bool:
+        """A counter move catches any blow. A pose counter ("your next line is...") only
+        catches the one it predicted: the attacker pressing the same button again."""
+        if defender.state != State.POSE:
+            return True
+        attack = attacker.attack
+        return attack is not None and attack.slot == attacker.prev_slot
+
     def _counter(self, defender: Fighter, attacker: Fighter) -> list[Event]:
         """A counter catches the blow: the answer comes out at once, both freeze."""
-        answer = defender.kit.move(defender.stance, defender.attack.move.counter)
-        defender.start_attack(answer, attacker.pos, defender.attack.slot)
+        if defender.attack is not None and defender.attack.move.counter:
+            name, slot = defender.attack.move.counter, defender.attack.slot
+        else:
+            name, slot = defender.kit.pose_counter, ""  # called from a pose
+        answer = defender.kit.move(defender.stance, name)
+        defender.start_attack(answer, attacker.pos, slot)
         if attacker.attack is not None:
             attacker.attack.countered = True
         self.hitstop = max(self.hitstop, self.rules.counter_freeze_f)
-        return [Event("counter", defender.pos, defender.index)]
+        events = [Event("counter", defender.pos, defender.index)]
+        if not slot:
+            events.append(Event("foreseen", attacker.pos, attacker.index))
+        return events
 
     def _strike(self, attacker: Fighter, defender: Fighter, strike: Strike) -> tuple[bool, list]:
         """Dodge, block or hit. Returns (did it touch the defender, events)."""
         rules = self.rules
-        if strike.melee and defender.countering:
+        if strike.melee and defender.countering and self._foreseen(defender, attacker):
             return False, self._counter(defender, attacker)
         if defender.invincible:
             if defender.in_stylish_window():

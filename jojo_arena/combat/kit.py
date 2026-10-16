@@ -36,6 +36,8 @@ class ProjectileDef:
     wave_every_f: int = 4  # ...this many frames apart (each volley offset a little)
     look: str = "orb"  # how the view draws it: "orb", "knife", "gem", "blade"
     returns: bool = False  # a boomerang: it comes back to its owner's hand
+    explode_radius: float = 0.0  # a grenade: no hit on contact, it blows up when it runs out
+    drag: float = 1.0  # speed kept each frame (below 1: it rolls to a stop)
 
     @classmethod
     def from_data(cls, data: dict) -> ProjectileDef:
@@ -57,6 +59,8 @@ class ProjectileDef:
             wave_every_f=data.get("wave_every_f", 4),
             look=data.get("look", "orb"),
             returns=data.get("returns", False),
+            explode_radius=data.get("explode_radius", 0.0),
+            drag=data.get("drag", 1.0),
         )
 
 
@@ -193,6 +197,8 @@ class MoveDef:
     freeze_f: int = 0  # the blow freezes the opponent solid this long (Vaporization Freezing)
     cage_f: int = 0  # on a clean hit, a ring of chains closes around both this long
     cage_radius: float = 0.0
+    detonate: bool = False  # sets off every trap and grenade the user has laid
+    reflect: bool = False  # while active, projectiles that reach the user fly back
     shout: str = ""  # written on screen when used (each hit of a rush: "ORA", "MUDA")
     label: str = ""  # display name in the move list
     info: str = ""  # one-line description in the move list
@@ -266,6 +272,8 @@ class MoveDef:
             freeze_f=data.get("freeze_f", 0),
             cage_f=seconds_to_frames(data.get("cage_s", 0)),
             cage_radius=data.get("cage_radius", 0.0),
+            detonate=data.get("detonate", False),
+            reflect=data.get("reflect", False),
             finish_drain=data.get("finish_drain", 0.0),
             shout=localized(data, "shout"),
             label=localized(data, "label"),
@@ -294,6 +302,12 @@ class Kit:
     strength: float = 1.0  # the Stand's raw power: how fast and hard it throws props
     nature: str = "human"  # "vampire", "pillar_man"...: what Hamon burns
     pose_heal_per_s: float = 0.0  # posing heals this much life per second
+    pose_counter: str = ""  # posing a moment, the next blow is answered with this move
+    pose_counter_ready_f: int = 20  # posing this long arms the pose counter
+
+    @property
+    def base_stance_name(self) -> str:
+        return next(iter(self.stances))
 
     def move(self, stance: str, slot: str) -> MoveDef | None:
         return self.stances[stance].moves.get(slot) or self.shared_moves.get(slot)
@@ -340,6 +354,11 @@ def parse_kit(data: dict, kit_id: str, source: str = "kit") -> Kit:
             raise ValueError(f"{source}: move '{move.name}' has unknown leap_to")
         if move.cinematic and (move.cinematic_f <= 0 or move.cinematic_at not in ("hit", "start")):
             raise ValueError(f"{source}: move '{move.name}' needs cinematic_s and cinematic_at")
+    pose_counter = data.get("pose_counter", "")
+    if pose_counter and not all(
+        pose_counter in s.moves or pose_counter in shared for s in stances.values()
+    ):
+        raise ValueError(f"{source}: pose_counter leads to unknown move '{pose_counter}'")
     walk = data.get("walk_speed")
     style = data.get("style", "none")
     style_name, style_params = (style, {}) if isinstance(style, str) else (style["type"], style)
@@ -348,6 +367,8 @@ def parse_kit(data: dict, kit_id: str, source: str = "kit") -> Kit:
         strength=data.get("strength", 1.0),
         nature=data.get("nature", "human"),
         pose_heal_per_s=data.get("pose_heal_per_s", 0.0),
+        pose_counter=pose_counter,
+        pose_counter_ready_f=round(data.get("pose_counter_ready_s", 0.33) * HZ),
         name=data["name"],
         max_hp=data.get("max_hp", 1000),
         walk_speed=per_frame(walk) if walk else None,

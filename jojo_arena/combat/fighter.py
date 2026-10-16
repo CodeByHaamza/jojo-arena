@@ -166,6 +166,10 @@ class Fighter:
         # Combo scaling: moves landed in a row on this fighter, and the last one's id.
         self.combo_moves = 0
         self.combo_key: tuple | None = None
+        # The button of the last attack, and of the one before (a pose counter predicts
+        # that the opponent does the same thing again).
+        self.last_slot = "light"
+        self.prev_slot = ""
 
     # Queries ----------------------------------------------------------------------------
 
@@ -531,6 +535,8 @@ class Fighter:
                 aim = (dest - self.pos).normalized()
         self.facing = aim
         self._serial += 1
+        if slot:
+            self.prev_slot, self.last_slot = self.last_slot, slot
         self.set_state(State.ATTACK)
         self.attack = Attack(
             move, aim, self._serial, target=target.copy(), slot=slot, start=self.pos.copy()
@@ -643,14 +649,18 @@ class Fighter:
 
     @property
     def countering(self) -> bool:
-        """In the window of a counter move: the next blow is caught and answered."""
+        """In the window of a counter move: the next blow is caught and answered. A kit
+        with a pose counter also catches it after posing a moment ("your next line is...")."""
+        if self.frozen:
+            return False
+        if self.state == State.POSE and self.kit.pose_counter:
+            return self.state_f >= self.kit.pose_counter_ready_f
         attack = self.attack
         return (
             self.state == State.ATTACK
             and attack is not None
             and bool(attack.move.counter)
             and attack.active
-            and not self.frozen
         )
 
     def armored(self) -> bool:

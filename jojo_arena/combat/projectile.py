@@ -10,6 +10,8 @@ from jojo_arena.combat.events import Event
 from jojo_arena.combat.kit import ProjectileDef
 from jojo_arena.engine.geometry import Vec2
 
+BIG_BLAST = 20  # px: a blast this wide or more is an explosion (smaller: a burst)
+
 
 @dataclass
 class Projectile:
@@ -54,10 +56,23 @@ class Projectile:
                 return []
             self.stop_after -= 1
         self.pos = self.pos + self.velocity
+        if self.defn.drag != 1.0:
+            self.velocity = self.velocity * self.defn.drag
         self.life -= 1
         if self.life <= 0:
             self.alive = False
+            if self.defn.explode_radius:
+                # A small blast (a bubble) only bursts; a big one is an explosion.
+                kind = "explosion" if self.defn.explode_radius >= BIG_BLAST else "burst"
+                return [Event(kind, self.pos, self.owner, self.defn.explode_radius)]
             return [Event("projectile_fade", self.pos)]
+        blocked = arena.outside_walls(self.pos, self.radius) or arena.obstacle_at(
+            self.pos, self.radius
+        )
+        if self.defn.explode_radius and blocked:
+            self.pos = self.pos - self.velocity  # a grenade stops against walls and props
+            self.velocity = self.velocity * 0
+            return []
         if arena.outside_walls(self.pos, self.radius):
             if self.defn.returns:
                 return self.turn_back()  # a boomerang glances off and comes home

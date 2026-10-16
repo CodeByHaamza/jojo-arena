@@ -17,6 +17,7 @@ Unités : les durées en `_f` sont en images (60 par seconde) ; celles en `_s` e
 | `style = { type = "hamon" }` | Style Hamon : maintenir la touche Stand fait respirer (la jauge de Hamon se remplit, immobile et vulnérable) ; les coups à `hamon_cost` la dépensent. Réglages dans `[hamon]` de `combat/rules.toml` |
 | `style = { type = "vampire", off = "base", on = "freeze" }` | Style vampire : la touche Stand passe dans la posture `on` (gel vaporisant), qui demande un peu de sang, en brûle tant qu'elle dure et s'arrête quand il n'y en a plus. Le sang se remplit en drainant ; intact un moment, le vampire cicatrise en dépensant du sang. Réglages dans `[vampire]` des règles |
 | `pose_heal_per_s` | La pose soigne autant de vie par seconde (le cri de Speedwagon) |
+| `pose_counter`, `pose_counter_ready_s` | Après avoir posé ce nombre de secondes (0,33 par défaut), le perso prédit que l'adversaire refera son dernier coup (la même touche) : s'il a raison, ce coup est attrapé et il répond avec ce coup du kit (« Ta prochaine réplique sera... » de Joseph) ; s'il a tort, il prend le coup |
 | `nature` | `human` par défaut ; `vampire`, `zombie` ou `pillar_man` : le Hamon fait double dégâts et bloque leur régénération, le soleil les brûle |
 
 ## Les postures
@@ -41,7 +42,7 @@ Les coups d'une posture : `[stances.<nom>.moves.<touche>]`, où la touche est `l
 | `anim` | Animation à jouer (par défaut, le nom de la touche). Une variante `famille_nom` (`special_splash`) se dessine dans la fiche de look ; une planche qui ne l'a pas (le Stand) joue la famille (`special`) |
 | `shout` | Cri écrit à l'écran quand le coup sort ; pour une rafale, à chaque coup (`ORA`, `MUDA`) |
 | `stand_flash` | Le Stand apparaît le temps de ce coup, même rangé |
-| `fx` | Dessin pendant la phase active : `limb` (doigt, bras), `tentacle`, `blade`, `hair` (mèches), `chain` (chaîne) ou `beam` (jets des yeux), jusqu'à `reach` |
+| `fx` | Dessin pendant la phase active : `limb` (doigt, bras), `tentacle`, `blade`, `hair` (mèches), `chain` (chaîne), `beam` (jets des yeux), `lens` (rayon à travers une bulle), `scarf` (écharpe ondulante) ou `scarf_spear` (écharpe rigide), jusqu'à `reach` |
 
 Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de même `label_en` pour une posture, et `role_en`, `blurb_en`, `name_en` dans le roster). Sans traduction, le texte français s'affiche.
 
@@ -89,6 +90,7 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `blood_cost` | Style vampire : le coup ne sort qu'avec assez de sang, et le dépense |
 | `freeze_f` | Touché net, l'adversaire est gelé sur place ce nombre d'images (gel vaporisant) |
 | `finish_drain` | Part des dégâts du coup final d'une cinématique rendue en vie |
+| `detonate` | Au premier tir de son projectile, tous les pièges du perso explosent (avec ce même projectile) et ses grenades encore au sol sautent aussitôt (le plan caché de Joseph) |
 | `cage_s`, `cage_radius` | Touché net : un anneau de chaînes de ce rayon se ferme autour des deux combattants, ce nombre de secondes ; personne n'en sort (Tarkus) |
 | `guard_damage` | Multiplie l'usure de la jauge de garde quand le coup est bloqué (casse-garde) |
 | `clashable` | Peut déclencher un clash contre un autre coup (vrai par défaut pour les coups au corps à corps) |
@@ -98,6 +100,7 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | Champ | Effet |
 | --- | --- |
 | `counter` | Coup de contre : un coup au corps à corps reçu pendant la phase active est annulé, et ce coup-ci (le nom d'un autre coup) part aussitôt |
+| `reflect` | Tant que le coup est actif, un projectile qui atteint le perso repart en sens inverse et devient le sien (le Snake Muffler de Lisa Lisa) |
 | `possess_s` | Coup du Stand piloté : s'il touche, tu diriges la marche de l'adversaire pendant cette durée |
 | `armor` | Nombre de coups encaissés sans broncher pendant le démarrage et la phase active (on prend les dégâts) |
 
@@ -143,7 +146,9 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `waves`, `wave_every_f` | Plusieurs salves, à N images d'écart (chaque salve comble les trous de la précédente) |
 | `homing_deg_s` | Tête chercheuse : degrés par seconde dont il tourne vers la cible |
 | `returns` | Boomerang : à mi-course (ou contre un mur, ou après avoir touché) il revient dans la main de son lanceur |
-| `look` | Dessin : `orb`, `knife`, `gem`, `blade` |
+| `explode_radius` | Grenade : ne touche pas au contact, roule, s'arrête contre les murs et les objets, et explose en fin de vie ; l'adversaire à ce rayon (plus son corps) est touché |
+| `drag` | Part de sa vitesse gardée à chaque image (sous 1 : il ralentit jusqu'à s'arrêter) |
+| `look` | Dessin : `orb`, `knife`, `gem`, `blade`, `wine`, `hat`, `clacker`, `grenade`, `bubble`, `bullet`, `spark`, `jet` |
 
 ## Pièges
 
