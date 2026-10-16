@@ -525,6 +525,49 @@ class EffectsLayer:
             effect.draw(surface)
 
 
+def draw_vortices(
+    surface: pygame.Surface, origin: Vec2, aim: Vec2, tick: int, length: float, color
+) -> None:
+    """Two tornadoes turning in front of a fighter, one per forearm: the air between
+    his arms, not his fists. They lean along `aim` and spin with `tick`."""
+    d = aim.normalized() if aim.length_sq() else Vec2(1, 0)
+    side = _side(d)
+    for which, offset in enumerate((-5.0, 5.0)):
+        base = origin + side * offset
+        spin = tick * 0.55 + which * math.pi
+        points = []
+        for step in range(11):
+            t = step / 10
+            radius = 2.5 + 7.5 * t
+            along = d * (length * t)
+            swirl = side * (math.sin(spin + t * 7.0) * radius)
+            points.append(_ints(base + along + swirl - Vec2(0, t * 4)))
+        pygame.draw.lines(surface, OUTLINE, False, points, 4)
+        pygame.draw.lines(surface, color, False, points, 2)
+        pygame.draw.lines(surface, (255, 255, 255), False, points[-4:], 1)
+    blit_glow(surface, radial_glow(round(14 + length * 0.3), (60, 80, 90)), _ints(origin + d * 6))
+
+
+def draw_gun(surface: pygame.Surface, start: Vec2, aim: Vec2, tick: int) -> None:
+    """A submachine gun held out at the hip: body, drum, barrel, and the muzzle lit."""
+    d = aim.normalized() if aim.length_sq() else Vec2(1, 0)
+    side = _side(d)
+    body_a, body_b = start + d * 2, start + d * 11
+    pygame.draw.line(surface, OUTLINE, _ints(body_a - side), _ints(body_b - side), 5)
+    pygame.draw.line(surface, (70, 66, 78), _ints(body_a), _ints(body_b), 3)
+    pygame.draw.line(surface, (120, 112, 126), _ints(body_a), _ints(body_b), 1)
+    drum = start + d * 6 + side * 3
+    pygame.draw.circle(surface, OUTLINE, _ints(drum), 4)
+    pygame.draw.circle(surface, (96, 88, 104), _ints(drum), 3)
+    muzzle = start + d * 18
+    pygame.draw.line(surface, OUTLINE, _ints(body_b), _ints(muzzle), 4)
+    pygame.draw.line(surface, (150, 142, 158), _ints(body_b), _ints(muzzle), 2)
+    pygame.draw.line(surface, (90, 62, 40), _ints(start - d * 2), _ints(start + d * 3), 3)  # stock
+    if tick % 4 < 2:  # the muzzle flash, every other pair of frames
+        blit_glow(surface, radial_glow(10, (150, 110, 30)), _ints(muzzle))
+        pygame.draw.circle(surface, (255, 236, 170), _ints(muzzle + d * 2), 2)
+
+
 def draw_flurry(
     surface: pygame.Surface,
     origin: Vec2,

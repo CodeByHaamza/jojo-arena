@@ -215,6 +215,11 @@ def animations(view: str, pose_name: str = "raise") -> AnimTable:
             Pose(lean=3.5, bob=1, hand_l=(-7, -4), hand_r=(-6, -5), foot_l=(-6, 0), foot_r=(6, 0)),
         ]
         guard = [Pose(lean=-0.5, bob=1, hand_r=(5, -14), hand_l=(4, -11), foot_l=(-2, 0))]
+        # Carrying something heavy: both hands up over the head, knees a little bent.
+        carry = [
+            Pose(lean=-0.5, bob=1, hand_r=(2, -21), hand_l=(0, -20), foot_l=(-1, 0)),
+            Pose(lean=-0.5, bob=2, hand_r=(2, -20), hand_l=(0, -19), foot_l=(-1, 0)),
+        ]
         hurt = [
             Pose(lean=-3, head=(-2, 0), hand_r=(-4, -8), hand_l=(-6, -6), foot_r=(2, 0)),
             Pose(lean=-2, head=(-1, 1), bob=1, hand_r=(-3, -5), hand_l=(-5, -4)),
@@ -250,6 +255,10 @@ def animations(view: str, pose_name: str = "raise") -> AnimTable:
             ),
         ]
         guard = [Pose(bob=1, hand_r=(-8, -9), hand_l=(8, -9))]
+        carry = [
+            Pose(bob=1, hand_r=(-5, -21), hand_l=(5, -21)),
+            Pose(bob=2, hand_r=(-5, -20), hand_l=(5, -20)),
+        ]
         hurt = [
             Pose(lean=2, head=(1, -1), hand_r=(4, -10), hand_l=(-4, -10), foot_l=(-1, 0)),
             Pose(lean=1, head=(1, 0), bob=1, hand_r=(3, -6), hand_l=(-3, -6)),
@@ -263,6 +272,7 @@ def animations(view: str, pose_name: str = "raise") -> AnimTable:
         "special": (12, False, [2, 1, 1], special),
         "dash": (14, False, None, dash),
         "guard": (1, True, None, guard),
+        "carry": (4, True, None, carry),
         "hurt": (10, False, None, hurt),
         "ko": (8, False, None, ko),
         "pose": (3, True, None, pose_frames(pose_name, view)),

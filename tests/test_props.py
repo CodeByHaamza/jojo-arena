@@ -3,6 +3,7 @@
 from helpers import NONE, kinds, press, run
 
 from jojo_arena.characters import get_fighter
+from jojo_arena.combat.interactions import TimeStop
 from jojo_arena.combat.match import Match
 from jojo_arena.combat.rules import load_rules
 from jojo_arena.engine.geometry import Vec2
@@ -100,3 +101,23 @@ def test_the_stand_carries_it_so_the_walk_is_unchanged():
     free_speed = jotaro.walk_speed()
     run(match, 2, p1=press("pose"))
     assert jotaro.walk_speed() == free_speed
+
+
+def test_a_prop_thrown_in_stopped_time_hangs_there_like_a_knife():
+    """DIO's knives hang in the stopped air until time moves again; a crate did not."""
+    match = cairo()
+    dio = match.fighters[0]
+    run(match, 2, p1=press("pose"))
+    assert dio.carrying is not None
+    # ZA WARUDO, and he throws it into the stopped air.
+    match.time_stop = TimeStop({0}, 180, 180)
+    run(match, 4, p1=press("pose"))
+    flying = [shot for shot in match.projectiles if shot.prop is not None]
+    assert flying, "the crate should be in the air"
+    shot = flying[0]
+    assert shot.stop_after is not None
+    run(match, 40)
+    assert shot.hanging, "it should hang where it stopped"
+    held = shot.pos.copy()
+    run(match, 30)
+    assert shot.pos == held  # and go nowhere until time moves again

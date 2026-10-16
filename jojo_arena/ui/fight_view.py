@@ -137,6 +137,8 @@ class FighterView:
             phase = fighter.attack.phase_info()
         else:
             anim = STATE_ANIMS.get(fighter.state, "idle")
+            if fighter.carrying is not None and sprites is self.sprites and self.stand is None:
+                anim = "carry"  # no Stand to hold it: he holds it himself, both hands up
         name, spec = self.resolve(sprites, anim)
         attack = fighter.attack
         rushing = attack is not None and attack.move.hits > 1 and attack.active
@@ -204,7 +206,7 @@ class FighterView:
         if self.throw_f > 0:
             image = self._stand_pose(fighter, "heavy", 2).copy()  # the throw
         elif fighter.carrying is not None and fighter.state != State.ATTACK:
-            image = self._stand_pose(fighter, "guard", 0).copy()  # holding it up
+            image = self._stand_pose(fighter, "carry", 0).copy()  # holding it up
         else:
             image = self.current_frame(fighter, self.stand).copy()
         image.set_alpha(round(STAND_ALPHA * presence))
@@ -1078,7 +1080,7 @@ class FightView:
             if not attack.active:
                 return
             aim, length = attack.aim, attack.move.reach + attack.move.radius
-            kind = "blade" if attack.move.fx == "blade" else "fists"
+            kind = {"blade": "blade", "blade_hair": "blade"}.get(attack.move.fx, "fists")
         elif fighter.state == State.CLASH:
             aim, length = fighter.facing, 26.0
             kind = "fists"
@@ -1103,10 +1105,20 @@ class FightView:
             start, end = fighter.pos + view.chest, attack.dest + view.chest
             vfx.draw_reach(surface, start, end, color, attack.move.fx, 2)
             return
-        if not attack.active:
-            return
+        if not attack.active and attack.move.fx not in ("gun", "vortex"):
+            return  # a gun is held up through the whole move, not only while it hits
         move = attack.move
         view = self.fighter_views[fighter.index]
+        if move.fx == "vortex":
+            # Both forearms spinning: the air does the hitting, not the fists.
+            origin = fighter.pos + view.chest
+            aura = self.fighter_defs[fighter.index].aura
+            vfx.draw_vortices(surface, origin, attack.aim, self.tick, move.reach + 10, aura)
+            return
+        if move.fx == "gun":
+            hip = fighter.pos + view.chest + Vec2(0, 3)
+            vfx.draw_gun(surface, hip, attack.aim, self.tick)
+            return
         if move.fx == "beam":
             # From the eyes, straight ahead, at once.
             eyes = fighter.pos + Vec2(attack.aim.x * 2, -view.height + 9)

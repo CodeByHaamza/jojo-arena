@@ -1190,9 +1190,9 @@ class EyeBarrage(CutscenePlayer):
 
 
 class AtmosphericRift(CutscenePlayer):
-    """Wamuu tears his own arms open so the air screams through them, winds up, and
-    throws a vacuum blade that splits the arena in half. It costs him a quarter of
-    himself, and the cutscene shows that first: his own blood goes before the blow."""
+    """Final Mode. The growths on his wind armour drag the air of the whole room into
+    him; it is compressed inside his body, which is what tears him up, and it comes back
+    out through the horn on his brow as a vortex that cuts stone."""
 
     length = 240
     WIND_UP = 70  # the air starts turning
@@ -1207,22 +1207,27 @@ class AtmosphericRift(CutscenePlayer):
             return (self.u + self.v) * 0.5, 2
         return self.v + Vec2(0, -14), 2
 
+    def horn(self) -> Vec2:
+        """The tip of the horn on his brow, where it all comes back out."""
+        return self.head(self.scene.user, self.u, 4)
+
     def cue(self, f):
         fx, chest = self.fx, self.chest(self.scene.user, self.u)
         if f == 1:
             self.shout(text.FINAL_MODE_LINE, scale=2, life=46)
-        if 12 <= f < self.WIND_UP and f % 7 == 0:
-            # He opens his arms; the blood goes with the wind, not onto the floor.
+        if 12 <= f < self.WIND_UP and f % 5 == 0:
+            # The room's air pulled into him, and his own blood going the other way.
             drift = Vec2(self.rng.uniform(-0.7, 0.7), self.rng.uniform(-1.1, -0.3))
             fx.add(vfx.Dust(chest + Vec2(self.rng.randint(-8, 8), 0), drift, 2, 16, self.BLOOD))
         if f == self.WIND_UP:
-            fx.add(vfx.Ring(chest, self.WIND, 3.0, 20, 2))
+            fx.add(vfx.Ring(self.horn(), self.WIND, 3.0, 20, 2))
             self.world_words.menace(self.head(self.scene.user, self.u), 1)
             self.shake = 4
         if self.WIND_UP < f < self.RIFT and f % 9 == 0:
-            fx.add(vfx.Ring(chest, self.WIND, 2.2, 16, 1))
+            fx.add(vfx.Ring(self.horn(), self.WIND, 2.2, 16, 1))
         if f == self.RIFT:
             hit = self.chest(self.scene.target, self.v)
+            fx.add(vfx.Ring(self.horn(), self.WIND, 4.0, 22, 2))
             fx.add(vfx.Flash(hit, 40, self.WIND, 12))
             fx.add(vfx.Ring(hit, self.WIND, 5.0, 26, 3))
             fx.focus(hit, heavy=True)
@@ -1241,21 +1246,26 @@ class AtmosphericRift(CutscenePlayer):
         self.body(world, user, self.u, anim, 2, right)
         if f >= self.RIFT:
             self.victim(world, f)
-        chest = self.chest(user, self.u)
+        horn = self.horn()
         if 12 <= f < self.RIFT:
-            # The air turning between his opened arms, tighter as it winds up.
+            # The air of the room dragged in: rings closing on the horn, tighter and
+            # tighter, while his own body gives way under the pressure.
             turn = min(1.0, (f - 12) / (self.RIFT - 12))
             for i in range(5):
-                radius = round(16 - 10 * turn + i * 2)
+                radius = round(30 - 24 * turn + i * 4)
                 offset = Vec2(math.sin(f * 0.3 + i) * 2, math.cos(f * 0.3 + i) * 2)
-                pygame.draw.circle(world, self.WIND, (chest + offset).as_ints(), radius, 1)
+                pygame.draw.circle(world, self.WIND, (horn + offset).as_ints(), max(2, radius), 1)
+            if f % 9 < 4:  # the body tearing under what it is holding
+                for i in range(3):
+                    cut = self.chest(user, self.u) + Vec2(self.rng.randint(-7, 7), i * 4 - 4)
+                    world.fill(self.BLOOD, (round(cut.x), round(cut.y), 2, 1))
         if f >= self.RIFT:
-            # The rift itself: a blade of vacuum laid across the arena.
+            # And out of the horn: a blade of vacuum laid across the whole arena.
             reach = min(1.0, (f - self.RIFT) / 10)
-            tip = chest + Vec2(self.side * 240 * reach, 0)
-            pygame.draw.line(world, OUTLINE, chest.as_ints(), tip.as_ints(), 7)
-            pygame.draw.line(world, self.WIND, chest.as_ints(), tip.as_ints(), 3)
-            pygame.draw.line(world, (255, 255, 255), chest.as_ints(), tip.as_ints(), 1)
+            tip = horn + Vec2(self.side * 240 * reach, 0)
+            pygame.draw.line(world, OUTLINE, horn.as_ints(), tip.as_ints(), 7)
+            pygame.draw.line(world, self.WIND, horn.as_ints(), tip.as_ints(), 3)
+            pygame.draw.line(world, (255, 255, 255), horn.as_ints(), tip.as_ints(), 1)
 
 
 # Esidisi: the tears ------------------------------------------------------------------------

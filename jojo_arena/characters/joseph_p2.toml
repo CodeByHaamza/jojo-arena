@@ -204,6 +204,7 @@ anim = "uppercut"
 [moves.hha]
 shout = "TOMMY GUN !"
 label = "TOMMY GUN"
+fx = "gun"
 info = "La mitraillette cachée : une longue rafale, invincible au démarrage"
 info_en = "The hidden tommy gun: a long burst, invincible on startup"
 startup_f = 12

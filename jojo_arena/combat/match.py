@@ -568,7 +568,11 @@ class Match:
             wall_bounce=power >= rules.strong_throw,
         )
         start = fighter.pos + aim * (rules.body_radius + defn.radius + 2)
-        projectile = Projectile(fighter.index, start, aim * defn.speed, defn, defn.lifetime_f)
+        # Thrown in stopped time it flies a moment, then hangs there like the knives do.
+        stop_after = rules.time_stop_projectile_flight_f if self.time_stop else None
+        projectile = Projectile(
+            fighter.index, start, aim * defn.speed, defn, defn.lifetime_f, stop_after=stop_after
+        )
         projectile.prop = self.arena.obstacles.index(obstacle)
         projectile.key = (fighter.index, -1 - projectile.prop)
         self.projectiles.append(projectile)

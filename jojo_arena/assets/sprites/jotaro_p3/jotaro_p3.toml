@@ -51,88 +51,94 @@ frames = 1
 fps = 1
 loop = true
 
-[anims.hurt]
+[anims.carry]
 row = 21
+frames = 2
+fps = 4
+loop = true
+
+[anims.hurt]
+row = 24
 frames = 2
 fps = 10
 loop = false
 
 [anims.ko]
-row = 24
+row = 27
 frames = 4
 fps = 8
 loop = false
 
 [anims.pose]
-row = 27
+row = 30
 frames = 2
 fps = 3
 loop = true
 
 [anims.kick]
-row = 30
-frames = 4
-fps = 12
-loop = false
-phases = [1, 1, 2]
-
-[anims.kick_high]
 row = 33
 frames = 4
 fps = 12
 loop = false
 phases = [1, 1, 2]
 
-[anims.headbutt]
+[anims.kick_high]
 row = 36
+frames = 4
+fps = 12
+loop = false
+phases = [1, 1, 2]
+
+[anims.headbutt]
+row = 39
 frames = 5
 fps = 12
 loop = false
 phases = [2, 1, 2]
 
 [anims.sweep]
-row = 39
+row = 42
 frames = 4
 fps = 12
 loop = false
 phases = [1, 2, 1]
 
 [anims.leap]
-row = 42
+row = 45
 frames = 4
 fps = 12
 loop = false
 phases = [2, 1, 1]
 
 [anims.counter]
-row = 45
+row = 48
 frames = 3
 fps = 8
 loop = false
 phases = [1, 1, 1]
 
 [anims.grab]
-row = 48
+row = 51
 frames = 3
 fps = 12
 loop = false
 phases = [1, 1, 1]
 
 [anims.uppercut]
-row = 51
+row = 54
 frames = 4
 fps = 12
 loop = false
 phases = [1, 1, 2]
 
 [anims.tackle]
-row = 54
+row = 57
 frames = 2
 fps = 10
 loop = true
 
 [anims.counter_yare]
-row = 57
+row = 60
 frames = 7
 fps = 8
 loop = false
