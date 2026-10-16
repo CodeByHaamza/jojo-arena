@@ -14,14 +14,15 @@ nature = "zombie"
 label = "CHEVALIER ZOMBIE"
 label_en = "ZOMBIE KNIGHT"
 
-# Thrust, slash, piercing hair: the same button three times, once the first one lands.
+# Thrust, hair whip, piercing hair: the same button three times, once the first lands.
+# The sword never swings alone - his hair rides with every stroke.
 [stances.base.moves.light]
 label = "ESTOC"
 label_en = "THRUST"
-info = "L'épée Luck porte loin. Encore : taille, puis cheveux perçants"
-info_en = "The sword Luck reaches far. Again: slash, then piercing hair"
+info = "L'épée Luck porte loin, les mèches la suivent. Encore : fouet, puis cheveux perçants"
+info_en = "The sword Luck reaches far, his locks riding with it. Again: whip, then piercing hair"
 shape = "line"
-fx = "blade"
+fx = "blade_hair"
 startup_f = 6
 active_f = 3
 recovery_f = 11
@@ -35,16 +36,18 @@ cancel_on_hit = ["light", "heavy", "special"]
 chain = "light2"
 
 [stances.base.moves.light2]
-label = "TAILLE"
-label_en = "SLASH"
-info = "Un large coup d'épée"
-info_en = "A wide sword stroke"
-startup_f = 6
+label = "FOUET DE MÈCHES"
+label_en = "HAIR WHIP"
+info = "Les cheveux claquent plus loin que l'épée"
+info_en = "The hair cracks further out than the sword"
+shape = "line"
+fx = "hair"
+startup_f = 7
 active_f = 4
-recovery_f = 12
+recovery_f = 13
 damage = 36
-reach = 18
-radius = 14
+reach = 38
+radius = 7
 hitstun_f = 22
 knockback = 120
 hitstop_f = 5
@@ -77,8 +80,9 @@ anim = "special"
 [stances.base.moves.heavy]
 label = "COUP DE LUCK"
 label_en = "STROKE OF LUCK"
-info = "Lourd coup d'épée à deux mains ; casse la garde"
-info_en = "A heavy two-handed sword stroke; crushes guards"
+info = "Lourd coup d'épée à deux mains, les mèches enroulées autour ; casse la garde"
+info_en = "A heavy two-handed stroke, his hair wound around the blade; crushes guards"
+fx = "blade_hair"
 startup_f = 15
 active_f = 4
 recovery_f = 22
@@ -96,10 +100,10 @@ anim = "heavy"
 [stances.base.moves.heavy_alt]
 label = "CHARGE DU CHEVALIER"
 label_en = "KNIGHT'S CHARGE"
-info = "Avec une direction : fonce l'épée en avant"
-info_en = "With a direction: charges, sword first"
+info = "Avec une direction : fonce l'épée en avant, les cheveux en bannière"
+info_en = "With a direction: charges sword first, his hair streaming behind"
 shape = "line"
-fx = "blade"
+fx = "blade_hair"
 startup_f = 10
 active_f = 8
 recovery_f = 18
@@ -158,10 +162,10 @@ anim = "special"
 [moves.hha]
 label = "ESTOC DE MARIE STUART"
 label_en = "MARY STUART'S THRUST"
-info = "Un estoc qui porte loin, invincible au démarrage, projette"
-info_en = "A far-reaching thrust, invincible on startup, launches"
+info = "Les mèches guident la lame : un estoc qui porte loin, invincible au démarrage"
+info_en = "His hair guides the blade: a far-reaching thrust, invincible on startup"
 shape = "line"
-fx = "blade"
+fx = "blade_hair"
 startup_f = 16
 active_f = 5
 recovery_f = 26

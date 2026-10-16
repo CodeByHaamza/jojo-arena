@@ -70,6 +70,8 @@ def draw_projectile(
         _draw_spark(surface, pos, d)
     elif look == "jet":
         _draw_jet(surface, pos, d, aura)
+    elif look == "wave":
+        _draw_wave(surface, pos, d)
     else:
         _draw_orb(surface, pos, radius, aura)
 
@@ -225,6 +227,25 @@ def _draw_blade(surface, pos: Vec2, d: Vec2) -> None:
     surface.set_at(_ints(tip), (255, 255, 255))
 
 
+def _draw_wave(surface: pygame.Surface, pos: Vec2, d: Vec2) -> None:
+    """A crest of burning Hamon sweeping the floor: an arc bowed the way it travels,
+    with two fainter ones trailing behind it so it reads as moving."""
+    side = _side(d)
+
+    def arc(center: Vec2, span: float, bow: float, color, width: int) -> None:
+        points = []
+        for step in range(-4, 5):
+            t = step / 4
+            points.append(_ints(center + side * (span * t) + d * (bow * (1 - t * t))))
+        pygame.draw.lines(surface, OUTLINE, False, points, width + 2)
+        pygame.draw.lines(surface, color, False, points, width)
+
+    arc(pos - d * 7, 8.0, 3.0, (190, 70, 20), 1)  # the tail of the flame
+    arc(pos - d * 3, 11.0, 4.0, (255, 140, 40), 2)
+    arc(pos, 13.0, 5.0, HAMON_EDGE, 2)  # the crest itself
+    blit_glow(surface, radial_glow(20, (130, 80, 16)), _ints(pos))
+
+
 def draw_reach(
     surface: pygame.Surface, start: Vec2, tip: Vec2, color, kind: str = "limb", width: int = 2
 ) -> None:
@@ -233,6 +254,24 @@ def draw_reach(
     `kind` is "limb" (rounded, the user's color), "tentacle" (wavy) or "blade" (steel).
     """
     if (tip - start).length_sq() < 1:
+        return
+    if kind == "blade_hair":
+        # Hair riding along the blade: two strands fanned either side of the steel, in
+        # the violet sheen so they read against a dark floor, then the blade over them.
+        d = (tip - start).normalized()
+        side = _side(d)
+        length = (tip - start).length()
+        steps = max(3, round(length / 3))
+        for strand in (-3.4, 3.4):
+            points = []
+            for i in range(steps + 1):
+                t = i / steps
+                wave = math.sin(t * 7 + strand) * 2.2 * (1 - t * 0.4)
+                spread = strand * (1 - t * 0.55) + wave
+                points.append(_ints(start + (tip - start) * t + side * spread))
+            pygame.draw.lines(surface, OUTLINE, False, points, 3)
+            pygame.draw.lines(surface, HAIR_SHEEN, False, points, 1)
+        draw_reach(surface, start, tip, color, "blade", width)
         return
     if kind == "hair":
         # A lock of hair: three thin wavy strands, black with a violet sheen.

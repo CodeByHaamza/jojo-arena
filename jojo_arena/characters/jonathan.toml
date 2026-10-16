@@ -1,6 +1,6 @@
 # Jonathan Joestar (Part 1). GDD: "Hamon · Tank rushdown": heavy, slow blows, a big
-# life (1150), short-range Hamon. Sunlight Yellow Overdrive (his ultimate), Hamon run
-# through his sword Luck & Pluck, and a barrage of fists that clashes with ORA ORA. Frames (_f) are at 60 per second; speeds and knockback in px per second.
+# life (1150), short-range Hamon. Sunlight Yellow Overdrive (his ultimate), a flurry of Hamon
+# thrusts with his sword Luck & Pluck, and a barrage of fists that clashes with ORA ORA. Frames (_f) are at 60 per second; speeds and knockback in px per second.
 #
 # Style key held: Hamon breathing (the gauge fills, he stands still). Moves with a
 # hamon_cost spend it when there is enough, and strike harder; without, they stay plain.
@@ -116,25 +116,38 @@ hitstop_f = 9
 wall_bounce = true
 anim = "tackle"
 
-# Scarlet Overdrive: a burning Hamon fist, slow, it caves a guard in.
+# Scarlet Overdrive: he sets his fist ablaze and drives it into the floor. The blow
+# itself caves a guard in; the burning Hamon then runs along the ground at the opponent,
+# so Jonathan threatens the whole arena without leaving his ground.
 [stances.base.moves.special]
 shout = "SCARLET OVERDRIVE !"
 label = "SCARLET OVERDRIVE"
-info = "Poing de Hamon brûlant, lent et lourd ; casse la garde"
-info_en = "A burning Hamon fist, slow and heavy; crushes guards"
+info = "Il embrase son poing dans le sol : une onde de Hamon file vers l'adversaire"
+info_en = "He drives his blazing fist into the floor: a Hamon wave runs at the opponent"
+hamon = true
 hamon_cost = 30
-startup_f = 16
+startup_f = 18
 active_f = 4
-recovery_f = 24
-damage = 80
-reach = 15
-radius = 13
-hitstun_f = 36
-knockback = 320
-hitstop_f = 12
-wall_bounce = true
+recovery_f = 26
+damage = 30
+reach = 14
+radius = 12
+hitstun_f = 26
+knockback = 180
+hitstop_f = 9
 guard_damage = 2.5
 anim = "heavy_overdrive"
+
+# The wave: it keeps going until it meets someone or runs out of floor.
+[stances.base.moves.special.projectile]
+speed = 200
+radius = 11
+damage = 55
+lifetime_s = 1.6
+hitstun_f = 32
+knockback = 280
+hitstop_f = 10
+look = "wave"
 
 # With a direction, the frog lesson: the Hamon passes through what it strikes.
 [stances.base.moves.special_alt]
@@ -162,22 +175,26 @@ anim = "light"
 [moves.hha]
 shout = "LUCK & PLUCK !"
 label = "LUCK & PLUCK"
-info = "Le Hamon embrase l'épée : un estoc qui porte loin, invincible au démarrage"
-info_en = "Hamon sets the sword ablaze: a far-reaching thrust, invincible on startup"
+info = "Rafale d'estocs de Hamon à l'épée ; le dernier projette. Invincible au démarrage"
+info_en = "A flurry of Hamon sword thrusts; the last one launches. Invincible on startup"
 hamon = true
 shape = "line"
 fx = "blade"
-startup_f = 16
-active_f = 5
+startup_f = 14
+active_f = 34
 recovery_f = 26
-invincible_f = 16
-damage = 140
-reach = 64
+invincible_f = 14
+hits = 6
+hit_every_f = 6
+damage = 22
+last_damage = 80
+reach = 46
 radius = 7
-hitstun_f = 36
-knockback = 440
-hitstop_f = 12
-wall_bounce = true
+hitstun_f = 15
+knockback = 40
+last_knockback = 460
+last_wall_bounce = true
+hitstop_f = 2
 clashable = false
 anim = "heavy_overdrive"
 
