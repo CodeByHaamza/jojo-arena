@@ -1,0 +1,193 @@
+# Robert E. O. Speedwagon (Part 1, bonus). GDD: "Sans pouvoir · Joke": a bowler hat
+# with blades (a boomerang), street blows. Pose: a cheer that heals a little. Ultimate:
+# "Speedwagon withdraws coolly", an invincible comic exit. Frames (_f) at 60 per second.
+#
+# No power, no style key: the street, the hat, and a lot of heart.
+
+name = "Speedwagon"
+max_hp = 900
+walk_speed = 112
+pose_heal_per_s = 18  # his cheer: "JoJo, I'm with you!"
+
+[stances.base]
+label = "VOYOU D'OGRE STREET"
+label_en = "OGRE STREET THUG"
+
+[stances.base.moves.light]
+label = "DIRECT"
+label_en = "JAB"
+info = "Rapide. Encore : crochet, puis coup de genou"
+info_en = "Fast. Again: hook, then knee"
+startup_f = 4
+active_f = 3
+recovery_f = 9
+damage = 24
+reach = 15
+radius = 10
+hitstun_f = 18
+knockback = 80
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.base.moves.light2]
+label = "CROCHET"
+label_en = "HOOK"
+info = "S'enchaîne sur le direct"
+info_en = "Follows the jab"
+startup_f = 5
+active_f = 3
+recovery_f = 10
+damage = 28
+reach = 15
+radius = 11
+hitstun_f = 20
+knockback = 100
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "heavy"
+
+[stances.base.moves.light3]
+label = "COUP DE GENOU"
+label_en = "KNEE"
+info = "Fin de l'enchaînement : envoie contre le mur"
+info_en = "Chain ender: sends into the wall"
+startup_f = 7
+active_f = 4
+recovery_f = 16
+damage = 40
+reach = 14
+radius = 12
+hitstun_f = 28
+knockback = 320
+hitstop_f = 8
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "kick"
+
+# The Ogre Street headbutt.
+[stances.base.moves.heavy]
+label = "COUP DE BOULE"
+label_en = "HEADBUTT"
+info = "Le coup de tête des bas quartiers ; casse la garde"
+info_en = "The headbutt of the back streets; crushes guards"
+startup_f = 13
+active_f = 3
+recovery_f = 20
+damage = 62
+reach = 12
+radius = 11
+hitstun_f = 32
+knockback = 240
+hitstop_f = 10
+guard_damage = 2.5
+anim = "headbutt"
+
+[stances.base.moves.heavy_alt]
+label = "CHARGE DE VOYOU"
+label_en = "THUG'S CHARGE"
+info = "Avec une direction : fonce tête baissée"
+info_en = "With a direction: charges head down"
+startup_f = 9
+active_f = 10
+recovery_f = 18
+lunge = 260
+damage = 48
+reach = 12
+radius = 12
+hitstun_f = 24
+knockback = 300
+hitstop_f = 8
+wall_bounce = true
+anim = "tackle"
+
+# The bowler hat with blades in the brim: thrown, it cuts, and comes back to his hand.
+[stances.base.moves.special]
+label = "CHAPEAU À LAMES"
+label_en = "BLADED HAT"
+info = "Le chapeau tranche et revient comme un boomerang"
+info_en = "The hat cuts and comes back like a boomerang"
+startup_f = 10
+active_f = 1
+recovery_f = 14
+anim = "special"
+
+[stances.base.moves.special.projectile]
+look = "hat"
+returns = true
+speed = 280
+radius = 6
+damage = 34
+lifetime_s = 1.4
+hitstun_f = 20
+knockback = 90
+hitstop_f = 5
+
+# With a direction: a dirty kick, low and fast.
+[stances.base.moves.special_alt]
+label = "COUP BAS"
+label_en = "LOW BLOW"
+info = "Avec une direction : un coup de pied vicieux qui passe sous la garde"
+info_en = "With a direction: a dirty kick that slips under the guard"
+startup_f = 8
+active_f = 3
+recovery_f = 14
+unblockable = true
+damage = 26
+reach = 15
+radius = 10
+hitstun_f = 26
+knockback = 120
+hitstop_f = 6
+anim = "sweep"
+
+# Super moves -----------------------------------------------------------------------------
+
+# Heart Heat Attack (1 bar): the hat spinning at full speed, a buzz-saw that comes back.
+[moves.hha]
+shout = "TOURNE, CHAPEAU !"
+shout_en = "SPIN, HAT!"
+label = "CHAPEAU TOURNOYANT"
+label_en = "WHIRLING HAT"
+info = "Trois chapeaux en éventail qui reviennent, invincible au démarrage"
+info_en = "Three hats in a fan that come back, invincible on startup"
+startup_f = 14
+active_f = 1
+recovery_f = 22
+invincible_f = 14
+anim = "special"
+
+[moves.hha.projectile]
+look = "hat"
+returns = true
+speed = 300
+radius = 7
+damage = 46
+lifetime_s = 1.4
+hitstun_f = 30
+knockback = 260
+hitstop_f = 6
+count = 3
+spread_deg = 40
+
+# Great Heat Attack (2 bars): "Speedwagon withdraws coolly". Invincible, he tips his hat
+# and walks off, and his cheer heals him on the way.
+[moves.gha]
+shout = "SPEEDWAGON SE RETIRE AVEC STYLE !"
+shout_en = "SPEEDWAGON WITHDRAWS COOLLY!"
+label = "SPEEDWAGON SE RETIRE AVEC STYLE"
+label_en = "SPEEDWAGON WITHDRAWS COOLLY"
+info = "Il se retire, intouchable, et soigne ses blessures en chemin"
+info_en = "He withdraws, untouchable, and tends his wounds on the way"
+startup_f = 4
+active_f = 60
+recovery_f = 10
+invincible_f = 74
+lunge = -90
+buff = "cool"
+anim = "pose"
+
+[buffs.cool]
+duration_s = 5
+heal_per_s = 30

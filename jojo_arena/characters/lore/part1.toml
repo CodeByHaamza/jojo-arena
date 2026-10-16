@@ -111,3 +111,16 @@ family = "Chevalier de Marie Stuart, reine d'Écosse, compagnon d'armes de Brufo
 family_en = "A knight of Mary Stuart, Queen of Scots, Bruford's brother in arms."
 name_origin = "Son nom évoque Tarkus, l'album et le morceau d'Emerson, Lake & Palmer ; ce n'est pas confirmé par Araki."
 name_origin_en = "His name recalls Tarkus, the album and song by Emerson, Lake & Palmer; Araki has not confirmed it."
+
+[[characters]]
+id = "speedwagon"
+name = "ROBERT E. O. SPEEDWAGON"
+fighter = "speedwagon"
+power = "AUCUN, SINON LE COURAGE"
+power_en = "NONE, BUT COURAGE"
+text = "Chef des voyous d'Ogre Street, il attaque Jonathan, reconnaît en lui un vrai gentleman et le suit jusqu'au bout contre Dio. Son chapeau melon cache des lames. Il commente tout avec passion, et sait aussi se retirer avec style. Devenu magnat du pétrole en Amérique, il fonde la fondation Speedwagon, qui aidera les Joestar pendant des générations."
+text_en = "Boss of the Ogre Street thugs, he attacks Jonathan, sees in him a true gentleman and follows him against Dio to the end. His bowler hat hides blades. He comments on everything with passion, and also knows how to withdraw coolly. Turned oil tycoon in America, he founds the Speedwagon Foundation, which will help the Joestars for generations."
+family = "Aucune famille connue : sa famille, ce sont les Joestar, qu'il protège toute sa vie."
+family_en = "No known family: his family is the Joestars, whom he protects all his life."
+name_origin = "Son nom vient du groupe de rock américain REO Speedwagon."
+name_origin_en = "His name comes from the American rock band REO Speedwagon."

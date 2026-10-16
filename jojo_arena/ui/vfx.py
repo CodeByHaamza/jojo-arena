@@ -54,6 +54,8 @@ def draw_projectile(
         _draw_blade(surface, pos, d)
     elif look == "wine":
         _draw_wine(surface, pos, d)
+    elif look == "hat":
+        _draw_hat(surface, pos, d)
     else:
         _draw_orb(surface, pos, radius, aura)
 
@@ -110,6 +112,19 @@ def draw_chain(surface: pygame.Surface, start: Vec2, end: Vec2, sag: float = 0.0
         else:
             pygame.draw.rect(surface, OUTLINE, (x - 1, y - 2, 3, 4))
             surface.fill(CHAIN, (x, y - 1, 1, 2))
+
+
+def _draw_hat(surface, pos: Vec2, d: Vec2) -> None:
+    """Speedwagon's bowler, spinning flat, the blades in its brim catching the light."""
+    spin = (pos.x + pos.y) * 0.35
+    center = _ints(pos)
+    pygame.draw.ellipse(surface, OUTLINE, (center[0] - 7, center[1] - 4, 15, 9))
+    pygame.draw.ellipse(surface, (30, 28, 40), (center[0] - 6, center[1] - 3, 13, 7))
+    pygame.draw.ellipse(surface, (60, 52, 90), (center[0] - 3, center[1] - 3, 7, 5))
+    for k in range(3):
+        angle = spin + k * math.tau / 3
+        tip = pos + Vec2(math.cos(angle) * 7, math.sin(angle) * 4)
+        surface.set_at(_ints(tip), (240, 240, 255))
 
 
 def _draw_wine(surface, pos: Vec2, d: Vec2) -> None:

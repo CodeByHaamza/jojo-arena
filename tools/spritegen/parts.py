@@ -579,12 +579,14 @@ SHAPES = {
     "diamond": [".#.", "#.#", ".#."],
     "ball": [".##.", "####", "####", ".##."],
     "bow": ["#.#", "###", "#.#"],
+    "tie": [".#.", ".#.", "###", "###", ".#."],
 }
 
 
 def emblem(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     """A small 3x3 motif. on: knees | elbows | chest | belt (one on each side) | chin.
-    shape: heart | circle | diamond | ball (a round guard, 4 by 4) | bow (a bow tie)."""
+    shape: heart | circle | diamond | ball (a round guard, 4 by 4) | bow (a bow tie) |
+    tie (a necktie)."""
     shape = SHAPES[p.get("shape", "heart")]
     spots: list[tuple[float, float, float]] = []  # x, y, z
     where = p.get("on", "chest")
@@ -1112,26 +1114,32 @@ def horns(sk: Skeleton, p: dict, look: Look) -> list[Part]:
 
 def top_hat(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     """A tall top hat with a wide brim. Options: height (crown, head units), band (color of
-    a band around the crown), checker (second color: harlequin diamonds on the band)."""
+    a band around the crown), checker (second color: harlequin diamonds on the band),
+    bowler (true: a low, rounded crown, a bowler hat)."""
     mat = p["material"]
     at = sk.at
     h = p.get("height", 9.0)
     shift = -0.6 if sk.view == "right" else 0.0
     base = -4.4
-    crown = polygon(
-        [
-            at(-5.6 + shift, base),
-            at(5.6 + shift, base),
-            at(6.1 + shift, base - h),
-            at(-6.1 + shift, base - h),
-        ]
-    )
+    if p.get("bowler"):
+        dome = disc(*at(shift, base), 6.2 * sk.k)
+        crown = {q for q in dome if _rel(sk, q)[1] < base}
+    else:
+        crown = polygon(
+            [
+                at(-5.6 + shift, base),
+                at(5.6 + shift, base),
+                at(6.1 + shift, base - h),
+                at(-6.1 + shift, base - h),
+            ]
+        )
     brim = polygon([at(-9, base - 0.3), at(9, base - 0.3), at(9, base + 1.2), at(-9, base + 1.2)])
     shine = points([at(-4 + shift, base - h + 1.5), at(-4 + shift, base - h + 2.5)]) & crown
     parts = [Part(mat, crown, z=56, highlight=shine), Part(mat, brim, z=57)]
     band = p.get("band")
     if band:
-        rows = {q for q in crown if base - 4.2 <= _rel(sk, q)[1] < base - 0.6}
+        top_of_band = base - (2.2 if p.get("bowler") else 4.2)
+        rows = {q for q in crown if top_of_band <= _rel(sk, q)[1] < base - 0.6}
         parts.append(Part(band, rows, z=56.4))
         checker = p.get("checker")
         if checker:

@@ -35,6 +35,7 @@ class ProjectileDef:
     waves: int = 1  # volleys thrown one after the other...
     wave_every_f: int = 4  # ...this many frames apart (each volley offset a little)
     look: str = "orb"  # how the view draws it: "orb", "knife", "gem", "blade"
+    returns: bool = False  # a boomerang: it comes back to its owner's hand
 
     @classmethod
     def from_data(cls, data: dict) -> ProjectileDef:
@@ -55,6 +56,7 @@ class ProjectileDef:
             waves=data.get("waves", 1),
             wave_every_f=data.get("wave_every_f", 4),
             look=data.get("look", "orb"),
+            returns=data.get("returns", False),
         )
 
 
@@ -113,6 +115,7 @@ class BuffDef:
     damage_dealt_mult: float = 1.0
     damage_taken_mult: float = 1.0
     afterimages: bool = False
+    heal_per_s: float = 0.0  # life regained per second while it lasts
 
     @classmethod
     def from_data(cls, data: dict) -> BuffDef:
@@ -122,6 +125,7 @@ class BuffDef:
             damage_dealt_mult=data.get("damage_dealt_mult", 1.0),
             damage_taken_mult=data.get("damage_taken_mult", 1.0),
             afterimages=data.get("afterimages", False),
+            heal_per_s=data.get("heal_per_s", 0.0),
         )
 
 
@@ -289,6 +293,7 @@ class Kit:
     stance_labels: dict[str, str] = field(default_factory=dict)  # move list headings
     strength: float = 1.0  # the Stand's raw power: how fast and hard it throws props
     nature: str = "human"  # "vampire", "pillar_man"...: what Hamon burns
+    pose_heal_per_s: float = 0.0  # posing heals this much life per second
 
     def move(self, stance: str, slot: str) -> MoveDef | None:
         return self.stances[stance].moves.get(slot) or self.shared_moves.get(slot)
@@ -342,6 +347,7 @@ def parse_kit(data: dict, kit_id: str, source: str = "kit") -> Kit:
         id=kit_id,
         strength=data.get("strength", 1.0),
         nature=data.get("nature", "human"),
+        pose_heal_per_s=data.get("pose_heal_per_s", 0.0),
         name=data["name"],
         max_hp=data.get("max_hp", 1000),
         walk_speed=per_frame(walk) if walk else None,

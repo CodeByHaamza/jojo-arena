@@ -75,6 +75,19 @@ blurb_en = "Slow and armored, he locks the opponent in a ring of chains, then cr
 color = "#5a5a66"
 aura = "#ff4a4a"
 
+[[fighters]]
+id = "speedwagon"
+part = 1
+name = "SPEEDWAGON"
+kit = "speedwagon"
+sprite = "speedwagon/speedwagon"
+role = "BONUS - SANS POUVOIR"
+role_en = "BONUS - NO POWER"
+blurb = "Ni Hamon ni Stand : un chapeau à lames qui revient, des coups de rue, et un grand coeur."
+blurb_en = "No Hamon, no Stand: a bladed hat that comes back, street blows, and a big heart."
+color = "#3c3a7a"
+aura = "#e86a9a"
+
 # Part 3: Stardust Crusaders --------------------------------------------------------------
 
 [[fighters]]

@@ -143,6 +143,7 @@ class Fighter:
         self._regen_left = 0.0
         self._sun_left = 0.0
         self.iced_f = 0  # frozen solid by Vaporization Freezing (for the view)
+        self._pose_heal_left = 0.0
         self.in_sun = False
         self.style = make_style(kit.style, kit.style_params)
         self.switch_target = self.stance
@@ -719,12 +720,13 @@ class Fighter:
 
     def _lunging(self) -> bool:
         """Moves with a lunge carry the body forward until they first connect; rushes
-        keep pushing forward through every hit, driving the opponent back."""
+        keep pushing forward through every hit, driving the opponent back. A negative
+        lunge carries it backward (a retreat)."""
         attack = self.attack
         return (
             self.state == State.ATTACK
             and attack is not None
-            and attack.move.lunge > 0
+            and attack.move.lunge != 0
             and attack.phase < 2
             and (attack.hits_done == 0 or attack.move.hits > 1)
         )
@@ -770,6 +772,13 @@ class Fighter:
                 self.set_state(State.IDLE)
         elif self.state == State.POSE:
             self.gain_hh(rules.hh_pose_per_f)
+            if self.kit.pose_heal_per_s and self.alive:
+                # A cheer that lifts the spirits: posing heals a little.
+                self._pose_heal_left += self.kit.pose_heal_per_s / HZ
+                whole = int(self._pose_heal_left)
+                if whole:
+                    self._pose_heal_left -= whole
+                    self.hp = min(self.max_hp, self.hp + whole)
         elif self.state in (State.HITSTUN, State.BLOCKSTUN, State.GUARD_BROKEN):
             self.stun_f -= 1
             if self.stun_f <= 0:
@@ -793,6 +802,12 @@ class Fighter:
                 self.possessor = None
         if self.disarmed_f > 0:
             self.disarmed_f -= 1
+        if self.buff is not None and self.buff.heal_per_s and self.alive:
+            self._pose_heal_left += self.buff.heal_per_s / HZ
+            whole = int(self._pose_heal_left)
+            if whole:
+                self._pose_heal_left -= whole
+                self.hp = min(self.max_hp, self.hp + whole)
         if self.buff is not None:
             self.buff_f -= 1
             if self.buff_f <= 0:

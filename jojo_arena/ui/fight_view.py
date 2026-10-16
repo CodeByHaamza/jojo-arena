@@ -529,6 +529,8 @@ class FightView:
                 words.add(sfx.RATTLE, pos + Vec2(0, -24), "impact", 3, 40, 0.3, 2)
                 fx.add(vfx.Ring(event.pos, (180, 180, 196), 3.0, 18, 2))
                 self.shake = max(self.shake, 8)
+            elif kind == "catch" and event.fighter is not None:
+                fx.add(vfx.Flash(pos, 8, (240, 240, 255), 4))
             elif kind == "cage_end":
                 words.add(sfx.RATTLE, event.pos + Vec2(0, -10), "impact", 2, 30, 0.3, 1)
                 fx.dust(event.pos, 8, 1.6, 2, (170, 170, 184), 18)

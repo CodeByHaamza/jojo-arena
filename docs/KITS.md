@@ -16,6 +16,7 @@ Unités : les durées en `_f` sont en images (60 par seconde) ; celles en `_s` e
 | `remote`, `remote_range`, `remote_speed` | Dans `style` : maintenir la touche Stand envoie le Stand seul, dans cette posture, jusqu'à cette distance, à cette vitesse (mode contrôle) |
 | `style = { type = "hamon" }` | Style Hamon : maintenir la touche Stand fait respirer (la jauge de Hamon se remplit, immobile et vulnérable) ; les coups à `hamon_cost` la dépensent. Réglages dans `[hamon]` de `combat/rules.toml` |
 | `style = { type = "vampire", off = "base", on = "freeze" }` | Style vampire : la touche Stand passe dans la posture `on` (gel vaporisant), qui demande un peu de sang, en brûle tant qu'elle dure et s'arrête quand il n'y en a plus. Le sang se remplit en drainant ; intact un moment, le vampire cicatrise en dépensant du sang. Réglages dans `[vampire]` des règles |
+| `pose_heal_per_s` | La pose soigne autant de vie par seconde (le cri de Speedwagon) |
 | `nature` | `human` par défaut ; `vampire`, `zombie` ou `pillar_man` : le Hamon fait double dégâts et bloque leur régénération, le soleil les brûle |
 
 ## Les postures
@@ -67,7 +68,7 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `leap` | Bond pendant le démarrage, jusqu'à cette distance |
 | `leap_to` | Vers l'adversaire (`target`, s'arrête à côté de lui) ou vers le point visé (`cursor` : souris, sinon stick droit, sinon direction tenue) |
 | `leap_height` | Hauteur du saut à l'écran (0 = glisse au sol, comme un grappin) |
-| `lunge` | Avance pendant le démarrage et la phase active (vitesse) ; une rafale continue d'avancer à chaque coup |
+| `lunge` | Avance pendant le démarrage et la phase active (vitesse) ; une rafale continue d'avancer à chaque coup ; négatif : recule |
 
 ### Effet sur l'adversaire
 
@@ -141,6 +142,7 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `origin`, `ring_radius` | `self` (depuis le perso) ou `ring` (en cercle autour de la cible, vers elle) |
 | `waves`, `wave_every_f` | Plusieurs salves, à N images d'écart (chaque salve comble les trous de la précédente) |
 | `homing_deg_s` | Tête chercheuse : degrés par seconde dont il tourne vers la cible |
+| `returns` | Boomerang : à mi-course (ou contre un mur, ou après avoir touché) il revient dans la main de son lanceur |
 | `look` | Dessin : `orb`, `knife`, `gem`, `blade` |
 
 ## Pièges
@@ -178,3 +180,4 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `speed_mult` | Multiplie la vitesse |
 | `damage_dealt_mult`, `damage_taken_mult` | Multiplie les dégâts infligés et reçus |
 | `afterimages` | Images rémanentes derrière le perso |
+| `heal_per_s` | Vie regagnée par seconde tant que l'état dure |

@@ -275,6 +275,21 @@ class Match:
         self.traps = kept
         return events
 
+    def _fly_home(self, projectile: Projectile) -> list[Event]:
+        """A boomerang: halfway through its flight it heads back to its owner, who
+        catches it."""
+        owner = self.fighters[projectile.owner]
+        if not projectile.returning and projectile.life <= projectile.defn.lifetime_f // 2:
+            projectile.turn_back()
+        if not projectile.returning:
+            return []
+        home = owner.pos - projectile.pos
+        if home.length() < self.rules.body_radius + projectile.radius:
+            projectile.alive = False
+            return [Event("catch", owner.pos, owner.index)]
+        projectile.velocity = home.normalized() * projectile.defn.speed
+        return []
+
     def _projectile_moves(self, projectile: Projectile) -> bool:
         return not self.fighters[projectile.owner].frozen and not projectile.hanging
 
@@ -286,6 +301,10 @@ class Match:
             if projectile.defn.homing and self._projectile_moves(projectile):
                 target = self.fighters[1 - projectile.owner]
                 projectile.steer(target.pos, projectile.defn.homing)
+            if projectile.defn.returns and self._projectile_moves(projectile):
+                events += self._fly_home(projectile)
+                if not projectile.alive:
+                    continue
             events += projectile.update(self.arena)
         live = [p for p in self.projectiles if p.alive and self._projectile_moves(p)]
         for i, a in enumerate(live):
@@ -309,7 +328,7 @@ class Match:
         events: list[Event] = []
         for projectile in self.projectiles:
             target = self.fighters[1 - projectile.owner]
-            if not target.alive or not self._projectile_moves(projectile):
+            if not target.alive or projectile.spent or not self._projectile_moves(projectile):
                 continue
             if not self._touches(projectile.pos, projectile.radius, target):
                 continue
@@ -328,7 +347,10 @@ class Match:
             )
             landed, strike_events = self._strike(self.fighters[projectile.owner], target, strike)
             events += strike_events
-            if landed:
+            if landed and projectile.defn.returns:
+                projectile.spent = True  # a boomerang flies home after one hit
+                projectile.turn_back()
+            elif landed:
                 projectile.alive = False  # dodged projectiles keep flying
         self.projectiles = [p for p in self.projectiles if p.alive]
         return events

@@ -25,6 +25,8 @@ class Projectile:
     key: tuple | None = None  # the move that fired it, for combo scaling
     prop: int | None = None  # index of the arena prop being thrown, if it is one
     hamon: bool = False  # carries Hamon, like the move that fired it
+    returning: bool = False  # a boomerang on its way back
+    spent: bool = False  # a boomerang that already hit: it only flies back now
     boost: float = 1.0  # damage multiplier of that move
 
     @property
@@ -57,11 +59,24 @@ class Projectile:
             self.alive = False
             return [Event("projectile_fade", self.pos)]
         if arena.outside_walls(self.pos, self.radius):
+            if self.defn.returns:
+                return self.turn_back()  # a boomerang glances off and comes home
             self.alive = False
             return [Event("projectile_wall", self.pos)]
         obstacle = arena.obstacle_at(self.pos, self.radius)
         if obstacle is not None:
-            self.alive = False
             broke = obstacle.damage(self.defn.damage)
+            if self.defn.returns and not self.returning:
+                return [*self.turn_back(), Event("prop_break" if broke else "prop_hit", self.pos)]
+            self.alive = False
             return [Event("prop_break" if broke else "projectile_wall", self.pos)]
+        return []
+
+    def turn_back(self) -> list[Event]:
+        """A boomerang starts back toward its owner, with time enough to get there."""
+        if not self.returning:
+            self.returning = True
+            self.velocity = self.velocity * -1
+            self.life = self.defn.lifetime_f
+            return [Event("projectile_wall", self.pos)]
         return []

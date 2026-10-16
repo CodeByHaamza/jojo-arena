@@ -66,7 +66,8 @@ def face_parts(sk: Skeleton, look: Look) -> list[Part]:
     face.eyes = "outline" or a palette color (the iris);
     face.eye_style = dot (1 pixel), tall (1x2) or wide (2x2: eyelid over iris);
     face.brows, face.mouth, face.nose (profile), face.ear = true to add them;
-    face.mustache = a palette color: a handlebar mustache, its tips curled up.
+    face.mustache = a palette color: a handlebar mustache, its tips curled up;
+    face.scar = a palette color: a scar across the left cheek, nose to jaw.
     """
     if sk.view == "up":
         return []
@@ -124,6 +125,15 @@ def face_parts(sk: Skeleton, look: Look) -> list[Part]:
             ex = round(sk.head[0] + 0.57 * r)
             hair = {(ex, y), (ex + 1, y), (ex + 2, y - 1), (ex - 1, y - 1)}
         parts.append(Part(mustache, hair, z=52.4, tone=0))
+    scar = face.get("scar")
+    if scar:
+        if sk.view == "down":
+            # The wearer's left cheek is the screen's right.
+            mark = {(hx + 1 + i, round(sk.head[1] + 0.1 * r) + i) for i in range(4)}
+        else:
+            ex = round(sk.head[0] + 0.3 * r)
+            mark = {(ex - i, round(sk.head[1] + 0.2 * r) + i) for i in range(3)}
+        parts.append(Part(scar, mark, z=52.3, tone=0))
     if face.get("ear"):
         skin = look.body["head"]
         if sk.view == "right":

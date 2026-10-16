@@ -1,0 +1,80 @@
+# Robert E. O. Speedwagon (Part 1): look file for tools/make_sprites.py.
+# A blond mullet, a scar across the left cheek, a black bowler hat with blades hidden in
+# the brim, a black coat over an indigo waistcoat, a pink tie, black trousers.
+
+name = "Speedwagon"
+
+# Tall and lean, a street fighter.
+# Signature pose (Pose key): see tools/spritegen/skeleton.py.
+pose = "point_up"
+
+[build]
+head_r = 5.6
+neck = 1.3
+torso = 13.5
+legs = 17
+arms = 14.5
+shoulders = 8.2
+hips = 3.2
+torso_r = 5.8
+arm_r = 2.2
+leg_r = 2.3
+hand_r = 2.2
+foot_r = 2.3
+
+[palette]
+skin = "#f0caa4"
+hair = "#e8c66a"
+hat = "#1e1c26"
+hat_band = "#5a4a8a"
+coat = "#26242e"
+vest = "#3c3a7a"
+tie = "#e86a9a"
+trousers = "#2a2830"
+shoes = "#1c1a22"
+scar = "#c8907a"
+eyes = "#7a5232"
+
+[body]
+head = "skin"
+torso = "vest"
+arms = "coat"
+hands = "skin"
+legs = "trousers"
+feet = "shoes"
+
+[face]
+eyes = "eyes"
+eye_style = "wide"
+brows = true
+nose = true
+ear = true
+scar = "scar"
+
+# A mullet: short on top, long at the back.
+[[parts]]
+type = "hair"
+material = "hair"
+style = "short"
+volume = 7.4
+back_length = 8
+
+[[parts]]
+type = "top_hat"
+material = "hat"
+bowler = true
+band = "hat_band"
+
+[[parts]]
+type = "coat"
+material = "coat"
+length = 0.45
+open = true
+opening = 4
+collar = true
+
+[[parts]]
+type = "emblem"
+material = "tie"
+shape = "tie"
+on = "chest"
