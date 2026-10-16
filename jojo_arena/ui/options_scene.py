@@ -77,6 +77,7 @@ class OptionsScene(Scene):
                 MenuItem(
                     "music", text.MUSIC, [str(n) for n in range(11)], ctx.settings.music_volume
                 ),
+                MenuItem("rumble", text.RUMBLE, [str(n) for n in range(11)], ctx.settings.rumble),
                 MenuItem("back", text.BACK),
             ]
         )
@@ -119,6 +120,10 @@ class OptionsScene(Scene):
             scene = OptionsScene(self.ctx)
             scene.menu.select(key)
             self.ctx.scenes.switch(scene)
+        elif kind == "change" and key == "rumble":
+            self.ctx.settings.rumble = self.menu.item("rumble").index
+            self.ctx.save_settings()
+            audio.play("menu_ok")
         elif kind == "change" and key == "language":
             code = i18n.LANGUAGES[self.menu.item("language").index]
             i18n.set_language(code)

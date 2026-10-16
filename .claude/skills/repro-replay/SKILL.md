@@ -25,6 +25,7 @@ step), `commands` (what was changed in the pause menu, and when). Load it in Pyt
 
 ```python
 from jojo_arena.combat.replay import load_replay
+
 replay = load_replay(path)
 print(replay.meta, len(replay.frames))
 ```

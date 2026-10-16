@@ -26,6 +26,7 @@ from jojo_arena.ui.labels import action_label, menu_key
 from jojo_arena.ui.menu import Menu, MenuItem
 from jojo_arena.ui.movelist import MoveListPanel
 from jojo_arena.ui.music import track_for_stage
+from jojo_arena.ui.rumble import FightRumble, pad_slots
 from jojo_arena.ui.widgets import GOLD, draw_box, draw_toast, veil
 
 RESULT_MENU_AFTER_F = 120  # let the victory sink in before offering a rematch
@@ -66,6 +67,14 @@ class FightScene(Scene):
         players = ctx.controls.active_preset.players
         self.hud.mash_keys = tuple(action_label(p, "light", ctx.inputs) for p in players)
         self.view.pose_keys = tuple(action_label(p, "pose", ctx.inputs) for p in players)
+        # The fight in the hands: rumble, and the light bar in the fighter's colour.
+        self.rumble = FightRumble(
+            ctx.inputs,
+            pad_slots(players),
+            enabled=ctx.settings.rumble > 0,
+            strength=ctx.settings.rumble / 10,
+        )
+        self.rumble.light_up(tuple(d.color for d in self.fighter_defs))
         self.pause_menu: Menu | None = None
         self.result_menu: Menu | None = None
         self.move_list: MoveListPanel | None = None
@@ -144,10 +153,12 @@ class FightScene(Scene):
         if not self.demo and pauser is not None:
             self.paused_by = pauser
             self.pause_menu = Menu(self._pause_items())
+            self.rumble.stop()
             return
         if self.playback is None:
             self.replay.record((frames[0], frames[1]))
         events = self.rounds.step((frames[0], frames[1]))
+        self.rumble.on_events(events)
         self.on_step(events)
         self.view.on_events(events, self.rounds.match)
         self.hud.on_events(events, self.rounds)
@@ -268,6 +279,7 @@ class FightScene(Scene):
         )
 
     def _change_fighters(self) -> None:
+        self.rumble.stop()
         from jojo_arena.ui.select_scene import CharacterSelectScene
 
         self.save_replay()
@@ -276,6 +288,7 @@ class FightScene(Scene):
         )
 
     def _go_to_menu(self) -> None:
+        self.rumble.stop()
         from jojo_arena.ui.main_menu import MainMenuScene
 
         self.save_replay()

@@ -137,6 +137,7 @@ class PadState:
     controller: object | None = None
     name: str = ""
     guid: str = ""
+    joystick: object | None = None  # the same pad as a Joystick: rumble, light bar
     held: set[str] = field(default_factory=set)
     axes: dict[int, float] = field(default_factory=dict)
     pending: Counter[str] = field(default_factory=Counter)
@@ -191,7 +192,8 @@ class InputManager:
         joystick = pad.as_joystick()
         instance_id = joystick.get_instance_id()
         if all(state.instance_id != instance_id for state in self.pads):
-            self.pads.append(PadState(instance_id, pad, *_pad_identity(joystick)))
+            name, guid = _pad_identity(joystick)
+            self.pads.append(PadState(instance_id, pad, name, guid, joystick))
 
     def _pad(self, instance_id: int) -> PadState | None:
         return next((pad for pad in self.pads if pad.instance_id == instance_id), None)

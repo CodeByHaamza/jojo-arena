@@ -225,6 +225,7 @@ FR = {
     # Options
     "OPTIONS_TITLE": "OPTIONS",
     "FULLSCREEN": "PLEIN ÉCRAN",
+    "RUMBLE": "VIBRATION",
     "LAYOUT": "CLAVIER",
     "LAYOUT_AUTO": "AUTO ({name})",
     "LAYOUT_NAMES": {"azerty": "AZERTY", "qwerty": "QWERTY"},
@@ -537,6 +538,7 @@ EN = {
     "FM_ON_BLOCK": "ON BLOCK",
     "OPTIONS_TITLE": "OPTIONS",
     "FULLSCREEN": "FULLSCREEN",
+    "RUMBLE": "RUMBLE",
     "LAYOUT": "KEYBOARD",
     "LAYOUT_AUTO": "AUTO ({name})",
     "LAYOUT_NAMES": {"azerty": "AZERTY", "qwerty": "QWERTY"},

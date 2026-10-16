@@ -23,6 +23,11 @@ des corrections seules une patch.
 - **Détection de la manette par son constructeur** (identifiant SDL) : une DualShock 4 ou
   une DualSense affiche CROIX, CARRÉ, OPTIONS ; une manette Xbox affiche A, X, MENU,
   VIEW.
+- **Vibration de la manette**, pilotée par ce qui se passe en combat : celui qui encaisse
+  sent le poids du coup, celui qui le place sent le claquement ; Guard Break, mur, K.O.,
+  gel, contre, arrêt du temps et ultimes ont leur propre motif. Sur DualShock 4 et
+  DualSense, la **barre lumineuse prend la couleur du perso**. Réglable de 0 à 10 dans
+  Options.
 - **Deux réglages d'affichage** dans Options : `Clavier` (auto / AZERTY / QWERTY) et
   `Manette` (auto / Xbox / PlayStation), pour les cas où la détection se trompe. Ils ne
   changent que les noms affichés. Le nom exact des manettes branchées s'affiche sous le

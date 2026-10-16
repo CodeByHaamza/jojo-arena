@@ -20,6 +20,7 @@ class Settings:
     volume: int = 7  # sound effects, 0 (silent) to 10
     music_volume: int = 5  # music, 0 (silent) to 10
     # How inputs are *named* on screen. "auto" believes the system and the pad itself.
+    rumble: int = 7  # pad rumble, 0 (off) to 10
     layout: str = "auto"  # auto, azerty, qwerty
     pad_style: str = "auto"  # auto, xbox, playstation
 
@@ -29,6 +30,7 @@ class Settings:
             "cpu_level": self.cpu_level,
             "volume": self.volume,
             "music_volume": self.music_volume,
+            "rumble": self.rumble,
             "layout": self.layout,
             "pad_style": self.pad_style,
         }
@@ -49,6 +51,8 @@ def parse_settings(data: object) -> Settings:
         settings.volume = data["volume"]
     if isinstance(data, dict) and data.get("music_volume") in range(11):
         settings.music_volume = data["music_volume"]
+    if isinstance(data, dict) and data.get("rumble") in range(11):
+        settings.rumble = data["rumble"]
     if isinstance(data, dict) and data.get("layout") in LAYOUTS:
         settings.layout = data["layout"]
     if isinstance(data, dict) and data.get("pad_style") in PAD_STYLES:

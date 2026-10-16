@@ -90,6 +90,10 @@ Deux réglages dans Options si la détection se trompe (manette générique, dis
 
 Ça ne change **que les noms affichés** : les touches réelles ne bougent pas. Sous le tableau, le jeu affiche le nom exact des manettes qu'il voit, pour vérifier d'un coup d'œil qu'elles sont bien détectées.
 
+### Vibration et barre lumineuse
+
+Les coups se sentent dans les mains : celui qui encaisse prend le poids du coup (moteur lourd), celui qui le place en sent le claquement (moteur léger, plus court). Guard Break, mur, K.O., gel, contre, arrêt du temps et ultimes ont chacun leur vibration. Sur une **DualShock 4 ou une DualSense**, la barre lumineuse prend la couleur du perso qu'on joue. Réglage **Vibration** dans Options, de 0 (coupée) à 10.
+
 Pour changer les touches, modifie `controls.json` dans `%APPDATA%\JoJoArena\` puis relance le jeu. Le fichier explique les noms de touches. Supprime-le pour revenir aux réglages par défaut.
 
 ## Développement
