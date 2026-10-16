@@ -24,7 +24,8 @@ Ce qui marche déjà :
 - touche Stand : le Stand apparaît à côté de son manieur et change les coups ; un coup sur le Stand blesse son manieur ;
 - coups propres à chaque perso : arrêt du temps (Jotaro, DIO), couteaux, saisie qui draine la vie, fils piégés, Emerald Splash, Armor Off, GHA (2 barres) ;
 - rounds (1, 3 ou 5 gagnants), timer de 99 s, mort subite en cas d'égalité ;
-- **l'aube** dans le manoir Joestar : à 60 s, les rais de soleil tombent sous les fenêtres, puis s'allongent jusqu'au mur du fond ; un vampire, un zombie ou un Homme du Pilier qui s'attarde dedans brûle de plus en plus vite et y laisse le round ;
+- trois arènes : le Caire de nuit (P3), le manoir Joestar en flammes (P1) et le **château suisse** des Hommes du Pilier (P2 : dalles froides, neige, braseros, piliers sculptés) ;
+- **l'aube** dans le manoir Joestar et au château : les rais de soleil tombent sous les fenêtres, puis s'allongent jusqu'au mur du fond et s'élargissent — 39 % du manoir, 77 % du château, où il ne reste presque plus d'ombre ; un vampire, un zombie ou un Homme du Pilier qui s'y attarde brûle de plus en plus vite et y laisse le round ;
 - clavier et manette (Xbox, DualShock 4, DualSense), touches modifiables ;
 - menus : écran titre partie par partie, menu principal, sélection des persos en onglets par partie (fiche, Stand, rôle), écran VS, pause, options (dont la langue : français ou anglais) ;
 - glossaire : termes du lore, personnages et Stands, partie par partie ;

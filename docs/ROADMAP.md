@@ -67,7 +67,7 @@ Chaque perso doit avoir un ressenti unique, et chaque coup qui touche doit être
 - [x] **Partie 1** : styles Hamon et vampire faits (jauges, respiration, sang, cicatrisation, gel vaporisant, soleil). Jonathan, Zeppeli, Dio Brando (yeux laser, Absorption), Bruford et Tarkus (zombies, anneau de chaînes) et Speedwagon (chapeau boomerang) jouables, avec le manoir Joestar en flammes et son aube.
 
 - [x] **Partie 2, première vague** : Joseph jeune (clackers boomerang, grenades, fils de Hamon, « Ta prochaine réplique sera... », la fuite, Tommy gun, plan caché), Caesar (Bubble Launcher, Bubble Cutter, Bubble Lens, Bubble Barrier), Lisa Lisa (écharpe fouet et lance, Snake Muffler qui renvoie les projectiles, saut acrobatique, piège de l'écharpe en cinématique) et Straizo (vampire tireur d'élite, posture de visée, rafale d'yeux en cinématique).
-- [ ] **Partie 2, deuxième vague** : Wamuu, Esidisi, Kars, Santana (Hommes du Pilier, modes), Stroheim, le château suisse et son cycle jour/nuit. Détail préparé ci-dessous.
+- [ ] **Partie 2, deuxième vague** : Wamuu, Esidisi, Kars, Santana (Hommes du Pilier, modes), Stroheim. **Le château suisse est fait** : dalles froides, neige qui entre par les fenêtres en ogive, braseros, piliers sculptés (les visages de ceux qui dormaient dedans), et l'aube des Alpes qui remplit 77 % du hall — un mort-vivant y court après l'ombre, puis il n'en a plus. Détail préparé ci-dessous.
 
 ### Hommes du Pilier : ce qui est prêt à construire
 

@@ -94,6 +94,7 @@ class Arena:
     sun_windows: list[Rect] = field(default_factory=list)
     sun_after_f: int = 0
     sun_spread_f: int = 0  # frames for the beams to reach the far wall (0 = at once)
+    sun_widen: float = 0.3  # how much wider a beam gets on the way, as a share of it
     cage: Cage | None = None
 
     def sun_spread(self, tick: int) -> float:
@@ -109,7 +110,7 @@ class Arena:
         lengthens toward the far wall as the sun climbs, widening a little on the way:
         at dawn there is shadow to hide in, and after a while there is none."""
         reach = max(0.0, self.bounds.rect.bottom - window.bottom)
-        widen = window.w * 0.3 * spread
+        widen = window.w * self.sun_widen * spread
         return Rect(window.x - widen / 2, window.y, window.w + widen, window.h + reach * spread)
 
     def in_sun(self, pos: Vec2, spread: float = 1.0) -> bool:

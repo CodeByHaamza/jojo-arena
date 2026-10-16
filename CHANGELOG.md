@@ -40,6 +40,10 @@ des corrections seules une patch.
   d'ombre. Et un mort-vivant qui s'attarde dans la lumière brûle de plus en plus vite
   (jusqu'à 3,5 fois) ; sortir de la lumière le calme. Un vampire qui ne bouge pas à l'aube
   perd le round.
+- **Le château suisse**, l'arène de la partie 2 : dalles froides, neige qui traverse le
+  hall, braseros, et les piliers sculptés de ceux qui dormaient dedans. L'aube des Alpes
+  y finit par remplir 77 % du sol — contre 39 % au manoir : chaque hall a son propre
+  rapport à la lumière.
 - **Speedwagon appelle sa bande.** La touche Stand fait venir **Tattoo** et ses couteaux
   lancés, puis **Amato** et son kempo, chacun avec son propre moveset et son sprite.
   Nouveau style réutilisable `stance_cycle`.

@@ -11,6 +11,7 @@ from jojo_arena.combat.rules import load_rules
 from jojo_arena.context import GameContext
 from jojo_arena.engine.actions import InputFrame
 from jojo_arena.engine.display import Display
+from jojo_arena.engine.geometry import Vec2
 from jojo_arena.engine.input import InputManager
 from jojo_arena.engine.scene import SceneManager
 from jojo_arena.stages import STAGE_IDS, load_stage, stage_for_part, stage_renderer
@@ -76,3 +77,24 @@ def test_the_vs_screen_picks_the_arena_of_player_one(ctx):
     assert setup.stage_id == "cairo_night"
     setup.menu.item("stage").index = len(STAGE_IDS)  # at random
     assert setup.stage_id in STAGE_IDS
+
+
+def test_the_swiss_castle_is_the_arena_of_part_two():
+    stage = load_stage("swiss_castle")
+    assert stage.part == 2 and stage_for_part(2) == "swiss_castle"
+    assert len(stage.sun_windows) == 4  # four windows: more light than the mansion
+    assert stage.sun_spread_f > 0  # and the beams walk across the hall
+
+
+def test_the_castle_leaves_an_undead_almost_nowhere_to_hide_at_full_sun():
+    arena = load_stage("swiss_castle").build_arena()
+    floor = arena.bounds.rect
+    spots = [
+        Vec2(x, y)
+        for x in range(int(floor.left) + 4, int(floor.right) - 4, 6)
+        for y in range(int(floor.top) + 4, int(floor.bottom) - 4, 6)
+    ]
+    at_dawn = sum(arena.in_sun(p, 0.0) for p in spots)
+    at_noon = sum(arena.in_sun(p, 1.0) for p in spots)
+    assert at_noon > at_dawn * 2  # the light really walks the floor
+    assert at_noon > len(spots) * 0.6  # and by then most of the hall is lit

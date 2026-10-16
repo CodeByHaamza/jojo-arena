@@ -1,0 +1,115 @@
+# The Swiss castle (Part 2): the hall where the Pillar Men slept, high in the Alps.
+# Cold flagstones, snow blowing in through the arched windows of the north wall, braziers
+# against the cold, and the carved pillars they came out of. The sun rises late over the
+# mountains - and in this hall it is the sun that ends the fight.
+# Coordinates are internal pixels (screen is 480 x 270). Rects are [x, y, width, height].
+
+name = "Le château suisse"
+name_en = "The Swiss castle"
+part = 2
+
+[bounds]
+rect = [16, 42, 448, 210]
+corner_radius = 12
+
+[spawns]
+p1 = [140, 150]
+p2 = [340, 150]
+
+# Dawn over the Alps: it comes later than in the mansion, and once it is up the hall has
+# almost no shadow left. For a Pillar Man, a vampire or a zombie, that is the clock.
+[sun]
+after_s = 55
+spread_s = 20
+# Four windows, and the beams widen until the shadow between them is a thin strip:
+# in this hall an undead fighter has to keep moving, and then it runs out of floor.
+widen = 1.1
+
+[[sun.windows]]
+rect = [58, 42, 40, 76]
+
+[[sun.windows]]
+rect = [168, 42, 40, 76]
+
+[[sun.windows]]
+rect = [278, 42, 40, 76]
+
+[[sun.windows]]
+rect = [388, 42, 40, 76]
+
+# The pillars the Pillar Men came out of: solid, and they take a beating.
+[prop_kinds.pillar]
+hp = 200
+
+# Braziers and crates can be picked up (Pose key) and thrown; broken, they come back.
+[prop_kinds.brazier]
+hp = 30
+throwable = true
+throw_damage = 48
+respawn_s = 10
+
+[prop_kinds.crate]
+hp = 40
+throwable = true
+throw_damage = 42
+respawn_s = 9
+
+[[props]]
+kind = "pillar"
+rect = [112, 196, 15, 15]
+
+[[props]]
+kind = "pillar"
+rect = [353, 196, 15, 15]
+
+[[props]]
+kind = "pillar"
+rect = [232, 86, 15, 15]
+
+[[props]]
+kind = "brazier"
+rect = [44, 206, 10, 10]
+
+[[props]]
+kind = "brazier"
+rect = [426, 206, 10, 10]
+
+[[props]]
+kind = "crate"
+rect = [60, 120, 12, 11]
+
+[[props]]
+kind = "crate"
+rect = [408, 120, 12, 11]
+
+# Torches bracketed on the walls: the only warmth in the place.
+[[lanterns]]
+pos = [28, 160]
+
+[[lanterns]]
+pos = [452, 160]
+
+[[lanterns]]
+pos = [123, 39]
+
+[[lanterns]]
+pos = [357, 39]
+
+[palette]
+frame = [26, 28, 40]
+frame_dark = [16, 17, 26]
+wall = [58, 62, 80]
+wall_light = [74, 80, 100]
+trim = [96, 102, 124]
+glass_night = [26, 34, 64]
+glass_dawn = [255, 214, 150]
+curb = [86, 92, 112]
+slab = [96, 102, 118]
+slab_light = [112, 118, 134]
+slab_dark = [78, 84, 100]
+seam = [58, 63, 78]
+frost = [196, 214, 232]
+moss = [64, 88, 72]
+fire = [255, 136, 56]
+lantern = [255, 190, 120]
+sun = [255, 212, 150]

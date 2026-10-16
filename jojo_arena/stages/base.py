@@ -33,6 +33,7 @@ class StageDef:
     sun_windows: tuple[Rect, ...] = ()  # where the sun shines in, late in the round
     sun_after_f: int = 0
     sun_spread_f: int = 0  # how long the beams take to cross the room
+    sun_widen: float = 0.3  # how much wider each beam gets on the way
     part: int = 0  # the JoJo part it belongs to
 
     def build_arena(self) -> Arena:
@@ -54,6 +55,7 @@ class StageDef:
             sun_windows=list(self.sun_windows),
             sun_after_f=self.sun_after_f,
             sun_spread_f=self.sun_spread_f,
+            sun_widen=self.sun_widen,
         )
 
 
@@ -89,5 +91,6 @@ def load_stage_def(path: Path, stage_id: str) -> StageDef:
         sun_windows=tuple(Rect(*w["rect"]) for w in sun.get("windows", [])),
         sun_after_f=seconds_to_frames(sun.get("after_s", 0)),
         sun_spread_f=seconds_to_frames(sun.get("spread_s", 0)),
+        sun_widen=sun.get("widen", 0.3),
         part=data.get("part", 0),
     )
