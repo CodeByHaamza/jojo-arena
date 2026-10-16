@@ -51,3 +51,16 @@ family = "Fils de Mario Zeppeli, petit-fils de Will A. Zeppeli, le maître de Jo
 family_en = "Son of Mario Zeppeli, grandson of Will A. Zeppeli, Jonathan's master. Lisa Lisa's student alongside Joseph."
 name_origin = "Comme son grand-père, il porte un nom tiré du groupe de rock Led Zeppelin."
 name_origin_en = "Like his grandfather, he bears a name drawn from the rock band Led Zeppelin."
+
+[[characters]]
+id = "lisa_lisa"
+name = "LISA LISA"
+fighter = "lisa_lisa"
+power = "ONDE (HAMON)"
+power_en = "RIPPLE (HAMON)"
+text = "Une maîtresse de l'onde qui garde la Super Aja sur l'île d'Air Supplena, près de Venise. Elle y forme Joseph et Caesar. Son écharpe, tissée de soie de scarabée de Satiporoja, conduit l'onde à la perfection : fouet, lance ou parade. On apprend à la fin qu'elle est la mère de Joseph."
+text_en = "A Ripple master who guards the Super Aja on Air Supplena Island, near Venice. There she trains Joseph and Caesar. Her scarf, woven from Satiporoja beetle silk, carries the Ripple perfectly: whip, spear or parry. At the end we learn she is Joseph's mother."
+family = "De son vrai nom Elizabeth. Orpheline recueillie et élevée par Straizo. Épouse de George Joestar II, mère de Joseph Joestar."
+family_en = "Her real name is Elizabeth. An orphan taken in and raised by Straizo. Wife of George Joestar II, mother of Joseph Joestar."
+name_origin = "Son nom ferait référence au groupe américain Lisa Lisa and Cult Jam."
+name_origin_en = "Her name is thought to refer to the American band Lisa Lisa and Cult Jam."

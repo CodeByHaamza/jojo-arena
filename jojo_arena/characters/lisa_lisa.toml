@@ -1,0 +1,240 @@
+# Lisa Lisa (Part 2). GDD: "Hamon · Contrôle": elegant and acrobatic, counters. Her scarf, woven from
+# Satiporoja beetle silk, carries the Hamon perfectly: a long-range whip that can turn
+# stiff as a spear. Her guard bonus: the Snake Muffler, a Hamon parry that sends back
+# what comes at her. Great Heat Attack: the scarf trap, wrapped and set ablaze with Hamon.
+# Frames (_f) are at 60 per second; speeds and knockback in px per second.
+#
+# Style key held: Hamon breathing. Feel: poised, never hurried; a pirouette, a flip over
+# the opponent's head, and the scarf is already where they are going.
+
+name = "Lisa Lisa"
+max_hp = 900
+walk_speed = 98
+style = { type = "hamon" }
+
+[stances.base]
+label = "HAMON"
+
+# The scarf flicked out, twice, then a Hamon lash: the same button three times.
+[stances.base.moves.light]
+label = "COUP D'ÉCHARPE"
+label_en = "SCARF FLICK"
+info = "L'écharpe claque à mi-distance. Encore la touche : revers, puis fouet de Hamon"
+info_en = "The scarf snaps at mid range. Press again: backhand, then Hamon lash"
+shape = "line"
+fx = "scarf"
+startup_f = 7
+active_f = 3
+recovery_f = 12
+damage = 24
+reach = 34
+radius = 6
+hitstun_f = 18
+knockback = 70
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+anim = "light"
+
+[stances.base.moves.light2]
+label = "REVERS D'ÉCHARPE"
+label_en = "SCARF BACKHAND"
+info = "S'enchaîne sur le coup d'écharpe"
+info_en = "Follows the scarf flick"
+shape = "line"
+fx = "scarf"
+startup_f = 8
+active_f = 3
+recovery_f = 13
+damage = 28
+reach = 36
+radius = 6
+hitstun_f = 21
+knockback = 90
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "heavy"
+
+[stances.base.moves.light3]
+shout = "HAMON !"
+label = "PIROUETTE DE HAMON"
+label_en = "HAMON PIROUETTE"
+info = "Fin de l'enchaînement : une pirouette, l'écharpe chargée de Hamon envoie contre le mur"
+info_en = "Chain ender: a pirouette, the Hamon-charged scarf sends into the wall"
+hamon_cost = 15
+shape = "line"
+fx = "scarf"
+startup_f = 10
+active_f = 4
+recovery_f = 18
+damage = 40
+reach = 38
+radius = 7
+hitstun_f = 30
+knockback = 320
+hitstop_f = 9
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "pirouette"
+
+# The scarf cast far: it wraps the opponent and reels them in.
+[stances.base.moves.heavy]
+label = "ÉCHARPE QUI ENLACE"
+label_en = "BINDING SCARF"
+info = "L'écharpe part loin, s'enroule et ramène l'adversaire vers elle"
+info_en = "The scarf flies far, wraps round and pulls the opponent to her"
+shape = "line"
+fx = "scarf"
+startup_f = 14
+active_f = 4
+recovery_f = 20
+damage = 30
+reach = 58
+radius = 6
+hitstun_f = 32
+knockback = -300
+hitstop_f = 6
+cancel_on_hit = ["light", "special"]
+anim = "special"
+
+# With a direction: the Hamon makes the scarf stiff as a spear, and it pierces the guard.
+[stances.base.moves.heavy_alt]
+shout = "LANCE D'ÉCHARPE !"
+shout_en = "SCARF SPEAR!"
+label = "LANCE D'ÉCHARPE"
+label_en = "SCARF SPEAR"
+info = "Avec une direction : le Hamon rigidifie l'écharpe en lance, qui traverse la garde"
+info_en = "With a direction: Hamon stiffens the scarf into a spear that pierces the guard"
+hamon_cost = 25
+hamon_unblockable = true
+shape = "line"
+fx = "scarf_spear"
+startup_f = 16
+active_f = 4
+recovery_f = 22
+damage = 52
+reach = 62
+radius = 5
+hitstun_f = 30
+knockback = 300
+hitstop_f = 9
+wall_bounce = true
+clashable = false
+anim = "special"
+
+# Snake Muffler: the scarf coiled around her; a blow is caught and answered with Hamon,
+# a projectile flies back where it came from.
+[stances.base.moves.special]
+shout = "SNAKE MUFFLER !"
+label = "SNAKE MUFFLER"
+info = "Parade de Hamon : un coup est attrapé et puni, un projectile est renvoyé"
+info_en = "Hamon parry: a blow is caught and punished, a projectile is sent back"
+counter = "muffler_strike"
+reflect = true
+startup_f = 3
+active_f = 20
+recovery_f = 18
+anim = "guard"
+
+[stances.base.moves.muffler_strike]
+label = "RIPOSTE DE HAMON"
+label_en = "HAMON RIPOSTE"
+info = "La riposte de la parade : l'écharpe s'abat, chargée de Hamon"
+info_en = "The parry's answer: the scarf lashes down, charged with Hamon"
+hamon = true
+shape = "line"
+fx = "scarf"
+startup_f = 3
+active_f = 4
+recovery_f = 16
+damage = 66
+reach = 36
+radius = 8
+hitstun_f = 34
+knockback = 400
+hitstop_f = 10
+wall_bounce = true
+clashable = false
+anim = "heavy"
+
+# With a direction: an acrobatic leap, anywhere she aims, and a Hamon heel brought down
+# on landing. Untouchable while she is in the air.
+[stances.base.moves.special_alt]
+shout = "HAMON !"
+label = "SAUT ACROBATIQUE"
+label_en = "ACROBATIC LEAP"
+info = "Avec une direction : un salto vers où elle vise, intouchable en l'air, et un talon de Hamon à l'atterrissage"
+info_en = "With a direction: a flip toward where she aims, untouchable in the air, and a Hamon heel on landing"
+hamon_cost = 15
+startup_f = 16
+active_f = 4
+recovery_f = 12
+invincible_f = 16
+leap = 150
+leap_to = "cursor"
+leap_height = 42
+damage = 40
+reach = 0  # the heel lands all around her: she may well have flipped over the opponent
+radius = 20
+hitstun_f = 28
+knockback = 260
+hitstop_f = 8
+anim = "heel_drop"
+
+# Super moves -----------------------------------------------------------------------------
+
+# Heart Heat Attack (1 bar): the scarf spear at full length, through everything.
+[moves.hha]
+shout = "OVERDRIVE !"
+label = "LANCE DE HAMON"
+label_en = "HAMON SPEAR"
+info = "L'écharpe rigide à pleine longueur traverse l'arène, invincible au démarrage"
+info_en = "The stiff scarf at full length crosses the arena, invincible on startup"
+hamon = true
+shape = "line"
+fx = "scarf_spear"
+startup_f = 14
+active_f = 6
+recovery_f = 24
+invincible_f = 14
+damage = 130
+reach = 110
+radius = 6
+hitstun_f = 36
+knockback = 440
+hitstop_f = 12
+wall_bounce = true
+clashable = false
+anim = "special"
+
+# Great Heat Attack (2 bars): the scarf trap. It must catch first; then it wraps the
+# opponent from head to foot and she floods it with Hamon.
+[moves.gha]
+shout = "L'ÉCHARPE !"
+shout_en = "THE SCARF!"
+label = "PIÈGE DE L'ÉCHARPE"
+label_en = "SCARF TRAP"
+info = "L'écharpe attrape de loin. Si elle prend : enroulé et noyé de Hamon"
+info_en = "The scarf grabs from afar. If it holds: wrapped up and flooded with Hamon"
+hamon = true
+shape = "line"
+fx = "scarf"
+unblockable = true
+startup_f = 14
+active_f = 5
+recovery_f = 26
+invincible_f = 14
+damage = 20
+reach = 60
+radius = 6
+hitstun_f = 40
+hitstop_f = 8
+clashable = false
+anim = "special"
+cinematic = "scarf_trap"
+cinematic_s = 3.0
+finish_damage = 230
+finish_hitstun_f = 50
+finish_knockback = 380
+finish_wall_bounce = true

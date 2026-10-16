@@ -1,0 +1,261 @@
+# Lisa Lisa (Part 2): look file for tools/make_sprites.py.
+# Long black hair, the dark red scarf she runs her Hamon through, a long grey coat open
+# on a pale dress, gold earrings, dark boots.
+
+name = "Lisa Lisa"
+
+# Tall and slender, perfectly upright.
+# Signature pose (Pose key): see tools/spritegen/skeleton.py.
+pose = "frame_face"
+
+[build]
+head_r = 5.4
+neck = 1.4
+torso = 13.5
+legs = 18
+arms = 14.5
+shoulders = 7.2
+hips = 3.4
+torso_r = 5.4
+arm_r = 2.0
+leg_r = 2.3
+hand_r = 2.0
+foot_r = 2.1
+
+[palette]
+skin = "#f2d4bc"
+hair = "#26222e"
+scarf = "#a8283a"
+coat = "#5c5a68"
+dress = "#e6e0ea"
+boots = "#2c2832"
+gold = "#f0c23c"
+eyes = "#5a4ab0"
+
+[body]
+head = "skin"
+torso = "dress"
+arms = "coat"
+hands = "skin"
+legs = "dress"
+feet = "boots"
+
+[face]
+eyes = "eyes"
+eye_style = "wide"
+brows = true
+mouth = true
+
+[[parts]]
+type = "hair"
+material = "hair"
+style = "long"
+length = 13
+volume = 8.0
+
+[[parts]]
+type = "earring"
+material = "gold"
+style = "stud"
+
+[[parts]]
+type = "scarf"
+material = "scarf"
+tail = 7
+
+[[parts]]
+type = "coat"
+material = "coat"
+length = 0.9
+open = true
+opening = 3
+lining = "dress"
+collar = false
+
+[[parts]]
+type = "boots"
+material = "boots"
+length = 0.25
+
+# Key-pose animations ------------------------------------------------------------------
+# [anims.<name>] replaces the generated animation of that name, or adds a new one that a
+# move picks in the kit (anim = "<name>"). One [[anims.<name>.<view>]] table per key pose,
+# for the views down, up and right (a view left out copies another).
+
+# Acrobatic leap: knees tucked in the air, then one heel brought down like an axe.
+[anims.heel_drop]
+fps = 12
+phases = [2, 1, 1]
+tween = 1
+
+[[anims.heel_drop.right]]
+lean = -1
+bob = 1
+hand_l = [-3, -7]
+hand_r = [-4, -6]
+foot_l = [1, -5]
+foot_r = [3, -6]
+
+[[anims.heel_drop.right]]
+lean = 2
+bob = 2
+head = [1, 1]
+hand_l = [-6, -9]
+hand_r = [-5, -10]
+foot_l = [-2, -7]
+foot_r = [6, -11]
+
+[[anims.heel_drop.right]]
+lean = 3
+bob = 1
+hand_l = [-7, -4]
+hand_r = [-6, -3]
+foot_l = [-3, 0]
+foot_r = [9, -2]
+
+[[anims.heel_drop.right]]
+lean = 1
+hand_l = [-3, -2]
+hand_r = [-2, -1]
+foot_l = [-2, 0]
+foot_r = [4, 0]
+
+[[anims.heel_drop.down]]
+bob = 1
+hand_l = [-3, -8]
+hand_r = [3, -8]
+foot_l = [-1, -6]
+foot_r = [1, -6]
+
+[[anims.heel_drop.down]]
+bob = 2
+hand_l = [-6, -10]
+hand_r = [6, -10]
+foot_l = [-2, -4]
+foot_r = [2, -12]
+
+[[anims.heel_drop.down]]
+bob = 1
+hand_l = [-7, -4]
+hand_r = [7, -4]
+foot_l = [-2, 0]
+foot_r = [2, -3]
+
+[[anims.heel_drop.down]]
+hand_l = [-3, -1]
+hand_r = [3, -1]
+foot_l = [-1, 0]
+foot_r = [1, 0]
+
+[[anims.heel_drop.up]]
+bob = 1
+hand_l = [-3, -8]
+hand_r = [3, -8]
+foot_l = [-1, -6]
+foot_r = [1, -6]
+
+[[anims.heel_drop.up]]
+bob = 2
+hand_l = [-6, -10]
+hand_r = [6, -10]
+foot_l = [-2, -4]
+foot_r = [2, -12]
+
+[[anims.heel_drop.up]]
+bob = 1
+hand_l = [-7, -4]
+hand_r = [7, -4]
+foot_l = [-2, 0]
+foot_r = [2, -3]
+
+[[anims.heel_drop.up]]
+hand_l = [-3, -1]
+hand_r = [3, -1]
+foot_l = [-1, 0]
+foot_r = [1, 0]
+
+# Pirouette: she turns on one foot, the scarf hand sweeping all the way round.
+[anims.pirouette]
+fps = 12
+phases = [2, 2, 1]
+tween = 1
+
+[[anims.pirouette.right]]
+lean = -1
+hand_r = [-6, -8]
+hand_l = [2, -6]
+foot_r = [1, -3]
+
+[[anims.pirouette.right]]
+hand_r = [-9, -12]
+hand_l = [-2, -10]
+foot_r = [-2, -4]
+
+[[anims.pirouette.right]]
+lean = 2
+hand_r = [12, -10]
+hand_l = [-6, -6]
+foot_r = [4, -2]
+foot_l = [-2, 0]
+
+[[anims.pirouette.right]]
+lean = 2
+hand_r = [13, -6]
+hand_l = [-7, -4]
+foot_r = [5, -1]
+foot_l = [-2, 0]
+
+[[anims.pirouette.right]]
+lean = 0.5
+hand_r = [4, -3]
+hand_l = [-2, -2]
+
+[[anims.pirouette.down]]
+hand_l = [-8, -6]
+hand_r = [3, -9]
+foot_r = [1, -3]
+
+[[anims.pirouette.down]]
+lean = 1
+hand_l = [-3, -12]
+hand_r = [8, -7]
+foot_r = [2, -4]
+
+[[anims.pirouette.down]]
+lean = -1
+hand_l = [-10, -5]
+hand_r = [9, -5]
+foot_r = [1, -2]
+
+[[anims.pirouette.down]]
+hand_l = [-11, -4]
+hand_r = [10, -4]
+
+[[anims.pirouette.down]]
+hand_l = [-3, -1]
+hand_r = [3, -1]
+
+[[anims.pirouette.up]]
+hand_l = [-8, -6]
+hand_r = [3, -9]
+foot_r = [1, -3]
+
+[[anims.pirouette.up]]
+lean = 1
+hand_l = [-3, -12]
+hand_r = [8, -7]
+foot_r = [2, -4]
+
+[[anims.pirouette.up]]
+lean = -1
+hand_l = [-10, -5]
+hand_r = [9, -5]
+foot_r = [1, -2]
+
+[[anims.pirouette.up]]
+hand_l = [-11, -4]
+hand_r = [10, -4]
+
+[[anims.pirouette.up]]
+hand_l = [-3, -1]
+hand_r = [3, -1]

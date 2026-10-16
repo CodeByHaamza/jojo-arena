@@ -114,6 +114,19 @@ blurb_en = "Bubbles charged with Hamon: they chase, they cut, they burn. Keep yo
 color = "#7ab4ea"
 aura = "#ffd040"
 
+[[fighters]]
+id = "lisa_lisa"
+part = 2
+name = "LISA LISA"
+kit = "lisa_lisa"
+sprite = "lisa_lisa/lisa_lisa"
+role = "CONTRÔLE - HAMON"
+role_en = "CONTROL - HAMON"
+blurb = "Son écharpe fouette de loin, se fait lance, et sa parade renvoie tout."
+blurb_en = "Her scarf lashes from afar, turns into a spear, and her parry sends everything back."
+color = "#a8283a"
+aura = "#ffd040"
+
 # Part 3: Stardust Crusaders --------------------------------------------------------------
 
 [[fighters]]
