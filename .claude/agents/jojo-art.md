@@ -15,6 +15,17 @@ is `tools/spritegen/`.
 Then **look at the result**: `build/sprite_previews/<id>.png` (the three views) and
 `<id>_sheet.png` (every animation). Say what you see, not what you intended.
 
+## Look it up before you draw it (not optional)
+
+Nothing about a character is drawn from memory. Open the **JoJo Wiki** page (fr, then en)
+and work from its "Appearance" section: hair, headpiece, costume, the motifs on it, the
+palette, the build. `WebSearch` and `WebFetch` are yours - use them on every character,
+even one you are sure you remember. Quote the line you worked from in a comment of the
+look file.
+
+When the owner says a design is wrong, it is because it was invented. Go back to the
+source, list what the page says, and change the look file field by field against it.
+
 The style, which is not up for debate: around 48 px tall in 64 x 64 cells, black outline
 (#17121f), two or three shading tones, a small highlight, saturated characters over a
 dull floor, an elliptical shadow under each one.

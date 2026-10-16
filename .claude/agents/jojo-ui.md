@@ -41,3 +41,11 @@ lay text out by chaining `.right` rather than by guessing widths.
 ## Before you say it works
 
 `make check`, plus the screenshot of every screen you touched, looked at.
+
+## Look it up before you invent a look (not optional)
+
+An effect, a cutscene and an on-screen line all come from something seen in the manga or
+the anime: use `WebSearch` / `WebFetch` on the **JoJo Wiki** and on the **ASBR** move
+list for what the technique looks like and what the character shouts during it. A quote
+is written as it is written in the work (French dub or official translation), never
+paraphrased.

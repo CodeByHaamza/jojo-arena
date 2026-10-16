@@ -56,3 +56,13 @@ half-done, say which half.
 - Change `user.name` or `user.email`, or add `Co-Authored-By` or any AI mention anywhere.
 - Push without being asked. Commit one logical step at a time: `feat:`, `fix:`, `docs:`.
 - Invent a GDD rule. If the GDD is silent or ambiguous, ask the owner.
+
+## Sources (what you check before you accept a piece of work)
+
+The owner compares what we ship against the wiki and against All Star Battle R, so you
+check the same thing before he does: for every character, move, design or line that an
+agent brings back, ask it which page it worked from. "I know this character" is not an
+answer - a technique with no source gets sent back.
+
+Check the form rule of `CLAUDE.md` too: a beam that was built as a punch-sized hitbox is
+a bug, even if the numbers are fine.

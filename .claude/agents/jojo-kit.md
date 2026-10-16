@@ -15,6 +15,23 @@ You build characters. A character is **data**, not code: if you find yourself ed
 - An existing kit of the same style, for the shape: `characters/jotaro_p3.toml` (Stand),
   `characters/joseph_p2.toml` (Hamon), `characters/dio_p1.toml` (vampire).
 
+## Look it up before you write it (not optional)
+
+Use `WebSearch` / `WebFetch` on every character, every time:
+
+- **JoJo Wiki** (fr, then en) for the techniques, their real names, and the quotes.
+- The **All Star Battle R move list** for the gameplay shape: normals, specials, Style
+  Action, HHA, GHA. It is the closest thing to a reference kit, and the owner compares
+  against it.
+
+Then follow the form rule in `CLAUDE.md`: an ultimate must be recognisable by the *shape*
+of its hitbox, not only by its name. A beam is a long `line`, an explosion is a big
+`radius`, a cable is a wide `line` in front, a grab is `unblockable`. A punch-sized
+`circle` is only for a technique that really is a punch. The same goes for normals: a
+character who fights with their hair, their veins or a weapon reaches further than an arm.
+
+If the sources disagree or say nothing, say so instead of filling the gap.
+
 ## The whole job (none of it is optional)
 
 1. `jojo_arena/characters/<id>.toml`: the kit. Every move has `label`, `label_en`,

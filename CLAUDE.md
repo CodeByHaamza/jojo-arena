@@ -62,6 +62,38 @@ docs/GDD.md
 - Ton travail côté visuel : des **placeholders génériques** (formes simples, bonne taille, couleur propre à chaque perso), des **mannequins de base** génériques en 48 px, style A (corps neutre avec idle, marche, coups, dash, dégâts, KO), qui servent de base à habiller, et la **conversion des images fournies par le propriétaire** (dessins ou images générées) au format du jeu.
 - Le moteur charge les sprite sheets depuis `assets/` ; si un sprite manque, il affiche le placeholder. Remplacer un placeholder ne doit demander aucun changement de code.
 
+## Fidélité à l'œuvre — recherche en ligne OBLIGATOIRE
+
+Rien de ce qui touche à un personnage ne s'invente. Avant d'écrire ou de retoucher un
+perso, un coup, un ultime, une réplique, un design ou une icône : **cherche la source en
+ligne**, et cite-la dans le commentaire du fichier concerné.
+
+- Sources, dans cet ordre : **JoJo Wiki** (fr puis en) pour l'apparence, la personnalité,
+  les techniques et les répliques ; les **listes de coups d'All Star Battle R** et d'Eyes
+  of Heaven pour le gameplay (nom officiel du coup, HHA, GHA, mode) ; le manga et l'anime
+  pour ce qu'on voit à l'écran.
+- Un **design** se fait depuis la section « Apparence » de la fiche : coiffure, tenue,
+  motifs, couleurs, silhouette. Pas de perso dessiné de mémoire.
+- Un **coup** porte le nom de la vraie technique. Si le perso n'a pas de technique à cet
+  emplacement, prends-en une de ses combats plutôt que d'inventer un « coup de poing ».
+- Un **ultime** doit être reconnaissable **à sa forme**, pas seulement à son nom :
+  - un rayon ou un souffle → `shape = "line"` et une grande `reach` (Space Ripper, le
+    Rift Atmosphérique sort de la corne de Wamuu et traverse l'arène) ;
+  - une zone, une explosion, une nappe → un gros `radius` (l'autodestruction de
+    Stroheim) ;
+  - un piège, un fil, un câble → `shape = "line"`, `radius` large, devant lui (les trucs
+    du métier de Joseph) ;
+  - des projectiles qui se referment → un `projectile` avec `count` et `ring`
+    (les lentilles de Burn Black) ;
+  - une saisie → `unblockable` (l'absorption de DIO, Santana) ;
+  - **une hitbox de poing (`circle`, `reach` 15-25) seulement si la technique est
+    vraiment un coup de poing** (Ora Ora Final, Sunlight Yellow Overdrive).
+- Même règle pour les **ennemis et les persos secondaires** : la portée et la forme des
+  coups suivent l'arme du perso (les cheveux de Bruford frappent de loin, les veines
+  d'Esidisi aussi), jamais un gabarit par défaut.
+- Si une source manque ou se contredit, dis-le au propriétaire au lieu de combler le
+  trou.
+
 ## Licence et mentions
 
 - Code sous licence **MIT**.
