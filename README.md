@@ -27,6 +27,7 @@ Ce qui marche déjà :
 - clavier et manette (Xbox, DualShock 4, DualSense), touches modifiables ;
 - menus : écran titre partie par partie, menu principal, sélection des persos en onglets par partie (fiche, Stand, rôle), écran VS, pause, options (dont la langue : français ou anglais) ;
 - glossaire : termes du lore, personnages et Stands, partie par partie ;
+- modes : combat local, contre l'IA (quatre niveaux), Arcade (six combats jusqu'à DIO), entraînement ;
 - liste des coups de chaque perso, avec les vraies touches du joueur (sélection des persos et pause) ;
 - entraînement : mannequin immobile, en garde ou joué par J2, vie et jauge infinies, compteur de combo et de dégâts.
 

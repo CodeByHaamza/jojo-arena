@@ -7,7 +7,7 @@
 name = "Speedwagon"
 max_hp = 900
 walk_speed = 112
-pose_heal_per_s = 18  # his cheer: "JoJo, I'm with you!"
+pose_heal_per_s = 12  # his cheer: "JoJo, I'm with you!"
 
 [stances.base]
 label = "VOYOU D'OGRE STREET"
@@ -110,15 +110,15 @@ info = "Le chapeau tranche et revient comme un boomerang"
 info_en = "The hat cuts and comes back like a boomerang"
 startup_f = 10
 active_f = 1
-recovery_f = 14
+recovery_f = 24
 anim = "special"
 
 [stances.base.moves.special.projectile]
 look = "hat"
 returns = true
-speed = 280
+speed = 230
 radius = 6
-damage = 34
+damage = 26
 lifetime_s = 1.4
 hitstun_f = 20
 knockback = 90
@@ -130,11 +130,11 @@ label = "COUP BAS"
 label_en = "LOW BLOW"
 info = "Avec une direction : un coup de pied vicieux qui passe sous la garde"
 info_en = "With a direction: a dirty kick that slips under the guard"
-startup_f = 8
+startup_f = 12
 active_f = 3
 recovery_f = 14
 unblockable = true
-damage = 26
+damage = 22
 reach = 15
 radius = 10
 hitstun_f = 26

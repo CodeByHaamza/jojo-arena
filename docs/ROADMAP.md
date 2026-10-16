@@ -67,8 +67,8 @@ Chaque perso doit avoir un ressenti unique, et chaque coup qui touche doit être
 ## Ensuite
 
 - [ ] **Sons** : bruitages synthétisés (impacts, whoosh, temps arrêté), et musique libre de droits.
-- [ ] **Contre l'IA** : une vraie IA par niveau de difficulté (le mode est déjà affiché « Bientôt »).
-- [ ] **Arcade** : une suite de combats contre l'IA.
+- [x] **Contre l'IA** : une IA à quatre niveaux (facile, normal, difficile, JoJo) qui garde la distance de son kit, se défend, punit et enchaîne.
+- [x] **Arcade** : six combats contre l'IA, de plus en plus durs, chacun dans l'arène de l'adversaire, jusqu'à DIO ; on peut continuer après une défaite.
 - [ ] **Entraînement avancé** : enregistrer puis rejouer une action du mannequin, affichage des hitboxes, données de frames.
 - [ ] **Réglage des touches dans le jeu** (aujourd'hui dans `controls.json`).
 - [ ] **Power Up et jauge d'Éveil** (Jotaro : +1 s de temps arrêté).

@@ -33,10 +33,12 @@ class SetupScene(Scene):
         ctx: GameContext,
         fighter_ids: tuple[str, str] = DEFAULT_FIGHTERS,
         rounds_to_win: int = DEFAULT_ROUNDS_TO_WIN,
+        cpu: bool = False,
     ) -> None:
         super().__init__()
         self.ctx = ctx
         self.fighter_ids = fighter_ids
+        self.cpu = cpu
         self.defs = [get_fighter(i) for i in fighter_ids]
         self.looks = [FighterLook(f) for f in self.defs]
         self.backdrop = MenuBackdrop()
@@ -49,6 +51,11 @@ class SetupScene(Scene):
             [
                 MenuItem("rounds", text.ROUNDS_TO_WIN, rounds, rounds.index(str(rounds_to_win))),
                 MenuItem("stage", text.STAGE, stages, home),
+                *(
+                    [MenuItem("level", text.DIFFICULTY, text.LEVEL_NAMES, ctx.settings.cpu_level)]
+                    if cpu
+                    else []
+                ),
                 MenuItem(
                     "controls", text.CONTROLS, labels, self.preset_keys.index(ctx.controls.active)
                 ),
@@ -79,6 +86,9 @@ class SetupScene(Scene):
         if action is None:
             return
         kind, key = action
+        if kind == "change" and key == "level":
+            self.ctx.settings.cpu_level = self.menu.item("level").index
+            self.ctx.save_settings()
         if kind == "change" and key == "controls":
             self.ctx.controls.active = self.preset_keys[self.menu.item("controls").index]
             self.ctx.save_controls()
@@ -91,6 +101,8 @@ class SetupScene(Scene):
                     rounds_to_win=self.rounds_to_win,
                     fighter_ids=self.fighter_ids,
                     stage_id=self.stage_id,
+                    bots=(False, self.cpu),
+                    cpu_level=self.ctx.settings.cpu_level,
                 )
             )
         elif (kind == "confirm" and key == "back") or kind == "back":
@@ -98,24 +110,26 @@ class SetupScene(Scene):
             from jojo_arena.ui.select_scene import CharacterSelectScene
 
             p1, p2 = self.fighter_ids
-            self.ctx.scenes.switch(CharacterSelectScene(self.ctx, "versus", picks=(p1,), cursor=p2))
+            mode = "vs_cpu" if self.cpu else "versus"
+            self.ctx.scenes.switch(CharacterSelectScene(self.ctx, mode, picks=(p1,), cursor=p2))
 
     def draw(self, surface: pygame.Surface) -> None:
         self.backdrop.draw(surface, self.tick)
         width, height = surface.get_size()
         center = width // 2
-        font.draw(surface, text.SETUP_TITLE, (center, 8), GOLD, scale=2, align="center")
+        title = text.MENU_VS_CPU if self.cpu else text.SETUP_TITLE
+        font.draw(surface, title, (center, 8), GOLD, scale=2, align="center")
         for side, (look, fdef) in enumerate(zip(self.looks, self.defs, strict=True)):
             x = FEET_X[side]
             look.draw(surface, (x, FEET_Y), self.tick, scale=2, flip=side == 1)
             color = P1_COLOR if side == 0 else P2_COLOR
-            tag = text.PLAYER_N.format(n=side + 1)
+            tag = text.CPU if self.cpu and side == 1 else text.PLAYER_N.format(n=side + 1)
             font.draw(surface, tag, (x, 40), color, scale=2, align="center")
             font.draw(surface, fdef.name, (x, FEET_Y + 8), shade(fdef.color, 60), align="center")
             if fdef.stand_name:
                 font.draw(surface, fdef.stand_name, (x, FEET_Y + 19), fdef.aura, align="center")
         font.draw(surface, text.VS, (center, 50), GOLD, scale=4, align="center")
-        box = pygame.Rect(0, 0, 262, 84)
+        box = pygame.Rect(0, 0, 262, 84 + (15 if self.cpu else 0))
         box.midtop = (center, 104)
         draw_box(surface, box)
         self.menu.draw(surface, center, box.y + 9, spacing=15)

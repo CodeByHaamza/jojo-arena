@@ -32,7 +32,7 @@ def test_his_cheer_heals_while_he_poses():
     speedwagon.hp = 500
     run_held(match, 120, p1=hold("pose"))
     assert speedwagon.state == State.POSE
-    assert speedwagon.hp >= 500 + 30
+    assert speedwagon.hp >= 500 + speedwagon.kit.pose_heal_per_s * 2 - 1  # 2 s of cheering
 
 
 def test_speedwagon_withdraws_coolly():

@@ -13,9 +13,10 @@ from jojo_arena.engine import i18n
 @dataclass
 class Settings:
     language: str = field(default_factory=i18n.system_language)
+    cpu_level: int = 1  # the computer's level, as last picked
 
     def to_json(self) -> dict:
-        return {"language": self.language}
+        return {"language": self.language, "cpu_level": self.cpu_level}
 
 
 def settings_path(controls_file: Path) -> Path:
@@ -27,6 +28,8 @@ def parse_settings(data: object) -> Settings:
     settings = Settings()
     if isinstance(data, dict) and data.get("language") in i18n.LANGUAGES:
         settings.language = data["language"]
+    if isinstance(data, dict) and data.get("cpu_level") in (0, 1, 2, 3):
+        settings.cpu_level = data["cpu_level"]
     return settings
 
 

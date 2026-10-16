@@ -44,7 +44,7 @@ FEET_Y = 150
 TOAST_F = 90
 PICK_FLASH_F = 14
 
-MODES = ("training", "versus")
+MODES = ("training", "versus", "vs_cpu", "arcade")
 
 
 class CharacterSelectScene(Scene):
@@ -95,10 +95,17 @@ class CharacterSelectScene(Scene):
     def fighter_ids(self) -> tuple[str, ...]:
         return tuple(self.roster[i].id for i in self.picks)
 
+    @property
+    def picks_needed(self) -> int:
+        """Arcade: the player alone picks; the opponents come from the ladder."""
+        return 1 if self.mode == "arcade" else 2
+
     def side_label(self, side: int) -> str:
         if side == 0:
             return text.P1
-        return text.DUMMY if self.mode == "training" else text.P2
+        if self.mode == "training":
+            return text.DUMMY
+        return text.CPU if self.mode in ("vs_cpu", "arcade") else text.P2
 
     def part_of(self, index: int) -> int:
         """The tab of a fighter: its part (the first tab if it has none)."""
@@ -174,9 +181,14 @@ class CharacterSelectScene(Scene):
             return
         self.flash_f[self.picking] = PICK_FLASH_F
         self.picks.append(self.cursor)  # not None: a fighter is hovered
-        if len(self.picks) < 2:
+        if len(self.picks) < self.picks_needed:
             return
         ids = self.fighter_ids
+        if self.mode == "arcade":
+            from jojo_arena.ui.arcade_scene import ArcadeScene
+
+            self.ctx.scenes.switch(ArcadeScene(self.ctx, ids[0]))
+            return
         if self.mode == "training":
             from jojo_arena.stages import stage_for_part
             from jojo_arena.ui.training_scene import TrainingScene
@@ -187,20 +199,27 @@ class CharacterSelectScene(Scene):
         else:
             from jojo_arena.ui.setup_scene import SetupScene
 
-            self.ctx.scenes.switch(SetupScene(self.ctx, fighter_ids=(ids[0], ids[1])))
+            cpu = self.mode == "vs_cpu"
+            self.ctx.scenes.switch(SetupScene(self.ctx, fighter_ids=(ids[0], ids[1]), cpu=cpu))
 
     # Draw -------------------------------------------------------------------------------
 
     def draw(self, surface: pygame.Surface) -> None:
         self.backdrop.draw(surface, self.tick)
         width, height = surface.get_size()
-        title = text.MENU_TRAINING if self.mode == "training" else text.MENU_VERSUS
+        title = {
+            "training": text.MENU_TRAINING,
+            "vs_cpu": text.MENU_VS_CPU,
+            "arcade": text.MENU_ARCADE,
+        }.get(self.mode, text.MENU_VERSUS)
         font.draw(surface, title, (width // 2, 8), GOLD, scale=2, align="center")
         if self.picking < 2:
             if self.picking == 0:
                 step, color = text.PICK_P1, P1_COLOR
             elif self.mode == "training":
                 step, color = text.PICK_DUMMY, P2_COLOR
+            elif self.mode == "vs_cpu":
+                step, color = text.PICK_CPU, P2_COLOR
             else:
                 step, color = text.PICK_P2, P2_COLOR
             font.draw(surface, step, (width // 2, 32), color, align="center")

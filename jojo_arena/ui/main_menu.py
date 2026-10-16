@@ -31,9 +31,9 @@ from jojo_arena.ui.widgets import (
 # key, label and description (names in ui/text.py), available yet
 ENTRIES = (
     ("story", "MENU_STORY", "DESC_STORY", False),
-    ("arcade", "MENU_ARCADE", "DESC_ARCADE", False),
+    ("arcade", "MENU_ARCADE", "DESC_ARCADE", True),
     ("versus", "MENU_VERSUS", "DESC_VERSUS", True),
-    ("vs_cpu", "MENU_VS_CPU", "DESC_VS_CPU", False),
+    ("vs_cpu", "MENU_VS_CPU", "DESC_VS_CPU", True),
     ("training", "MENU_TRAINING", "DESC_TRAINING", True),
     ("online", "MENU_ONLINE", "DESC_ONLINE", False),
     ("glossary", "MENU_GLOSSARY", "DESC_GLOSSARY", True),
@@ -87,7 +87,7 @@ class MainMenuScene(Scene):
             self._open(key)
 
     def _open(self, key: str) -> None:
-        if key in ("training", "versus"):
+        if key in ("training", "versus", "vs_cpu", "arcade"):
             from jojo_arena.ui.select_scene import CharacterSelectScene
 
             self.ctx.scenes.switch(CharacterSelectScene(self.ctx, mode=key))

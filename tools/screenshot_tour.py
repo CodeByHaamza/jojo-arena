@@ -106,7 +106,7 @@ def _play(tour: Tour, title) -> None:
     tour.shot("title")
     tour.keys("Return", wait=30)
     tour.shot("main_menu")
-    tour.choose(tour.scene.menu, "arcade", wait=10)  # a mode still to come
+    tour.choose(tour.scene.menu, "online", wait=10)  # a mode still to come
     tour.shot("main_menu_soon")
     tour.wait(90)
 
@@ -162,6 +162,13 @@ def _play(tour: Tour, title) -> None:
     tour.start(OptionsScene(tour.ctx))
     tour.wait(10)
     tour.shot("options")
+
+    # Arcade: the ladder before the first fight.
+    from jojo_arena.ui.arcade_scene import ArcadeScene
+
+    tour.start(ArcadeScene(tour.ctx, "jonathan", seed=1))
+    tour.wait(10)
+    tour.shot("arcade_ladder")
 
     # Glossary: a term of part 1, then a character and a Stand of part 3.
     from jojo_arena.ui.glossary_scene import GlossaryScene

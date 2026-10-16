@@ -153,7 +153,7 @@ def test_title_to_local_fight_to_pause_and_back(ctx):
 
 def test_soon_modes_cannot_be_opened(ctx):
     menu = start(ctx, MainMenuScene(ctx))
-    keys(ctx, "Up", "Return")  # "versus the computer": not there yet
+    keys(ctx, "Down", "Return")  # "online": not there yet
     assert ctx.scenes.current is menu
     assert menu.toast_f > 0
     assert not menu.menu.selected.enabled and menu.menu.selected.tag == text.SOON

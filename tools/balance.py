@@ -4,8 +4,9 @@
     python tools/balance.py --fights 100    # more fights, steadier numbers
     python tools/balance.py jotaro_p3 dio_p3
 
-The bot is simple, so the numbers say more about raw power (damage, reach, speed) than
-about what a good player can do. Still, a fighter far above 60 % against everyone is
+Both sides are the computer at its top level (combat/ai.py): it spaces, guards, punishes
+and spends its gauges, but it does not plan, so the numbers say more about raw power
+than about what a good player can do. Still, a fighter far above 60 % against everyone is
 worth a look. Each fight is one round on the Cairo street, with a time limit.
 """
 
@@ -22,12 +23,13 @@ os.environ.setdefault("PYGAME_HIDE_SUPPORT_PROMPT", "1")
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from jojo_arena.characters import get_fighter, load_roster  # noqa: E402
-from jojo_arena.combat.bot import SimpleBot  # noqa: E402
+from jojo_arena.combat.ai import CpuPlayer  # noqa: E402
 from jojo_arena.combat.rounds import Phase, Rounds  # noqa: E402
 from jojo_arena.combat.rules import load_rules  # noqa: E402
 from jojo_arena.stages import load_stage  # noqa: E402
 
 MAX_STEPS = 60 * 120  # two minutes of play, at most
+LEVEL = 3  # both sides played by the computer at its best
 
 
 @dataclass
@@ -50,7 +52,7 @@ def fight(p1: str, p2: str, seed: int) -> tuple[int | None, int, int]:
     stage = load_stage("cairo_night")
     kits = (get_fighter(p1).kit, get_fighter(p2).kit)
     rounds = Rounds(kits, rules, stage.build_arena, 1)
-    bots = (SimpleBot(seed * 2 + 1), SimpleBot(seed * 2 + 2))
+    bots = (CpuPlayer(LEVEL, seed * 2 + 1), CpuPlayer(LEVEL, seed * 2 + 2))
     for _ in range(MAX_STEPS):
         match = rounds.match
         frames = tuple(bots[i].think(f, match.opponent(f)) for i, f in enumerate(match.fighters))

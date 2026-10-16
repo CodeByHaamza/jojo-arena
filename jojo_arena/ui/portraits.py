@@ -27,8 +27,8 @@ class FighterLook:
         self._face: pygame.Surface | None = None
 
     @staticmethod
-    def _frame(sprites, tick: int, direction: str, flip: bool) -> pygame.Surface:
-        name, spec = FighterView.resolve(sprites, "idle")
+    def _frame(sprites, tick: int, direction: str, flip: bool, anim: str = "idle"):
+        name, spec = FighterView.resolve(sprites, anim)
         return sprites.frame(name, direction, flip, frame_index(spec, tick))
 
     @staticmethod
@@ -53,6 +53,7 @@ class FighterLook:
         stand: bool = True,
         direction: str = "right",
         glow: bool = True,
+        anim: str = "idle",
     ) -> None:
         """Draw the fighter standing at `feet`, facing right (left with `flip`)."""
         x, y = feet
@@ -63,10 +64,10 @@ class FighterLook:
             back = 1 if flip else -1  # behind = away from where the fighter looks
             float_y = math.sin(tick * 0.06) * 1.5
             stand_feet = (x + back * STAND_BEHIND * scale, y - (STAND_RISE + float_y) * scale)
-            image = self._frame(self.stand, tick, direction, flip)
+            image = self._frame(self.stand, tick, direction, flip, anim)
             self._blit(surface, self.stand, image, stand_feet, scale, flip, STAND_ALPHA)
         blit_shadow(surface, (x, y), round((14 + self.height * 0.25) * scale), 7 * scale)
-        image = self._frame(self.sprites, tick, direction, flip)
+        image = self._frame(self.sprites, tick, direction, flip, anim)
         self._blit(surface, self.sprites, image, (x, y), scale, flip)
 
     def face(self, size: int = 15) -> pygame.Surface:

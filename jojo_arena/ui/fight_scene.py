@@ -10,7 +10,7 @@ import pygame
 
 from jojo_arena import __version__
 from jojo_arena.characters import get_fighter
-from jojo_arena.combat.bot import SimpleBot
+from jojo_arena.combat.ai import CpuPlayer
 from jojo_arena.combat.replay import Replay, save_replay
 from jojo_arena.combat.rounds import Phase, Rounds
 from jojo_arena.combat.rules import load_rules
@@ -42,6 +42,7 @@ class FightScene(Scene):
         fighter_ids: tuple[str, str] = ("mannequin_red", "mannequin_blue"),
         stage_id: str = "cairo_night",
         bots: tuple[bool, bool] = (False, False),
+        cpu_level: int = 2,
     ) -> None:
         super().__init__()
         self.ctx = ctx
@@ -51,8 +52,13 @@ class FightScene(Scene):
         self.rules = load_rules()
         self.rounds_to_win = rounds_to_win
         self.sources = ctx.controls.active_preset.build_sources()
-        self.bots = [SimpleBot(seed=i + 1) if bot else None for i, bot in enumerate(bots)]
+        self.cpu_level = cpu_level
+        self.bots = [
+            CpuPlayer(cpu_level, seed=i + 1) if bot else None for i, bot in enumerate(bots)
+        ]
         self.demo = all(bots)
+        if any(bots) and not self.demo:
+            self.mode = "vs_cpu"
         self.view = FightView(self.stage, self.fighter_defs)
         self.hud = Hud(self.fighter_defs, [view.height for view in self.view.fighter_views])
         players = ctx.controls.active_preset.players
@@ -150,13 +156,7 @@ class FightScene(Scene):
                     self._new_rounds()
             else:
                 self.save_replay()
-                self.result_menu = Menu(
-                    [
-                        MenuItem("rematch", text.REMATCH),
-                        MenuItem("change", text.CHANGE_FIGHTERS),
-                        MenuItem("menu", text.MAIN_MENU),
-                    ]
-                )
+                self.result_menu = Menu(self._result_items())
 
     def _read_frames(self) -> list[InputFrame]:
         if self.playback is not None:
@@ -223,6 +223,14 @@ class FightScene(Scene):
             self._change_fighters()
         elif key == "menu":
             self._go_to_menu()
+
+    def _result_items(self) -> list[MenuItem]:
+        """The menu after the last round (variants of the fight change it)."""
+        return [
+            MenuItem("rematch", text.REMATCH),
+            MenuItem("change", text.CHANGE_FIGHTERS),
+            MenuItem("menu", text.MAIN_MENU),
+        ]
 
     def _update_result(self) -> None:
         action = self.result_menu.handle(self.ctx.read_menu())

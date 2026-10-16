@@ -39,6 +39,8 @@ def placeholders(value: str) -> set[str]:
 def flatten(value) -> list[str]:
     if isinstance(value, dict):
         return [s for v in value.values() for s in flatten(v)]
+    if isinstance(value, list):
+        return [s for v in value for s in flatten(v)]
     return [value]
 
 
@@ -48,6 +50,8 @@ def test_every_text_exists_in_english_with_the_same_placeholders():
         english = text.EN[key]
         if isinstance(french, dict):
             assert set(english) == set(french), key
+        elif isinstance(french, list):
+            assert len(english) == len(french), key
         else:
             assert placeholders(english) == placeholders(french), key
 
