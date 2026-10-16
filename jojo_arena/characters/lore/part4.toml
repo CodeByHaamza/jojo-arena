@@ -1,0 +1,12 @@
+# Glossary, Part 4: Diamond is Unbreakable. Texts in French; the *_en keys give the English.
+# Sources: JoJo Wiki (jojowiki.com), the manga and the anime.
+
+part = 4
+
+[[terms]]
+id = "arrow"
+name = "LA FLÈCHE"
+name_en = "THE ARROW"
+icon = "glossary_arrow"
+text = "Six pointes de flèche taillées dans une météorite tombée près du Groenland il y a 50 000 ans, qui portait un virus. Celui qu'elles transpercent éveille un Stand s'il en a la force ; sinon, il meurt. Diavolo en vend cinq à Enya ; à Morioh, Yoshihiro Kira et Keicho Nijimura s'en servent pour créer des manieurs de Stand."
+text_en = "Six arrowheads cut from a meteorite that fell near Greenland 50,000 years ago, carrying a virus. Whoever they pierce awakens a Stand if they are strong enough; otherwise they die. Diavolo sells five of them to Enya; in Morioh, Yoshihiro Kira and Keicho Nijimura use them to create Stand users."

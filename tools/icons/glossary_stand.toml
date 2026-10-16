@@ -1,0 +1,26 @@
+# Stand: a spirit standing by its user, fading into the air below.
+
+pixels = [
+    ".......oo.......",
+    "......oSSo......",
+    ".....oSSSSo.....",
+    "....oSSSSSSo....",
+    "....oSSESESo....",
+    "....oSSSSSSo....",
+    ".....oSSSSo.....",
+    "....oSSSSSSo....",
+    "...oSSSSSSSSo...",
+    "..oSSSsssssSSo..",
+    "..oSSSsssssSSo..",
+    "..oSSSSSSSSSSo..",
+    "..oSoSoSoSoSoSo.",
+    ".oSoSoSoSoSoSo..",
+    "..oSoSoSoSoSoSo.",
+    "...o.o.o.o.o.o..",
+]
+
+[palette]
+o = "#17121f"
+S = "#9a7ae0"
+s = "#6a4ab8"
+E = "#80f0ff"

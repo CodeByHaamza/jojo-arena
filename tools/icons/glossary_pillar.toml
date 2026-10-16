@@ -1,0 +1,27 @@
+# The Pillar Men: an ancient stone pillar, eyes glowing inside.
+
+pixels = [
+    "...oooooooooo...",
+    "..oLLLLLLLLLLo..",
+    "..oLLLLLLLLLLo..",
+    "...ogdgdgdggo...",
+    "...ogdgdgdggo...",
+    "...ogdgdgdggo...",
+    "...oggggggggo...",
+    "...oggYggYggo...",
+    "...oggggggggo...",
+    "...ogggddgggo...",
+    "...ogdgdgdggo...",
+    "...ogdgdgdggo...",
+    "...ogdgdgdggo...",
+    "..oLLLLLLLLLLo..",
+    "..oLLLLLLLLLLo..",
+    "...oooooooooo...",
+]
+
+[palette]
+o = "#17121f"
+L = "#c8c0b0"
+g = "#9a9080"
+d = "#6a6256"
+Y = "#ffd040"

@@ -1,0 +1,12 @@
+# Glossary, Part 7: Steel Ball Run. Texts in French; the *_en keys give the English.
+# Sources: JoJo Wiki (jojowiki.com) and the manga.
+
+part = 7
+
+[[terms]]
+id = "spin"
+name = "ROTATION"
+name_en = "THE SPIN"
+icon = "glossary_spin"
+text = "La technique secrète de la famille Zeppeli, médecins et bourreaux du roi de Naples : une rotation parfaite, qui produit plus d'énergie qu'il n'en faut pour la lancer. Son modèle est le rectangle d'or et sa spirale. Gyro la transmet par ses billes d'acier ; Johnny l'imprime à ses ongles, et la rotation d'or éveille Tusk Act 4."
+text_en = "The secret technique of the Zeppeli family, doctors and executioners to the King of Naples: a perfect rotation that gives out more energy than it takes to start. Its model is the golden rectangle and its spiral. Gyro channels it through his steel balls; Johnny puts it into his nails, and the Golden Spin awakens Tusk Act 4."

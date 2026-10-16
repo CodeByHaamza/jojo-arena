@@ -1,0 +1,11 @@
+# Glossary, Part 8: JoJolion. Texts in French; the *_en keys give the English.
+# Sources: JoJo Wiki (jojowiki.com) and the manga.
+
+part = 8
+
+[[terms]]
+id = "rokakaka"
+name = "ROKAKAKA"
+icon = "glossary_rokakaka"
+text = "Un fruit épineux qui pousse vers le haut sur un arbre de deux mètres. Il obéit à l'échange équivalent : il guérit une partie malade du corps en prenant une partie saine ailleurs, qui se change en pierre. Kira et Josefumi en volent des branches pour soigner Holy, la mère de Kira, et les greffent près des Wall Eyes de Morioh."
+text_en = "A spiky fruit that grows upward on a tree two meters tall. It follows equivalent exchange: it heals a sick part of the body by taking a healthy part elsewhere, which turns to stone. Kira and Josefumi steal branches of it to cure Holy, Kira's mother, and graft them near the Wall Eyes of Morioh."

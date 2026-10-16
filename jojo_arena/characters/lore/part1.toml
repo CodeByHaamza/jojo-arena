@@ -1,0 +1,28 @@
+# Glossary, Part 1: Phantom Blood. One file per part, filled as the parts come in.
+# Texts in French; the *_en keys give the English. Sources: JoJo Wiki (jojowiki.com),
+# the manga and the anime. Icons: assets/icons/ (drawings in tools/icons/).
+
+part = 1
+
+[[terms]]
+id = "stone_mask"
+name = "MASQUE DE PIERRE"
+name_en = "STONE MASK"
+icon = "glossary_stone_mask"
+text = "Un masque antique conçu par Kars, l'un des Hommes du Pilier, vers 8000 av. J.-C. Au contact du sang, il plante des pointes de pierre dans le crâne de celui qui le porte : il devient un vampire d'une force immense, que seul le soleil peut détruire. Accroché chez les Joestar, il fait de Dio Brando un vampire."
+text_en = "An ancient mask designed by Kars, one of the Pillar Men, around 8000 BC. When blood touches it, stone spikes pierce the wearer's skull: they become a vampire of immense strength, whom only sunlight can destroy. Hung in the Joestar mansion, it turns Dio Brando into a vampire."
+
+[[terms]]
+id = "hamon"
+name = "ONDE (HAMON)"
+name_en = "RIPPLE (HAMON)"
+icon = "glossary_hamon"
+text = "Le Hamon, l'onde (en japonais, les rides à la surface de l'eau), est une énergie née d'une respiration maîtrisée, semblable aux rayons du soleil. Il soigne et traverse l'eau ou le métal, mais il est surtout mortel pour les vampires, les zombies et les Hommes du Pilier. Zeppeli l'enseigne à Jonathan ; plus tard, Joseph, Caesar et Lisa Lisa le maîtrisent."
+text_en = "Hamon, the Ripple (in Japanese, the rings on the surface of water), is an energy born from controlled breathing, like the rays of the sun. It heals and flows through water or metal, but above all it is deadly to vampires, zombies and the Pillar Men. Zeppeli teaches it to Jonathan; later, Joseph, Caesar and Lisa Lisa master it."
+
+[[terms]]
+id = "vampire"
+name = "VAMPIRE"
+icon = "glossary_vampire"
+text = "Porter le masque de pierre fait de quelqu'un un vampire : il ne vieillit plus, se remet de presque toutes ses blessures et se nourrit du sang des humains. Il peut changer ses victimes en zombies qui lui obéissent. Le soleil et l'onde le réduisent en poussière."
+text_en = "Wearing the Stone Mask makes someone a vampire: they stop ageing, recover from almost any wound and feed on human blood. They can turn their victims into zombies who obey them. Sunlight and the Ripple turn them to dust."

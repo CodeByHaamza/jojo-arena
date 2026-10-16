@@ -16,7 +16,7 @@ from jojo_arena.engine.scene import Scene
 from jojo_arena.engine.sprites import shade
 from jojo_arena.ui import text
 from jojo_arena.ui.backdrop import MenuBackdrop
-from jojo_arena.ui.icons import draw_icon
+from jojo_arena.ui.icons import draw_icon, draw_part_tabs
 from jojo_arena.ui.labels import menu_key
 from jojo_arena.ui.movelist import MoveListPanel
 from jojo_arena.ui.portraits import FighterLook
@@ -38,7 +38,6 @@ CELL, GAP = 30, 2
 GRID_X = 240 - (GRID_COLS * (CELL + GAP) - GAP) // 2
 GRID_Y = 62
 TABS_Y = 45
-TAB_W, TAB_H, TAB_GAP = 15, 13, 2
 FACE = 15  # px of the head shown in a cell, before doubling
 SIDE_W = 152
 FEET_Y = 150
@@ -222,22 +221,8 @@ class CharacterSelectScene(Scene):
 
     def _draw_tabs(self, surface: pygame.Surface) -> None:
         """One tab per part, its emblem inside; parts with nobody yet stay dim."""
-        count = len(self.part_numbers)
-        x = surface.get_width() // 2 - (count * TAB_W + (count - 1) * TAB_GAP) // 2
         filled = {self.part_of(i) for i in range(len(self.roster))}
-        for number in self.part_numbers:
-            rect = pygame.Rect(x, TABS_Y, TAB_W, TAB_H)
-            part = self.parts.get(number)
-            if number == self.tab and part is not None:
-                surface.fill(shade(part.colors[0], -40), rect)
-                pygame.draw.rect(surface, shade(part.colors[0], 70), rect, 1)
-            else:
-                surface.fill((20, 16, 34), rect)
-                pygame.draw.rect(surface, (60, 52, 84), rect, 1)
-            if part is not None:
-                alpha = 255 if number in filled or number == self.tab else 90
-                draw_icon(surface, part.emblem, rect.center, center=True, alpha=alpha)
-            x += TAB_W + TAB_GAP
+        draw_part_tabs(surface, self.parts, self.part_numbers, self.tab, filled, TABS_Y)
 
     def _draw_grid(self, surface: pygame.Surface) -> None:
         grid = self.grid()

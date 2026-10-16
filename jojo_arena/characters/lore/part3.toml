@@ -1,0 +1,122 @@
+# Glossary, Part 3: Stardust Crusaders. Texts in French; the *_en keys give the English.
+# Sources: JoJo Wiki (jojowiki.com), the manga and the anime.
+#   fighter = the fighter whose sprite shows (characters)
+#   sprite  = the sprite sheet shown (Stands)
+#   stats   = power, speed, range, durability, precision, potential (A to E)
+
+part = 3
+
+[[terms]]
+id = "stand"
+name = "STAND"
+icon = "glossary_stand"
+text = "L'énergie vitale d'une personne qui prend forme, souvent une silhouette qui se tient à côté de son manieur : d'où le nom, de l'anglais to stand by. Seuls les manieurs de Stand voient les Stands, et une blessure du Stand blesse aussi son manieur. Chaque Stand a son propre pouvoir, noté de A à E : puissance, vitesse, portée, endurance, précision et potentiel."
+text_en = "A person's life energy taking shape, often a figure standing beside its user: hence the name, from to stand by. Only Stand users can see Stands, and a wound to the Stand wounds its user too. Each Stand has its own power, rated from A to E: power, speed, range, durability, precision and potential."
+
+[[terms]]
+id = "tarot"
+name = "LES ARCANES DU TAROT"
+name_en = "THE TAROT ARCANA"
+icon = "glossary_tarot"
+text = "Dans Stardust Crusaders, les Stands portent les noms des arcanes majeurs du tarot : Star Platinum pour l'Étoile, Hierophant Green pour le Pape, ou Hiérophante, Silver Chariot pour le Chariot, The World pour le Monde. Plus loin dans le voyage, les ennemis prennent les noms des dieux de l'Égypte antique."
+text_en = "In Stardust Crusaders, the Stands are named after the Major Arcana of the tarot: Star Platinum for The Star, Hierophant Green for The Hierophant, Silver Chariot for The Chariot, The World for The World. Further into the journey, the enemies take the names of the gods of ancient Egypt."
+
+[[terms]]
+id = "time_stop"
+name = "LE TEMPS ARRÊTÉ"
+name_en = "STOPPED TIME"
+icon = "glossary_time_stop"
+text = "The World arrête le temps : seul DIO peut encore bouger, quelques secondes, de plus en plus longtemps à mesure qu'il reprend des forces. Star Platinum, un Stand du même type, apprend à faire de même pendant le combat final : Jotaro peut alors se déplacer dans le temps arrêté."
+text_en = "The World stops time: only DIO can still move, for a few seconds, longer and longer as he regains his strength. Star Platinum, a Stand of the same type, learns to do the same during the final battle: Jotaro can then move in stopped time."
+
+[[characters]]
+id = "jotaro"
+name = "JOTARO KUJO"
+fighter = "jotaro_p3"
+stand = "STAR PLATINUM"
+text = "Lycéen japonais de 17 ans, voyou bagarreur qui cache un coeur loyal et protecteur. Il s'enferme en prison en se croyant possédé par un esprit : c'est son Stand. Quand sa mère tombe malade à cause de DIO, il part pour l'Égypte avec son grand-père Joseph pour la sauver."
+text_en = "A 17-year-old Japanese high schooler, a brawling delinquent with a loyal, protective heart. He locks himself in jail, believing he is possessed by a spirit: it is his Stand. When his mother falls ill because of DIO, he sets off for Egypt with his grandfather Joseph to save her."
+family = "Fils de Holly Kujo, née Joestar, et du musicien Sadao Kujo. Petit-fils de Joseph Joestar et de Suzi Q. Arrière-arrière-petit-fils de Jonathan Joestar. Père de Jolyne Cujoh, l'héroïne de la partie 6."
+family_en = "Son of Holly Kujo, born Joestar, and of the musician Sadao Kujo. Grandson of Joseph Joestar and Suzi Q. Great-great-grandson of Jonathan Joestar. Father of Jolyne Cujoh, the heroine of Part 6."
+name_origin = "KuJO JOtaro : les deux syllabes JO donnent son surnom, JOJO, comme pour les héros de la lignée Joestar. Le JO de son prénom s'écrit avec le kanji qui veut dire hériter."
+name_origin_en = "KuJO JOtaro: the two JO syllables give his nickname, JOJO, as for the heroes of the Joestar line. The JO of his first name is written with the kanji meaning to inherit."
+
+[[characters]]
+id = "kakyoin"
+name = "NORIAKI KAKYOIN"
+fighter = "kakyoin"
+stand = "HIEROPHANT GREEN"
+text = "Lycéen japonais de 17 ans, calme et réfléchi. En vacances en Égypte, il croise DIO, qui le soumet avec un bourgeon de chair et l'envoie tuer Jotaro. Libéré par Jotaro, il rejoint le voyage. Il meurt au Caire en perçant le secret de The World : son dernier Emerald Splash frappe l'horloge d'une tour."
+text_en = "A calm, thoughtful 17-year-old Japanese high schooler. On holiday in Egypt, he meets DIO, who enslaves him with a flesh bud and sends him to kill Jotaro. Freed by Jotaro, he joins the journey. He dies in Cairo uncovering the secret of The World: his last Emerald Splash hits the clock of a tower."
+family = "D'une famille japonaise ordinaire, sans lien avec les Joestar. Il a grandi seul : personne ne voyait son Stand, et il ne s'était jamais fait de vrai ami avant ce voyage."
+family_en = "From an ordinary Japanese family, with no tie to the Joestars. He grew up alone: nobody could see his Stand, and he had never made a true friend before this journey."
+name_origin = "Kakyoin est le nom d'un quartier de Sendai, la ville natale d'Araki. Son prénom, Noriaki, vient d'un malentendu entre Araki et son éditeur : Araki voulait qu'on le lise Tenmei."
+name_origin_en = "Kakyoin is the name of a district of Sendai, Araki's home town. His first name, Noriaki, comes from a misunderstanding between Araki and his editor: Araki wanted it read Tenmei."
+
+[[characters]]
+id = "dio"
+name = "DIO"
+fighter = "dio_p3"
+stand = "THE WORLD"
+text = "Dio Brando, fils d'un ivrogne recueilli par les Joestar, devient vampire grâce au masque de pierre. Vaincu par Jonathan, il prend son corps et sombre un siècle au fond de l'océan. Remonté cent ans plus tard avec un Stand, The World, il réunit des manieurs de Stand au Caire pour en finir avec la lignée Joestar."
+text_en = "Dio Brando, a drunkard's son taken in by the Joestars, becomes a vampire through the Stone Mask. Defeated by Jonathan, he takes his body and sinks to the ocean floor for a century. Brought back up a hundred years later with a Stand, The World, he gathers Stand users in Cairo to wipe out the Joestar line."
+family = "Fils de Dario Brando. Frère adoptif de Jonathan Joestar, fils de George Joestar, dont il porte le corps sous sa propre tête. Père de Giorno Giovanna, le héros de la partie 5, et d'Ungalo, Rikiel et Donatello Versus."
+family_en = "Son of Dario Brando. Adoptive brother of Jonathan Joestar, son of George Joestar, whose body he wears under his own head. Father of Giorno Giovanna, the hero of Part 5, and of Ungalo, Rikiel and Donatello Versus."
+name_origin = "Dio veut dire dieu en italien. Le nom évoque aussi le chanteur de heavy metal Ronnie James Dio et son groupe, Dio."
+name_origin_en = "Dio means god in Italian. The name also recalls the heavy metal singer Ronnie James Dio and his band, Dio."
+
+[[characters]]
+id = "polnareff"
+name = "JEAN PIERRE POLNAREFF"
+fighter = "polnareff"
+stand = "SILVER CHARIOT"
+text = "Un Français fier, blagueur et au grand coeur. Envoyé par DIO pour tuer le groupe, il est libéré de son bourgeon de chair et rejoint le voyage pour se venger : retrouver l'homme aux deux mains droites, qui a tué sa soeur. Il survit au voyage et revient dans la partie 5, avec Chariot Requiem."
+text_en = "A proud, joking, big-hearted Frenchman. Sent by DIO to kill the group, he is freed from his flesh bud and joins the journey for revenge: to find the man with two right hands, who killed his sister. He survives the journey and returns in Part 5, with Chariot Requiem."
+family = "Français. Sa soeur Sherry a été tuée par J. Geil, l'homme aux deux mains droites, qu'il traque depuis des années."
+family_en = "French. His sister Sherry was killed by J. Geil, the man with two right hands, whom he has hunted for years."
+name_origin = "Son nom vient du chanteur français Michel Polnareff, dont Araki adorait la musique quand il était enfant."
+name_origin_en = "His surname comes from the French singer Michel Polnareff, whose music Araki loved as a child."
+
+[[stands]]
+id = "star_platinum"
+name = "STAR PLATINUM"
+user = "JOTARO KUJO"
+sprite = "star_platinum/star_platinum"
+stats = "AACAAA"
+text = "Un Stand de combat rapproché d'une force et d'une précision inouïes : ses rafales de poings, ORA ORA, interceptent une pluie de couteaux. Star Finger allonge ses doigts pour frapper plus loin, et pendant le combat final il apprend à arrêter le temps quelques secondes : Star Platinum : The World."
+text_en = "A close-range Stand of tremendous strength and precision: its barrages of punches, ORA ORA, intercept a hail of knives. Star Finger stretches its fingers to strike farther, and in the final battle it learns to stop time for a few seconds: Star Platinum: The World."
+name_origin = "D'après l'arcane XVII du tarot, l'Étoile, signe d'espoir ; Platinum pour le métal. Dans le magazine, il s'appelait d'abord Star Silver."
+name_origin_en = "After tarot card XVII, The Star, a sign of hope; Platinum for the metal. In the magazine it was first called Star Silver."
+
+[[stands]]
+id = "hierophant_green"
+name = "HIEROPHANT GREEN"
+user = "NORIAKI KAKYOIN"
+sprite = "hierophant_green/hierophant_green"
+stats = "CBABCD"
+text = "Un Stand à longue portée qui se défait en fils et en tentacules : il espionne, attache, ou se glisse dans le corps d'un ennemi pour le contrôler. Il tire l'Emerald Splash, une salve d'énergie en forme d'émeraudes, et tisse le filet de l'Emerald Splash 20 mètres, qui tire dès qu'on le touche."
+text_en = "A long-range Stand that unravels into strings and tentacles: it spies, binds, or slips into an enemy's body to control it. It fires the Emerald Splash, a burst of emerald-shaped energy, and weaves the net of the 20-meter Emerald Splash, which fires as soon as it is touched."
+name_origin = "D'après l'arcane V du tarot, le Pape ou Hiérophante, symbole de tradition. Il s'appelait d'abord Hierophant Emerald ; Araki l'a voulu vert pour l'équilibre des couleurs, et il lui faisait penser à un melon."
+name_origin_en = "After tarot card V, The Hierophant, a symbol of tradition. It was first called Hierophant Emerald; Araki made it green to balance the colors, and it reminded him of a melon."
+
+[[stands]]
+id = "the_world"
+name = "THE WORLD"
+user = "DIO"
+sprite = "the_world/the_world"
+stats = "AACABB"
+text = "Un Stand de combat rapproché aussi fort et rapide que Star Platinum, qui frappe en criant MUDA MUDA. Son vrai pouvoir est d'arrêter le temps : environ 5 secondes au début, près de 9 à la fin du voyage. DIO en profite pour lancer des couteaux qui restent en l'air, et même un rouleau compresseur."
+text_en = "A close-range Stand as strong and fast as Star Platinum, striking with cries of MUDA MUDA. Its true power is to stop time: about 5 seconds at first, nearly 9 by the end of the journey. DIO uses it to throw knives that hang in the air, and even a road roller."
+name_origin = "D'après l'arcane XXI du tarot, le Monde, la dernière carte des arcanes majeurs."
+name_origin_en = "After tarot card XXI, The World, the last card of the Major Arcana."
+
+[[stands]]
+id = "silver_chariot"
+name = "SILVER CHARIOT"
+user = "JEAN PIERRE POLNAREFF"
+sprite = "silver_chariot/silver_chariot"
+stats = "CACBBC"
+text = "Un chevalier en armure armé d'une rapière, d'une vitesse extrême : il pare les balles. Sans son armure, il devient si rapide qu'il laisse des images multiples ; il peut aussi tirer sa lame, mais doit la récupérer ensuite. Transpercé par la flèche, il deviendra Chariot Requiem."
+text_en = "An armored knight wielding a rapier, of extreme speed: it parries bullets. Without its armor it gets so fast it leaves afterimages; it can also fire its blade, but must get it back afterwards. Pierced by the Arrow, it will become Chariot Requiem."
+name_origin = "D'après l'arcane VII du tarot, le Chariot, symbole de conquête et de victoire."
+name_origin_en = "After tarot card VII, The Chariot, a symbol of conquest and victory."

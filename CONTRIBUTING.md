@@ -36,6 +36,10 @@ Pour aller plus loin :
 
 Les sprites des persos sont générés depuis leur fiche (`characters/looks/<id>.toml`) par `make sprites`. Une planche dessinée à la main peut remplacer une planche générée sans toucher au code.
 
+### Glossaire
+
+Le glossaire du jeu (menu principal) lit `characters/lore/part<n>.toml`, un fichier par partie : `[[terms]]` (termes du lore, avec une icône), `[[characters]]` (`fighter` = le perso dont le sprite s'affiche, `stand`, `family`, `name_origin`) et `[[stands]]` (`sprite`, `user`, `stats` = six lettres de A à E : puissance, vitesse, portée, endurance, précision, potentiel). Chaque texte a sa traduction `_en`. Un test vérifie que chaque perso jouable et son Stand ont leur fiche : on remplit le glossaire au fur et à mesure qu'on ajoute des persos. Sources : JoJo Wiki, le manga, l'anime.
+
 ### Icônes
 
 Les petites images (emblèmes des parties, icônes du glossaire) sont dessinées en texte dans `tools/icons/<id>.toml` : une palette (une lettre par couleur, `.` transparent) et les lignes de pixels. `make icons` les transforme en PNG dans `assets/icons/`. Les emblèmes des parties sont choisis dans `characters/parts.toml`.

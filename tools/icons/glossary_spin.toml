@@ -1,0 +1,27 @@
+# The Spin: a steel ball turning along the golden spiral.
+
+pixels = [
+    "................",
+    "................",
+    ".......oo.......",
+    ".....ooSSoo.....",
+    "....oSSSSSSo....",
+    "...oSSWYYYYyo...",
+    "...oSWYYSSYYyo..",
+    "..oSSSYSSSSYyo..",
+    "..oSSSYYYSSSYo..",
+    "...oSSSYSSSSYo..",
+    "...oSSSSSSSSYo..",
+    "....oSSSSSSYyo..",
+    ".....ooSSoYYyo..",
+    "....oooooYYyo...",
+    "...oYYYYYyyo....",
+    "...oyyyyyoo.....",
+]
+
+[palette]
+o = "#17121f"
+S = "#b8bccb"
+W = "#ffffff"
+Y = "#f0b020"
+y = "#ffd860"

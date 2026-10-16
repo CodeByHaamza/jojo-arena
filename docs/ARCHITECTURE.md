@@ -8,7 +8,7 @@ Comment le code est rangé, et par où passe une image du jeu. À lire avant de 
 | --- | --- | --- |
 | `jojo_arena/engine/` | Boucle à pas fixe, affichage, entrées (clavier, manette), géométrie, sprites, police pixel | **Aucune référence à JoJo.** Réutilisable tel quel |
 | `jojo_arena/combat/` | Règles du combat : combattants, coups, garde, jauges, clash, rounds, entraînement, interactions (temps arrêté) | Aucune référence à JoJo, **pas de pygame** : la simulation se teste sans écran |
-| `jojo_arena/characters/` | Un kit par perso (`<id>.toml`), leur apparence (`looks/`), le roster (`roster.toml`) | Données ; un nouveau perso n'oblige pas à toucher au moteur |
+| `jojo_arena/characters/` | Un kit par perso (`<id>.toml`), leur apparence (`looks/`), le roster (`roster.toml`), les 9 parties (`parts.toml`), le glossaire (`lore/`) | Données ; un nouveau perso n'oblige pas à toucher au moteur |
 | `jojo_arena/stages/` | Les arènes : données et dessin | |
 | `jojo_arena/ui/` | Écrans (scènes), HUD, vue du combat, effets, onomatopées | Lit la simulation, ne la modifie jamais |
 | `jojo_arena/assets/` | Planches de sprites générées | |

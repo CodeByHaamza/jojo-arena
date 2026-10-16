@@ -25,7 +25,8 @@ Ce qui marche déjà :
 - coups propres à chaque perso : arrêt du temps (Jotaro, DIO), couteaux, saisie qui draine la vie, fils piégés, Emerald Splash, Armor Off, GHA (2 barres) ;
 - rounds (1, 3 ou 5 gagnants), timer de 99 s, mort subite en cas d'égalité ;
 - clavier et manette (Xbox, DualShock 4, DualSense), touches modifiables ;
-- menus : écran titre, menu principal, sélection des persos (fiche, Stand, rôle), écran VS, pause, options ;
+- menus : écran titre partie par partie, menu principal, sélection des persos en onglets par partie (fiche, Stand, rôle), écran VS, pause, options (dont la langue : français ou anglais) ;
+- glossaire : termes du lore, personnages et Stands, partie par partie ;
 - liste des coups de chaque perso, avec les vraies touches du joueur (sélection des persos et pause) ;
 - entraînement : mannequin immobile, en garde ou joué par J2, vie et jauge infinies, compteur de combo et de dégâts.
 
@@ -105,7 +106,7 @@ Options utiles :
 | `--demo` | combat joué par l'ordinateur des deux côtés |
 | `--scene fight --rounds 1` | va droit au combat, en 1 round gagnant |
 | `--scene training --p1 dio_p3 --p2 kakyoin` | va droit à l'entraînement avec ces persos |
-| `--scene menu`, `select`, `setup`, `options` | ouvre directement un écran (`--mode training` pour la sélection de l'entraînement) |
+| `--scene menu`, `select`, `setup`, `options`, `glossary` | ouvre directement un écran (`--mode training` pour la sélection de l'entraînement) |
 | `--p1 jotaro_p3 --p2 mannequin_red` | choisit les persos (avec `--scene fight`, `training`, `setup` ou `--demo`) |
 | `--fullscreen` | démarre en plein écran |
 | `--lang en` | textes en anglais (`fr` ou `en` ; sinon la langue choisie dans Options) |

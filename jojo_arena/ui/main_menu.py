@@ -36,6 +36,7 @@ ENTRIES = (
     ("vs_cpu", "MENU_VS_CPU", "DESC_VS_CPU", False),
     ("training", "MENU_TRAINING", "DESC_TRAINING", True),
     ("online", "MENU_ONLINE", "DESC_ONLINE", False),
+    ("glossary", "MENU_GLOSSARY", "DESC_GLOSSARY", True),
     ("options", "MENU_OPTIONS", "DESC_OPTIONS", True),
     ("quit", "QUIT", "DESC_QUIT", True),
 )
@@ -90,6 +91,10 @@ class MainMenuScene(Scene):
             from jojo_arena.ui.select_scene import CharacterSelectScene
 
             self.ctx.scenes.switch(CharacterSelectScene(self.ctx, mode=key))
+        elif key == "glossary":
+            from jojo_arena.ui.glossary_scene import GlossaryScene
+
+            self.ctx.scenes.switch(GlossaryScene(self.ctx))
         elif key == "options":
             from jojo_arena.ui.options_scene import OptionsScene
 

@@ -1,0 +1,27 @@
+# Requiem: the Arrow pierces a Stand, which wakes in a new form.
+
+pixels = [
+    "....ooVVoVoo....",
+    "...oVooo.oVVo...",
+    "..oVo..oo.ooVo..",
+    ".oVo..oYYo..oVo.",
+    "oVo...oYYo...oVo",
+    ".o...oYggYo..oVo",
+    "oVo.oYYggYYo..o.",
+    "oVo.oYYggYYo.oVo",
+    "oVo..oYYYoo..oVo",
+    ".o...oYYYo...oVo",
+    "oVo...obbo...oo.",
+    ".oVo..obbo..oVo.",
+    "..oVo.obbooo.o..",
+    "...oVoobboVVo...",
+    "....o.obbVoo....",
+    ".......ooo......",
+]
+
+[palette]
+o = "#17121f"
+V = "#c080ff"
+Y = "#f0c23c"
+g = "#8a6a1c"
+b = "#7a5032"

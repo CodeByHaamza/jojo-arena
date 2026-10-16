@@ -1,0 +1,28 @@
+# The Rokakaka: a spiky fruit of equivalent exchange.
+
+pixels = [
+    "........o....o..",
+    ".......obooooGo.",
+    ".......oboGGGGo.",
+    ".......oboGGGo..",
+    "....o.orboooGo..",
+    "...oroOOOOoro...",
+    "....oOWOOOOo....",
+    "...oOWWWOOOOo...",
+    "..orOOWOOOOOro..",
+    "...oOOOOOOOOo...",
+    "...oOOOOOOOOo...",
+    "....oOOOOOOo....",
+    "...oroOOOOoro...",
+    "....o.ooro.o....",
+    "........o.......",
+    "................",
+]
+
+[palette]
+o = "#17121f"
+O = "#e8904a"
+r = "#a8502a"
+W = "#ffd0a0"
+b = "#6a4a2a"
+G = "#4aa84a"

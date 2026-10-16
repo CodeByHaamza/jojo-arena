@@ -19,7 +19,17 @@ from jojo_arena.settings import load_settings, settings_path
 WINDOW_TITLE = "JoJo Arena"
 INTERNAL_SIZE = (480, 270)
 LOGIC_HZ = 60
-SCENES = ["title", "menu", "select", "training", "setup", "fight", "options", "test-pattern"]
+SCENES = [
+    "title",
+    "menu",
+    "select",
+    "training",
+    "setup",
+    "fight",
+    "options",
+    "glossary",
+    "test-pattern",
+]
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -157,6 +167,10 @@ def build_first_scene(ctx: GameContext, args: argparse.Namespace) -> Scene:
         from jojo_arena.ui.options_scene import OptionsScene
 
         return OptionsScene(ctx)
+    if args.scene == "glossary":
+        from jojo_arena.ui.glossary_scene import GlossaryScene
+
+        return GlossaryScene(ctx)
     if args.scene == "test-pattern":
         from jojo_arena.ui.test_pattern import TestPatternScene
 

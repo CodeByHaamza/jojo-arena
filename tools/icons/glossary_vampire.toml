@@ -1,0 +1,26 @@
+# Vampire: fangs and a drop of blood.
+
+pixels = [
+    "................",
+    "...oooo..oooo...",
+    "..owwwwoowwwwo..",
+    "..owwwo.owwwo...",
+    "...owwo..owwo...",
+    "...owwoooowwo...",
+    "...owooRRowo....",
+    "....o.oRRoo.....",
+    ".....oRRRRo.....",
+    ".....oRRRRo.....",
+    "....oRRRRRRo....",
+    "....oRRpRRRo....",
+    "....oRRpRRRo....",
+    "....oRRRRRRo....",
+    ".....oRRRRo.....",
+    "......oooo......",
+]
+
+[palette]
+o = "#17121f"
+w = "#f4f1e8"
+R = "#c8202e"
+p = "#ff8090"

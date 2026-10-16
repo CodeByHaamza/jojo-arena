@@ -1,0 +1,27 @@
+# The Stone Mask: cracked stone, a ridge down the middle, slanted eyes, fangs.
+
+pixels = [
+    "....oooooo......",
+    "...oLddLgLoo....",
+    "..oLdLLdgLLLo...",
+    "..oLLddLgLLLo...",
+    ".oLLLLLLgLdLLo..",
+    ".oLLdLLLgLLLLo..",
+    ".oLLLLLLgLLLLo..",
+    ".oLooodLgdooLo..",
+    ".oLLoodLgdooLo..",
+    ".oLLLLLLgLLLLo..",
+    ".oLLdLLggLLdLo..",
+    "..oLLLLggLLLo...",
+    "..oLLwdddwLLo...",
+    "...oLLLLLLLo....",
+    "....oLLdLLo.....",
+    ".....oooooo.....",
+]
+
+[palette]
+o = "#17121f"
+L = "#bdbac6"
+g = "#8f8b9a"
+d = "#5c5868"
+w = "#f4f1e8"

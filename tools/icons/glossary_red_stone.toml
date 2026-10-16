@@ -1,0 +1,28 @@
+# The Red Stone of Aja: a faceted red gem that bends light.
+
+pixels = [
+    "................",
+    "....oooooooo....",
+    "...oppppPPPPo...",
+    "..opWWpPPPPRRo..",
+    ".opppppPPPPRRRo.",
+    "opppppPPPPRRRRRo",
+    "oRRRRRRRRRrrrrro",
+    ".oRRRRRRRRrrrro.",
+    "..oRRRRRRrrrro..",
+    "...oRRRRRrrro...",
+    "...oRRRRRrro....",
+    "....oRRRRrro....",
+    ".....oRRRro.....",
+    "......oRro......",
+    ".......oo.......",
+    "................",
+]
+
+[palette]
+o = "#17121f"
+R = "#e0283c"
+r = "#8e1426"
+P = "#ff6070"
+p = "#ffb0bc"
+W = "#ffffff"

@@ -1,0 +1,27 @@
+# The Arrow: a golden arrowhead with a beetle on it.
+
+pixels = [
+    ".......oo.......",
+    "......oYYo......",
+    "......oYYo......",
+    ".....oYYgYo.....",
+    "....oYYWgYYo....",
+    "....oYggggYo....",
+    "...oYYggggYYo...",
+    "..oYYYYggYYYYo..",
+    "...oooYYYYooo...",
+    ".....oYYYYo.....",
+    "......obbo......",
+    "......obbo......",
+    "......obbo......",
+    "......obbo......",
+    "......obbo......",
+    "......obbo......",
+]
+
+[palette]
+o = "#17121f"
+Y = "#f0c23c"
+g = "#8a6a1c"
+b = "#7a5032"
+W = "#fff0a0"

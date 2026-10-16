@@ -1,0 +1,11 @@
+# Glossary, Part 5: Golden Wind. Texts in French; the *_en keys give the English.
+# Sources: JoJo Wiki (jojowiki.com), the manga and the anime.
+
+part = 5
+
+[[terms]]
+id = "requiem"
+name = "REQUIEM"
+icon = "glossary_requiem"
+text = "Quand la flèche transperce un Stand déjà éveillé, celui-ci peut évoluer en Stand Requiem, dont le pouvoir touche aux âmes. C'est ce qui arrive à Silver Chariot, devenu Chariot Requiem, puis à Gold Experience, devenu Gold Experience Requiem."
+text_en = "When the Arrow pierces an awakened Stand, it may evolve into a Requiem Stand, whose power reaches into souls. This happens to Silver Chariot, which becomes Chariot Requiem, then to Gold Experience, which becomes Gold Experience Requiem."

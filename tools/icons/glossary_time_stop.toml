@@ -1,0 +1,28 @@
+# Stopped time: a clock whose hands no longer move.
+
+pixels = [
+    "......oBBBo.....",
+    ".....ooBBBo.....",
+    "....oBBBBBBo....",
+    "...oBBWgWWBBo...",
+    "..oBWgWWWWgWBo..",
+    ".oBBWWWWkWWWBBo.",
+    ".oBWgWWWkWWgWBo.",
+    "oBBWWWWWkWWWWBBo",
+    "oBBgWWWWRkkkgBBo",
+    "oBBWWWWWWWWWWBBo",
+    ".oBWgWWWWWWgWBo.",
+    ".oBBWWWWWWWWBBo.",
+    "..oBWgWWWWgWBo..",
+    "...oBBWWgWBBo...",
+    "....oBBBBBBo....",
+    ".....oooooo.....",
+]
+
+[palette]
+o = "#17121f"
+B = "#5a6ad0"
+W = "#e8ecf8"
+g = "#9aa0c0"
+k = "#2a2440"
+R = "#e0283c"

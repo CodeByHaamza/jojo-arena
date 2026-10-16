@@ -1,0 +1,19 @@
+# Glossary, Part 2: Battle Tendency. Texts in French; the *_en keys give the English.
+# Sources: JoJo Wiki (jojowiki.com), the manga and the anime.
+
+part = 2
+
+[[terms]]
+id = "pillar_men"
+name = "HOMMES DU PILIER"
+name_en = "PILLAR MEN"
+icon = "glossary_pillar"
+text = "Les derniers survivants d'une race très ancienne : Kars, Esidisi, Wamuu et Santana, retrouvés endormis dans des piliers de pierre, d'où leur nom. Ils absorbent les êtres vivants qu'ils touchent, et les plus aguerris combattent par modes : le feu, le vent, la lumière. Le soleil et l'onde sont leurs seules faiblesses ; Kars veut s'en libérer grâce à la Super Aja."
+text_en = "The last survivors of an ancient race: Kars, Esidisi, Wamuu and Santana, found asleep inside stone pillars, hence their name. They absorb the living beings they touch, and the most seasoned fight with Modes: fire, wind, light. Sunlight and the Ripple are their only weaknesses; Kars wants to be free of them through the Super Aja."
+
+[[terms]]
+id = "red_stone"
+name = "SUPER AJA"
+icon = "glossary_red_stone"
+text = "La pierre rouge d'Aja absorbe la lumière et la réfracte des centaines de millions de fois, jusqu'à la renvoyer en un rayon semblable à un laser. Sa forme parfaite, la Super Aja, placée dans un masque de pierre, débarrasserait un Homme du Pilier de ses faiblesses. Gardée par Lisa Lisa, elle est volée par Kars, qui devient la forme de vie ultime."
+text_en = "The Red Stone of Aja absorbs light and refracts it hundreds of millions of times, until it sends it back as a laser-like beam. Its perfect form, the Super Aja, set in a Stone Mask, would rid a Pillar Man of his weaknesses. Kept by Lisa Lisa, it is stolen by Kars, who becomes the Ultimate Life Form."

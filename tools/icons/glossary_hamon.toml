@@ -1,0 +1,26 @@
+# Hamon, the Ripple: waves of sunlight energy spreading from a point.
+
+pixels = [
+    "................",
+    ".....OOOO.OO....",
+    "....O......OOW..",
+    "..WO...YY....O..",
+    "..O..YY..YY..OO.",
+    ".O..Y......Y..O.",
+    ".O..Y..WW..Y....",
+    ".O.Y..WWWW..Y.O.",
+    ".O.Y..WWWW..Y.O.",
+    "....Y..WW..Y..O.",
+    ".O..Y......Y..O.",
+    ".OO..YY..YY..O..",
+    "..O....YY...O.W.",
+    "...WO......O....",
+    "....OO.OOOO.....",
+    "................",
+]
+
+[palette]
+o = "#17121f"
+O = "#f08a20"
+Y = "#ffd040"
+W = "#fff6c0"

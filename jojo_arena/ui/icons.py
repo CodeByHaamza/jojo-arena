@@ -8,11 +8,13 @@ from __future__ import annotations
 
 import pygame
 
+from jojo_arena.engine.sprites import shade
 from jojo_arena.paths import ASSETS_DIR
 
 ICONS_DIR = ASSETS_DIR / "icons"
 PLACEHOLDER = (150, 130, 200)
 OUTLINE = (23, 18, 31)
+TAB_W, TAB_H, TAB_GAP = 15, 13, 2
 
 _cache: dict[str, pygame.Surface | None] = {}
 
@@ -54,3 +56,30 @@ def draw_icon(
         image.set_alpha(alpha)
     rect = image.get_rect(center=pos) if center else image.get_rect(topleft=pos)
     return surface.blit(image, rect)
+
+
+def draw_part_tabs(
+    surface: pygame.Surface,
+    parts: dict,
+    numbers: list[int],
+    current: int,
+    filled: set[int],
+    y: int,
+) -> None:
+    """A row of tabs, one per part (PartDef by number), each with its emblem; the current
+    one in its color, the parts in `filled` lit, the others dim."""
+    count = len(numbers)
+    x = surface.get_width() // 2 - (count * TAB_W + (count - 1) * TAB_GAP) // 2
+    for number in numbers:
+        rect = pygame.Rect(x, y, TAB_W, TAB_H)
+        part = parts.get(number)
+        if number == current and part is not None:
+            surface.fill(shade(part.colors[0], -40), rect)
+            pygame.draw.rect(surface, shade(part.colors[0], 70), rect, 1)
+        else:
+            surface.fill((20, 16, 34), rect)
+            pygame.draw.rect(surface, (60, 52, 84), rect, 1)
+        if part is not None:
+            alpha = 255 if number in filled or number == current else 90
+            draw_icon(surface, part.emblem, rect.center, center=True, alpha=alpha)
+        x += TAB_W + TAB_GAP

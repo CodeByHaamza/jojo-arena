@@ -163,6 +163,17 @@ def _play(tour: Tour, title) -> None:
     tour.wait(10)
     tour.shot("options")
 
+    # Glossary: a term of part 1, then a character and a Stand of part 3.
+    from jojo_arena.ui.glossary_scene import GlossaryScene
+
+    tour.start(GlossaryScene(tour.ctx))
+    tour.wait(10)
+    tour.shot("glossary_term")
+    tour.keys("E", "E", "Right", wait=5)
+    tour.shot("glossary_character")
+    tour.keys("Right", wait=5)
+    tour.shot("glossary_stand")
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])

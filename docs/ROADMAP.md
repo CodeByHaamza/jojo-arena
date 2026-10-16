@@ -61,7 +61,7 @@ Chaque perso doit avoir un ressenti unique, et chaque coup qui touche doit être
 - [x] **Persos de la partie 3 redessinés** d'après l'anime : crinière et épaulières de Star Platinum, Hierophant vert et blanc, cheveux dressés de DIO, ceintures de Jotaro.
 - [x] **Français et anglais** : langue dans Options (gardée dans `settings.json`), `--lang en`, traductions des coups dans les kits.
 - [x] **Écrans pour tout JoJo** : fond des menus aux couleurs des 9 parties (trame manga, ゴゴゴ), écran titre partie par partie avec les 9 emblèmes, sélection des persos en onglets par partie, emblème de la partie sur chaque case (masque de pierre, Super Aja, plaque de Jotaro...).
-- [ ] **Glossaire** : termes du lore, personnages et Stands (description, famille, origine du nom), par partie, avec visuels en pixel art.
+- [x] **Glossaire** : termes du lore (masque de pierre, onde, Hommes du Pilier, Super Aja, Stand, tarot, temps arrêté, flèche, Requiem, rotation, Rokakaka), personnages et Stands de la partie 3 (description, famille, origine du nom, statistiques), par partie, avec icônes en pixel art. À compléter avec chaque nouveau perso.
 - [ ] **Partie 1** : Jonathan, Dio, Zeppeli, Speedwagon... (styles Hamon et Vampire).
 
 ## Ensuite

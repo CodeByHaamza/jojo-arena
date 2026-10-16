@@ -1,0 +1,26 @@
+# Tarot: a Major Arcana card, here The Star.
+
+pixels = [
+    "...oooooooooo...",
+    "..oCCCCCCCCCCo..",
+    "..oCccccccccCo..",
+    "..oCccccccccCo..",
+    "..oCccccccccCo..",
+    "..oCcccYYcccCo..",
+    "..oCcYYYYYYcCo..",
+    "..oCccYYYYccCo..",
+    "..oCccYYYYccCo..",
+    "..oCccYccYccCo..",
+    "..oCccccccccCo..",
+    "..oCccccccccCo..",
+    "..oCcCCCCCCcCo..",
+    "..oCccccccccCo..",
+    "..oCCCCCCCCCCo..",
+    "...oooooooooo...",
+]
+
+[palette]
+o = "#17121f"
+C = "#e8d8b0"
+c = "#5a3a8a"
+Y = "#ffd040"
