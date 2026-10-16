@@ -49,6 +49,7 @@ PLAYSTATION = {
     "misc1": "MIC",
     "touchpad": "TOUCHPAD",
 }
+DPAD = {"dpad_up": "↑", "dpad_down": "↓", "dpad_left": "←", "dpad_right": "→"}
 PLAYSTATION_HINTS = ("ps3", "ps4", "ps5", "playstation", "dualshock", "dualsense", "sony")
 
 
@@ -77,6 +78,8 @@ def pad_family(inputs: InputManager | None, slot: int | None) -> str:
 
 
 def pad_label(name: str, family: str = "xbox") -> str:
+    if name in DPAD:
+        return DPAD[name]
     if family == "playstation":
         names = {**PLAYSTATION, **text.PAD_PLAYSTATION}
     else:

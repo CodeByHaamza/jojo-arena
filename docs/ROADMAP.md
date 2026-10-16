@@ -71,7 +71,7 @@ Chaque perso doit avoir un ressenti unique, et chaque coup qui touche doit être
 - [x] **Contre l'IA** : une IA à quatre niveaux (facile, normal, difficile, JoJo) qui garde la distance de son kit, se défend, punit et enchaîne.
 - [x] **Arcade** : six combats contre l'IA, de plus en plus durs, chacun dans l'arène de l'adversaire, jusqu'à DIO ; on peut continuer après une défaite.
 - [ ] **Entraînement avancé** : enregistrer puis rejouer une action du mannequin, affichage des hitboxes, données de frames.
-- [ ] **Réglage des touches dans le jeu** (aujourd'hui dans `controls.json`).
+- [x] **Réglage des touches dans le jeu** : Options, « Changer les touches » (échange si la touche est déjà prise, retour aux touches par défaut).
 - [ ] **Power Up et jauge d'Éveil** (Jotaro : +1 s de temps arrêté).
 - [ ] **Flèche** et Chariot Requiem.
 - [ ] **Vague 2** (JoJolion), **Vague 3** (Hamon), **Vague 4** (icônes) : voir les priorités du GDD.

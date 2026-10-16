@@ -163,6 +163,12 @@ def _play(tour: Tour, title) -> None:
     tour.wait(10)
     tour.shot("options")
 
+    from jojo_arena.ui.bindings_scene import BindingsScene
+
+    tour.start(BindingsScene(tour.ctx))
+    tour.wait(5)
+    tour.shot("keys")
+
     # Arcade: the ladder before the first fight.
     from jojo_arena.ui.arcade_scene import ArcadeScene
 

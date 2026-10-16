@@ -20,7 +20,7 @@ from jojo_arena.ui.menu import Menu, MenuItem
 from jojo_arena.ui.widgets import DIM, GOLD, P1_COLOR, P2_COLOR, WHITE, draw_box, draw_hints
 
 WARNING = (240, 90, 90)
-TABLE = pygame.Rect(70, 96, 340, 136)
+TABLE = pygame.Rect(70, 102, 340, 132)
 COLUMNS = (TABLE.x + 10, TABLE.x + 190, TABLE.x + 282)  # action, J1, J2 (centers for J1/J2)
 
 
@@ -37,6 +37,7 @@ class OptionsScene(Scene):
                 MenuItem(
                     "controls", text.CONTROLS, labels, self.preset_keys.index(ctx.controls.active)
                 ),
+                MenuItem("keys", text.REBIND),
                 MenuItem("fullscreen", text.FULLSCREEN, [text.NO, text.YES]),
                 MenuItem(
                     "language",
@@ -87,6 +88,10 @@ class OptionsScene(Scene):
             scene = OptionsScene(self.ctx)
             scene.menu.select("language")
             self.ctx.scenes.switch(scene)
+        elif kind == "confirm" and key == "keys":
+            from jojo_arena.ui.bindings_scene import BindingsScene
+
+            self.ctx.scenes.switch(BindingsScene(self.ctx))
         elif kind == "back" or (kind == "confirm" and key == "back"):
             from jojo_arena.ui.main_menu import MainMenuScene
 
@@ -96,7 +101,7 @@ class OptionsScene(Scene):
         self.backdrop.draw(surface, self.tick)
         width, height = surface.get_size()
         font.draw(surface, text.OPTIONS_TITLE, (width // 2, 4), GOLD, scale=3, align="center")
-        self.menu.draw(surface, width // 2, 32, spacing=10)
+        self.menu.draw(surface, width // 2, 30, spacing=10)
 
         preset = self.ctx.controls.active_preset
         draw_box(surface, TABLE)
@@ -117,7 +122,15 @@ class OptionsScene(Scene):
             y += 11
 
         if preset.pads_needed() > len(self.ctx.inputs.pads):
-            font.draw(surface, text.PADS_MISSING, (width // 2, 232), WARNING, align="center")
+            font.draw(
+                surface, text.PADS_MISSING, (width // 2, TABLE.bottom + 4), WARNING, align="center"
+            )
         else:
-            font.draw(surface, text.CONTROLS_FILE_HINT, (width // 2, 232), DIM, align="center")
+            font.draw(
+                surface,
+                text.CONTROLS_FILE_HINT,
+                (width // 2, TABLE.bottom + 4),
+                DIM,
+                align="center",
+            )
         draw_hints(surface, self.hints, (width // 2, height - 14))

@@ -57,7 +57,7 @@ Les touches sont liées à leur **position** sur le clavier : ZQSD en AZERTY cor
 | Pose (près d'un objet : le Stand le prend, puis le lance) | P | Select / Touchpad | Y | 7 |
 | Power Up (pas encore utilisé) | U | LT / L2 | B | 3 |
 
-Choisis la configuration (J1 clavier + J2 manette, clavier partagé, deux manettes) dans **Options** ou sur l'écran VS du **Combat local**, qui permet aussi de choisir l'arène (le Caire de nuit, le manoir Joestar en flammes, ou au hasard). Options affiche aussi le tableau des touches des deux joueurs, et règle la langue du jeu (français ou anglais), gardée dans `settings.json` à côté de `controls.json`.
+Choisis la configuration (J1 clavier + J2 manette, clavier partagé, deux manettes) dans **Options** ou sur l'écran VS du **Combat local**, qui permet aussi de choisir l'arène (le Caire de nuit, le manoir Joestar en flammes, ou au hasard). Options affiche aussi le tableau des touches des deux joueurs (modifiables avec « Changer les touches »), et règle la langue du jeu (français ou anglais), gardée dans `settings.json` à côté de `controls.json`.
 
 Pour changer les touches, modifie `controls.json` dans `%APPDATA%\JoJoArena\` puis relance le jeu. Le fichier explique les noms de touches. Supprime-le pour revenir aux réglages par défaut.
 
