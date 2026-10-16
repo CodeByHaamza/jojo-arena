@@ -1,0 +1,19 @@
+# Part 6: Jolyne's butterfly.
+
+pixels = [
+    "oo.....oo",
+    "oWoo.ooBo",
+    "oWBBoBBbo",
+    "oBBBoBBbo",
+    ".oBBoBbo.",
+    "..ooooo..",
+    ".oBBoBbo.",
+    ".oBo.obo.",
+    "..o...o..",
+]
+
+[palette]
+o = "#17121f"
+B = "#3aa8e0"
+b = "#1f5a9a"
+W = "#c0f0ff"

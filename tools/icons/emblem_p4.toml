@@ -1,0 +1,19 @@
+# Part 4: a pink heart pin, like those on Josuke's uniform.
+
+pixels = [
+    ".........",
+    ".ooo.ooo.",
+    "oWPPoPPPo",
+    "oPPPPPPpo",
+    "oPPPPPPpo",
+    ".oPPPPpo.",
+    "..oPPpo..",
+    "...oPo...",
+    "....o....",
+]
+
+[palette]
+o = "#17121f"
+P = "#ff6fb0"
+p = "#b83a78"
+W = "#ffd0e8"

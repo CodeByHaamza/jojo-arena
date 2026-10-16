@@ -29,6 +29,32 @@ class FighterDef:
     role: str = ""  # one line, for the character select screen
     blurb: str = ""  # a short presentation
     selectable: bool = True  # placeholders stay out of the character select screen
+    part: int = 0  # the JoJo part the character comes from (0: none, like the dummies)
+
+
+@dataclass(frozen=True)
+class PartDef:
+    """One of the nine parts of the saga, as the menus show it."""
+
+    number: int
+    title: str
+    setting: str  # where and when it takes place
+    colors: tuple[Color, Color]  # two accent colors
+    emblem: str = ""  # icon name: a little symbol of the part
+
+
+def load_parts() -> list[PartDef]:
+    data = load_toml(_DIR / "parts.toml")
+    return [
+        PartDef(
+            number=entry["number"],
+            title=localized(entry, "title"),
+            setting=localized(entry, "setting"),
+            colors=(parse_color(entry["colors"][0]), parse_color(entry["colors"][1])),
+            emblem=entry.get("emblem", ""),
+        )
+        for entry in sorted(data["parts"], key=lambda e: e["number"])
+    ]
 
 
 def load_roster() -> list[FighterDef]:
@@ -57,6 +83,7 @@ def load_roster() -> list[FighterDef]:
                 role=localized(entry, "role"),
                 blurb=localized(entry, "blurb"),
                 selectable=entry.get("selectable", True),
+                part=entry.get("part", 0),
             )
         )
     return roster

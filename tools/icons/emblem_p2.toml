@@ -1,0 +1,20 @@
+# Part 2: the Super Aja, the Red Stone of Aja, a faceted red gem.
+
+pixels = [
+    "...ooo...",
+    "..oWpRo..",
+    ".oWpRRro.",
+    "oWpRRRrro",
+    "opRRRRrro",
+    ".oRRRrro.",
+    "..oRrro..",
+    "...oro...",
+    "....o....",
+]
+
+[palette]
+o = "#17121f"
+R = "#e0283c"
+r = "#8e1426"
+W = "#ffd0d8"
+p = "#ff6070"

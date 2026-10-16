@@ -1,0 +1,19 @@
+# Part 3: the gold hand plate Jotaro wears on his cap.
+
+pixels = [
+    ".o.o.o...",
+    "oWoYoYo..",
+    "oYoYoYoo.",
+    "oYoYoYoYo",
+    "oYYYYYYYo",
+    "oYYYYYYo.",
+    ".oYYYYYo.",
+    "..oyyyo..",
+    "..ooooo..",
+]
+
+[palette]
+o = "#17121f"
+Y = "#f0c23c"
+y = "#a87a1c"
+W = "#fff0a0"

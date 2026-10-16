@@ -123,6 +123,9 @@ def _play(tour: Tour, title) -> None:
     tour.shot("select_dummy")
     tour.keys("Down", "Return", wait=5)  # a slot still to come
     tour.shot("select_soon")
+    tour.keys("E", wait=5)  # the next part's tab
+    tour.shot("select_next_part")
+    tour.keys("Q", wait=5)
     tour.keys("Up", "Return", wait=30)
     training = tour.scene
     attacker, dummy = training.rounds.match.fighters

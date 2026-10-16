@@ -2,15 +2,18 @@
 
 from __future__ import annotations
 
+import random
+
 import pygame
 
-from jojo_arena.characters import load_roster
+from jojo_arena.characters import load_parts, load_roster
 from jojo_arena.context import GameContext
 from jojo_arena.engine import font
 from jojo_arena.engine.scene import Scene
 from jojo_arena.engine.sprites import shade
 from jojo_arena.ui import text
 from jojo_arena.ui.backdrop import MenuBackdrop
+from jojo_arena.ui.icons import draw_icon
 from jojo_arena.ui.labels import menu_key
 from jojo_arena.ui.menu import Menu, MenuItem
 from jojo_arena.ui.portraits import FighterLook
@@ -56,6 +59,9 @@ class MainMenuScene(Scene):
         )
         self.menu.select(cursor)
         self.looks = [FighterLook(f) for f in load_roster() if f.selectable]
+        self.parts = {p.number: p for p in load_parts()}
+        # The showcase starts on anyone, not always the same fighter.
+        self.showcase_start = random.randrange(len(self.looks)) if self.looks else 0
         self.toast_f = 0
         self.tick = 0
         self.hints = [
@@ -118,7 +124,7 @@ class MainMenuScene(Scene):
         """The roster takes turns on the right of the screen."""
         if not self.looks:
             return
-        look = self.looks[(self.tick // SHOWCASE_F) % len(self.looks)]
+        look = self.looks[(self.showcase_start + self.tick // SHOWCASE_F) % len(self.looks)]
         shown_f = self.tick % SHOWCASE_F
         slide = max(0, SLIDE_F - shown_f) * 5
         center = 352 + slide
@@ -133,3 +139,11 @@ class MainMenuScene(Scene):
             y += 11
         if fdef.role:
             font.draw(surface, fdef.role, (center, y), DIM, align="center")
+        part = self.parts.get(fdef.part)
+        if part is not None:
+            # Top right: the part the fighter in the showcase comes from.
+            right = surface.get_width() - 12
+            label = f"{text.PART_N.format(n=part.number)} - {part.title}"
+            rect = font.draw(surface, label, (right, 14), shade(part.colors[0], 60), align="right")
+            font.draw(surface, part.setting, (right, 25), DIM, align="right")
+            draw_icon(surface, part.emblem, (rect.x - 14, rect.y + 6), scale=2, center=True)

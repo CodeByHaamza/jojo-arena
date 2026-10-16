@@ -7,10 +7,13 @@
 #   palette      = colors that replace the sheet's key colors (see the sheet's [recolor]).
 #                  Only the mannequin uses it; character sheets have their final colors.
 #   selectable   = false keeps a fighter out of the character select screen.
+#   part         = the JoJo part the character comes from (parts.toml): its tab in the
+#                  character select screen.
 # Character sheets are generated from characters/looks/<id>.toml by tools/make_sprites.py.
 
 [[fighters]]
 id = "jotaro_p3"
+part = 3
 name = "JOTARO KUJO"
 kit = "jotaro_p3"
 sprite = "jotaro_p3/jotaro_p3"
@@ -25,6 +28,7 @@ aura = "#9b7bff"
 
 [[fighters]]
 id = "kakyoin"
+part = 3
 name = "NORIAKI KAKYOIN"
 kit = "kakyoin"
 sprite = "kakyoin/kakyoin"
@@ -39,6 +43,7 @@ aura = "#59f08c"
 
 [[fighters]]
 id = "dio_p3"
+part = 3
 name = "DIO"
 kit = "dio_p3"
 sprite = "dio_p3/dio_p3"
@@ -53,6 +58,7 @@ aura = "#ffd84a"
 
 [[fighters]]
 id = "polnareff"
+part = 3
 name = "JEAN PIERRE POLNAREFF"
 kit = "polnareff"
 sprite = "polnareff/polnareff"

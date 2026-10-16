@@ -1,0 +1,78 @@
+# The nine parts of JoJo's Bizarre Adventure, for the menus, the character select tabs
+# and the glossary. Fighters say which part they come from with `part` in roster.toml.
+#   title   = the part's name (the French editions keep the original titles)
+#   setting = where and when it takes place (setting_en: in English)
+#   colors  = two accent colors for the menus
+#   emblem  = its little symbol, an icon of assets/icons/ (drawings in tools/icons/)
+
+[[parts]]
+number = 1
+emblem = "emblem_p1"
+title = "PHANTOM BLOOD"
+setting = "Angleterre, 1880-1889"
+setting_en = "England, 1880-1889"
+colors = ["#c8323c", "#e8c060"]
+
+[[parts]]
+number = 2
+emblem = "emblem_p2"
+title = "BATTLE TENDENCY"
+setting = "New York, Mexique, Italie, Suisse, 1938-1939"
+setting_en = "New York, Mexico, Italy, Switzerland, 1938-1939"
+colors = ["#e88a2c", "#2ca8a0"]
+
+[[parts]]
+number = 3
+emblem = "emblem_p3"
+title = "STARDUST CRUSADERS"
+setting = "Du Japon à l'Égypte, 1989"
+setting_en = "From Japan to Egypt, 1989"
+colors = ["#5a6ad0", "#9b7bff"]
+
+[[parts]]
+number = 4
+emblem = "emblem_p4"
+title = "DIAMOND IS UNBREAKABLE"
+setting = "Morioh, Japon, 1999"
+setting_en = "Morioh, Japan, 1999"
+colors = ["#e870b0", "#60d0c0"]
+
+[[parts]]
+number = 5
+emblem = "emblem_p5"
+title = "GOLDEN WIND"
+setting = "Naples et l'Italie, 2001"
+setting_en = "Naples and Italy, 2001"
+colors = ["#f0c030", "#c04aa8"]
+
+[[parts]]
+number = 6
+emblem = "emblem_p6"
+title = "STONE OCEAN"
+setting = "Floride, États-Unis, 2011-2012"
+setting_en = "Florida, United States, 2011-2012"
+colors = ["#30b0c8", "#3a5ad8"]
+
+[[parts]]
+number = 7
+emblem = "emblem_p7"
+title = "STEEL BALL RUN"
+setting = "À travers l'Amérique, 1890"
+setting_en = "Across America, 1890"
+colors = ["#d8a050", "#5aa04a"]
+
+[[parts]]
+number = 8
+emblem = "emblem_p8"
+title = "JOJOLION"
+setting = "Morioh, Japon, 2011"
+setting_en = "Morioh, Japan, 2011"
+colors = ["#b8b8f0", "#7050c0"]
+
+[[parts]]
+number = 9
+emblem = "emblem_p9"
+title = "THE JOJOLANDS"
+setting = "Hawaï, de nos jours"
+setting_en = "Hawaii, present day"
+colors = ["#40d0e0", "#f07858"]

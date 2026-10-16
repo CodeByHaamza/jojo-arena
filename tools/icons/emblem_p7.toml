@@ -1,0 +1,19 @@
+# Part 7: Gyro's steel ball, with its grooves.
+
+pixels = [
+    "..ooooo..",
+    ".oWSsSSo.",
+    "oWSsSSsSo",
+    "oSsSSsSSo",
+    "osSSsSSso",
+    "oSSsSSsSo",
+    "oSsSSsSso",
+    ".osSSsso.",
+    "..ooooo..",
+]
+
+[palette]
+o = "#17121f"
+S = "#c8ccd8"
+s = "#7a8090"
+W = "#ffffff"

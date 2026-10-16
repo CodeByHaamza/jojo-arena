@@ -1,0 +1,19 @@
+# Part 5: Giorno's golden ladybug brooch.
+
+pixels = [
+    "...ooo...",
+    "..ooooo..",
+    ".oWYoYYo.",
+    "oYyYoYyYo",
+    "oYYYoYYYo",
+    "oYyYoYyYo",
+    ".oYYoYYo.",
+    "..ooooo..",
+    ".........",
+]
+
+[palette]
+o = "#17121f"
+Y = "#f0c23c"
+y = "#a87a1c"
+W = "#fff0a0"

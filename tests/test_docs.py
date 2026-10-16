@@ -18,7 +18,7 @@ def keys_used(table: dict, found: set[str]) -> None:
 def test_every_kit_field_is_documented():
     found: set[str] = set()
     for path in (ROOT / "jojo_arena" / "characters").glob("*.toml"):
-        if path.name == "roster.toml":
+        if path.name in ("roster.toml", "parts.toml"):
             continue
         data = tomllib.loads(path.read_text(encoding="utf-8"))
         for stance in data.get("stances", {}).values():

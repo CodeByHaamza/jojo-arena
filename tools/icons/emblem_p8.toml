@@ -1,0 +1,20 @@
+# Part 8: the Rokakaka fruit and its leaf.
+
+pixels = [
+    "....oo...",
+    "...oGGo..",
+    "..ooGoo..",
+    ".oOOoOOo.",
+    "oWOOOOOro",
+    "oOOOOOOro",
+    "oOOOOOrro",
+    ".oOOrrro.",
+    "..ooooo..",
+]
+
+[palette]
+o = "#17121f"
+O = "#e8904a"
+r = "#a8502a"
+W = "#ffd0a0"
+G = "#4aa84a"

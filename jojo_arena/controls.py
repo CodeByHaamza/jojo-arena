@@ -126,6 +126,8 @@ MENU_KEYBOARD = {
     "back": ["Escape", "Backspace"],
     "pause": ["Escape"],
     "info": ["Tab", "I"],  # character details / move list
+    "prev": ["Q", "PageUp"],  # previous tab (A on an AZERTY keyboard)
+    "next": ["E", "PageDown"],  # next tab
 }
 MENU_GAMEPAD = {
     "up": ["dpad_up"],
@@ -136,6 +138,8 @@ MENU_GAMEPAD = {
     "back": ["b"],
     "pause": ["start"],
     "info": ["y"],
+    "prev": ["leftshoulder"],
+    "next": ["rightshoulder"],
 }
 
 DEFAULT_ACTIVE = "keyboard_gamepad"

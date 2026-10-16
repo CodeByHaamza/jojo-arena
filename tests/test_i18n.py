@@ -22,7 +22,8 @@ from jojo_arena.ui.labels import keyboard_label, pad_label
 from jojo_arena.ui.options_scene import OptionsScene
 
 ROOT = Path(__file__).resolve().parents[1]
-KITS = [p for p in (ROOT / "jojo_arena" / "characters").glob("*.toml") if p.stem != "roster"]
+NOT_KITS = ("roster", "parts")
+KITS = [p for p in (ROOT / "jojo_arena" / "characters").glob("*.toml") if p.stem not in NOT_KITS]
 
 
 @pytest.fixture(autouse=True)

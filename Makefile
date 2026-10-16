@@ -29,7 +29,7 @@ ARGS ?=
 
 .DEFAULT_GOAL := help
 .PHONY: help install hooks run menu training fight versus demo test test-fast lint format check balance \
-        screens screenshot sprites exe clean
+        screens screenshot sprites icons exe clean
 
 help:
 	$(info JoJo Arena - make targets)
@@ -58,6 +58,7 @@ help:
 	$(info )
 	$(info Build)
 	$(info $(INDENT)make sprites      regenerate the character sprite sheets from their looks)
+	$(info $(INDENT)make icons        regenerate the icons (part emblems...) from tools/icons/)
 	$(info $(INDENT)make exe          build dist/JoJoArena.exe)
 	$(info $(INDENT)make clean        delete build/ dist/ and the caches)
 	$(info )
@@ -126,6 +127,9 @@ screenshot: $(VENV_PY)
 
 sprites: $(VENV_PY)
 	$(PY) tools/make_sprites.py
+
+icons: $(VENV_PY)
+	$(PY) tools/make_icons.py
 
 exe: $(VENV_PY)
 	$(PY) tools/build_exe.py
