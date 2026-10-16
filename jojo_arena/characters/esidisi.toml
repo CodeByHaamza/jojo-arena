@@ -8,7 +8,7 @@
 # Feel: the one who weeps while he kills you, and does not stop.
 
 name = "Esidisi"
-max_hp = 1150
+max_hp = 1200
 walk_speed = 100
 nature = "pillar_man"
 style = { type = "stance_toggle", off = "base", on = "flame" }
@@ -117,8 +117,8 @@ fx = "tentacle"
 startup_f = 13
 active_f = 5
 recovery_f = 20
-damage = 46
-reach = 70
+damage = 52
+reach = 76
 radius = 6
 hitstun_f = 26
 knockback = 240
@@ -180,7 +180,7 @@ recovery_f = 16
 hits = 2
 hit_every_f = 3
 damage = 22
-last_damage = 40
+last_damage = 46
 reach = 19
 radius = 12
 hitstun_f = 20
@@ -252,8 +252,8 @@ active_f = 30
 recovery_f = 24
 hits = 10
 hit_every_f = 3
-damage = 10
-last_damage = 42
+damage = 13
+last_damage = 52
 reach = 22
 radius = 16
 hitstun_f = 14

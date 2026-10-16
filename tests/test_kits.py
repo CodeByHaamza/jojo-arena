@@ -94,9 +94,12 @@ def test_every_signature_move_is_reachable():
 
     for fighter in load_roster():
         kit = fighter.kit
+        shared_links = {m.chain for m in kit.shared_moves.values()}
+        shared_links |= {m.counter for m in kit.shared_moves.values()}
         for stance in kit.stances.values():
             reachable = {"light", "heavy", "heavy_alt", "special", "special_alt"}
             reachable |= {kit.pose_counter} - {""}
+            reachable |= shared_links - {""}  # an ultimate can chain or counter too
             for move in stance.moves.values():
                 reachable |= {move.chain, move.counter} - {""}
             assert set(stance.moves) <= reachable, (fighter.id, set(stance.moves) - reachable)

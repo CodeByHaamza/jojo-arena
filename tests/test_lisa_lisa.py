@@ -48,9 +48,24 @@ def test_lisa_lisa_flips_through_the_air_untouchable_and_lands_a_heel():
     assert lisa.pos.x > 200
 
 
-def test_the_scarf_trap_plays_its_cutscene():
-    match = make_duel("lisa_lisa", "mannequin_red", p1=(100, 100), p2=(150, 100))
-    match.fighters[0].hh = match.rules.hh_max
-    events = run(match, 80, p1=GHA)
+def test_her_ultimate_is_a_counter_and_does_nothing_on_its_own():
+    match = make_duel("lisa_lisa", "mannequin_red", p1=(150, 100), p2=(176, 100))
+    lisa, dummy = match.fighters
+    lisa.hh = match.rules.hh_max
+    run(match, match.rules.super_freeze_f + 30, p1=GHA)
+    assert lisa.countering  # she poses, open, and waits
+    assert dummy.hp == dummy.max_hp and match.cutscene is None
+
+
+def test_whoever_strikes_her_during_it_is_wrapped_up():
+    match = make_duel("lisa_lisa", "mannequin_red", p1=(150, 100), p2=(172, 100))
+    lisa, dummy = match.fighters
+    lisa.hh = match.rules.hh_max
+    run(match, match.rules.super_freeze_f + 20, p1=GHA)
+    assert lisa.countering
+    events = match.step((NONE, press("light")))
+    events += run(match, 30)
+    assert "counter" in kinds(events)
     assert match.cutscene is not None and match.cutscene.name == "scarf_trap"
-    assert "cutscene_start" in kinds(events)
+    run(match, match.cutscene.frames_left + 4)
+    assert dummy.max_hp - dummy.hp > 200

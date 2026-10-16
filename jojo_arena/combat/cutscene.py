@@ -14,7 +14,7 @@ class Cutscene:
     target: int
     frames_left: int
     total_f: int
-    move: MoveDef
+    move: MoveDef | None  # None for a cutscene that is not a blow (an awakening)
     serial: int  # the attack that started it
 
     @property

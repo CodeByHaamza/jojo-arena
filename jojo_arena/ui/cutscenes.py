@@ -1426,6 +1426,210 @@ class SelfDestruct(CutscenePlayer):
             pygame.draw.circle(world, self.FIRE, chest.as_ints(), round(10 + 70 * grow), 2)
 
 
+# Kars: the deluge of light ----------------------------------------------------------------
+
+
+class LightDeluge(CutscenePlayer):
+    """Every blade he has, out at once, and the light off them filling the screen until
+    there is nothing in it but white."""
+
+    length = 252
+    OPEN = 54
+    FLOOD = 150
+    EDGE = (223, 230, 244)
+    GLARE = (255, 250, 228)
+
+    def camera(self, f):
+        if f < self.OPEN:
+            return self.u + Vec2(0, -18), 3
+        return (self.u + self.v) * 0.5, 2
+
+    def cue(self, f):
+        fx = self.fx
+        hit = self.chest(self.scene.target, self.v)
+        if f == 1:
+            self.shout(text.KARS_DELUGE_LINE, scale=2, life=46)
+        if self.OPEN <= f < self.FLOOD and f % 6 == 0:
+            spot = hit + Vec2(self.rng.randint(-22, 22), self.rng.randint(-20, 6))
+            fx.add(vfx.Flash(spot, 10, self.EDGE, 6))
+            if f % 18 == 0:
+                self.world_words.add(sfx.BAKI, spot, "impact", 2, 26, 0.3, 2)
+        if f == self.FLOOD:
+            fx.add(vfx.Flash(hit, 90, self.GLARE, 20))
+            fx.add(vfx.Ring(hit, self.GLARE, 6.0, 30, 4))
+            fx.focus(hit, heavy=True)
+            self.world_words.add(sfx.DOGO, hit + Vec2(0, -16), "impact", 3, 48, 0.2, 2)
+            self.flash, self.shake = 16, 20
+        if f > self.FLOOD and f % 9 == 0:
+            fx.add(vfx.Ring(hit, self.EDGE, 3.6, 24, 2))
+
+    def negative(self, f):
+        return self.FLOOD <= f < self.FLOOD + 4
+
+    def scene_draw(self, world, f):
+        user, right = self.scene.user, self.side > 0
+        self.body(world, user, self.u, "heavy", 2, right)
+        self.victim(world, f)
+        chest = self.chest(user, self.u)
+        hit = self.chest(self.scene.target, self.v)
+        if f < self.OPEN:
+            return
+        # Blades out of both arms, fanned at whoever is in front of him.
+        blades = min(7, 1 + (f - self.OPEN) // 8)
+        for i in range(blades):
+            spread = (i - blades / 2) * 0.16
+            toward = hit - chest
+            if toward.length_sq() < 1:
+                continue
+            angle = toward.angle() + spread
+            tip = chest + Vec2.from_angle(angle, min(toward.length() + 10, 120))
+            vfx.draw_reach(world, chest, tip, self.EDGE, "blade", 2)
+
+
+# Caesar: Burn Black ------------------------------------------------------------------------
+
+
+class BurnBlack(CutscenePlayer):
+    """The lenses settle round him one by one, each catching the sun, and every beam
+    bends onto the same spot until he goes up. Caesar says it as he dies, so he says it
+    here: burn... black."""
+
+    length = 264
+    LENSES = 8
+    PLACED = 96  # all of them are in the air by now
+    IGNITE = 168
+    BUBBLE = (196, 228, 244)
+    BEAM = (255, 232, 150)
+    FIRE = (255, 140, 50)
+
+    def lens(self, i: int, f: int) -> Vec2:
+        """Where lens `i` sits: it drifts into its place on the ring and stays."""
+        hit = self.chest(self.scene.target, self.v)
+        angle = math.tau * i / self.LENSES - f * 0.006
+        placed = min(1.0, max(0.0, (f - 10 - i * 8) / 26))
+        return hit + Vec2.from_angle(angle, 10 + 30 * placed)
+
+    def camera(self, f):
+        if f < 30:
+            return self.u + Vec2(0, -18), 3  # his hands, blowing them
+        return self.v + Vec2(0, -10), 2
+
+    def cue(self, f):
+        fx = self.fx
+        hit = self.chest(self.scene.target, self.v)
+        if f == 1:
+            self.shout(text.BURN_BLACK_LINE, scale=2, life=50)
+        if 10 <= f < self.PLACED and (f - 10) % 8 == 0:
+            i = (f - 10) // 8
+            if i < self.LENSES:
+                fx.add(vfx.Ring(self.lens(i, f), self.BUBBLE, 1.4, 10, 1))
+        if f == self.PLACED:
+            self.world_words.menace(self.head(self.scene.target, self.v), 1)
+        if self.PLACED < f < self.IGNITE and f % 10 == 0:
+            fx.add(vfx.Flash(hit, 12, self.BEAM, 6))
+        if f == self.IGNITE:
+            fx.add(vfx.Flash(hit, 60, self.FIRE, 16))
+            fx.add(vfx.Ring(hit, self.FIRE, 5.0, 28, 3))
+            fx.focus(hit, heavy=True)
+            self.world_words.add(sfx.CRACKLE, hit + Vec2(0, -16), sfx.HAMON, 3, 50, 0.2, 2)
+            self.flash, self.shake = 14, 18
+        if f > self.IGNITE and f % 6 == 0:
+            spit = Vec2(self.rng.uniform(-1.2, 1.2), self.rng.uniform(-1.6, -0.4))
+            fx.add(vfx.Dust(hit, spit, 2, 20, self.FIRE))
+
+    def negative(self, f):
+        return self.IGNITE <= f < self.IGNITE + 3
+
+    def scene_draw(self, world, f):
+        user, right = self.scene.user, self.side > 0
+        self.body(world, user, self.u, "special", 2, right)
+        self.victim(world, f)
+        hit = self.chest(self.scene.target, self.v)
+        for i in range(self.LENSES):
+            if f < 10 + i * 8:
+                continue
+            spot = self.lens(i, f)
+            pygame.draw.circle(world, OUTLINE, spot.as_ints(), 4)
+            pygame.draw.circle(world, self.BUBBLE, spot.as_ints(), 3)
+            world.set_at((round(spot.x) - 1, round(spot.y) - 1), (255, 255, 255))
+            if f >= self.PLACED:
+                # Every lens bends the sunlight onto the same point.
+                width = 1 if f < self.IGNITE else 2
+                color = self.BEAM if f < self.IGNITE else self.FIRE
+                pygame.draw.line(world, color, spot.as_ints(), hit.as_ints(), width)
+        if f >= self.IGNITE:
+            blaze = min(1.0, (f - self.IGNITE) / 20)
+            pygame.draw.circle(world, self.FIRE, hit.as_ints(), round(6 + 18 * blaze), 2)
+
+
+# Joseph: the tricks of the trade ------------------------------------------------------------
+
+
+class OverdriveBeat(CutscenePlayer):
+    """The string was already there. It catches him, Joseph walks in with both pairs of
+    clackers, breathes once, and finishes with four of them at the same time."""
+
+    length = 276
+    CATCH = 44
+    BEAT = 86
+    BREATHE = 180
+    FINISH = 214
+    STRING = (228, 220, 196)
+    HAMON = (255, 228, 120)
+
+    def camera(self, f):
+        if f < self.CATCH:
+            return self.v + Vec2(0, 6), 3  # the string at his ankles
+        if f < self.FINISH:
+            return (self.u + self.v) * 0.5, 2
+        return self.v + Vec2(0, -12), 2
+
+    def cue(self, f):
+        fx = self.fx
+        hit = self.chest(self.scene.target, self.v)
+        if f == 1:
+            self.shout(text.JOSEPH_TRICKS_LINE, scale=2, life=46)
+        if f == self.CATCH:
+            self.world_words.add(sfx.GA, self.v + Vec2(0, -6), "impact", 2, 30, 0.3, 2)
+            self.shake = 5
+        if self.BEAT <= f < self.BREATHE and f % 7 == 0:
+            spot = hit + Vec2(self.rng.randint(-10, 10), self.rng.randint(-12, 8))
+            fx.add(vfx.Flash(spot, 9, self.HAMON, 5))
+            self.world_words.add(sfx.BAKI, spot, "impact", 2, 20, 0.35, 2)
+        if f == self.BREATHE:
+            self.shout(text.OVERDRIVE_BEAT_LINE, scale=2, life=40)
+            fx.add(vfx.Ring(self.chest(self.scene.user, self.u), self.HAMON, 2.4, 18, 2))
+        if f == self.FINISH:
+            fx.add(vfx.Flash(hit, 54, self.HAMON, 14))
+            fx.add(vfx.Ring(hit, self.HAMON, 5.0, 26, 3))
+            fx.focus(hit, heavy=True)
+            self.world_words.add(sfx.DOGO, hit + Vec2(0, -16), "impact", 3, 48, 0.2, 2)
+            self.flash, self.shake = 14, 18
+
+    def negative(self, f):
+        return self.FINISH <= f < self.FINISH + 3
+
+    def scene_draw(self, world, f):
+        user, right = self.scene.user, self.side > 0
+        anim = "pose" if self.BREATHE <= f < self.FINISH else "light"
+        self.body(world, user, self.u, anim, 2, right)
+        self.victim(world, f)
+        # The string, drawn taut between his hand and the opponent's feet.
+        hand = self.chest(user, self.u) + Vec2(self.side * 5, 2)
+        ankles = self.v + Vec2(-self.side * 4, -2)
+        pygame.draw.line(world, OUTLINE, hand.as_ints(), ankles.as_ints(), 3)
+        pygame.draw.line(world, self.STRING, hand.as_ints(), ankles.as_ints(), 1)
+        if self.BEAT <= f < self.FINISH:
+            # Clackers swinging on their cords, a pair in each hand.
+            hit = self.chest(self.scene.target, self.v)
+            for i in range(2 if f < self.FINISH - 20 else 4):
+                swing = math.sin(f * 0.5 + i * 1.7) * 7
+                ball = hit + Vec2(swing, -8 + i * 5)
+                pygame.draw.line(world, self.STRING, hand.as_ints(), ball.as_ints(), 1)
+                pygame.draw.circle(world, OUTLINE, ball.as_ints(), 3)
+                pygame.draw.circle(world, (210, 60, 70), ball.as_ints(), 2)
+
+
 CUTSCENES = {
     "road_roller": RoadRoller,
     "star_finish": StarFinish,
@@ -1442,6 +1646,9 @@ CUTSCENES = {
     "atmospheric_rift": AtmosphericRift,
     "esidisi_tears": EsidisiTears,
     "ultimate_thing": UltimateThing,
+    "light_deluge": LightDeluge,
+    "burn_black": BurnBlack,
+    "overdrive_beat": OverdriveBeat,
     "self_destruct": SelfDestruct,
 }
 

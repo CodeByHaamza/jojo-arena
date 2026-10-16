@@ -57,7 +57,8 @@ anim = "heavy"
 
 [stances.base.moves.light3]
 shout = "CLACKER VOLLEY !"
-label = "CLACKER VOLLEY"
+label = "JE VAIS TE DÉFONCER !"
+label_en = "I'LL SMASH YOU GOOD!"
 info = "Fin de l'enchaînement : les clackers chargés de Hamon envoient contre le mur"
 info_en = "Chain ender: Hamon-charged clackers send into the wall"
 hamon_cost = 15
@@ -76,32 +77,50 @@ anim = "uppercut"
 
 # Hamon threads: laid on the ground, they trip whoever steps on them with a spark.
 [stances.base.moves.heavy]
-label = "FIL DE HAMON"
-label_en = "HAMON THREAD"
-info = "Tend un fil au sol (3 max) : qui marche dessus trébuche sous une décharge"
-info_en = "Stretches a thread on the ground (3 max): stepping on it trips with a shock"
-startup_f = 10
-active_f = 1
-recovery_f = 16
-anim = "special"
-
-[stances.base.moves.heavy.trap]
-distance = 26
-radius = 13
-lifetime_s = 14
-max_count = 3
-
-[stances.base.moves.heavy.trap.projectile]
-look = "spark"
-speed = 360
-radius = 4
-damage = 36
-lifetime_s = 0.3
-hitstun_f = 40
+shout = "CLACKER VOLLEY !"
+label = "CLACKER VOLLEY"
+info = "Il glisse en faisant tourner les clackers : huit coups. Encore : le final"
+info_en = "He slides in spinning the clackers: eight hits. Press again: the finisher"
+hamon_cost = 20
+startup_f = 11
+active_f = 26
+recovery_f = 20
+hits = 8
+hit_every_f = 3
+lunge = 90
+damage = 11
+last_damage = 30
+reach = 20
+radius = 12
+hitstun_f = 14
 knockback = 40
-hitstop_f = 6
+last_knockback = 180
+hitstop_f = 1
+cancel_on_hit = ["heavy", "special"]
+chain = "who_laughs"
+anim = "light"
 
-# With a direction: the Joestar family's secret technique.
+[stances.base.moves.who_laughs]
+shout = "ALORS, QUI RIT MAINTENANT ?"
+shout_en = "NOW WHO'S LAUGHING?!"
+label = "ALORS, QUI RIT ?"
+label_en = "NOW WHO'S LAUGHING?"
+info = "La suite du Volley : une seconde paire de clackers, et il décolle"
+info_en = "The follow-up: a second pair of clackers, and he goes up"
+hamon = true
+startup_f = 6
+active_f = 5
+recovery_f = 22
+damage = 62
+reach = 19
+radius = 13
+hitstun_f = 34
+knockback = 440
+hitstop_f = 11
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "uppercut"
+
 [stances.base.moves.heavy_alt]
 shout = "LA FUITE !"
 shout_en = "RUN AWAY!"
@@ -140,29 +159,25 @@ hitstop_f = 5
 
 # With a direction: a grenade rolled along the ground, pin pulled.
 [stances.base.moves.special_alt]
-label = "GRENADE"
-info = "Avec une direction : une grenade dégoupillée roule et explose une seconde après"
-info_en = "With a direction: a grenade rolls along and blows up a second later"
-startup_f = 12
-active_f = 1
-recovery_f = 18
-cooldown_s = 1.5
-anim = "special"
-
-[stances.base.moves.special_alt.projectile]
-look = "grenade"
-explode_radius = 28
-drag = 0.94
-speed = 260
-radius = 4
-damage = 64
-lifetime_s = 1.1
-hitstun_f = 30
-knockback = 300
-hitstop_f = 8
+shout = "LE MARTEAU !"
+shout_en = "THE HAMMER!"
+label = "LE MARTEAU"
+label_en = "BRING DOWN THE HAMMER"
+info = "Avec une direction : une masse sortie de nulle part, lente et imparable"
+info_en = "With a direction: a sledgehammer out of nowhere, slow and unblockable"
+startup_f = 22
+active_f = 4
+recovery_f = 28
+unblockable = true
+damage = 92
+reach = 17
+radius = 14
+hitstun_f = 38
+knockback = 400
+hitstop_f = 14
 wall_bounce = true
+anim = "heavy"
 
-# The answer of the pose counter: "Your next line is..." - and it was.
 [stances.base.moves.foreseen]
 shout = "BINGO !"
 label = "TA PROCHAINE RÉPLIQUE SERA..."
@@ -212,30 +227,31 @@ count = 1
 
 # Great Heat Attack (2 bars): the hidden plan. Every thread and grenade he laid blows up
 # at once, and one more grenade was waiting right under the opponent's feet all along.
+# Great Heat Attack (2 barres) : il tire une ficelle tendue d'avance. Si elle prend,
+# c'est l'enchaînement de clackers, le Ripple Overdrive Beat, et quatre clackers pour
+# finir. Si elle rate : "OH NOOON !"
 [moves.gha]
-shout = "TOUT ÇA, C'ÉTAIT PRÉVU !"
-shout_en = "IT WAS ALL PART OF THE PLAN!"
-label = "UN PLAN CACHÉ"
-label_en = "A HIDDEN PLAN"
-info = "Tous ses fils et grenades explosent, plus une grenade cachée sous l'adversaire"
-info_en = "Every thread and grenade blows up, plus one hidden under the opponent"
-detonate = true
+shout = "MES P'TITS TRUCS DU MÉTIER !"
+shout_en = "MY TRICKS OF THE TRADE!"
+label = "LES TRUCS DU MÉTIER"
+label_en = "TRICKS OF THE TRADE"
+info = "Un fil tendu d'avance. S'il prend : rafale de clackers et Ripple Overdrive Beat"
+info_en = "A string set beforehand. If it catches: a clacker barrage and Ripple Overdrive Beat"
+hamon = true
 startup_f = 14
-active_f = 1
-recovery_f = 24
+active_f = 5
+recovery_f = 30
 invincible_f = 14
-anim = "pose"
-
-[moves.gha.projectile]
-look = "grenade"
-origin = "ring"
-ring_radius = 0
-explode_radius = 34
-speed = 0
-radius = 4
-damage = 120
-lifetime_s = 0.3
-hitstun_f = 50
-knockback = 420
-hitstop_f = 12
-wall_bounce = true
+damage = 26
+reach = 22
+radius = 12
+hitstun_f = 40
+hitstop_f = 10
+clashable = false
+anim = "special"
+cinematic = "overdrive_beat"
+cinematic_s = 4.6
+finish_damage = 290
+finish_hitstun_f = 50
+finish_knockback = 460
+finish_wall_bounce = true

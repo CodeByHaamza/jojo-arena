@@ -297,6 +297,12 @@ class AwakeningDef:
 
     stance: str
     hh_cost: float
+    charge_f: int = 0  # frames of standing still before it takes
+    vulnerable_mult: float = 1.0  # damage taken while charging
+    break_hitstun_f: int = 0  # a blow with at least this much hitstun breaks the charge
+    refund: float = 0.5  # share of the cost given back when it is broken
+    cinematic: str = ""  # cutscene played the moment it lands
+    cinematic_f: int = 0
     sun_immune: bool = False
     label: str = ""  # what the HUD calls it while it is ready
 
@@ -305,6 +311,12 @@ class AwakeningDef:
         return cls(
             stance=data["stance"],
             hh_cost=data.get("bars", 2) * hh_bar,
+            charge_f=seconds_to_frames(data.get("charge_s", 0)),
+            vulnerable_mult=data.get("vulnerable_mult", 1.0),
+            break_hitstun_f=data.get("break_hitstun_f", 0),
+            refund=data.get("refund", 0.5),
+            cinematic=data.get("cinematic", ""),
+            cinematic_f=seconds_to_frames(data.get("cinematic_s", 0)),
             sun_immune=data.get("sun_immune", False),
             label=localized(data, "label"),
         )

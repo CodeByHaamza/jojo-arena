@@ -158,6 +158,12 @@ def build_pages(
             info = f"{_bars(cost / rules.hh_bar)} - {move.info}" if move.info else ""
             keys = (text.DIRECTION, key("heart_heat")) if slot == "gha" else (key("heart_heat"),)
             supers.append(MoveEntry(keys, move.label or slot.upper(), info))
+            # An ultimate can be a counter too: its answer comes out when struck.
+            answer = kit.move(kit.base_stance_name, move.counter) if move.counter else None
+            if answer is not None:
+                supers.append(
+                    MoveEntry((text.WHEN_STRUCK,), answer.label or answer.name, _info(answer), True)
+                )
     if supers:
         note = text.SYS_SUPER_INFO if len(supers) == 2 else ""
         pages.append(MovePage(text.PAGE_SUPER, tuple(supers), note))

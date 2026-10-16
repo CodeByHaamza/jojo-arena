@@ -99,25 +99,31 @@ spread_deg = 60
 # With a direction: Bubble Lens, a bubble that focuses sunlight into a ray.
 [stances.base.moves.heavy_alt]
 shout = "BUBBLE LENS !"
-label = "BUBBLE LENS"
-info = "Avec une direction : une bulle concentre la lumière en un rayon qui porte loin"
-info_en = "With a direction: a bubble focuses light into a far-reaching ray"
-hamon = true
-shape = "line"
-fx = "lens"
-startup_f = 21
-active_f = 5
-recovery_f = 24
-damage = 48
-reach = 96
-radius = 4
-hitstun_f = 26
-knockback = 200
-hitstop_f = 8
-clashable = false
+label = "BUBBLE LENSES"
+info = "Avec une direction : il pose des bulles-loupes qui tirent un rayon au passage"
+info_en = "With a direction: he leaves lens bubbles that fire a beam when crossed"
+hamon_cost = 20
+startup_f = 14
+active_f = 2
+recovery_f = 22
 anim = "special"
 
-# Bubble Launcher: a few bubbles that drift toward the opponent.
+[stances.base.moves.heavy_alt.trap]
+distance = 40
+radius = 24
+lifetime_s = 10
+max_count = 3
+
+[stances.base.moves.heavy_alt.trap.projectile]
+look = "bubble"
+speed = 320
+radius = 5
+damage = 30
+lifetime_s = 0.6
+hitstun_f = 22
+knockback = 150
+hitstop_f = 5
+
 [stances.base.moves.special]
 label = "BUBBLE LAUNCHER"
 info = "Trois bulles à tête chercheuse, lentes mais tenaces"
@@ -144,76 +150,84 @@ homing_deg_s = 70
 
 # With a direction: a backflip kick that wins back his distance.
 [stances.base.moves.special_alt]
-label = "SALTO ARRIÈRE"
-label_en = "BACKFLIP KICK"
-info = "Avec une direction : un salto qui frappe et le remet à distance"
-info_en = "With a direction: a flip that strikes and takes him back to range"
-startup_f = 6
-active_f = 6
+label = "POSTURE DU CHAT"
+label_en = "CAT STANCE"
+info = "Avec une direction : il se met en garde basse ; qui le frappe se prend l'onde"
+info_en = "With a direction: he drops into a low stance; whoever strikes him eats the Ripple"
+startup_f = 4
+active_f = 24
 recovery_f = 16
-invincible_f = 8
-lunge = -200
-damage = 30
-reach = 14
-radius = 13
-hitstun_f = 22
-knockback = 260
-hitstop_f = 6
-anim = "uppercut"
+counter = "ripple_spark"
+anim = "counter_yare"
+
+[stances.base.moves.ripple_spark]
+shout = "RIPPLE SPARK !"
+label = "ÉTINCELLE DE HAMON"
+label_en = "RIPPLE SPARK"
+info = "La réponse de la posture : les deux mains sur lui, et l'onde part"
+info_en = "The answer from the stance: both hands on him, and the Ripple goes through"
+hamon = true
+startup_f = 3
+active_f = 4
+recovery_f = 16
+invincible_f = 10
+damage = 88
+reach = 16
+radius = 12
+hitstun_f = 34
+knockback = 400
+hitstop_f = 12
+wall_bounce = true
+clashable = false
+anim = "light"
 
 # Super moves -----------------------------------------------------------------------------
 
 # Heart Heat Attack (1 bar): Bubble Cutter Glissade, wave after wave of cutters.
 [moves.hha]
-shout = "BUBBLE CUTTER GLISSADE !"
-label = "BUBBLE CUTTER GLISSADE"
-info = "Trois vagues de bulles tranchantes qui filent au ras du sol, invincible au démarrage"
-info_en = "Three waves of cutting bubbles skimming the ground, invincible on startup"
-hamon = true
-startup_f = 12
-active_f = 20
-recovery_f = 22
-invincible_f = 12
-anim = "special"
-
-[moves.hha.projectile]
-look = "bubble"
-speed = 320
-radius = 5
-damage = 18
-lifetime_s = 1.0
-hitstun_f = 18
-knockback = 80
-hitstop_f = 2
-count = 5
-spread_deg = 50
-waves = 3
-wave_every_f = 8
-
-# Great Heat Attack (2 bars): Bubble Barrier. A dome of bubbles rises all around the
-# opponent and closes in; they burst together, Hamon in every one.
-[moves.gha]
 shout = "BUBBLE BARRIER !"
 label = "BUBBLE BARRIER"
-info = "Un dôme de bulles se referme sur l'adversaire et éclate d'un coup"
-info_en = "A dome of bubbles closes in on the opponent and bursts all at once"
+info = "Les bulles l'enferment, le soulèvent, et le dôme éclate d'un coup"
+info_en = "The bubbles close round him, lift him, and the dome bursts at once"
 hamon = true
 startup_f = 14
-active_f = 1
-recovery_f = 24
+active_f = 5
+recovery_f = 26
 invincible_f = 14
-anim = "pose"
+damage = 165
+reach = 22
+radius = 18
+hitstun_f = 38
+knockback = 440
+hitstop_f = 12
+wall_bounce = true
+clashable = false
+anim = "special"
 
-[moves.gha.projectile]
-look = "bubble"
-origin = "ring"
-ring_radius = 56
-explode_radius = 12
-speed = 80
-radius = 6
-damage = 26
-lifetime_s = 0.7
-hitstun_f = 30
-knockback = 200
-hitstop_f = 3
-count = 10
+# Great Heat Attack (2 barres) : ce qu'il dit en mourant. Les bulles-loupes se placent
+# autour de lui et concentrent la lumière du soleil jusqu'à ce qu'il prenne feu.
+[moves.gha]
+shout = "BRÛLE... EN NOIR !"
+shout_en = "BURN... BLACK!"
+label = "BURN BLACK !"
+label_en = "BURN BLACK!"
+info = "Un coup. S'il touche : les loupes concentrent le soleil sur lui jusqu'à l'embraser"
+info_en = "One blow. On hit: the lenses focus the sun on him until he catches fire"
+hamon = true
+startup_f = 12
+active_f = 4
+recovery_f = 28
+invincible_f = 12
+damage = 28
+reach = 18
+radius = 13
+hitstun_f = 40
+hitstop_f = 10
+clashable = false
+anim = "special"
+cinematic = "burn_black"
+cinematic_s = 4.4
+finish_damage = 285
+finish_hitstun_f = 50
+finish_knockback = 420
+finish_wall_bounce = true

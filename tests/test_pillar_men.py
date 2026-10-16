@@ -224,7 +224,8 @@ def test_the_power_up_key_turns_kars_into_the_ultimate_life_form():
     awakening = kars.kit.awakening
     kars.hh = awakening.hh_cost
     assert kars.can_awaken and not kars.awakened
-    events = run(match, RULES.stance_switch_f + 30, p1=press("power_up"))
+    charge = kars.kit.awakening.charge_f
+    events = run(match, charge + 4, p1=press("power_up"))
     assert any(e.kind == "awaken" for e in events)
     assert kars.awakened and kars.stance == "ultimate"
     assert kars.hh == 0  # it cost him both bars
@@ -243,7 +244,7 @@ def test_the_mode_key_can_no_longer_take_him_out_of_it():
     match = make_duel("kars", "joseph_p2")
     kars = match.fighters[0]
     kars.hh = kars.kit.awakening.hh_cost
-    run(match, RULES.stance_switch_f + 30, p1=press("power_up"))
+    run(match, kars.kit.awakening.charge_f + 4, p1=press("power_up"))
     assert kars.stance == "ultimate"
     run(match, RULES.stance_switch_f + 30, p1=press("stand"))
     assert kars.stance == "ultimate"  # there is no going back

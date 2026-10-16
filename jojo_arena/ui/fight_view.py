@@ -757,6 +757,16 @@ class FightView:
         for projectile in match.projectiles:
             self._draw_projectile(surface, projectile, match)
         self._draw_carried_props(surface, match)
+        for fighter in match.fighters:
+            # Putting the mask on: it closes over his face while he stands there.
+            charge = fighter.awakening_charge
+            if charge > 0:
+                view = self.fighter_views[fighter.index]
+                head = fighter.pos + Vec2(0, -view.height + 2)
+                vfx.draw_stone_mask(surface, head, 0.4 + 0.6 * charge)
+                if (self.tick // 6) % 2 == 0:
+                    self.words.menace(fighter.pos + self.chest(fighter.index), 1)
+
         if self.awaken_f and self.awaken_at < len(match.fighters):
             # The mask and the Red Stone, growing over the one who put them on.
             user = match.fighters[self.awaken_at]

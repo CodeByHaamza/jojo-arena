@@ -1,55 +1,44 @@
-"""Young Joseph: grenades that roll then blow up, Hamon threads, the hidden plan, the
-secret technique of running away, and "your next line is...!" """
+"""Young Joseph: the Clacker Volley and its finisher, the sledgehammer, the tricks of
+the trade, the secret technique of running away, and "your next line is...!" """
 
-from helpers import NONE, hold, kinds, make_duel, press, run_held, run_until
-
-from jojo_arena.combat.fighter import State
+from helpers import NONE, hold, kinds, make_duel, press, run, run_held, run_until
 
 
-def test_a_grenade_rolls_to_a_stop_then_blows_up():
-    match = make_duel("joseph_p2", "mannequin_red", p1=(100, 100), p2=(150, 100))
-    dummy = match.fighters[1]
-    grenade = match.fighters[0].kit.move("base", "special_alt").projectile
-    match.step((press("special", move=(1.0, 0.0)), NONE))
-    run_until(match, lambda m: m.projectiles, 30)
-    assert dummy.hp == dummy.max_hp  # rolling past is harmless...
-    events = run_until(match, lambda m: not m.projectiles, 120)
-    assert "explosion" in kinds(events)
-    assert dummy.max_hp - dummy.hp == grenade.damage  # ...the blast is not
-
-
-def test_a_grenade_far_away_hurts_nobody():
-    match = make_duel("joseph_p2", "mannequin_red", p1=(100, 60), p2=(100, 260))
-    dummy = match.fighters[1]
-    match.step((press("special", move=(1.0, 0.0)), NONE))
-    events = run_held(match, 120)
-    assert "explosion" in kinds(events)
-    assert dummy.hp == dummy.max_hp
-
-
-def test_threads_trip_whoever_steps_on_them():
-    match = make_duel("joseph_p2", "mannequin_red", p1=(100, 100), p2=(250, 100))
-    dummy = match.fighters[1]
-    match.step((press("heavy"), NONE))
-    run_held(match, 30)
-    assert len(match.traps) == 1
-    run_until(match, lambda m: dummy.hp < dummy.max_hp, 240, p2=hold(move=(-1.0, 0.0)))
-    assert dummy.state == State.HITSTUN
-
-
-def test_the_hidden_plan_blows_every_trap_and_one_under_the_opponent():
-    match = make_duel("joseph_p2", "mannequin_red", p1=(100, 100), p2=(200, 100))
+def test_the_clacker_volley_is_a_barrage_with_a_finisher():
+    match = make_duel("joseph_p2", "mannequin_red", p1=(150, 100), p2=(176, 100))
     joseph, dummy = match.fighters
-    for _ in range(2):
-        match.step((press("heavy"), NONE))
-        run_held(match, 30)
-    assert len(match.traps) == 2
+    joseph.hamon = match.rules.hamon_max
+    volley = joseph.kit.move("base", "heavy")
+    assert volley.hits >= 8 and volley.chain == "who_laughs"
+    events = run(match, 60, p1=press("heavy"))  # pressed once: the whole barrage
+    assert kinds(events).count("hit") >= 5, kinds(events)
+    assert dummy.max_hp - dummy.hp > 50
+
+
+def test_the_hammer_goes_through_a_guard():
+    match = make_duel("joseph_p2", "mannequin_red", p1=(150, 100), p2=(170, 100))
+    dummy = match.fighters[1]
+    hammer = match.fighters[0].kit.move("base", "special_alt")
+    assert hammer.unblockable and hammer.damage > 80
+    run_until(
+        match,
+        lambda m: dummy.hp < dummy.max_hp,
+        90,
+        p1=press("special", move=(1.0, 0.0)),
+        p2=hold("guard"),
+    )
+
+
+def test_the_tricks_of_the_trade_play_their_cutscene():
+    match = make_duel("joseph_p2", "mannequin_red", p1=(150, 100), p2=(174, 100))
+    joseph, dummy = match.fighters
     joseph.hh = match.rules.hh_max
-    match.step((press("heart_heat", move=(1.0, 0.0)), NONE))
-    events = run_held(match, match.rules.super_freeze_f + 60)
-    assert not match.traps
-    assert kinds(events).count("explosion") == 3  # two threads and the hidden grenade
-    assert dummy.hp < dummy.max_hp
+    gha = press("heart_heat", move=(1.0, 0.0))
+    events = run_held(match, match.rules.super_freeze_f + 40, p1=gha)
+    assert "cutscene_start" in kinds(events)
+    assert match.cutscene is not None and match.cutscene.name == "overdrive_beat"
+    run_held(match, match.cutscene.frames_left + 4)
+    assert dummy.max_hp - dummy.hp > 200
 
 
 def test_the_secret_technique_runs_away_invincible():

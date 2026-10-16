@@ -29,6 +29,7 @@ class State(StrEnum):
     POSE = "pose"
     SWITCH = "switch"  # changing stance (bringing the Stand out or back)
     BREATHE = "breathe"  # Hamon breathing: filling the gauge, standing still
+    AWAKENING = "awakening"  # putting the mask on: still, open, and worth the wait
     CLASH = "clash"
     HITSTUN = "hitstun"
     KO = "ko"
@@ -245,7 +246,11 @@ class Fighter:
 
     @property
     def damage_taken_mult(self) -> float:
-        return self.buff.damage_taken_mult if self.buff else 1.0
+        mult = self.buff.damage_taken_mult if self.buff else 1.0
+        awakening = self.kit.awakening
+        if self.state == State.AWAKENING and awakening is not None:
+            mult *= awakening.vulnerable_mult  # standing still with a mask over his face
+        return mult
 
     def gain_hh(self, amount: float) -> None:
         self.hh = min(self.rules.hh_max, self.hh + amount)
@@ -404,6 +409,8 @@ class Fighter:
             if frame.is_held("pose"):
                 return []
             self.set_state(State.IDLE)
+        if self.state == State.AWAKENING:
+            return []  # nothing to do but stand there and hope
         if self.state == State.BREATHE:
             if frame.is_held("stand"):
                 gain = self.rules.hamon_breath_per_f
@@ -473,7 +480,7 @@ class Fighter:
         return None
 
     def _try_awaken(self) -> list[Event] | None:
-        """The Power Up key: become the other thing, once, for the rest of the round."""
+        """The Power Up key: start putting the mask on. It only counts if he survives it."""
         awakening = self.kit.awakening
         if awakening is None or self.awakened or "power_up" not in self.buffer:
             return None
@@ -481,9 +488,30 @@ class Fighter:
             return None
         del self.buffer["power_up"]
         self.hh -= awakening.hh_cost
+        self.set_state(State.AWAKENING)
+        return [Event("awaken_start", self.pos, self.index)]
+
+    @property
+    def awakening_charge(self) -> float:
+        """How far into it he is, 0 to 1 (for the mask coming down over his face)."""
+        awakening = self.kit.awakening
+        if self.state != State.AWAKENING or awakening is None or awakening.charge_f <= 0:
+            return 0.0
+        return min(1.0, self.state_f / awakening.charge_f)
+
+    def complete_awakening(self) -> None:
+        """He got through it: the stance is his now, and there is no way back."""
+        awakening = self.kit.awakening
         self.awakened = True
-        self.begin_stance_switch(awakening.stance)
-        return [Event("awaken", self.pos, self.index)]
+        self.stance = awakening.stance
+        self.switch_target = awakening.stance
+        self.set_state(State.IDLE)
+
+    def break_awakening(self) -> None:
+        """Struck hard enough while open: the mask comes off, and half the gauge with it."""
+        awakening = self.kit.awakening
+        if awakening is not None:
+            self.hh = min(self.rules.hh_max, self.hh + awakening.hh_cost * awakening.refund)
 
     @property
     def sun_proof(self) -> bool:
@@ -900,6 +928,11 @@ class Fighter:
             self.attack.armor_used += 1
             self.hurt(damage)
             return True
+        awakening = self.kit.awakening
+        # A light tap will not stop him; a real blow takes the mask off his face.
+        breaks = awakening is not None and hitstun_f >= awakening.break_hitstun_f
+        if self.state == State.AWAKENING and breaks:
+            self.break_awakening()
         was_remote = self.remote
         if was_remote:
             self.leave_remote()  # struck: the Stand snaps back...

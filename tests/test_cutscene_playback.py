@@ -26,6 +26,9 @@ def owners() -> list[tuple[str, str]]:
         for move in fighter.kit.all_moves():
             if move.cinematic:
                 found.setdefault(move.cinematic, fighter.id)
+        awakening = fighter.kit.awakening
+        if awakening is not None and awakening.cinematic:
+            found.setdefault(awakening.cinematic, fighter.id)
     return sorted(found.items())
 
 
@@ -42,11 +45,14 @@ def test_a_cutscene_plays_and_draws_from_end_to_end(name, fighter_id, monkeypatc
         match = make_duel(fighter_id, opponent, p1=(170, 130), p2=(240, 130))
         defs = [get_fighter(fighter_id), get_fighter(opponent)]
         view = FightView(load_stage("cairo_night"), defs)
-        move = next(m for m in defs[0].kit.all_moves() if m.cinematic == name)
-        scene = Cutscene(name, 0, 1, move.cinematic_f, move.cinematic_f, move, serial=1)
+        move = next((m for m in defs[0].kit.all_moves() if m.cinematic == name), None)
+        # An awakening is a cutscene with no blow behind it.
+        awakening = defs[0].kit.awakening
+        frames = move.cinematic_f if move is not None else awakening.cinematic_f
+        scene = Cutscene(name, 0, 1, frames, frames, move, serial=1)
         player = make_cutscene(view, match, scene)
         surface = pygame.Surface(SCREEN)
-        for frame in range(move.cinematic_f + 1):
+        for frame in range(frames + 1):
             player.update(frame)
             player.draw(surface)
     finally:

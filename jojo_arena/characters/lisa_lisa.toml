@@ -185,56 +185,67 @@ anim = "heel_drop"
 # Super moves -----------------------------------------------------------------------------
 
 # Heart Heat Attack (1 bar): the scarf spear at full length, through everything.
+# Heart Heat Attack (1 barre) : elle lève la Pierre Rouge d'Aja, y fait passer son onde,
+# et le rayon tombe droit sur lui. Rien ne le bloque.
 [moves.hha]
-shout = "OVERDRIVE !"
-label = "LANCE DE HAMON"
-label_en = "HAMON SPEAR"
-info = "L'écharpe rigide à pleine longueur traverse l'arène, invincible au démarrage"
-info_en = "The stiff scarf at full length crosses the arena, invincible on startup"
+shout = "SUPER AJA !"
+label = "SUPER AJA"
+info = "Elle lève la pierre rouge : un rayon imparable tombe sur l'adversaire"
+info_en = "She holds up the red stone: an unblockable beam comes down on the opponent"
 hamon = true
-shape = "line"
-fx = "scarf_spear"
-startup_f = 14
+at_target = true
+fx = "beam"
+startup_f = 20
 active_f = 6
-recovery_f = 24
-invincible_f = 14
-damage = 130
-reach = 110
-radius = 6
-hitstun_f = 36
-knockback = 440
-hitstop_f = 12
-wall_bounce = true
-clashable = false
-anim = "special"
-
-# Great Heat Attack (2 bars): the scarf trap. It must catch first; then it wraps the
-# opponent from head to foot and she floods it with Hamon.
-[moves.gha]
-shout = "L'ÉCHARPE !"
-shout_en = "THE SCARF!"
-label = "PIÈGE DE L'ÉCHARPE"
-label_en = "SCARF TRAP"
-info = "L'écharpe attrape de loin. Si elle prend : enroulé et noyé de Hamon"
-info_en = "The scarf grabs from afar. If it holds: wrapped up and flooded with Hamon"
-hamon = true
-shape = "line"
-fx = "scarf"
-unblockable = true
-startup_f = 14
-active_f = 5
 recovery_f = 26
-invincible_f = 14
-damage = 20
-reach = 60
-radius = 6
+invincible_f = 20
+unblockable = true
+damage = 170
+radius = 15
+hitstun_f = 38
+knockback = 300
+hitstop_f = 12
+clashable = false
+anim = "pose"
+
+# Great Heat Attack (2 barres) : elle ne frappe pas, elle attend. Frappez-la au corps à
+# corps pendant qu'elle pose, et c'est fini. Le seul ultime du jeu qui soit un contre.
+[moves.gha]
+shout = "UN CÂLIN ? ESSAIE DONC."
+shout_en = "GIVE ME A HUG? JUST TRY IT."
+label = "UN CÂLIN ? ESSAIE DONC"
+label_en = "GIVE ME A HUG? JUST TRY IT"
+info = "Elle pose, offerte. Qui la frappe au corps à corps est enroulé et déroulé"
+info_en = "She poses, open. Whoever strikes her in melee is wrapped up and unwound"
+startup_f = 6
+active_f = 46
+recovery_f = 26
+counter = "hug_answer"
+clashable = false
+anim = "pose"
+
+[stances.base.moves.hug_answer]
+shout = "TU AS PERDU."
+shout_en = "YOU LOSE."
+label = "RÉPONSE DE L'ÉCHARPE"
+label_en = "THE SCARF ANSWERS"
+info = "L'onde le décolle, l'écharpe l'enroule, et elle le déroule d'un talon"
+info_en = "The Ripple lifts him, the scarf wraps him, and a heel unwinds him"
+hamon = true
+startup_f = 2
+active_f = 5
+recovery_f = 28
+invincible_f = 16
+damage = 30
+reach = 18
+radius = 13
 hitstun_f = 40
-hitstop_f = 8
+hitstop_f = 12
 clashable = false
 anim = "special"
 cinematic = "scarf_trap"
-cinematic_s = 3.0
-finish_damage = 230
+cinematic_s = 4.0
+finish_damage = 300
 finish_hitstun_f = 50
-finish_knockback = 380
+finish_knockback = 440
 finish_wall_bounce = true

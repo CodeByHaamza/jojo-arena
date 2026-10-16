@@ -141,6 +141,7 @@ class Match:
         events += self._resolve_melee()
         events += self._resolve_projectile_hits()
         events += self._apply_sunlight()
+        events += self._update_awakenings()
         events += self._update_cage()
         for fighter in self.fighters:
             if fighter.frozen:
@@ -678,22 +679,43 @@ class Match:
                 events.append(Event("sunburn", fighter.pos, fighter.index, int(fighter.blood == 0)))
         return events
 
-    def _start_cutscene(self, user: Fighter, target: Fighter, attack: Attack) -> list[Event]:
-        move = attack.move
-        attack.cutscene_done = True
-        self.cutscene = Cutscene(
-            move.cinematic,
-            user.index,
-            target.index,
-            move.cinematic_f,
-            move.cinematic_f,
-            move,
-            attack.serial,
-        )
+    def _update_awakenings(self) -> list[Event]:
+        """Whoever is putting a mask on: count it down, and let it land."""
+        for fighter in self.fighters:
+            awakening = fighter.kit.awakening
+            if fighter.state != State.AWAKENING or awakening is None:
+                continue
+            if fighter.state_f < awakening.charge_f:
+                continue
+            fighter.complete_awakening()
+            events = [Event("awaken", fighter.pos, fighter.index)]
+            if awakening.cinematic:
+                events += self._start_scene(
+                    awakening.cinematic,
+                    fighter,
+                    self.opponent(fighter),
+                    awakening.cinematic_f,
+                )
+            return events
+        return []
+
+    def _start_scene(
+        self, name: str, user: Fighter, target: Fighter, frames: int, move=None, serial: int = 0
+    ) -> list[Event]:
+        """Hold the fight for a cutscene. `move` carries a finishing blow; an awakening
+        has none - it is the state it leaves behind that matters."""
+        self.cutscene = Cutscene(name, user.index, target.index, frames, frames, move, serial)
         self.super_freeze = 0
         self.super_user = None
         self.hitstop = 0
         return [Event("cutscene_start", user.pos, user.index)]
+
+    def _start_cutscene(self, user: Fighter, target: Fighter, attack: Attack) -> list[Event]:
+        move = attack.move
+        attack.cutscene_done = True
+        return self._start_scene(
+            move.cinematic, user, target, move.cinematic_f, move, attack.serial
+        )
 
     def _update_cutscene(self) -> list[Event]:
         """The fight holds while the cutscene plays, then its outcome lands at once."""
@@ -705,6 +727,8 @@ class Match:
         user, target = self.fighters[scene.user], self.fighters[scene.target]
         move = scene.move
         events = [Event("cutscene_end", user.pos, user.index)]
+        if move is None:
+            return events  # an awakening: what it changed is already done
         if move.finish_damage and target.alive:
             away = (target.pos - user.pos).normalized() if target.pos != user.pos else user.facing
             strike = Strike(
