@@ -52,14 +52,16 @@ class DuelScreen:
     def update(self, tick: int) -> None:
         rng = self.rng
         for side in (0, 1):
-            if tick % 3 != side:
+            # Long shouts (OVERDRIVE) come out smaller and less often than ORA or MUDA.
+            long_shout = len(self.shouts[side]) > 5
+            if tick % (5 if long_shout else 3) != side:
                 continue
             # Burst out of the fighter's half, toward its own edge of the screen.
             direction = -1 if side == 0 else 1
             start = Vec2(240 + direction * rng.uniform(20, 120), rng.uniform(40, 240))
             angle = rng.uniform(-1.2, 1.2) + (math.pi if side == 0 else 0)
             velocity = Vec2.from_angle(angle, rng.uniform(1.5, 4.0))
-            scale = rng.choice((1, 2, 2, 3))
+            scale = rng.choice((1, 1, 2) if long_shout else (1, 2, 2, 3))
             life = rng.randint(24, 40)
             style = sfx.shout_style(self.defs[side].aura)
             self.words.append(
@@ -136,12 +138,14 @@ class DuelScreen:
             view = self.views[side]
             flip = side == 1
             toward = 1 if side == 0 else -1
-            # The user, braced, well behind.
-            idle_spec = view.sprites.spec("idle")
-            idle = frame_index(idle_spec, tick) if idle_spec else 0
-            user = self._sprite(view.sprites, "idle", idle, flip)
-            self._blit_feet(surface, user, view.sprites, USER_X[side], FEET_Y, flip)
-            # The Stand (or the user's own fists), throwing punches as fast as it can.
+            if view.stand is not None:
+                # The user, braced, well behind.
+                idle_spec = view.sprites.spec("idle")
+                idle = frame_index(idle_spec, tick) if idle_spec else 0
+                user = self._sprite(view.sprites, "idle", idle, flip)
+                self._blit_feet(surface, user, view.sprites, USER_X[side], FEET_Y, flip)
+            # The Stand (or, without one, the fighter's own fists: Jonathan's Overdrive),
+            # throwing punches as fast as it can.
             punch = 1 + (tick // 3 + side) % 2
             stand_sheet = view.stand or view.sprites
             stand = self._sprite(stand_sheet, "light", punch, flip)

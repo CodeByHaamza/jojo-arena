@@ -28,6 +28,7 @@ class State(StrEnum):
     DASH = "dash"
     POSE = "pose"
     SWITCH = "switch"  # changing stance (bringing the Stand out or back)
+    BREATHE = "breathe"  # Hamon breathing: filling the gauge, standing still
     CLASH = "clash"
     HITSTUN = "hitstun"
     KO = "ko"
@@ -61,6 +62,8 @@ class Attack:
     armor_used: int = 0
     countered: bool = False  # caught by a counter: this blow is spent
     cutscene_done: bool = False
+    hamon: bool = False  # carries Hamon (burns vampires and Pillar Men)
+    boost: float = 1.0  # damage multiplier: a Hamon-boosted move hits harder
 
     @property
     def phase(self) -> int:
@@ -134,6 +137,7 @@ class Fighter:
         self.dash_dir = Vec2()
         self.evaded = False  # this dash already earned a Stylish Evade
         self.hh = 0.0  # Heart Heat gauge
+        self.hamon = rules.hamon_start if kit.style == "hamon" else 0.0
         self.style = make_style(kit.style, kit.style_params)
         self.switch_target = self.stance
         self.resolve_announced = False
@@ -177,6 +181,10 @@ class Fighter:
     def in_resolve(self) -> bool:
         """Résolution: low on life, hits harder and takes no chip damage."""
         return 0 < self.hp < self.max_hp * self.rules.resolve_threshold
+
+    @property
+    def breathing(self) -> bool:
+        return self.state == State.BREATHE
 
     @property
     def aura_active(self) -> bool:
@@ -375,6 +383,11 @@ class Fighter:
             if frame.is_held("pose"):
                 return []
             self.set_state(State.IDLE)
+        if self.state == State.BREATHE:
+            if frame.is_held("stand"):
+                self.hamon = min(self.rules.hamon_max, self.hamon + self.rules.hamon_breath_per_f)
+                return []
+            self.set_state(State.IDLE)
         if self.state == State.GUARD:
             self.facing = self.aim_at(target)
             events = self._try_actions(frame, target)
@@ -429,7 +442,7 @@ class Fighter:
         if self._try_attack(frame, target):
             return []
         if self._take_buffered(("stand",)) and self.style.on_pressed(self):
-            return [Event("stance_switch", self.pos, self.index)]
+            return [Event(self.style.event, self.pos, self.index)]
         return None
 
     def _try_super(self, frame: InputFrame, target: Vec2) -> list[Event] | None:
@@ -511,11 +524,21 @@ class Fighter:
             move, aim, self._serial, target=target.copy(), slot=slot, start=self.pos.copy()
         )
         self.attack.dest = dest
+        self.attack.hamon = move.hamon
+        if move.hamon_cost and self.hamon >= move.hamon_cost:
+            # Enough Hamon: the move spends it and strikes harder. Without, it stays normal.
+            self.hamon -= move.hamon_cost
+            self.attack.hamon = True
+            self.attack.boost = move.hamon_mult or self.rules.hamon_boost_mult
         if move.cooldown_f:
             self.cooldowns[move] = move.cooldown_f
         if move.buff:
             self.buff = self.kit.buffs[move.buff]
             self.buff_f = self.buff.duration_f
+
+    def begin_breath(self) -> None:
+        """Hamon breathing starts; it lasts while the style key is held."""
+        self.set_state(State.BREATHE)
 
     def enter_remote(self, stance: str) -> list[Event]:
         """The Stand leaves its user's side: the player now steers it."""

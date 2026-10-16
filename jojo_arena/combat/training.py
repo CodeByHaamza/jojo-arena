@@ -106,6 +106,8 @@ class Training:
             fighter.min_hp = 1 if self.infinite_life else 0
             if self.infinite_hh:
                 fighter.hh = self.rules.hh_max
+                if fighter.kit.style == "hamon":
+                    fighter.hamon = self.rules.hamon_max
 
     def step(self, inputs: tuple[InputFrame, InputFrame]) -> list[Event]:
         self.phase_f += 1

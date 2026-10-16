@@ -14,6 +14,8 @@ Unités : les durées en `_f` sont en images (60 par seconde) ; celles en `_s` e
 | `strength` | Force physique du Stand (1 = normale). Multiplie la vitesse, les dégâts et le recul des objets qu'il lance ; à partir de 1,5 l'objet fait rebondir sur les murs (Star Platinum, The World : 1,8) |
 | `style` | Ce que fait la touche Stand. `{ type = "stance_toggle", off = "base", on = "stand", stand_body = true }` : bascule entre deux postures, et `stand_body` donne au Stand un corps qui peut être touché |
 | `remote`, `remote_range`, `remote_speed` | Dans `style` : maintenir la touche Stand envoie le Stand seul, dans cette posture, jusqu'à cette distance, à cette vitesse (mode contrôle) |
+| `style = { type = "hamon" }` | Style Hamon : maintenir la touche Stand fait respirer (la jauge de Hamon se remplit, immobile et vulnérable) ; les coups à `hamon_cost` la dépensent. Réglages dans `[hamon]` de `combat/rules.toml` |
+| `nature` | `human` par défaut ; `vampire` ou `pillar_man` : le Hamon fait double dégâts |
 
 ## Les postures
 
@@ -78,6 +80,10 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `wall_bounce` | L'adversaire rebondit sur les murs |
 | `unblockable` | Imparable (saisies) |
 | `drain` | Part des dégâts rendue en vie à l'attaquant |
+| `hamon_cost` | Style Hamon : s'il y a assez de Hamon, le coup le dépense et frappe plus fort (sinon il reste normal) ; ses projectiles portent aussi le Hamon |
+| `hamon_mult` | Dégâts du coup boosté (par défaut `boost_mult` des règles) |
+| `hamon_unblockable` | Boosté, le coup traverse la garde (l'onde passe à travers) |
+| `hamon` | Le coup est toujours du Hamon (les supers d'un manieur du Hamon), sans rien dépenser |
 | `guard_damage` | Multiplie l'usure de la jauge de garde quand le coup est bloqué (casse-garde) |
 | `clashable` | Peut déclencher un clash contre un autre coup (vrai par défaut pour les coups au corps à corps) |
 

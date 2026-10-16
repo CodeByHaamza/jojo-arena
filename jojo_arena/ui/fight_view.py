@@ -58,6 +58,7 @@ ANIM_FALLBACKS = {
     "dash": "walk",
     "walk": "idle",
     "switch": "pose",
+    "breathe": "idle",
 }
 STATE_ANIMS = {
     State.IDLE: "idle",
@@ -68,6 +69,7 @@ STATE_ANIMS = {
     State.DASH: "dash",
     State.POSE: "pose",
     State.SWITCH: "switch",
+    State.BREATHE: "breathe",
     State.CLASH: "light",
     State.HITSTUN: "hurt",
     State.KO: "ko",
@@ -346,6 +348,10 @@ class FightView:
                 self.sparks.append(Spark(event.pos + Vec2(0, -8), 12, 12, aura, 12, 6))
             elif event.kind == "drain":
                 self.sparks.append(Spark(pos, 16, 16, (230, 40, 60), 12, 6))
+            elif event.kind == "hamon":
+                # Burning a vampire: a bigger, hotter burst.
+                color = (255, 150, 40) if event.value else (255, 226, 90)
+                self.sparks.append(Spark(pos, 18, 18, color, 18 if event.value else 12, 8))
             elif event.kind == "ko":
                 self.shake = max(self.shake, 14)
 
@@ -497,6 +503,11 @@ class FightView:
                 fx.add(vfx.Ring(pos, aura, 3.5, 16, 3))
                 fx.focus(pos, heavy=True)
                 self.flash = max(self.flash, 4)
+            elif kind == "hamon":
+                burns = bool(event.value)
+                fx.add(vfx.Ring(pos, (255, 220, 80), 3.5 if burns else 2.5, 14, 2))
+                fx.add(vfx.Flash(pos, 20 if burns else 14, (255, 210, 60), 8))
+                words.add(sfx.CRACKLE, pos + Vec2(0, -12), sfx.HAMON, 2, 26, 0.5, 1)
             elif kind == "armor":
                 fx.add(vfx.Flash(pos, 16, (255, 150, 60), 6))
                 fx.add(vfx.Ring(pos, (255, 170, 80), 2.0, 10))
@@ -524,6 +535,12 @@ class FightView:
                     self.words.add(move.shout, self._head(fighter), self._shout_style(i), 2, 46)
                 elif move.hits > 1:
                     self.words.add(sfx.DODODO, self._head(fighter), "menace", 2, 30, 0.4, 1)
+            if fighter.state == State.BREATHE and fighter.state_f % 14 == 0:
+                # Ripples of Hamon spreading from the breathing fighter.
+                self.fx.add(vfx.Ring(fighter.pos + self.chest(i), (255, 214, 80), 1.8, 18, 1))
+                if fighter.state_f % 56 == 0:
+                    words = sfx.BREATH
+                    self.words.add(words, self._head(fighter), sfx.HAMON, 2, 46, 0.3, 0)
             if fighter.state == State.POSE and fighter.state_f % 16 == 0:
                 side = 1 if (fighter.state_f // 16) % 2 else -1
                 self.words.menace(fighter.pos + self.chest(i), side)

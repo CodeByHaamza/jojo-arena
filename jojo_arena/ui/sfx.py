@@ -34,6 +34,9 @@ BAAN = "バーン"
 BAKI = "バキッ"
 GA = "ガッ"
 HEARTBEAT = "ドクン"
+BREATH = "コォォォ"  # Hamon breathing
+CRACKLE = "バチッ"  # Hamon sparks on a hit
+HAMON = ((255, 236, 120), (220, 140, 30), (60, 30, 10))  # word colors for Hamon
 
 
 def shout_style(aura: Color) -> tuple[Color, Color, Color]:

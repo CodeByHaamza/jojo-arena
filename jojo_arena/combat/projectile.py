@@ -24,6 +24,8 @@ class Projectile:
     stop_after: int | None = None
     key: tuple | None = None  # the move that fired it, for combo scaling
     prop: int | None = None  # index of the arena prop being thrown, if it is one
+    hamon: bool = False  # carries Hamon, like the move that fired it
+    boost: float = 1.0  # damage multiplier of that move
 
     @property
     def radius(self) -> float:

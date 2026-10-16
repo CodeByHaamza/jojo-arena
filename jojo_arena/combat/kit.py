@@ -180,6 +180,10 @@ class MoveDef:
     guard_damage: float = 1.0  # multiplies the guard gauge damage when blocked
     stand_flash: bool = False  # the Stand appears for this move even when called back
     fx: str = ""  # drawn while active: "limb", "tentacle" or "blade" out to `reach`
+    hamon: bool = False  # always a Hamon attack (the supers of Hamon users)
+    hamon_cost: int = 0  # Hamon spent, when there is enough, to boost the move
+    hamon_mult: float = 0.0  # damage of the boosted move (0: the rules' boost_mult)
+    hamon_unblockable: bool = False  # boosted, it goes through the guard
     shout: str = ""  # written on screen when used (each hit of a rush: "ORA", "MUDA")
     label: str = ""  # display name in the move list
     info: str = ""  # one-line description in the move list
@@ -245,6 +249,10 @@ class MoveDef:
             guard_damage=data.get("guard_damage", 1.0),
             stand_flash=data.get("stand_flash", False),
             fx=data.get("fx", ""),
+            hamon=data.get("hamon", False),
+            hamon_cost=data.get("hamon_cost", 0),
+            hamon_mult=data.get("hamon_mult", 0.0),
+            hamon_unblockable=data.get("hamon_unblockable", False),
             shout=localized(data, "shout"),
             label=localized(data, "label"),
             info=localized(data, "info"),
@@ -270,6 +278,7 @@ class Kit:
     buffs: dict[str, BuffDef] = field(default_factory=dict)
     stance_labels: dict[str, str] = field(default_factory=dict)  # move list headings
     strength: float = 1.0  # the Stand's raw power: how fast and hard it throws props
+    nature: str = "human"  # "vampire", "pillar_man"...: what Hamon burns
 
     def move(self, stance: str, slot: str) -> MoveDef | None:
         return self.stances[stance].moves.get(slot) or self.shared_moves.get(slot)
@@ -322,6 +331,7 @@ def parse_kit(data: dict, kit_id: str, source: str = "kit") -> Kit:
     return Kit(
         id=kit_id,
         strength=data.get("strength", 1.0),
+        nature=data.get("nature", "human"),
         name=data["name"],
         max_hp=data.get("max_hp", 1000),
         walk_speed=per_frame(walk) if walk else None,

@@ -100,6 +100,12 @@ class Rules:
     time_stop_resist_first_f: int
     time_stop_resist_growth_f: int
     time_stop_projectile_flight_f: int
+    hamon_max: float
+    hamon_start: float
+    hamon_breath_per_f: float
+    hamon_boost_mult: float
+    hamon_weak_natures: tuple[str, ...]
+    hamon_vs_weak_mult: float
 
     @classmethod
     def from_data(cls, data: dict) -> Rules:
@@ -116,6 +122,12 @@ class Rules:
             time_stop_resist_first_f=seconds_to_frames(stop["resist_first_s"]),
             time_stop_resist_growth_f=seconds_to_frames(stop["resist_growth_s"]),
             time_stop_projectile_flight_f=stop["projectile_flight_f"],
+            hamon_max=data["hamon"]["max"],
+            hamon_start=data["hamon"]["start"],
+            hamon_breath_per_f=data["hamon"]["breath_per_s"] / HZ,
+            hamon_boost_mult=data["hamon"]["boost_mult"],
+            hamon_weak_natures=tuple(data["hamon"]["weak_natures"]),
+            hamon_vs_weak_mult=data["hamon"]["vs_weak_mult"],
             round_timer_f=seconds_to_frames(rnd["timer_s"]),
             round_intro_f=seconds_to_frames(rnd["intro_s"]),
             round_outro_f=seconds_to_frames(rnd["outro_s"]),

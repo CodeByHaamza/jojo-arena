@@ -33,6 +33,7 @@ from jojo_arena.ui.widgets import (
 STANCE_SLOTS = ("light", "heavy", "heavy_alt", "special", "special_alt")
 VARIANTS = {"heavy_alt": "heavy", "special_alt": "special"}  # a direction + this button
 NAME_X = 128
+SCREEN = (480, 270)
 TOP = 64
 
 
@@ -49,6 +50,38 @@ class MovePage:
     title: str
     entries: tuple[MoveEntry, ...]
     note: str = ""  # shown under the entries
+    part: int = 1  # a page too long for the screen is cut in parts: this one...
+    parts: int = 1  # ...out of so many
+
+
+ENTRY_GAP = 7
+BOTTOM_MARGIN = 30  # room kept for the hints at the bottom
+
+
+def entry_height(entry: MoveEntry, width: int) -> int:
+    lines = len(font.wrap(entry.info, width - NAME_X - 16)) if entry.info else 0
+    return 11 + 10 * lines + ENTRY_GAP
+
+
+def paginate(pages: list[MovePage], size: tuple[int, int]) -> list[MovePage]:
+    """Cut the pages whose entries run past the bottom of the screen into parts."""
+    width, height = size
+    room = height - BOTTOM_MARGIN - TOP
+    result: list[MovePage] = []
+    for page in pages:
+        chunks: list[list[MoveEntry]] = [[]]
+        used = 0
+        for entry in page.entries:
+            needed = entry_height(entry, width)
+            if chunks[-1] and used + needed > room:
+                chunks.append([])
+                used = 0
+            chunks[-1].append(entry)
+            used += needed
+        for i, chunk in enumerate(chunks):
+            note = page.note if i == len(chunks) - 1 else ""
+            result.append(MovePage(page.title, tuple(chunk), note, i + 1, len(chunks)))
+    return result
 
 
 def _bars(amount: float) -> str:
@@ -58,6 +91,14 @@ def _bars(amount: float) -> str:
     if amount == 1:
         return text.BARS_ONE
     return text.BARS_MANY.format(n=round(amount))
+
+
+def _info(move) -> str:
+    """A move's line in the list, with its Hamon cost in front when it has one."""
+    if move.hamon_cost:
+        tag = text.HAMON_TAG.format(cost=move.hamon_cost)
+        return f"{tag} - {move.info}" if move.info else tag
+    return move.info
 
 
 def build_pages(
@@ -76,12 +117,12 @@ def build_pages(
             if move is None:
                 continue
             keys = (text.DIRECTION, key(VARIANTS[slot])) if slot in VARIANTS else (key(slot),)
-            entries.append(MoveEntry(keys, move.label or slot.upper(), move.info))
+            entries.append(MoveEntry(keys, move.label or slot.upper(), _info(move)))
             if move.counter and move.counter in stance.moves:
                 # The answer of a counter comes out on its own, when struck.
                 answer = stance.moves[move.counter]
                 entries.append(
-                    MoveEntry((text.WHEN_STRUCK,), answer.label or answer.name, answer.info, True)
+                    MoveEntry((text.WHEN_STRUCK,), answer.label or answer.name, _info(answer), True)
                 )
             # A chain: the same button again, once the previous blow connects.
             depth = 1
@@ -89,7 +130,7 @@ def build_pages(
                 move = stance.moves[move.chain]
                 depth += 1
                 presses = (key(slot),) * depth
-                entries.append(MoveEntry(presses, move.label or move.name, move.info, True))
+                entries.append(MoveEntry(presses, move.label or move.name, _info(move), True))
         if entries:
             title = kit.stance_labels.get(stance_name, stance_name.upper())
             pages.append(MovePage(title, tuple(entries)))
@@ -105,6 +146,7 @@ def build_pages(
         note = text.SYS_SUPER_INFO if len(supers) == 2 else ""
         pages.append(MovePage(text.PAGE_SUPER, tuple(supers), note))
 
+    prop_info = text.SYS_PROP_INFO if fdef.stand_sprite else text.SYS_PROP_INFO_HANDS
     stand_info = text.SYS_STYLE_INFO
     if fdef.stand_name:
         stand_info = text.SYS_STAND_INFO.format(stand=fdef.stand_name)
@@ -113,8 +155,10 @@ def build_pages(
         MoveEntry((key("guard"),), text.SYS_GUARD, text.SYS_GUARD_INFO),
         MoveEntry((key("dash"),), text.SYS_DASH, text.SYS_DASH_INFO),
         MoveEntry((key("pose"),), text.SYS_POSE, text.SYS_POSE_INFO),
-        MoveEntry((key("pose"),), text.SYS_PROP, text.SYS_PROP_INFO),
+        MoveEntry((key("pose"),), text.SYS_PROP, prop_info),
     ]
+    if kit.style == "hamon":
+        basics.insert(1, MoveEntry((key("stand"),), text.SYS_BREATH, text.SYS_BREATH_INFO))
     if len(kit.stances) > 1:
         basics.insert(1, MoveEntry((key("stand"),), text.SYS_STAND, stand_info))
     if kit.style_params.get("remote"):
@@ -151,7 +195,7 @@ class MoveListPanel:
         inputs: InputManager | None = None,
     ) -> None:
         self.fdef = fdef
-        self.pages = build_pages(fdef, player, rules, inputs)
+        self.pages = paginate(build_pages(fdef, player, rules, inputs), SCREEN)
         self.page = 0
         self.owner = f"{player_name or text.P1} - {device_label(player)}"
         self.hints = [
@@ -178,12 +222,18 @@ class MoveListPanel:
         font.draw(surface, text.MOVE_LIST, (width - 16, 8), GOLD, align="right")
         font.draw(surface, self.owner, (width - 16, 20), DIM, align="right")
 
-        # Tabs
+        # Tabs: one per page; the parts of a long page share their tab.
         x = 16
-        for i, page in enumerate(self.pages):
-            current = i == self.page
+        shown = self.pages[self.page]
+        for page in self.pages:
+            if page.part > 1:
+                continue
+            current = page.title == shown.title
             color = GOLD if current else DIM
-            rect = font.draw(surface, page.title, (x, 44), color)
+            label = page.title
+            if current and shown.parts > 1:
+                label = f"{page.title} {shown.part}/{shown.parts}"
+            rect = font.draw(surface, label, (x, 44), color)
             if current:
                 surface.fill(GOLD, (rect.x, rect.bottom + 1, rect.width, 2))
             x = rect.right + 12
@@ -196,7 +246,7 @@ class MoveListPanel:
             y += 11
             if entry.info:
                 y = draw_wrapped(surface, entry.info, (NAME_X, y), width - NAME_X - 16)
-            y += 7
+            y += ENTRY_GAP
         note = self.pages[self.page].note
         if note:
             draw_wrapped(surface, note, (16, y + 2), width - 32, GOLD)

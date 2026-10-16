@@ -44,6 +44,7 @@ FR = {
     "REMOTE_ON": "CONTRÔLE",
     "TIME_STOP_READY": "STOP",
     "TIME_STOPPED": "TEMPS ARRÊTÉ",
+    "HAMON": "HAMON",
     "PUNISHMENT_TIME": "L'HEURE DU CHÂTIMENT !",
     "PAUSE": "PAUSE",
     "RESUME": "REPRENDRE",
@@ -107,6 +108,12 @@ FR = {
     "SYS_STAND": "STAND",
     "SYS_STAND_INFO": "Sortir ou rentrer {stand} : les coups changent",
     "SYS_STYLE_INFO": "Changer de style de combat : les coups changent",
+    "SYS_BREATH": "RESPIRATION",
+    "SYS_BREATH_INFO": (
+        "Maintenir : le Hamon se recharge, immobile. Les coups marqués HAMON le dépensent pour"
+        " frapper plus fort ; double dégâts aux vampires"
+    ),
+    "HAMON_TAG": "HAMON {cost}",
     "SYS_REMOTE": "MODE CONTRÔLE",
     "SYS_REMOTE_INFO": (
         "Maintenir {secs} s : pilote {stand} à distance. Le manieur reste sans défense ;"
@@ -120,6 +127,7 @@ FR = {
     "SYS_POSE_INFO": "Maintenir : remplit la jauge Heart Heat",
     "SYS_PROP": "OBJETS",
     "SYS_PROP_INFO": "Près d'une caisse ou d'une jarre : le Stand la prend. Encore : il la lance",
+    "SYS_PROP_INFO_HANDS": "Près d'une caisse ou d'une jarre : il la soulève. Encore : il la lance",
     "SYS_SUPER_INFO": "Touche seule : HHA. Avec une direction et 2 barres : GHA",
     "SYS_FLASH": "FLASH CANCEL",
     "SYS_FLASH_INFO": "Garde pendant un coup : l'annule ({cost})",
@@ -192,6 +200,7 @@ FR = {
     "GLOSSARY_NAME": "LE NOM",
     "GLOSSARY_USER": "MANIEUR : {name}",
     "GLOSSARY_STAND": "STAND : {name}",
+    "GLOSSARY_POWER": "POUVOIR : {name}",
     "GLOSSARY_STATS": "PUISSANCE {power}  VITESSE {speed}  PORTÉE {range}",
     "GLOSSARY_STATS2": "ENDURANCE {durability}  PRÉCISION {precision}  POTENTIEL {potential}",
     "GLOSSARY_SOURCE": "SOURCES : JOJOWIKI, MANGA ET ANIME",
@@ -274,6 +283,7 @@ EN = {
     "REMOTE_ON": "REMOTE",
     "TIME_STOP_READY": "STOP",
     "TIME_STOPPED": "TIME STOPPED",
+    "HAMON": "HAMON",
     "PUNISHMENT_TIME": "TIME FOR JUDGMENT!",
     "PAUSE": "PAUSE",
     "RESUME": "RESUME",
@@ -334,6 +344,12 @@ EN = {
     "SYS_STAND": "STAND",
     "SYS_STAND_INFO": "Call or dismiss {stand}: the moves change",
     "SYS_STYLE_INFO": "Switch fighting style: the moves change",
+    "SYS_BREATH": "BREATHING",
+    "SYS_BREATH_INFO": (
+        "Hold: the Hamon refills, standing still. Moves marked HAMON spend it to strike"
+        " harder; double damage to vampires"
+    ),
+    "HAMON_TAG": "HAMON {cost}",
     "SYS_REMOTE": "REMOTE MODE",
     "SYS_REMOTE_INFO": (
         "Hold {secs} s: steer {stand} from afar. The user is left defenceless;"
@@ -347,6 +363,7 @@ EN = {
     "SYS_POSE_INFO": "Hold: fills the Heart Heat gauge",
     "SYS_PROP": "PROPS",
     "SYS_PROP_INFO": "Near a crate or a jar: the Stand picks it up. Again: it throws it",
+    "SYS_PROP_INFO_HANDS": "Near a crate or a jar: lift it overhead. Again: throw it",
     "SYS_SUPER_INFO": "Key alone: HHA. With a direction and 2 bars: GHA",
     "SYS_FLASH": "FLASH CANCEL",
     "SYS_FLASH_INFO": "Guard during a move: cancels it ({cost})",
@@ -416,6 +433,7 @@ EN = {
     "GLOSSARY_NAME": "THE NAME",
     "GLOSSARY_USER": "USER: {name}",
     "GLOSSARY_STAND": "STAND: {name}",
+    "GLOSSARY_POWER": "POWER: {name}",
     "GLOSSARY_STATS": "POWER {power}  SPEED {speed}  RANGE {range}",
     "GLOSSARY_STATS2": "DURABILITY {durability}  PRECISION {precision}  POTENTIAL {potential}",
     "GLOSSARY_SOURCE": "SOURCES: JOJOWIKI, MANGA AND ANIME",

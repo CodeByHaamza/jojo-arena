@@ -96,6 +96,15 @@ loser_hitstun_f = 40
 tie_knockback = 240           # draw: both are pushed back, no damage
 spacing = 46                  # the two step apart so their barrages meet between them
 
+[hamon]
+# Hamon fighters (GDD "Hamon en détail"): hold the style key to breathe.
+max = 100
+start = 40                    # each round starts with this much Hamon
+breath_per_s = 25             # breathing fills the gauge, standing still and open to hits
+boost_mult = 1.4              # a boosted move (its hamon_cost paid) hits this much harder
+weak_natures = ["vampire", "pillar_man"]
+vs_weak_mult = 2.0            # Hamon on vampires and Pillar Men
+
 [stance]
 switch_f = 12                 # time to bring the Stand out or call it back
 

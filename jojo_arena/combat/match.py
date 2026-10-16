@@ -42,6 +42,7 @@ class Strike:
     guard_mult: float = 1.0  # multiplies the guard gauge damage
     key: tuple | None = None  # which move it belongs to, for combo scaling
     super_move: bool = False  # supers are built around stopped time: not softened in it
+    hamon: bool = False  # Hamon burns vampires and Pillar Men
 
 
 class Match:
@@ -209,6 +210,8 @@ class Match:
                 volley = self._spawn(fighter.index, origin, aim, defn, target)
                 for projectile in volley:
                     projectile.key = (fighter.index, attack.serial)
+                    projectile.hamon = attack.hamon
+                    projectile.boost = attack.boost
                 self.projectiles += volley
                 if move.disarm_f:
                     fighter.disarmed_f = move.disarm_f
@@ -308,7 +311,7 @@ class Match:
                 continue
             defn = projectile.defn
             strike = Strike(
-                damage=defn.damage,
+                damage=round(defn.damage * projectile.boost),
                 hitstun_f=defn.hitstun_f,
                 blockstun_f=defn.blockstun_f or round(defn.hitstun_f * self.rules.blockstun_ratio),
                 knockback=projectile.velocity.normalized() * defn.knockback,
@@ -317,6 +320,7 @@ class Match:
                 source=projectile.pos - projectile.velocity * 4,
                 where=projectile.pos,
                 key=projectile.key,
+                hamon=projectile.hamon,
             )
             landed, strike_events = self._strike(self.fighters[projectile.owner], target, strike)
             events += strike_events
@@ -367,7 +371,7 @@ class Match:
                     damage = move.last_damage
                 wall_bounce = wall_bounce or move.last_wall_bounce
             strike = Strike(
-                damage=damage,
+                damage=round(damage * attack.boost),
                 hitstun_f=move.hitstun_f,
                 blockstun_f=move.blockstun_f or round(move.hitstun_f * self.rules.blockstun_ratio),
                 knockback=direction.normalized() * knockback,
@@ -375,9 +379,10 @@ class Match:
                 hitstop_f=move.hitstop_f,
                 source=attacker.pos,
                 where=center,
-                unblockable=move.unblockable,
+                unblockable=move.unblockable or (attack.boost > 1 and move.hamon_unblockable),
                 drain=move.drain,
                 melee=True,
+                hamon=attack.hamon,
                 guard_mult=move.guard_damage,
                 key=(attacker.index, attack.serial),
                 super_move=move.name in ("hha", "gha"),
@@ -575,6 +580,7 @@ class Match:
                 unblockable=True,
                 key=(user.index, scene.serial),
                 super_move=True,
+                hamon=move.hamon,
             )
             _, strike_events = self._strike(user, target, strike)
             events += strike_events
@@ -738,7 +744,11 @@ class Match:
         damage = strike.damage * attacker.damage_dealt_mult * defender.damage_taken_mult
         if attacker.in_resolve:
             damage *= 1 + rules.resolve_damage_bonus
+        burns = strike.hamon and defender.kit.nature in rules.hamon_weak_natures
+        if burns:
+            damage *= rules.hamon_vs_weak_mult
         damage = round(damage)
+        sparks = [Event("hamon", strike.where, defender.index, int(burns))] if strike.hamon else []
         if not strike.unblockable and defender.guards_against(strike.source):
             chip = 0 if defender.in_resolve else round(damage * (1 - rules.guard_damage_reduction))
             broke = defender.take_block(
@@ -751,6 +761,7 @@ class Match:
             defender.gain_hh(damage * rules.hh_per_damage_taken * rules.hh_block_ratio)
             self.hitstop = max(self.hitstop, strike.hitstop_f // 2)
             events = [Event("guard_break" if broke else "block", strike.where, defender.index)]
+            events += sparks
             if defender.state == State.KO:
                 events.append(Event("ko", defender.pos, defender.index))
             return True, events
@@ -762,7 +773,7 @@ class Match:
         defender.gain_hh(damage * rules.hh_per_damage_taken)
         if not defender.frozen:
             self.hitstop = max(self.hitstop, strike.hitstop_f)
-        events = [Event("hit", strike.where, defender.index, damage)]
+        events = [Event("hit", strike.where, defender.index, damage), *sparks]
         if armored:
             events.append(Event("armor", defender.pos, defender.index))
         if strike.drain:

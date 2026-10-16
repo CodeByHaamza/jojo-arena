@@ -15,6 +15,8 @@ if TYPE_CHECKING:
 class Style:
     """No style: the button does nothing."""
 
+    event = "stance_switch"  # what the fight reports when the button starts something
+
     def __init__(self, params: dict) -> None:
         self.params = params
 
@@ -55,7 +57,29 @@ class StanceToggle(Style):
         return fighter.stance == self.on or (self.remote and fighter.stance == self.remote)
 
 
-STYLES: dict[str, type[Style]] = {"none": Style, "stance_toggle": StanceToggle}
+class Hamon(Style):
+    """Hold the button to breathe: the Hamon gauge fills, but the fighter stands still,
+    open to hits. Moves with a `hamon_cost` spend it to strike harder (GDD "Hamon").
+
+    Example in a character file:
+        style = { type = "hamon" }
+    """
+
+    event = "breath"
+
+    def on_pressed(self, fighter: Fighter) -> bool:
+        fighter.begin_breath()
+        return True
+
+    def aura_active(self, fighter: Fighter) -> bool:
+        return fighter.breathing
+
+
+STYLES: dict[str, type[Style]] = {
+    "none": Style,
+    "stance_toggle": StanceToggle,
+    "hamon": Hamon,
+}
 
 
 def make_style(name: str, params: dict) -> Style:

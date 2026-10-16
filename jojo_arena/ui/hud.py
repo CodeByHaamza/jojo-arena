@@ -22,6 +22,7 @@ LIFE_LOW = (230, 60, 60)
 TRAIL = (255, 245, 220)
 GUARD = (110, 170, 255)
 GOLD = (255, 214, 90)
+HAMON = (255, 200, 60)
 SCREEN_W = 480
 
 LIFE_W, LIFE_H, LIFE_Y = 180, 9, 6
@@ -191,6 +192,9 @@ class Hud:
         )
         label_x = 8 if i == 0 else SCREEN_W - 8
         align = "left" if i == 0 else "right"
+        if fighter.kit.style == "hamon":
+            self._draw_hamon(surface, fighter, bars)
+            return
         if fighter.aura_active:
             label = text.REMOTE_ON if fighter.remote else text.STANCE_ON
             font.draw(surface, label, (label_x, HH_Y - 11), shade(aura, 40), align=align)
@@ -200,6 +204,22 @@ class Hud:
             color = GOLD if ready else (90, 86, 104)
             stop_x = label_x + (40 if i == 0 else -40)
             font.draw(surface, text.TIME_STOP_READY, (stop_x, HH_Y - 11), color, align=align)
+
+    def _draw_hamon(self, surface: pygame.Surface, fighter: Fighter, bars: int) -> None:
+        """The Hamon gauge, a thin golden bar over the Heart Heat bars."""
+        i = fighter.index
+        width = bars * (HH_SEGMENT_W + 2) - 2
+        x = self._mirror(i, 8, width)
+        y = HH_Y - 7
+        surface.fill(OUTLINE, (x - 1, y - 1, width + 2, 5))
+        surface.fill((48, 40, 24), (x, y, width, 3))
+        fill = round(width * fighter.hamon / fighter.rules.hamon_max)
+        glow = fighter.breathing and (self.tick // 4) % 2 == 0
+        color = (255, 240, 150) if glow else HAMON
+        surface.fill(color, (x if i == 0 else x + width - fill, y, fill, 3))
+        label_x = 8 if i == 0 else SCREEN_W - 8
+        align = "left" if i == 0 else "right"
+        font.draw(surface, text.HAMON, (label_x, y - 11), color, align=align)
 
     def _draw_timer(self, surface: pygame.Surface, rounds: Rounds) -> None:
         seconds = rounds.timer_seconds
