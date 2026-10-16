@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import pygame
 
+from jojo_arena.combat.framedata import frame_data, signed
 from jojo_arena.combat.replay import Replay
 from jojo_arena.combat.training import Dummy, Training, dummy_input
 from jojo_arena.context import GameContext
@@ -26,6 +27,7 @@ DUMMY_LABELS = {
     Dummy.PLAYER: text.DUMMY_PLAYER,
 }
 SWITCH = [text.INFINITE, text.NORMAL]
+SHOW = [text.SHOWN, text.HIDDEN]
 
 
 class TrainingScene(FightScene):
@@ -43,6 +45,9 @@ class TrainingScene(FightScene):
         pause = action_label(player, "pause", ctx.inputs)
         self.hint = text.TRAINING_HINT.format(key=pause)
         self.inputs_shown = True
+        self.frames_shown = True
+        self.last_move = None  # the last move player 1 started, for its frame data
+        self._last_serial = -1
         self.input_display = InputDisplay({a: action_label(player, a, ctx.inputs) for a in ACTIONS})
 
     @property
@@ -65,6 +70,10 @@ class TrainingScene(FightScene):
             # Alone at training: player 1 can use any device, keyboard or pad.
             frames = [merge_frames(*frames), dummy]
         self.input_display.update(frames[0])
+        attack = self.rounds.match.fighters[0].attack
+        if attack is not None and attack.serial != self._last_serial:
+            self._last_serial = attack.serial
+            self.last_move = attack.move
         return frames
 
     def _pause_items(self) -> list[MenuItem]:
@@ -80,9 +89,8 @@ class TrainingScene(FightScene):
             ),
             MenuItem("life", text.LIFE, SWITCH, 0 if self.training.infinite_life else 1),
             MenuItem("hh", text.HH_GAUGE, SWITCH, 0 if self.training.infinite_hh else 1),
-            MenuItem(
-                "inputs", text.INPUTS, [text.SHOWN, text.HIDDEN], 0 if self.inputs_shown else 1
-            ),
+            MenuItem("inputs", text.INPUTS, SHOW, 0 if self.inputs_shown else 1),
+            MenuItem("frames", text.FRAMES, SHOW, 0 if self.frames_shown else 1),
             MenuItem("reset", text.RESET_POSITIONS),
             MenuItem("change", text.CHANGE_FIGHTERS),
             MenuItem("menu", text.MAIN_MENU),
@@ -111,6 +119,8 @@ class TrainingScene(FightScene):
                 self.replay.command({"hh": index == 0})
             elif key == "inputs":
                 self.inputs_shown = index == 0
+            elif key == "frames":
+                self.frames_shown = index == 0
             self.training.apply_options()
         elif (kind, key) == ("confirm", "reset"):
             self.training.reset()
@@ -137,3 +147,14 @@ class TrainingScene(FightScene):
         font.draw(surface, self.hint, (width // 2, height - 12), FAINT, align="center")
         if self.inputs_shown:
             self.input_display.draw(surface, 20, 226)
+        if self.frames_shown and self.last_move is not None:
+            data = frame_data(self.last_move, self.rules)
+            line = text.FRAME_DATA.format(
+                name=self.last_move.label or self.last_move.name.upper(),
+                startup=data.startup,
+                active=data.active,
+                recovery=data.recovery,
+                hit=signed(data.on_hit),
+                block=signed(data.on_block),
+            )
+            font.draw(surface, line, (width // 2, height - 24), WHITE, align="center")
