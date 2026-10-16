@@ -17,7 +17,7 @@ import pygame
 from jojo_arena.combat.cutscene import Cutscene
 from jojo_arena.combat.match import Match
 from jojo_arena.combat.traps import web_layout
-from jojo_arena.engine.effects import blit_shadow
+from jojo_arena.engine.effects import blit_glow, blit_shadow, radial_glow
 from jojo_arena.engine.geometry import Vec2
 from jojo_arena.engine.sprites import frame_index
 from jojo_arena.ui import sfx, vfx
@@ -602,11 +602,100 @@ class HierophantWeb(CutscenePlayer):
             self.body(world, user, spot, "dash", 0, spot.x >= last.x, stand=True, alpha=220)
 
 
+# Kakyoin: Hierophant inside -------------------------------------------------------------
+
+
+class HierophantInside(CutscenePlayer):
+    """Hierophant unravels into a ribbon, slips into the victim's mouth, and the victim
+    convulses until the emeralds burst out of them."""
+
+    length = 144
+
+    def camera(self, f):
+        if f < 18:
+            return (self.u + self.v) * 0.5, 2
+        if f < 110:
+            return self.v + Vec2(0, -18), 3 if 60 <= f < 70 else 2
+        return self.v + Vec2(0, -24), 2
+
+    def cue(self, f):
+        v, fx, user = self.v, self.fx, self.scene.user
+        aura = self.aura(user)
+        hit = self.chest(self.scene.target, v)
+        mouth = self.head(self.scene.target, v) + Vec2(0, 8)
+        if f == 1:
+            fx.add(vfx.Flash(hit, 14, aura))
+            fx.focus(hit, heavy=False)
+            self.shake = 6
+        if f == 22:
+            self.world_words.menace(hit, 1)
+        if f == 50:
+            self.shout("L'HEURE DU CHÂTIMENT !", (240, 56), 2, 50)
+        if 56 <= f < 110 and f % 18 == 0:
+            spot = mouth + Vec2(self.rng.uniform(-8, 8), -10)
+            style = sfx.shout_style(aura)
+            self.world_words.add(sfx.HEARTBEAT, spot, style, 2, 20, 0.3, 2)
+            fx.add(vfx.Flash(hit, 16, aura, 8))
+            self.shake = 5
+        if f == 110:
+            fx.add(vfx.Flash(hit, 40, (180, 255, 200), 14))
+            for speed, life in ((2.5, 18), (4.0, 24)):
+                fx.add(vfx.Ring(hit, aura, speed, life, 3))
+            self.world_words.add(sfx.BAAN, mouth + Vec2(0, -14), "impact", 3, 40, 0.3, 2)
+            self.flash, self.shake = 8, 16
+
+    def scene_draw(self, world, f):
+        u, v, side = self.u, self.v, self.side
+        user, target = self.scene.user, self.scene.target
+        right = side > 0
+        aura = self.aura(user)
+        mouth = self.head(target, v) + Vec2(0, 8)
+        self.body(world, user, u, "special" if f < 50 else "pose", 1, right)
+        hg_spot = u + Vec2(side * 18, -8)
+        lift = 0.0
+        if f < 110:
+            jolt = Vec2(self.rng.randint(-2, 2), self.rng.randint(-1, 1)) if f >= 56 else Vec2()
+            self.body(world, target, v + jolt, "hurt", (f // 5) % 2, not right)
+        else:
+            lift = min(30.0, (f - 110) * 2.5)
+            self.body(world, target, v, "hurt", 1, not right, lift=lift)
+        if f < 18:
+            # The tentacles have caught the victim from above.
+            self.body(world, user, hg_spot, "special", 2, right, stand=True, alpha=220)
+            start = self.chest(user, hg_spot, stand=True)
+            for bend in (-10, 0, 10):
+                high = (start + mouth) * 0.5 + Vec2(bend, -24)
+                vfx.draw_reach(world, start, high, aura, "tentacle", 1)
+                vfx.draw_reach(world, high, self.chest(target, v), aura, "tentacle", 1)
+        elif f < 56:
+            # Hierophant unravels into a ribbon that slips into the victim's mouth.
+            t = (f - 18) / 38
+            alpha = max(0, round(220 * (1 - t)))
+            self.body(world, user, hg_spot, "dash", 0, right, stand=True, alpha=alpha)
+            start = self.chest(user, hg_spot, stand=True)
+            tip = start + (mouth - start) * min(1.0, t * 1.3)
+            vfx.draw_reach(world, start, tip, aura, "tentacle", 2)
+        elif f < 110:
+            # Inside: a green light throbs in the victim's chest.
+            pulse = 0.5 + 0.5 * math.sin(f * 0.35)
+            glow = tuple(round(c * (0.3 + 0.5 * pulse)) for c in aura)
+            blit_glow(world, radial_glow(12, glow), self.chest(target, v))
+        else:
+            # The emeralds burst out of the victim.
+            t = f - 110
+            center = self.chest(target, v, lift=lift)
+            for i in range(12):
+                direction = Vec2.from_angle(i * math.tau / 12 + 0.3)
+                gem = center + direction * (6 + t * 3.2)
+                vfx.draw_projectile(world, "gem", gem, direction, 3, aura)
+
+
 CUTSCENES = {
     "road_roller": RoadRoller,
     "star_finish": StarFinish,
     "chariot_clones": ChariotClones,
     "hierophant_web": HierophantWeb,
+    "hierophant_inside": HierophantInside,
 }
 
 

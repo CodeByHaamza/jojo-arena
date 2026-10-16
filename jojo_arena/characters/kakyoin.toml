@@ -294,25 +294,33 @@ spread_deg = 30
 
 # Super moves ----------------------------------------------------------------------------
 
-# Heart Heat Attack (1 bar): Hierophant Green bursts out around Kakyoin.
+# Heart Heat Attack (1 bar): "Time for your punishment!" Hierophant's tentacles strike
+# from above at mid range; if they land, Hierophant slips into the opponent through the
+# mouth and wrecks them from the inside, as it did to Death 13.
 [moves.hha]
-shout = "HIEROPHANT !"
-label = "HIEROPHANT DÉCHAÎNÉ"
-info = "Explosion tout autour"
+shout = "L'HEURE DU CHÂTIMENT !"
+label = "CHÂTIMENT"
+info = "Tentacules d'en haut. S'ils touchent : Hierophant entre dans l'adversaire et le détruit de l'intérieur"
 stand_flash = true
-startup_f = 20
-active_f = 6
-recovery_f = 26
-invincible_f = 20
-damage = 150
-reach = 0
-radius = 40
-hitstun_f = 36
-knockback = 420
-hitstop_f = 12
-wall_bounce = true
+shape = "line"
+fx = "tentacle"
+startup_f = 14
+active_f = 5
+recovery_f = 24
+invincible_f = 10
+damage = 20
+reach = 52
+radius = 8
+hitstun_f = 40
+hitstop_f = 8
 clashable = false
 anim = "special"
+cinematic = "hierophant_inside"
+cinematic_s = 2.4
+finish_damage = 150
+finish_hitstun_f = 50
+finish_knockback = 380
+finish_wall_bounce = true
 
 # Great Heat Attack (2 bars): 20 Metre Radius Emerald Splash. Hierophant Green runs all
 # over the arena stretching its threads; for 10 s, touching one fires emeralds at the

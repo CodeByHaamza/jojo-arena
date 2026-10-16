@@ -33,6 +33,7 @@ DOGO = "ドゴォ"
 BAAN = "バーン"
 BAKI = "バキッ"
 GA = "ガッ"
+HEARTBEAT = "ドクン"
 
 
 def shout_style(aura: Color) -> tuple[Color, Color, Color]:

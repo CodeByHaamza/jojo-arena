@@ -110,7 +110,7 @@ Les coups d'une posture : `[stances.<nom>.moves.<touche>]`, où la touche est `l
 
 | Champ | Effet |
 | --- | --- |
-| `cinematic` | Nom de la cinématique jouée par l'affichage (`road_roller`, `star_finish`, `chariot_clones`, `hierophant_web`) |
+| `cinematic` | Nom de la cinématique jouée par l'affichage (`road_roller`, `star_finish`, `chariot_clones`, `hierophant_web`, `hierophant_inside`) |
 | `cinematic_s` | Durée de la cinématique ; le combat est figé pendant ce temps |
 | `cinematic_at` | `hit` : seulement si le coup touche (pas en garde) ; `start` : dès que le coup part |
 | `finish_damage`, `finish_hitstun_f`, `finish_knockback`, `finish_wall_bounce` | Le coup final qui tombe à la fin de la cinématique (imparable) |
