@@ -98,7 +98,8 @@ def build_pages(
         move = kit.shared_moves.get(slot)
         if move is not None:
             info = f"{_bars(cost / rules.hh_bar)} - {move.info}" if move.info else ""
-            supers.append(MoveEntry((key("heart_heat"),), move.label or slot.upper(), info))
+            keys = (text.DIRECTION, key("heart_heat")) if slot == "gha" else (key("heart_heat"),)
+            supers.append(MoveEntry(keys, move.label or slot.upper(), info))
     if supers:
         note = text.SYS_SUPER_INFO if len(supers) == 2 else ""
         pages.append(MovePage(text.PAGE_SUPER, tuple(supers), note))

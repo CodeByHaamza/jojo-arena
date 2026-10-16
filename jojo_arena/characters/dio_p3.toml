@@ -209,25 +209,28 @@ time_stop_s = 5.0
 cooldown_s = 25
 anim = "pose"
 
-# A wide fan of five knives.
+# A dozen knives in two volleys; in stopped time they hang in the air, a wall of blades.
 [stances.stand.moves.special_alt]
+shout = "MUDA !"
 label = "PLUIE DE COUTEAUX"
-info = "5 couteaux ; en temps arrêté, ils restent en l'air"
+info = "Une douzaine de couteaux en deux salves ; en temps arrêté, ils restent en l'air"
 startup_f = 12
-active_f = 1
+active_f = 6
 recovery_f = 18
 
 [stances.stand.moves.special_alt.projectile]
 look = "knife"
 speed = 360
 radius = 3
-damage = 20
+damage = 11
 lifetime_s = 1.0
 hitstun_f = 12
-knockback = 60
+knockback = 50
 hitstop_f = 2
-count = 5
-spread_deg = 40
+count = 6
+spread_deg = 50
+waves = 2
+wave_every_f = 4
 
 # Super moves ----------------------------------------------------------------------------
 

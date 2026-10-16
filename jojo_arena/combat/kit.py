@@ -29,6 +29,8 @@ class ProjectileDef:
     origin: str = "self"  # "self", or "ring": around the target, flying inward
     ring_radius: float = 0.0
     homing: float = 0.0  # radians per frame it turns toward the target (0 = straight)
+    waves: int = 1  # volleys thrown one after the other...
+    wave_every_f: int = 4  # ...this many frames apart (each volley offset a little)
     look: str = "orb"  # how the view draws it: "orb", "knife", "gem", "blade"
 
     @classmethod
@@ -47,6 +49,8 @@ class ProjectileDef:
             origin=data.get("origin", "self"),
             ring_radius=data.get("ring_radius", 0.0),
             homing=math.radians(data.get("homing_deg_s", 0.0)) / HZ,
+            waves=data.get("waves", 1),
+            wave_every_f=data.get("wave_every_f", 4),
             look=data.get("look", "orb"),
         )
 

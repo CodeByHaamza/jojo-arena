@@ -24,7 +24,7 @@ from jojo_arena.ui.movelist import MoveListPanel
 from jojo_arena.ui.widgets import GOLD, draw_box, veil
 
 RESULT_MENU_AFTER_F = 120  # let the victory sink in before offering a rematch
-MOUSE_AIM_F = 180  # the mouse aims for a keyboard player while it moved in the last 3 s
+MOUSE_AIM_F = 60  # the mouse aims for a keyboard player if it moved in the last second
 
 
 class FightScene(Scene):
@@ -57,6 +57,10 @@ class FightScene(Scene):
         self.move_list: MoveListPanel | None = None
         self.paused_by = 0  # the player who paused: the move list shows their character
         self._new_rounds()
+
+    def handle_event(self, event: pygame.event.Event) -> None:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_F3:
+            self.view.debug = not self.view.debug  # show hit and hurt circles
 
     def _new_rounds(self) -> None:
         kits = (self.fighter_defs[0].kit, self.fighter_defs[1].kit)
@@ -123,6 +127,9 @@ class FightScene(Scene):
         if inputs.mouse_idle_f > MOUSE_AIM_F or pygame.display.get_surface() is None:
             return None
         x, y = self.ctx.display.window_to_internal(inputs.mouse_pos)
+        width, height = self.ctx.display.internal_size
+        if not (0 <= x < width and 0 <= y < height):
+            return None  # outside the picture (black bars, another screen)
         return float(x), float(y)
 
     def _pause_items(self) -> list[MenuItem]:

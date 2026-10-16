@@ -77,7 +77,7 @@ def test_move_list_shows_every_move_of_every_character():
         for move in fighter.kit.all_moves():
             assert move.label and move.label in names, (fighter.id, move.name)
         alts = [e for p in pages for e in p.entries if e.keys[:1] == (text.DIRECTION,)]
-        assert alts and all(e.keys[1] == "L" for e in alts)
+        assert alts and all(e.keys[1] in ("L", "O") for e in alts)  # special or Heart Heat
 
 
 def test_input_labels():
@@ -193,7 +193,10 @@ def test_training_flow(ctx):
     keys(ctx, "Escape")
     steps(ctx, 10)
     assert training.rounds.match.fighters[1].state.name == "GUARD"
-    keys(ctx, "Escape", "Down", "Down", "Down", "Down", "Down", "Down", "Return")
+    keys(ctx, "Escape")
+    while training.pause_menu.selected.key != "change":  # "change fighters"
+        keys(ctx, "Down")
+    keys(ctx, "Return")
     assert isinstance(ctx.scenes.current, CharacterSelectScene)
 
 

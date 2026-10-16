@@ -167,11 +167,18 @@ class Match:
                 attack.fired = True
                 self._lay_trap(fighter, attack)
             elif move.projectile is not None:
-                attack.fired = True
+                defn = move.projectile
+                if attack.active_offset < attack.volleys * defn.wave_every_f:
+                    continue  # the next volley is not due yet
+                attack.volleys += 1
+                attack.fired = attack.volleys >= defn.waves
                 target = self.opponent(fighter).pos
-                volley = self._spawn(
-                    fighter.index, fighter.pos, attack.aim, move.projectile, target
-                )
+                aim = attack.aim
+                if attack.volleys % 2 == 0 and defn.count > 1:
+                    # Every other volley fills the gaps of the previous one.
+                    gap = math.radians(defn.spread_deg) / (defn.count - 1) / 2
+                    aim = Vec2.from_angle(aim.angle() + gap)
+                volley = self._spawn(fighter.index, fighter.pos, aim, defn, target)
                 for projectile in volley:
                     projectile.key = (fighter.index, attack.serial)
                 self.projectiles += volley

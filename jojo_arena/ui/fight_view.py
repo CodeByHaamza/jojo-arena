@@ -253,6 +253,7 @@ class FightView:
         self.fx = vfx.EffectsLayer()
         self._seen: list[tuple] = [(None, -1), (None, -1)]  # (state, attack serial) per fighter
         self.duel: DuelScreen | None = None  # the rush duel close-up, while a clash lasts
+        self.debug = False  # F3: draw the circles the simulation hits with
         self._block_word_f = [0, 0]
 
     # Reacting to the simulation ------------------------------------------------------
@@ -540,6 +541,8 @@ class FightView:
             ring = (255, 255, 255) if age % 4 < 2 else (180, 160, 255)
             pygame.draw.circle(surface, ring, center.as_ints(), radius, 2)
         self.fx.draw(surface)
+        if self.debug:
+            self._draw_debug(surface, match)
         if match.clash is not None:
             self._draw_clash(surface, match)
         if match.time_stop is not None and match.super_freeze == 0:
@@ -640,6 +643,17 @@ class FightView:
         pos = projectile.pos + self.chest(projectile.owner) * 0.8
         look = projectile.defn.look
         vfx.draw_projectile(surface, look, pos, projectile.velocity, projectile.radius, aura)
+
+    def _draw_debug(self, surface: pygame.Surface, match: Match) -> None:
+        """Hurt circles in blue, hit circles in red, projectiles in yellow (on the ground)."""
+        for fighter in match.fighters:
+            for center, radius in fighter.hurtboxes():
+                pygame.draw.circle(surface, (80, 160, 255), center.as_ints(), round(radius), 1)
+            for center, radius in fighter.hitboxes():
+                pygame.draw.circle(surface, (255, 60, 60), center.as_ints(), round(radius), 1)
+        for projectile in match.projectiles:
+            pos, radius = projectile.pos.as_ints(), round(projectile.radius)
+            pygame.draw.circle(surface, (255, 220, 60), pos, radius, 1)
 
     def _draw_reticle(self, surface: pygame.Surface, fighter: Fighter) -> None:
         """Where an aimed move (a grapple) would go: the cursor, held within range."""

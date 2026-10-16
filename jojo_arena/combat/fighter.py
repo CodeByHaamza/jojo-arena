@@ -51,7 +51,8 @@ class Attack:
     frame: int = 0
     connected: bool = False
     hits_done: int = 0
-    fired: bool = False  # projectile or trap already released
+    fired: bool = False  # projectile or trap already released (every volley)
+    volleys: int = 0  # projectile volleys thrown so far
     stopped_time: bool = False  # time stop already triggered
     props_hit: set[int] = field(default_factory=set)
     slot: str = ""  # the button that started it (chains continue on the same button)
@@ -359,8 +360,12 @@ class Fighter:
         if self._try_dash(frame, target):
             return []
         if "heart_heat" in self.buffer:
-            # The Heart Heat key: Great Heat Attack with 2 bars, Heart Heat Attack with 1.
-            for slot, cost in (("gha", self.rules.gha_cost), ("hha", self.rules.hha_cost)):
+            # The Heart Heat key alone: Heart Heat Attack (1 bar). With a direction held:
+            # Great Heat Attack (2 bars), or the HHA if there is only one bar.
+            supers = [("hha", self.rules.hha_cost)]
+            if frame.move != (0.0, 0.0):
+                supers.insert(0, ("gha", self.rules.gha_cost))
+            for slot, cost in supers:
                 move = self.kit.move(self.stance, slot)
                 if move is not None and self.hh >= cost:
                     del self.buffer["heart_heat"]

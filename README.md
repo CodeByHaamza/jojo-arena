@@ -47,7 +47,7 @@ Les touches sont liées à leur **position** sur le clavier : ZQSD en AZERTY cor
 | Stand on/off | I | RB / R1 | R | 8 |
 | Dash / esquive | Espace | A / Croix | V | 0 |
 | Garde (Flash Cancel pendant une attaque) | Maj gauche | LB / L1 | C | 1 |
-| Heart Heat (HHA ; GHA avec 2 barres) | O | RT / R2 | T | 9 |
+| Heart Heat : HHA ; direction + Heart Heat : GHA (2 barres) | O | RT / R2 | T | 9 |
 | Pose | P | Select / Touchpad | Y | 7 |
 | Power Up (pas encore utilisé) | U | LT / L2 | B | 3 |
 

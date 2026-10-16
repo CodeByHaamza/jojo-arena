@@ -92,18 +92,23 @@ def test_vampire_grab_ignores_guard_and_drains_blood():
     assert dio.hp == 500 + 35
 
 
-def test_gha_takes_two_bars_and_hha_one():
+def test_heart_heat_key_alone_is_the_hha_with_a_direction_the_gha():
     match = make_duel("jotaro_p3", "mannequin_red", p2=(300, 100))
     jotaro = match.fighters[0]
-    jotaro.hh = 150
+    jotaro.hh = 300  # full gauge: the key alone still gives the 1-bar HHA
     run(match, 1, p1=press("heart_heat"))
-    assert jotaro.attack.move.name == "hha" and jotaro.hh == pytest.approx(50)
+    assert jotaro.attack.move.name == "hha" and jotaro.hh == pytest.approx(200)
     match = make_duel("jotaro_p3", "mannequin_red", p2=(300, 100))
     jotaro = match.fighters[0]
     jotaro.hh = 210
-    events = run(match, 1, p1=press("heart_heat"))
+    events = run(match, 1, p1=press("heart_heat", move=(1.0, 0.0)))
     assert jotaro.attack.move.name == "gha" and "gha" in kinds(events)
     assert jotaro.hh == pytest.approx(10)
+    match = make_duel("jotaro_p3", "mannequin_red", p2=(300, 100))
+    jotaro = match.fighters[0]
+    jotaro.hh = 150  # a direction but only one bar: the HHA
+    run(match, 1, p1=press("heart_heat", move=(1.0, 0.0)))
+    assert jotaro.attack.move.name == "hha"
 
 
 # Time stop ---------------------------------------------------------------------------------
@@ -213,7 +218,7 @@ def test_knives_thrown_in_stopped_time_hang_then_fly_on():
     stop_time(match, who=0)
     run_until(match, lambda m: m.fighters[0].can_act())  # end of the time stop pose
     run(match, 30, p1=press("special", move=(1.0, 0.0)))
-    assert len(match.projectiles) == 5
+    assert len(match.projectiles) == 12  # a dozen knives
     hanging = [p.pos.copy() for p in match.projectiles]
     run(match, 30)
     assert [p.pos for p in match.projectiles] == hanging
@@ -237,7 +242,7 @@ def test_time_stop_has_a_long_cooldown():
 def test_road_roller_lands_where_the_opponent_stood():
     match = make_duel("dio_p3", "mannequin_red", p1=(100, 100), p2=(200, 100))
     match.fighters[0].hh = 200
-    events = run(match, 150, p1=press("heart_heat"))
+    events = run(match, 150, p1=press("heart_heat", move=(1.0, 0.0)))
     victim = match.fighters[1]
     assert "time_stop" in kinds(events)
     assert victim.max_hp - victim.hp >= 220
@@ -246,7 +251,7 @@ def test_road_roller_lands_where_the_opponent_stood():
 def test_jotaro_great_heat_rushes_in_stopped_time():
     match = make_duel("jotaro_p3", "mannequin_red", p1=(100, 100), p2=(160, 100))
     match.fighters[0].hh = 200
-    events = run(match, 200, p1=press("heart_heat"))
+    events = run(match, 200, p1=press("heart_heat", move=(1.0, 0.0)))
     assert "time_stop" in kinds(events)
     assert match.fighters[1].max_hp - match.fighters[1].hp >= 8 * 25
 
@@ -284,7 +289,7 @@ def test_at_most_three_threads():
 def test_twenty_metre_emerald_splash_closes_in_from_every_side():
     match = make_duel("kakyoin", "mannequin_red", p1=(100, 100), p2=(220, 100))
     match.fighters[0].hh = 200
-    run(match, 30 + match.rules.super_freeze_f + 2, p1=press("heart_heat"))
+    run(match, 30 + match.rules.super_freeze_f + 2, p1=press("heart_heat", move=(1.0, 0.0)))
     target = match.fighters[1].pos
     assert len(match.projectiles) >= 12
     xs = [p.pos.x - target.x for p in match.projectiles]

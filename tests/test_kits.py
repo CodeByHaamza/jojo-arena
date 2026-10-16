@@ -106,3 +106,12 @@ def test_grapple_falls_back_on_the_held_direction_without_a_mouse():
     run(match, 30)
     assert match.fighters[0].pos.y > 160
     assert match.fighters[0].pos.x == Vec2(150, 0).x
+
+
+def test_dio_throws_a_dozen_knives_with_the_world():
+    match = make_duel("dio_p3", "jotaro_p3", p2=(330, 100))
+    stand_out(match)
+    run(match, 20, p1=press("special", move=(1.0, 0.0)))
+    knives = [p for p in match.projectiles if p.defn.look == "knife"]
+    assert len(knives) == 12
+    assert len({round(p.velocity.angle(), 3) for p in knives}) == 12  # no two overlap

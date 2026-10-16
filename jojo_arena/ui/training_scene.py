@@ -14,6 +14,7 @@ from jojo_arena.engine import font
 from jojo_arena.engine.actions import InputFrame, merge_frames
 from jojo_arena.ui import text
 from jojo_arena.ui.fight_scene import FightScene
+from jojo_arena.ui.input_display import ACTIONS, InputDisplay
 from jojo_arena.ui.labels import action_label
 from jojo_arena.ui.menu import MenuItem
 from jojo_arena.ui.widgets import DIM, FAINT, GOLD, WHITE
@@ -37,8 +38,11 @@ class TrainingScene(FightScene):
     ) -> None:
         self.dummy = Dummy.STAND
         super().__init__(ctx, rounds_to_win=0, fighter_ids=fighter_ids, stage_id=stage_id)
-        pause = action_label(ctx.controls.active_preset.players[0], "pause", ctx.inputs)
+        player = ctx.controls.active_preset.players[0]
+        pause = action_label(player, "pause", ctx.inputs)
         self.hint = text.TRAINING_HINT.format(key=pause)
+        self.inputs_shown = True
+        self.input_display = InputDisplay({a: action_label(player, a, ctx.inputs) for a in ACTIONS})
 
     @property
     def training(self) -> Training:
@@ -56,6 +60,7 @@ class TrainingScene(FightScene):
         if dummy is not None:
             # Alone at training: player 1 can use any device, keyboard or pad.
             frames = [merge_frames(*frames), dummy]
+        self.input_display.update(frames[0])
         return frames
 
     def _pause_items(self) -> list[MenuItem]:
@@ -71,6 +76,9 @@ class TrainingScene(FightScene):
             ),
             MenuItem("life", text.LIFE, SWITCH, 0 if self.training.infinite_life else 1),
             MenuItem("hh", text.HH_GAUGE, SWITCH, 0 if self.training.infinite_hh else 1),
+            MenuItem(
+                "inputs", text.INPUTS, [text.SHOWN, text.HIDDEN], 0 if self.inputs_shown else 1
+            ),
             MenuItem("reset", text.RESET_POSITIONS),
             MenuItem("change", text.CHANGE_FIGHTERS),
             MenuItem("menu", text.MAIN_MENU),
@@ -86,6 +94,8 @@ class TrainingScene(FightScene):
                 self.training.infinite_life = index == 0
             elif key == "hh":
                 self.training.infinite_hh = index == 0
+            elif key == "inputs":
+                self.inputs_shown = index == 0
             self.training.apply_options()
         elif (kind, key) == ("confirm", "reset"):
             self.training.reset()
@@ -109,3 +119,5 @@ class TrainingScene(FightScene):
             damage = text.COMBO_DAMAGE.format(n=combo.damage)
             font.draw(surface, damage, (x, y + 20), WHITE if combo.live else DIM, align=align)
         font.draw(surface, self.hint, (width // 2, height - 12), FAINT, align="center")
+        if self.inputs_shown:
+            self.input_display.draw(surface, 20, 226)

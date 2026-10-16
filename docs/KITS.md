@@ -113,6 +113,7 @@ Les coups d'une posture : `[stances.<nom>.moves.<touche>]`, où la touche est `l
 | `hitstun_f`, `blockstun_f`, `knockback`, `hitstop_f` | Comme pour un coup |
 | `count`, `spread_deg` | Plusieurs projectiles en éventail sur cet angle |
 | `origin`, `ring_radius` | `self` (depuis le perso) ou `ring` (en cercle autour de la cible, vers elle) |
+| `waves`, `wave_every_f` | Plusieurs salves, à N images d'écart (chaque salve comble les trous de la précédente) |
 | `homing_deg_s` | Tête chercheuse : degrés par seconde dont il tourne vers la cible |
 | `look` | Dessin : `orb`, `knife`, `gem`, `blade` |
 
