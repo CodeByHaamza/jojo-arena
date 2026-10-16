@@ -14,7 +14,7 @@ import pygame
 from jojo_arena.characters import FighterDef, PartDef, load_parts, load_roster
 from jojo_arena.characters.glossary import KINDS, Entry, load_glossary
 from jojo_arena.context import GameContext
-from jojo_arena.engine import font
+from jojo_arena.engine import font, music
 from jojo_arena.engine.scene import Scene
 from jojo_arena.engine.sprites import SheetSprites, frame_index, shade
 from jojo_arena.paths import SPRITES_DIR
@@ -38,6 +38,7 @@ BODY = (226, 220, 240)
 class GlossaryScene(Scene):
     def __init__(self, ctx: GameContext, part: int | None = None) -> None:
         super().__init__()
+        music.request("menu")
         self.ctx = ctx
         self.parts: dict[int, PartDef] = {p.number: p for p in load_parts()}
         self.numbers = sorted(self.parts) or [0]

@@ -9,7 +9,7 @@ import pygame
 
 from jojo_arena.context import GameContext
 from jojo_arena.controls import controls_path, load_controls
-from jojo_arena.engine import audio, i18n
+from jojo_arena.engine import audio, i18n, music
 from jojo_arena.engine.display import Display
 from jojo_arena.engine.input import InputManager
 from jojo_arena.engine.loop import FixedStep
@@ -100,6 +100,9 @@ class Game:
         build_sounds(player)
         player.volume = settings.volume / 10
         audio.set_player(player)
+        from jojo_arena.ui.music import TRACKS
+
+        music.set_player(music.MusicPlayer(TRACKS, volume=settings.music_volume / 10))
         self.clock = pygame.time.Clock()
         self.fixed_step = FixedStep(LOGIC_HZ)
 
@@ -133,6 +136,7 @@ class Game:
                 scenes.apply_pending()
             scenes.current.draw(self.ctx.display.surface)
             self.ctx.display.present()
+            music.tick()
             frame += 1
             if frame_limit and frame >= frame_limit:
                 break

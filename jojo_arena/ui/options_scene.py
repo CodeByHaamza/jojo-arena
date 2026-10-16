@@ -5,7 +5,7 @@ from __future__ import annotations
 import pygame
 
 from jojo_arena.context import GameContext
-from jojo_arena.engine import audio, font, i18n
+from jojo_arena.engine import audio, font, i18n, music
 from jojo_arena.engine.scene import Scene
 from jojo_arena.ui import text
 from jojo_arena.ui.backdrop import MenuBackdrop
@@ -20,13 +20,14 @@ from jojo_arena.ui.menu import Menu, MenuItem
 from jojo_arena.ui.widgets import DIM, GOLD, P1_COLOR, P2_COLOR, WHITE, draw_box, draw_hints
 
 WARNING = (240, 90, 90)
-TABLE = pygame.Rect(70, 92, 340, 136)
+TABLE = pygame.Rect(70, 96, 340, 136)
 COLUMNS = (TABLE.x + 10, TABLE.x + 190, TABLE.x + 282)  # action, J1, J2 (centers for J1/J2)
 
 
 class OptionsScene(Scene):
     def __init__(self, ctx: GameContext) -> None:
         super().__init__()
+        music.request("menu")
         self.ctx = ctx
         self.backdrop = MenuBackdrop()
         self.preset_keys = list(ctx.controls.presets)
@@ -44,6 +45,9 @@ class OptionsScene(Scene):
                     i18n.LANGUAGES.index(i18n.language()),
                 ),
                 MenuItem("volume", text.VOLUME, [str(n) for n in range(11)], ctx.settings.volume),
+                MenuItem(
+                    "music", text.MUSIC, [str(n) for n in range(11)], ctx.settings.music_volume
+                ),
                 MenuItem("back", text.BACK),
             ]
         )
@@ -70,6 +74,10 @@ class OptionsScene(Scene):
             if audio._player is not None:
                 audio._player.volume = self.ctx.settings.volume / 10
             audio.play("menu_ok")
+        elif kind == "change" and key == "music":
+            self.ctx.settings.music_volume = self.menu.item("music").index
+            self.ctx.save_settings()
+            music.set_volume(self.ctx.settings.music_volume / 10)
         elif kind == "change" and key == "language":
             code = i18n.LANGUAGES[self.menu.item("language").index]
             i18n.set_language(code)
@@ -88,7 +96,7 @@ class OptionsScene(Scene):
         self.backdrop.draw(surface, self.tick)
         width, height = surface.get_size()
         font.draw(surface, text.OPTIONS_TITLE, (width // 2, 4), GOLD, scale=3, align="center")
-        self.menu.draw(surface, width // 2, 36, spacing=11)
+        self.menu.draw(surface, width // 2, 32, spacing=10)
 
         preset = self.ctx.controls.active_preset
         draw_box(surface, TABLE)

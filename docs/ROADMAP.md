@@ -67,7 +67,7 @@ Chaque perso doit avoir un ressenti unique, et chaque coup qui touche doit être
 ## Ensuite
 
 - [x] **Bruitages** synthétisés dans le code (coups, garde, clash, temps arrêté, K.O., Hamon, gel, soleil, chaînes, yeux laser, menus), volume dans Options.
-- [ ] **Musique** : des morceaux générés pour chaque arène et les menus.
+- [x] **Musique** : boucles chiptune originales générées dans le code (menus, le Caire, le manoir Joestar), volume à part dans Options.
 - [x] **Contre l'IA** : une IA à quatre niveaux (facile, normal, difficile, JoJo) qui garde la distance de son kit, se défend, punit et enchaîne.
 - [x] **Arcade** : six combats contre l'IA, de plus en plus durs, chacun dans l'arène de l'adversaire, jusqu'à DIO ; on peut continuer après une défaite.
 - [ ] **Entraînement avancé** : enregistrer puis rejouer une action du mannequin, affichage des hitboxes, données de frames.

@@ -9,7 +9,7 @@ import pygame
 from jojo_arena.characters import get_fighter
 from jojo_arena.combat.rounds import ROUNDS_TO_WIN_CHOICES
 from jojo_arena.context import GameContext
-from jojo_arena.engine import font
+from jojo_arena.engine import font, music
 from jojo_arena.engine.scene import Scene
 from jojo_arena.engine.sprites import shade
 from jojo_arena.stages import STAGE_IDS, load_stage, stage_for_part
@@ -36,6 +36,7 @@ class SetupScene(Scene):
         cpu: bool = False,
     ) -> None:
         super().__init__()
+        music.request("menu")
         self.ctx = ctx
         self.fighter_ids = fighter_ids
         self.cpu = cpu

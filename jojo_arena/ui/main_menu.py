@@ -8,7 +8,7 @@ import pygame
 
 from jojo_arena.characters import load_parts, load_roster
 from jojo_arena.context import GameContext
-from jojo_arena.engine import font
+from jojo_arena.engine import font, music
 from jojo_arena.engine.scene import Scene
 from jojo_arena.engine.sprites import shade
 from jojo_arena.ui import text
@@ -49,6 +49,7 @@ MENU_BOX = pygame.Rect(14, 58, 196, len(ENTRIES) * 16 + 10)
 class MainMenuScene(Scene):
     def __init__(self, ctx: GameContext, cursor: str = "training") -> None:
         super().__init__()
+        music.request("menu")
         self.ctx = ctx
         self.backdrop = MenuBackdrop()
         self.descriptions = {key: getattr(text, desc) for key, _, desc, _ in ENTRIES}

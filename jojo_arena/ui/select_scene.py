@@ -11,7 +11,7 @@ import pygame
 from jojo_arena.characters import FighterDef, PartDef, load_parts, load_roster
 from jojo_arena.combat.rules import load_rules
 from jojo_arena.context import GameContext
-from jojo_arena.engine import audio, font
+from jojo_arena.engine import audio, font, music
 from jojo_arena.engine.scene import Scene
 from jojo_arena.engine.sprites import shade
 from jojo_arena.ui import text
@@ -56,6 +56,7 @@ class CharacterSelectScene(Scene):
         cursor: str | None = None,
     ) -> None:
         super().__init__()
+        music.request("menu")
         if mode not in MODES:
             raise ValueError(f"unknown mode '{mode}'")
         self.ctx = ctx

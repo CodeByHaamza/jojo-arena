@@ -15,7 +15,7 @@ from jojo_arena.combat.replay import Replay, save_replay
 from jojo_arena.combat.rounds import Phase, Rounds
 from jojo_arena.combat.rules import load_rules
 from jojo_arena.context import GameContext
-from jojo_arena.engine import font
+from jojo_arena.engine import font, music
 from jojo_arena.engine.actions import NEUTRAL, InputFrame
 from jojo_arena.engine.scene import Scene
 from jojo_arena.stages import load_stage
@@ -25,6 +25,7 @@ from jojo_arena.ui.hud import Hud
 from jojo_arena.ui.labels import action_label
 from jojo_arena.ui.menu import Menu, MenuItem
 from jojo_arena.ui.movelist import MoveListPanel
+from jojo_arena.ui.music import track_for_stage
 from jojo_arena.ui.widgets import GOLD, draw_box, draw_toast, veil
 
 RESULT_MENU_AFTER_F = 120  # let the victory sink in before offering a rematch
@@ -49,6 +50,7 @@ class FightScene(Scene):
         self.fighter_ids = fighter_ids
         self.fighter_defs = [get_fighter(i) for i in fighter_ids]
         self.stage = load_stage(stage_id)
+        music.request(track_for_stage(stage_id))
         self.rules = load_rules()
         self.rounds_to_win = rounds_to_win
         self.sources = ctx.controls.active_preset.build_sources()

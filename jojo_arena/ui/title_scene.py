@@ -8,7 +8,7 @@ import pygame
 from jojo_arena import __version__
 from jojo_arena.characters import PartDef, load_parts, load_roster
 from jojo_arena.context import GameContext
-from jojo_arena.engine import font
+from jojo_arena.engine import font, music
 from jojo_arena.engine.scene import Scene
 from jojo_arena.engine.sprites import shade
 from jojo_arena.ui import text
@@ -28,6 +28,7 @@ EMBLEM_STEP = 24
 class TitleScene(Scene):
     def __init__(self, ctx: GameContext) -> None:
         super().__init__()
+        music.request("menu")
         self.ctx = ctx
         self.parts: dict[int, PartDef] = {p.number: p for p in load_parts()}
         fighters = [f for f in load_roster() if f.selectable]

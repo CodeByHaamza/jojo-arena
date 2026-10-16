@@ -9,7 +9,7 @@ import pygame
 
 from jojo_arena.characters import FighterDef, get_fighter, load_parts, load_roster
 from jojo_arena.context import GameContext
-from jojo_arena.engine import font
+from jojo_arena.engine import font, music
 from jojo_arena.engine.scene import Scene
 from jojo_arena.engine.sprites import shade
 from jojo_arena.stages import load_stage, stage_for_part
@@ -56,6 +56,7 @@ class ArcadeScene(Scene):
         seed: int | None = None,
     ) -> None:
         super().__init__()
+        music.request("menu")
         self.ctx = ctx
         self.player_id = player_id
         seed = seed if seed is not None else random.randrange(1 << 30)
