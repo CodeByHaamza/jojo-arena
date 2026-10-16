@@ -24,6 +24,12 @@ def test_every_move_and_state_has_a_drawable_animation(fighter):
                         assert image.get_width() > 0
 
 
+def test_a_variant_animation_plays_its_family_on_a_sheet_without_it():
+    view = FighterView(load_roster()[0])
+    assert FighterView.resolve(view.sprites, "special_never_drawn")[0] == "special"
+    assert FighterView.resolve(view.sprites, "kick_high_twice")[0] == "kick_high"
+
+
 def test_an_unknown_animation_falls_back_to_idle():
     view = FighterView(load_roster()[0])
     name, _ = FighterView.resolve(view.sprites, "a_move_nobody_drew")

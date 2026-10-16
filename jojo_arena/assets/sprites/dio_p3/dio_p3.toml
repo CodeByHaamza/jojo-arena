@@ -130,3 +130,10 @@ row = 54
 frames = 2
 fps = 10
 loop = true
+
+[anims.special_knives]
+row = 57
+frames = 9
+fps = 12
+loop = false
+phases = [4, 2, 3]

@@ -75,3 +75,114 @@ cuffs = "gold"
 type = "earring"
 material = "cherry"
 style = "cherry"
+
+# Key-pose animations ------------------------------------------------------------------
+# [anims.<name>] replaces the generated animation of that name, or adds a new one that a
+# move picks in the kit (anim = "<name>"). One [[anims.<name>.<view>]] table per key pose,
+# for the views down, up and right (a view left out copies another). Pose settings are
+# those of tools/spritegen/skeleton.py (Pose): bob, lean, head, hand_l, hand_r, foot_l,
+# foot_r, big_hand_r. `phases` shares the keys between startup, active and recovery;
+# `tween` draws in-between frames after each key, for a smoother, longer move.
+
+# EMERALD SPLASH: both hands meet before the chest in a diamond, rise to the face, then
+# thrust out, legs wide, to let the emeralds go.
+[anims.special_splash]
+fps = 12
+phases = [2, 1, 2]
+tween = 1
+
+[[anims.special_splash.right]]
+lean = -1
+hand_r = [3, -9]
+hand_l = [4, -9]
+foot_l = [-3, 0]
+foot_r = [3, 0]
+
+[[anims.special_splash.right]]
+lean = -1.5
+bob = 1
+hand_r = [5, -14]
+hand_l = [6, -13]
+foot_l = [-3, 0]
+foot_r = [3, 0]
+
+[[anims.special_splash.right]]
+lean = 2
+hand_r = [12, -11]
+hand_l = [11, -10]
+foot_r = [5, 0]
+foot_l = [-4, 0]
+
+[[anims.special_splash.right]]
+lean = 1.5
+hand_r = [11, -10]
+hand_l = [10, -9]
+foot_r = [5, 0]
+foot_l = [-4, 0]
+
+[[anims.special_splash.right]]
+lean = 0.5
+hand_r = [4, -4]
+hand_l = [3, -3]
+foot_r = [2, 0]
+
+[[anims.special_splash.down]]
+hand_r = [-6, -9]
+hand_l = [6, -9]
+foot_l = [-2, 0]
+foot_r = [2, 0]
+
+[[anims.special_splash.down]]
+bob = 1
+hand_r = [-6, -14]
+hand_l = [6, -14]
+foot_l = [-2, 0]
+foot_r = [2, 0]
+
+[[anims.special_splash.down]]
+bob = -1
+hand_r = [-5, -8]
+hand_l = [5, -8]
+big_hand_r = true
+foot_l = [-3, 0]
+foot_r = [3, 0]
+
+[[anims.special_splash.down]]
+hand_r = [-5, -7]
+hand_l = [5, -7]
+foot_l = [-3, 0]
+foot_r = [3, 0]
+
+[[anims.special_splash.down]]
+hand_r = [-2, -3]
+hand_l = [2, -3]
+
+[[anims.special_splash.up]]
+hand_r = [-6, -10]
+hand_l = [6, -10]
+foot_l = [-2, 0]
+foot_r = [2, 0]
+
+[[anims.special_splash.up]]
+bob = 1
+hand_r = [-6, -15]
+hand_l = [6, -15]
+foot_l = [-2, 0]
+foot_r = [2, 0]
+
+[[anims.special_splash.up]]
+bob = -1
+hand_r = [-5, -17]
+hand_l = [5, -17]
+foot_l = [-3, 0]
+foot_r = [3, 0]
+
+[[anims.special_splash.up]]
+hand_r = [-5, -16]
+hand_l = [5, -16]
+foot_l = [-3, 0]
+foot_r = [3, 0]
+
+[[anims.special_splash.up]]
+hand_r = [-2, -4]
+hand_l = [2, -4]

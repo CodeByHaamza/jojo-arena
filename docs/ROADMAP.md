@@ -52,7 +52,7 @@ Chaque perso doit avoir un ressenti unique, et chaque coup qui touche doit être
 
 - [x] **Relecture de combat** : les entrées sont enregistrées (en quittant, ou F9) et `--replay` rejoue exactement le même combat.
 - [x] **Données de frames en entraînement** : démarrage, actif, récupération et avantage du dernier coup.
-- [ ] **Animations par images-clés dans les fiches** (au lieu des poses du générateur) pour des coups encore plus longs et lisibles.
+- [x] **Animations par images-clés dans les fiches** : `[anims.<nom>]` pose par pose, avec images intermédiaires (voir CONTRIBUTING). Premiers coups : Yare yare daze, couteaux de DIO, Emerald Splash.
 - [x] **Bot d'équilibrage** : `make balance` fait combattre les bots sur chaque duel et donne les taux de victoire.
   Le bot ne joue ni le zoning ni le contrôle à distance : ses chiffres mesurent la force brute, pas plus.
 

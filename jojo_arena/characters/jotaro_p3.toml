@@ -126,7 +126,7 @@ startup_f = 4
 active_f = 26
 recovery_f = 16
 counter = "counter_ora"
-anim = "counter"
+anim = "counter_yare"
 
 [stances.base.moves.counter_ora]
 label = "ORA ! (CONTRE)"

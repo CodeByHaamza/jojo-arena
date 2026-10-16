@@ -103,6 +103,7 @@ anim = "heavy"
 
 # Three knives in a fan.
 [stances.base.moves.special]
+anim = "special_knives"
 label = "COUTEAUX"
 info = "3 couteaux en éventail"
 startup_f = 10

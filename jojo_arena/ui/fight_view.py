@@ -97,8 +97,13 @@ class FighterView:
     @staticmethod
     def resolve(sprites, anim: str) -> tuple[str, AnimSpec]:
         name = anim
-        while sprites.spec(name) is None and name in ANIM_FALLBACKS:
-            name = ANIM_FALLBACKS[name]
+        while sprites.spec(name) is None:
+            if name in ANIM_FALLBACKS:
+                name = ANIM_FALLBACKS[name]
+            elif "_" in name:
+                name = name.rsplit("_", 1)[0]  # a variant ("special_splash") plays its family
+            else:
+                break
         if sprites.spec(name) is None and sprites.spec("idle") is not None:
             name = "idle"  # an animation nobody planned for: never crash, stand still
         return name, sprites.spec(name) or AnimSpec(name, 1)

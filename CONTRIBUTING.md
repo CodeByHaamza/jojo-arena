@@ -35,3 +35,22 @@ Pour aller plus loin :
 ## Images
 
 Les sprites des persos sont générés depuis leur fiche (`characters/looks/<id>.toml`) par `make sprites`. Une planche dessinée à la main peut remplacer une planche générée sans toucher au code.
+
+### Animations par images-clés
+
+Une fiche de look peut écrire ses propres animations, pose par pose, au lieu de celles du générateur :
+
+```toml
+[anims.special_splash]   # remplace l'animation de ce nom, ou en ajoute une nouvelle
+fps = 12
+phases = [2, 1, 2]       # poses clés du démarrage, de la phase active, de la récupération
+tween = 1                # images intermédiaires calculées après chaque pose clé
+
+[[anims.special_splash.right]]   # une table par pose clé, pour down, up et right
+lean = -1
+hand_r = [3, -9]                 # décalages en pixels depuis la position de repos
+```
+
+- Les réglages d'une pose sont ceux de `Pose` dans `tools/spritegen/skeleton.py` : `bob`, `lean`, `head`, `hand_l`, `hand_r`, `foot_l`, `foot_r`, `big_hand_r`.
+- Une vue absente copie une autre (`up` copie `down`, et inversement ; `right` copie `down`).
+- Le coup choisit l'animation dans son kit : `anim = "special_splash"`.

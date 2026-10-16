@@ -34,7 +34,7 @@ Les coups d'une posture : `[stances.<nom>.moves.<touche>]`, où la touche est `l
 | --- | --- |
 | `label` | Nom dans la liste des coups |
 | `info` | Explication d'une ligne dans la liste des coups |
-| `anim` | Animation à jouer (par défaut, le nom de la touche) |
+| `anim` | Animation à jouer (par défaut, le nom de la touche). Une variante `famille_nom` (`special_splash`) se dessine dans la fiche de look ; une planche qui ne l'a pas (le Stand) joue la famille (`special`) |
 | `shout` | Cri écrit à l'écran quand le coup sort ; pour une rafale, à chaque coup (`ORA`, `MUDA`) |
 | `stand_flash` | Le Stand apparaît le temps de ce coup, même rangé |
 | `fx` | Dessin pendant la phase active : `limb` (doigt, bras), `tentacle` ou `blade`, jusqu'à `reach` |

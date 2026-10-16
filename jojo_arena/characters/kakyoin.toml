@@ -86,6 +86,7 @@ anim = "heavy"
 
 # A small Emerald Splash that curves toward the target.
 [stances.base.moves.special]
+anim = "special_splash"
 label = "PETIT EMERALD SPLASH"
 info = "3 émeraudes à tête chercheuse"
 startup_f = 12
@@ -197,6 +198,7 @@ anim = "special"
 
 # Emerald Splash!
 [stances.stand.moves.special]
+anim = "special_splash"
 shout = "EMERALD SPLASH !"
 label = "EMERALD SPLASH"
 info = "Salve de 6 émeraudes"
@@ -282,6 +284,7 @@ possess_s = 1.5
 anim = "grab"
 
 [stances.remote.moves.special]
+anim = "special_splash"
 shout = "EMERALD SPLASH !"
 label = "EMERALD SPLASH À DISTANCE"
 info = "6 émeraudes tirées depuis Hierophant, sous n'importe quel angle"

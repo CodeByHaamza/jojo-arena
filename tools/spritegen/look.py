@@ -8,10 +8,13 @@ from dataclasses import dataclass, field, fields
 from pathlib import Path
 
 from .raster import Color
-from .skeleton import POSE_NAMES, Build
+from .skeleton import DIRECTIONS, POINT_FIELDS, POSE_FIELDS, POSE_NAMES, Build, KeyAnim, Pose
 
 BODY_SLOTS = ("head", "torso", "arms", "hands", "legs", "feet")
 DEFAULT_CELL = 64
+ANIM_SETTINGS = ("fps", "loop", "phases", "tween")
+# A view the look does not pose copies the first of these that it does.
+VIEW_STANDINS = {"down": ("up", "right"), "up": ("down", "right"), "right": ("down", "up")}
 
 
 def parse_color(value: str | list[int]) -> Color:
@@ -51,6 +54,59 @@ class Look:
     parts: list[dict] = field(default_factory=list)
     recolor: list[str] = field(default_factory=list)  # palette entries the game may swap
     pose: str = "raise"  # signature pose (see skeleton.POSE_NAMES)
+    anims: dict[str, KeyAnim] = field(default_factory=dict)  # key-pose animations
+
+
+def parse_pose(data: dict, where: str) -> Pose:
+    unknown = set(data) - set(POSE_FIELDS)
+    if unknown:
+        raise ValueError(f"{where}: unknown pose settings {', '.join(sorted(unknown))}")
+    values = {}
+    for name, value in data.items():
+        if name in POINT_FIELDS:
+            if len(value) != 2:
+                raise ValueError(f"{where}: {name} needs two numbers [x, y]")
+            values[name] = (float(value[0]), float(value[1]))
+        elif name == "big_hand_r":
+            values[name] = bool(value)
+        else:
+            values[name] = float(value)
+    return Pose(**values)
+
+
+def parse_anims(data: dict, where: str) -> dict[str, KeyAnim]:
+    """[anims.<name>]: key poses per view, replacing the generated animation of that name
+    or adding a new one (a move picks it in its kit with `anim = "<name>"`)."""
+    anims = {}
+    for name, spec in data.items():
+        place = f"{where}: anims.{name}"
+        unknown = set(spec) - set(ANIM_SETTINGS) - set(DIRECTIONS)
+        if unknown:
+            raise ValueError(f"{place}: unknown settings {', '.join(sorted(unknown))}")
+        views = {
+            view: tuple(parse_pose(key, f"{place}.{view}[{i}]") for i, key in enumerate(spec[view]))
+            for view in DIRECTIONS
+            if view in spec
+        }
+        if not views:
+            raise ValueError(f"{place}: no key poses (give [[anims.{name}.down]] and so on)")
+        given = dict(views)
+        for view in DIRECTIONS:
+            if view not in views:
+                views[view] = given[next(v for v in VIEW_STANDINS[view] if v in given)]
+        counts = {len(keys) for keys in views.values()}
+        if len(counts) > 1 or 0 in counts:
+            raise ValueError(f"{place}: every view needs the same number of key poses")
+        phases = tuple(int(n) for n in spec["phases"]) if "phases" in spec else None
+        if phases is not None and (sum(phases) != counts.pop() or min(phases) < 1):
+            raise ValueError(f"{place}: phases must share out all the key poses, 1 or more each")
+        tween = int(spec.get("tween", 0))
+        if tween < 0:
+            raise ValueError(f"{place}: tween cannot be negative")
+        anims[name] = KeyAnim(
+            views, int(spec.get("fps", 12)), bool(spec.get("loop", False)), phases, tween
+        )
+    return anims
 
 
 def load_look(path: Path) -> Look:
@@ -89,4 +145,5 @@ def load_look(path: Path) -> Look:
         parts=list(data.get("parts", [])),
         recolor=list(data.get("recolor", [])),
         pose=pose,
+        anims=parse_anims(data.get("anims", {}), path.name),
     )

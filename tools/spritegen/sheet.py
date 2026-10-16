@@ -10,7 +10,23 @@ from .body import body_parts
 from .look import Look
 from .parts import PART_TYPES
 from .raster import render
-from .skeleton import DIRECTIONS, LYING, Pose, animations, feet_line, make_skeleton
+from .skeleton import (
+    DIRECTIONS,
+    LYING,
+    AnimTable,
+    Pose,
+    animations,
+    feet_line,
+    make_skeleton,
+)
+
+
+def look_animations(look: Look, view: str) -> AnimTable:
+    """The generated animations, with the look's key-pose animations over them."""
+    table = animations(view, look.pose)
+    for name, anim in look.anims.items():
+        table[name] = (anim.fps, anim.loop, anim.frame_phases(), anim.frames(view))
+    return table
 
 
 def anchor(cell: int) -> tuple[int, int]:
@@ -55,7 +71,7 @@ def body_heights(look: Look) -> tuple[int, int]:
 def build_sheet(look: Look) -> tuple[pygame.Surface, str]:
     """The sheet image and its TOML description, in the format the game loads."""
     cell = look.cell
-    tables = {view: animations(view, look.pose) for view in DIRECTIONS}
+    tables = {view: look_animations(look, view) for view in DIRECTIONS}
     names = list(tables["down"])
     max_frames = max(len(entry[3]) for entry in tables["down"].values())
     sheet = pygame.Surface(
@@ -103,7 +119,7 @@ def preview(look: Look, sheet: pygame.Surface, scale: int = 3) -> pygame.Surface
     from jojo_arena.engine import font
 
     label_w = 60
-    names = list(animations("down"))
+    names = list(look_animations(look, "down"))
     block = len(DIRECTIONS) * look.cell * scale
     width = label_w + sheet.get_width() * scale
     out = pygame.Surface((width, sheet.get_height() * scale))

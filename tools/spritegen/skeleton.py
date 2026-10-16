@@ -11,7 +11,7 @@ arm and leg lengths, so every body shape can play the same animations.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 
 Point = tuple[float, float]
 DIRECTIONS = ("down", "up", "right")
@@ -489,3 +489,68 @@ def pose_frames(name: str, view: str) -> list[Pose]:
 
 
 POSE_NAMES = ("raise", "point", "arch", "frame_face", "point_up", "spread", "flex")
+
+
+# Key poses: animations written in a look file instead of the code above. In-between
+# frames are blended from two keys, so a move can last longer and still read smoothly.
+
+POSE_FIELDS = tuple(f.name for f in fields(Pose))
+POINT_FIELDS = ("head", "hand_l", "hand_r", "foot_l", "foot_r")
+
+
+def blend(a: Pose, b: Pose, t: float) -> Pose:
+    """The pose a fraction `t` of the way from `a` to `b`."""
+
+    def mix(x: float, y: float) -> float:
+        return x + (y - x) * t
+
+    values = {}
+    for name in POSE_FIELDS:
+        x, y = getattr(a, name), getattr(b, name)
+        if name in POINT_FIELDS:
+            values[name] = (mix(x[0], y[0]), mix(x[1], y[1]))
+        elif isinstance(x, bool):
+            values[name] = x if t < 0.5 else y
+        else:
+            values[name] = mix(x, y)
+    return Pose(**values)
+
+
+@dataclass(frozen=True)
+class KeyAnim:
+    """An animation given as key poses, the same number for each of the three views."""
+
+    views: dict[str, tuple[Pose, ...]]
+    fps: int = 12
+    loop: bool = False
+    phases: tuple[int, ...] | None = None  # keys in the startup / active / recovery phases
+    tween: int = 0  # in-between frames drawn after each key, toward the next one
+
+    @property
+    def keys(self) -> int:
+        return len(self.views["down"])
+
+    def _after(self, index: int) -> int:
+        """In-betweens following key `index` (none after the last key unless it loops)."""
+        last = index == self.keys - 1
+        return 0 if self.keys < 2 or (last and not self.loop) else self.tween
+
+    def frames(self, view: str) -> list[Pose]:
+        keys = self.views[view]
+        out: list[Pose] = []
+        for i, key in enumerate(keys):
+            out.append(key)
+            following = keys[(i + 1) % len(keys)]
+            steps = self._after(i)
+            out += [blend(key, following, s / (steps + 1)) for s in range(1, steps + 1)]
+        return out
+
+    def frame_phases(self) -> list[int] | None:
+        """The phases counted in drawn frames: in-betweens belong to the key before them."""
+        if not self.phases:
+            return None
+        counts, index = [], 0
+        for keys in self.phases:
+            counts.append(sum(1 + self._after(i) for i in range(index, index + keys)))
+            index += keys
+        return counts

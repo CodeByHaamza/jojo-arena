@@ -130,3 +130,10 @@ row = 54
 frames = 2
 fps = 10
 loop = true
+
+[anims.counter_yare]
+row = 57
+frames = 7
+fps = 8
+loop = false
+phases = [2, 4, 1]
