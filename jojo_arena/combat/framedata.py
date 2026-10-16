@@ -3,6 +3,9 @@
 Startup is the number of frames before the move can hit; advantage is how many frames
 earlier (+) or later (-) the attacker can act again than the defender, after a hit or a
 block on the first active frame. Hitstop freezes both sides alike, so it does not count.
+
+`combat/framemeter.py` measures the same advantage on the running fight; a test checks
+the two agree.
 """
 
 from __future__ import annotations
@@ -26,11 +29,13 @@ def frame_data(move: MoveDef, rules: Rules) -> FrameData:
     on_hit = on_block = None
     single_blow = move.radius > 0 and move.hits <= 1 and not move.cinematic
     if single_blow:
-        # Frames the attacker still has to play after its first active frame.
+        # Everything is counted from the frame the blow lands on, the first active one.
+        # That frame is spent on both sides: the attacker has the rest of its active
+        # frames and its recovery left, the defender the rest of its stun.
         busy = move.active_f - 1 + move.recovery_f
         blockstun = move.blockstun_f or round(move.hitstun_f * rules.blockstun_ratio)
-        on_hit = move.hitstun_f - busy
-        on_block = None if move.unblockable else blockstun - busy
+        on_hit = move.hitstun_f - 1 - busy
+        on_block = None if move.unblockable else blockstun - 1 - busy
     return FrameData(move.startup_f, move.active_f, move.recovery_f, on_hit, on_block)
 
 

@@ -10,9 +10,9 @@ def test_advantage_on_hit_and_block():
     data = frame_data(jab, RULES)
     busy = jab.active_f - 1 + jab.recovery_f
     assert (data.startup, data.active, data.recovery) == (4, 3, 10)
-    assert data.on_hit == jab.hitstun_f - busy
+    assert data.on_hit == jab.hitstun_f - 1 - busy == 6
     blockstun = jab.blockstun_f or round(jab.hitstun_f * RULES.blockstun_ratio)
-    assert data.on_block == blockstun - busy
+    assert data.on_block == blockstun - 1 - busy == -2
 
 
 def test_no_advantage_for_shots_rushes_or_cutscenes():
