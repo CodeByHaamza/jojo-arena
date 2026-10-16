@@ -8,6 +8,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from jojo_arena.engine import i18n
+from jojo_arena.engine.input import LAYOUTS
+
+PAD_STYLES = ("auto", "xbox", "playstation")
 
 
 @dataclass
@@ -16,6 +19,9 @@ class Settings:
     cpu_level: int = 1  # the computer's level, as last picked
     volume: int = 7  # sound effects, 0 (silent) to 10
     music_volume: int = 5  # music, 0 (silent) to 10
+    # How inputs are *named* on screen. "auto" believes the system and the pad itself.
+    layout: str = "auto"  # auto, azerty, qwerty
+    pad_style: str = "auto"  # auto, xbox, playstation
 
     def to_json(self) -> dict:
         return {
@@ -23,6 +29,8 @@ class Settings:
             "cpu_level": self.cpu_level,
             "volume": self.volume,
             "music_volume": self.music_volume,
+            "layout": self.layout,
+            "pad_style": self.pad_style,
         }
 
 
@@ -41,6 +49,10 @@ def parse_settings(data: object) -> Settings:
         settings.volume = data["volume"]
     if isinstance(data, dict) and data.get("music_volume") in range(11):
         settings.music_volume = data["music_volume"]
+    if isinstance(data, dict) and data.get("layout") in LAYOUTS:
+        settings.layout = data["layout"]
+    if isinstance(data, dict) and data.get("pad_style") in PAD_STYLES:
+        settings.pad_style = data["pad_style"]
     return settings
 
 

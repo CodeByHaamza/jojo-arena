@@ -5,6 +5,7 @@ import pygame
 import pytest
 
 from jojo_arena import controls
+from jojo_arena.engine import input as engine_input
 from jojo_arena.engine.actions import (
     InputFrame,
     direction_from_flags,
@@ -19,6 +20,8 @@ from jojo_arena.engine.input import (
     KeyboardSource,
     PadState,
 )
+from jojo_arena.settings import Settings, load_settings, save_settings, settings_path
+from jojo_arena.ui import labels, text
 
 DIAG = math.sqrt(0.5)
 
@@ -201,3 +204,72 @@ def test_pads_needed():
     assert config.presets["keyboard_gamepad"].pads_needed() == 1
     assert config.presets["shared_keyboard"].pads_needed() == 0
     assert config.presets["two_gamepads"].pads_needed() == 2
+
+
+# How keys and buttons are NAMED on screen (the bindings never change: they are
+# physical key positions, so AZERTY and QWERTY players press the same places).
+
+
+@pytest.fixture(autouse=True)
+def naming_back_to_auto():
+    yield
+    engine_input.set_layout("auto")
+    labels.set_pad_style("auto")
+
+
+# Real SDL GUIDs: the vendor sits at characters 8 to 12, little endian.
+DS4_GUID = "030000004c050000cc09000000000000"
+XBOX_GUID = "030000005e040000e002000000000000"
+
+
+def test_a_pad_says_which_family_it_belongs_to():
+    assert engine_input.guid_vendor(DS4_GUID) == 0x054C
+    assert engine_input.guid_vendor(XBOX_GUID) == 0x045E
+    assert PadState(0, guid=DS4_GUID).family == "playstation"
+    assert PadState(0, guid=XBOX_GUID).family == "xbox"
+
+
+def test_a_pad_without_a_vendor_is_recognised_by_its_name():
+    assert engine_input.guid_vendor("") is None
+    assert engine_input.guid_vendor("zz" * 16) is None
+    assert engine_input.guid_vendor("03000000" + "0000" + "0" * 20) is None
+    assert PadState(0, name="DualSense Wireless Controller").family == "playstation"
+    assert PadState(0, name="PS4 Controller").family == "playstation"
+    assert PadState(0, name="Xbox Series X Controller").family == "xbox"
+    assert PadState(0).family == "xbox"  # nothing known at all
+
+
+def test_the_keyboard_layout_can_be_forced():
+    engine_input.set_layout("qwerty")
+    assert engine_input.key_label("W") == "W" and engine_input.key_label("A") == "A"
+    engine_input.set_layout("azerty")
+    assert engine_input.key_label("W") == "Z" and engine_input.key_label("A") == "Q"
+    assert engine_input.key_label("K") == "K"  # the same place on both
+    assert engine_input.layout() == "azerty"
+    with pytest.raises(ValueError):
+        engine_input.set_layout("dvorak")
+
+
+def test_the_pad_names_follow_the_forced_style():
+    pad = controls.PlayerControls(device="gamepad", bindings=controls.GAMEPAD)
+    labels.set_pad_style("playstation")
+    assert labels.pad_family(None, 0) == "playstation"
+    assert labels.action_label(pad, "light") == text.PAD_PLAYSTATION["x"]  # CARRÉ in French
+    assert labels.action_label(pad, "pose") == "SHARE"
+    labels.set_pad_style("xbox")
+    assert labels.action_label(pad, "light") == "X"
+    assert labels.action_label(pad, "pose") == "VIEW"
+    with pytest.raises(ValueError):
+        labels.set_pad_style("gamecube")
+
+
+def test_the_naming_choices_are_read_back_and_applied(tmp_path):
+    path = settings_path(tmp_path / "controls.json")
+    save_settings(Settings(layout="azerty", pad_style="playstation"), path)
+    read = load_settings(path)
+    assert (read.layout, read.pad_style) == ("azerty", "playstation")
+    labels.apply_naming_settings(read)
+    assert engine_input.key_label("W") == "Z" and labels.pad_family(None, 0) == "playstation"
+    path.write_text(json.dumps({"layout": "braille", "pad_style": "wii"}), encoding="utf-8")
+    fallback = load_settings(path)
+    assert (fallback.layout, fallback.pad_style) == ("auto", "auto")

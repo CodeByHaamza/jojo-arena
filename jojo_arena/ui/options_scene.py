@@ -6,22 +6,33 @@ import pygame
 
 from jojo_arena.context import GameContext
 from jojo_arena.engine import audio, font, i18n, music
+from jojo_arena.engine.input import LAYOUTS, detected_layout, set_layout
 from jojo_arena.engine.scene import Scene
 from jojo_arena.ui import text
 from jojo_arena.ui.backdrop import MenuBackdrop
 from jojo_arena.ui.labels import (
+    PAD_STYLES,
     action_label,
     device_label,
     menu_key,
     move_label,
+    pad_family,
+    pad_name,
     preset_label,
+    set_pad_style,
 )
 from jojo_arena.ui.menu import Menu, MenuItem
 from jojo_arena.ui.widgets import DIM, GOLD, P1_COLOR, P2_COLOR, WHITE, draw_box, draw_hints
 
 WARNING = (240, 90, 90)
-TABLE = pygame.Rect(70, 102, 340, 132)
+TABLE = pygame.Rect(70, 108, 340, 132)
 COLUMNS = (TABLE.x + 10, TABLE.x + 190, TABLE.x + 282)  # action, J1, J2 (centers for J1/J2)
+
+
+def naming_labels(choices: tuple[str, ...], auto: str, names: dict, found: str) -> list[str]:
+    """Menu values for a naming choice: "AUTO (AZERTY)", then the forced ones."""
+    detected = names.get(found, found.upper())
+    return [auto.format(name=detected) if c == "auto" else names[c] for c in choices]
 
 
 class OptionsScene(Scene):
@@ -38,6 +49,23 @@ class OptionsScene(Scene):
                     "controls", text.CONTROLS, labels, self.preset_keys.index(ctx.controls.active)
                 ),
                 MenuItem("keys", text.REBIND),
+                MenuItem(
+                    "layout",
+                    text.LAYOUT,
+                    naming_labels(LAYOUTS, text.LAYOUT_AUTO, text.LAYOUT_NAMES, detected_layout()),
+                    LAYOUTS.index(ctx.settings.layout),
+                ),
+                MenuItem(
+                    "pad_style",
+                    text.PAD_STYLE,
+                    naming_labels(
+                        PAD_STYLES,
+                        text.PAD_STYLE_AUTO,
+                        text.PAD_STYLE_NAMES,
+                        pad_family(ctx.inputs, 0),
+                    ),
+                    PAD_STYLES.index(ctx.settings.pad_style),
+                ),
                 MenuItem("fullscreen", text.FULLSCREEN, [text.NO, text.YES]),
                 MenuItem(
                     "language",
@@ -79,6 +107,18 @@ class OptionsScene(Scene):
             self.ctx.settings.music_volume = self.menu.item("music").index
             self.ctx.save_settings()
             music.set_volume(self.ctx.settings.music_volume / 10)
+        elif kind == "change" and key in ("layout", "pad_style"):
+            # Only the names shown change: the bindings are physical key positions.
+            if key == "layout":
+                self.ctx.settings.layout = LAYOUTS[self.menu.item("layout").index]
+                set_layout(self.ctx.settings.layout)
+            else:
+                self.ctx.settings.pad_style = PAD_STYLES[self.menu.item("pad_style").index]
+                set_pad_style(self.ctx.settings.pad_style)
+            self.ctx.save_settings()
+            scene = OptionsScene(self.ctx)
+            scene.menu.select(key)
+            self.ctx.scenes.switch(scene)
         elif kind == "change" and key == "language":
             code = i18n.LANGUAGES[self.menu.item("language").index]
             i18n.set_language(code)
@@ -100,8 +140,8 @@ class OptionsScene(Scene):
     def draw(self, surface: pygame.Surface) -> None:
         self.backdrop.draw(surface, self.tick)
         width, height = surface.get_size()
-        font.draw(surface, text.OPTIONS_TITLE, (width // 2, 4), GOLD, scale=3, align="center")
-        self.menu.draw(surface, width // 2, 30, spacing=10)
+        font.draw(surface, text.OPTIONS_TITLE, (width // 2, 0), GOLD, scale=3, align="center")
+        self.menu.draw(surface, width // 2, 27, spacing=9)
 
         preset = self.ctx.controls.active_preset
         draw_box(surface, TABLE)
@@ -123,14 +163,20 @@ class OptionsScene(Scene):
 
         if preset.pads_needed() > len(self.ctx.inputs.pads):
             font.draw(
-                surface, text.PADS_MISSING, (width // 2, TABLE.bottom + 4), WARNING, align="center"
+                surface, text.PADS_MISSING, (width // 2, TABLE.bottom + 2), WARNING, align="center"
             )
         else:
             font.draw(
-                surface,
-                text.CONTROLS_FILE_HINT,
-                (width // 2, TABLE.bottom + 4),
-                DIM,
-                align="center",
+                surface, self.pads_line(), (width // 2, TABLE.bottom + 2), DIM, align="center"
             )
         draw_hints(surface, self.hints, (width // 2, height - 14))
+
+    def pads_line(self) -> str:
+        """Which pads the game actually sees, by their own name."""
+        pads = self.ctx.inputs.pads
+        if not pads:
+            return text.PAD_NONE
+        return "   ".join(
+            text.PAD_DETECTED.format(n=i + 1, name=pad_name(self.ctx.inputs, i))
+            for i in range(len(pads))
+        )

@@ -111,10 +111,32 @@ TRIGGER_THRESHOLD = 0.5
 STICK_DEADZONE = 0.35
 
 
+# Who made the pad, read from the GUID: Sony pads get PlayStation button names.
+PLAYSTATION_VENDOR = 0x054C
+# Fallback when the GUID carries no vendor (Bluetooth, remapped pads, some drivers).
+PLAYSTATION_HINTS = ("playstation", "dualshock", "dualsense", "ps3", "ps4", "ps5", "sony")
+
+
+def guid_vendor(guid: str) -> int | None:
+    """The USB vendor id inside an SDL joystick GUID, or None when it carries none.
+
+    An SDL GUID is 32 hex characters; the vendor is a little-endian 16-bit field at
+    characters 8 to 12, and it is zero for pads SDL could not identify.
+    """
+    if len(guid) < 12:
+        return None
+    try:
+        return int(guid[10:12] + guid[8:10], 16) or None
+    except ValueError:
+        return None
+
+
 @dataclass
 class PadState:
     instance_id: int
     controller: object | None = None
+    name: str = ""
+    guid: str = ""
     held: set[str] = field(default_factory=set)
     axes: dict[int, float] = field(default_factory=dict)
     pending: Counter[str] = field(default_factory=Counter)
@@ -129,6 +151,15 @@ class PadState:
             self.axes.get(pygame.CONTROLLER_AXIS_LEFTX, 0.0),
             self.axes.get(pygame.CONTROLLER_AXIS_LEFTY, 0.0),
         )
+
+    @property
+    def family(self) -> str:
+        """ "playstation" or "xbox": which set of button names fits this pad."""
+        vendor = guid_vendor(self.guid)
+        if vendor is not None:
+            return "playstation" if vendor == PLAYSTATION_VENDOR else "xbox"
+        lowered = self.name.lower()
+        return "playstation" if any(h in lowered for h in PLAYSTATION_HINTS) else "xbox"
 
 
 class InputManager:
@@ -157,9 +188,10 @@ class InputManager:
         from pygame._sdl2 import controller
 
         pad = controller.Controller(device_index)
-        instance_id = pad.as_joystick().get_instance_id()
+        joystick = pad.as_joystick()
+        instance_id = joystick.get_instance_id()
         if all(state.instance_id != instance_id for state in self.pads):
-            self.pads.append(PadState(instance_id, pad))
+            self.pads.append(PadState(instance_id, pad, *_pad_identity(joystick)))
 
     def _pad(self, instance_id: int) -> PadState | None:
         return next((pad for pad in self.pads if pad.instance_id == instance_id), None)
@@ -322,9 +354,23 @@ def _keycode_for(scancode: int) -> int | None:
     return keycode or None
 
 
-def key_label(name: str) -> str:
-    """How a physical key is labelled on this computer's keyboard: "W" reads "Z" on an
-    AZERTY keyboard. Falls back to the US name when the layout cannot be asked."""
+def _pad_identity(joystick) -> tuple[str, str]:
+    """(name, guid) of a pad; either can be missing on an older SDL build."""
+    name = guid = ""
+    for attribute, store in (("get_name", "name"), ("get_guid", "guid")):
+        try:
+            value = str(getattr(joystick, attribute)())
+        except (AttributeError, pygame.error):  # pragma: no cover - depends on SDL
+            value = ""
+        if store == "name":
+            name = value
+        else:
+            guid = value
+    return name, guid
+
+
+def _system_label(name: str) -> str:
+    """What this physical key types on the layout the system reports."""
     scancode = KEY_SCANCODES.get(name)
     keycode = _keycode_for(scancode) if scancode is not None else None
     if keycode:
@@ -332,3 +378,36 @@ def key_label(name: str) -> str:
         if label:
             return label.upper()
     return name.upper()
+
+
+LAYOUTS = ("auto", "azerty", "qwerty")
+# A French AZERTY keyboard, named by US QWERTY position: only the keys that move.
+AZERTY_LABELS = {"Q": "A", "W": "Z", "A": "Q", "Z": "W", "Semicolon": "M", "M": ","}
+_layout = "auto"
+
+
+def set_layout(name: str) -> None:
+    """Force how keys are named, or "auto" to believe the system."""
+    global _layout
+    if name not in LAYOUTS:
+        raise ValueError(f"unknown keyboard layout '{name}' (one of {', '.join(LAYOUTS)})")
+    _layout = name
+
+
+def layout() -> str:
+    return _layout
+
+
+def detected_layout() -> str:
+    """What the system says this keyboard is, whatever the forced choice."""
+    return "azerty" if _system_label("W") == "Z" else "qwerty"
+
+
+def key_label(name: str) -> str:
+    """How a physical key is labelled on this computer's keyboard: "W" reads "Z" on an
+    AZERTY keyboard. Falls back to the US name when the layout cannot be asked."""
+    if _layout == "qwerty":
+        return name.upper()
+    if _layout == "azerty":
+        return AZERTY_LABELS.get(name, name.upper())
+    return _system_label(name)

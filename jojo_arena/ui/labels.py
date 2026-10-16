@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from jojo_arena.controls import MENU_GAMEPAD, MENU_KEYBOARD, PlayerControls, Preset
 from jojo_arena.engine import font
-from jojo_arena.engine.input import InputManager, key_label
+from jojo_arena.engine.input import InputManager, key_label, set_layout
 from jojo_arena.ui import text
 
 KEYPAD_NAMES = {
@@ -50,7 +50,29 @@ PLAYSTATION = {
     "touchpad": "TOUCHPAD",
 }
 DPAD = {"dpad_up": "↑", "dpad_down": "↓", "dpad_left": "←", "dpad_right": "→"}
-PLAYSTATION_HINTS = ("ps3", "ps4", "ps5", "playstation", "dualshock", "dualsense", "sony")
+PAD_STYLES = ("auto", "xbox", "playstation")
+_pad_style = "auto"
+
+
+def set_pad_style(style: str) -> None:
+    """Force the button names shown, or "auto" to follow the pad that is plugged in."""
+    global _pad_style
+    if style not in PAD_STYLES:
+        raise ValueError(f"unknown pad style '{style}' (one of {', '.join(PAD_STYLES)})")
+    _pad_style = style
+
+
+def pad_style() -> str:
+    return _pad_style
+
+
+def pad_name(inputs: InputManager | None, slot: int | None = 0) -> str:
+    """The system name of a plugged-in pad ("DualSense Wireless Controller"), or "-"."""
+    pads = inputs.pads if inputs is not None else []
+    index = slot or 0
+    if index >= len(pads) or not pads[index].name:
+        return "-"
+    return pads[index].name.upper()
 
 
 def keyboard_label(name: str) -> str:
@@ -68,13 +90,18 @@ def keyboard_label(name: str) -> str:
 
 
 def pad_family(inputs: InputManager | None, slot: int | None) -> str:
-    """ "playstation" when that pad looks like a Sony one, otherwise "xbox"."""
+    """ "playstation" when that pad is a Sony one, otherwise "xbox".
+
+    The pad says so itself (the vendor in its SDL GUID, then its name); the player can
+    override it in the Options when a pad lies about what it is.
+    """
+    if _pad_style != "auto":
+        return _pad_style
     pads = inputs.pads if inputs is not None else []
     index = slot or 0
-    if index >= len(pads) or pads[index].controller is None:
+    if index >= len(pads):
         return "xbox"
-    name = str(getattr(pads[index].controller, "name", "")).lower()
-    return "playstation" if any(hint in name for hint in PLAYSTATION_HINTS) else "xbox"
+    return pads[index].family
 
 
 def pad_label(name: str, family: str = "xbox") -> str:
@@ -130,3 +157,9 @@ def menu_key(action: str, inputs: InputManager | None = None) -> str:
     if inputs is not None and inputs.pads:
         label += "/" + pad_label(MENU_GAMEPAD[action][0], pad_family(inputs, 0))
     return label
+
+
+def apply_naming_settings(settings) -> None:
+    """Name keys and buttons the way the player asked for them in the Options."""
+    set_layout(settings.layout)
+    set_pad_style(settings.pad_style)

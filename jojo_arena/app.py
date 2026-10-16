@@ -93,6 +93,9 @@ class Game:
         if language:
             settings.language = language
         i18n.set_language(settings.language)
+        from jojo_arena.ui.labels import apply_naming_settings
+
+        apply_naming_settings(settings)
         self.ctx = GameContext(display, inputs, SceneManager(), config, path, settings)
         from jojo_arena.ui.sounds import build_sounds
 
