@@ -3,6 +3,7 @@
 
 name = "Le Caire, rue de nuit"
 name_en = "Cairo, a street at night"
+part = 3
 
 [bounds]
 rect = [16, 40, 448, 212]

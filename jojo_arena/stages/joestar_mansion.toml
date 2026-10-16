@@ -1,0 +1,111 @@
+# The Joestar mansion in flames (GDD: "Manoir Joestar en flammes", Part 1).
+# Parquet and a worn carpet, the walls burning; through the tall windows of the north
+# wall, dawn comes in late in the round, and the sun burns the undead who stand in it.
+# Coordinates are internal pixels (screen is 480 x 270). Rects are [x, y, width, height].
+
+name = "Le manoir Joestar en flammes"
+name_en = "The Joestar mansion in flames"
+part = 1
+
+[bounds]
+rect = [16, 40, 448, 212]
+corner_radius = 10
+
+[spawns]
+p1 = [150, 146]
+p2 = [330, 146]
+
+# Dawn: from this time into the round (the round lasts 99 s), the sun shines in
+# through the windows onto these patches of floor.
+[sun]
+after_s = 60
+
+[[sun.windows]]
+rect = [70, 40, 44, 92]
+
+[[sun.windows]]
+rect = [218, 40, 44, 92]
+
+[[sun.windows]]
+rect = [366, 40, 44, 92]
+
+[prop_kinds.pillar]
+hp = 160
+
+# Vases and chairs can be picked up (Pose key) and thrown; once broken they come back
+# to their place after respawn_s.
+[prop_kinds.vase]
+hp = 20
+throwable = true
+throw_damage = 35
+respawn_s = 8
+
+[prop_kinds.chair]
+hp = 40
+throwable = true
+throw_damage = 45
+respawn_s = 10
+
+[[props]]
+kind = "pillar"
+rect = [60, 200, 14, 14]
+
+[[props]]
+kind = "pillar"
+rect = [406, 200, 14, 14]
+
+[[props]]
+kind = "chair"
+rect = [136, 210, 12, 11]
+
+[[props]]
+kind = "chair"
+rect = [332, 210, 12, 11]
+
+[[props]]
+kind = "vase"
+rect = [36, 80, 8, 8]
+
+[[props]]
+kind = "vase"
+rect = [436, 80, 8, 8]
+
+[[props]]
+kind = "vase"
+rect = [168, 60, 8, 8]
+
+[[props]]
+kind = "vase"
+rect = [304, 60, 8, 8]
+
+# Candelabras on the walls: warm light pools.
+[[lanterns]]
+pos = [30, 150]
+
+[[lanterns]]
+pos = [450, 150]
+
+[[lanterns]]
+pos = [166, 37]
+
+[[lanterns]]
+pos = [314, 37]
+
+[palette]
+frame = [30, 18, 22]
+frame_dark = [18, 11, 15]
+wall = [62, 36, 40]
+wall_light = [78, 48, 50]
+trim = [96, 62, 42]
+glass_night = [32, 42, 80]
+glass_dawn = [255, 200, 120]
+curb = [104, 74, 54]
+plank = [112, 84, 64]
+plank_light = [120, 92, 70]
+plank_dark = [102, 76, 58]
+seam = [78, 56, 44]
+carpet = [110, 36, 42]
+carpet_border = [140, 110, 64]
+fire = [255, 120, 40]
+lantern = [255, 180, 100]
+sun = [255, 206, 130]

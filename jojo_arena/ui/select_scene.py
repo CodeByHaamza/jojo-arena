@@ -178,9 +178,12 @@ class CharacterSelectScene(Scene):
             return
         ids = self.fighter_ids
         if self.mode == "training":
+            from jojo_arena.stages import stage_for_part
             from jojo_arena.ui.training_scene import TrainingScene
 
-            self.ctx.scenes.switch(TrainingScene(self.ctx, fighter_ids=(ids[0], ids[1])))
+            stage = stage_for_part(self.roster[self.picks[0]].part)
+            scene = TrainingScene(self.ctx, fighter_ids=(ids[0], ids[1]), stage_id=stage)
+            self.ctx.scenes.switch(scene)
         else:
             from jojo_arena.ui.setup_scene import SetupScene
 

@@ -9,7 +9,7 @@ from jojo_arena.stages.base import StageDef, load_stage_def
 _DIR = Path(__file__).parent
 
 # Explicit list (no dynamic import) so PyInstaller bundles every stage.
-STAGE_IDS = ("cairo_night",)
+STAGE_IDS = ("cairo_night", "joestar_mansion")
 
 
 def load_stage(stage_id: str) -> StageDef:
@@ -18,8 +18,17 @@ def load_stage(stage_id: str) -> StageDef:
     return load_stage_def(_DIR / f"{stage_id}.toml", stage_id)
 
 
+def stage_for_part(part: int) -> str:
+    """The arena of a JoJo part (where its fighters play by default), or the first one."""
+    for stage_id in STAGE_IDS:
+        if load_stage(stage_id).part == part:
+            return stage_id
+    return STAGE_IDS[0]
+
+
 def stage_renderer(stage: StageDef):
     from jojo_arena.stages.cairo_night import CairoNightRenderer
+    from jojo_arena.stages.joestar_mansion import JoestarMansionRenderer
 
-    renderers = {"cairo_night": CairoNightRenderer}
+    renderers = {"cairo_night": CairoNightRenderer, "joestar_mansion": JoestarMansionRenderer}
     return renderers[stage.id](stage)

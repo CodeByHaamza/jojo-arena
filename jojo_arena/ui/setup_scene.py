@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import random
+
 import pygame
 
 from jojo_arena.characters import get_fighter
@@ -10,6 +12,7 @@ from jojo_arena.context import GameContext
 from jojo_arena.engine import font
 from jojo_arena.engine.scene import Scene
 from jojo_arena.engine.sprites import shade
+from jojo_arena.stages import STAGE_IDS, load_stage, stage_for_part
 from jojo_arena.ui import text
 from jojo_arena.ui.backdrop import MenuBackdrop
 from jojo_arena.ui.labels import menu_key, preset_label
@@ -40,9 +43,12 @@ class SetupScene(Scene):
         self.preset_keys = list(ctx.controls.presets)
         rounds = [str(n) for n in ROUNDS_TO_WIN_CHOICES]
         labels = [preset_label(ctx.controls.presets[k]) for k in self.preset_keys]
+        stages = [load_stage(s).name.upper() for s in STAGE_IDS] + [text.STAGE_RANDOM]
+        home = STAGE_IDS.index(stage_for_part(self.defs[0].part))
         self.menu = Menu(
             [
                 MenuItem("rounds", text.ROUNDS_TO_WIN, rounds, rounds.index(str(rounds_to_win))),
+                MenuItem("stage", text.STAGE, stages, home),
                 MenuItem(
                     "controls", text.CONTROLS, labels, self.preset_keys.index(ctx.controls.active)
                 ),
@@ -61,6 +67,12 @@ class SetupScene(Scene):
     def rounds_to_win(self) -> int:
         return int(self.menu.item("rounds").value)
 
+    @property
+    def stage_id(self) -> str:
+        """The arena picked, or one drawn at random."""
+        index = self.menu.item("stage").index
+        return STAGE_IDS[index] if index < len(STAGE_IDS) else random.choice(STAGE_IDS)
+
     def update(self) -> None:
         self.tick += 1
         action = self.menu.handle(self.ctx.read_menu())
@@ -74,7 +86,12 @@ class SetupScene(Scene):
             from jojo_arena.ui.fight_scene import FightScene
 
             self.ctx.scenes.switch(
-                FightScene(self.ctx, rounds_to_win=self.rounds_to_win, fighter_ids=self.fighter_ids)
+                FightScene(
+                    self.ctx,
+                    rounds_to_win=self.rounds_to_win,
+                    fighter_ids=self.fighter_ids,
+                    stage_id=self.stage_id,
+                )
             )
         elif (kind == "confirm" and key == "back") or kind == "back":
             # Back to the character select, player 2 choosing again.
@@ -98,7 +115,7 @@ class SetupScene(Scene):
             if fdef.stand_name:
                 font.draw(surface, fdef.stand_name, (x, FEET_Y + 19), fdef.aura, align="center")
         font.draw(surface, text.VS, (center, 50), GOLD, scale=4, align="center")
-        box = pygame.Rect(0, 0, 236, 70)
+        box = pygame.Rect(0, 0, 262, 84)
         box.midtop = (center, 104)
         draw_box(surface, box)
         self.menu.draw(surface, center, box.y + 9, spacing=15)
