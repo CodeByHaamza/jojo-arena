@@ -1,0 +1,334 @@
+# Dio Brando (Part 1). GDD: "Vampire · Bruiser": aggressive, steals life with his heavy
+# blows. Vaporization Freezing: his touch freezes the opponent. Space Ripper Stingy Eyes:
+# eye beams to keep them away. Ultimate: Absorption, a grab that drains a big share of
+# life. Frames (_f) are at 60 per second; speeds and knockback in px per second.
+#
+# Style key: Vaporization Freezing on or off. It needs some blood, burns it while it
+# lasts, and ends when the blood runs dry. Blood fills by draining; untouched, Dio heals
+# on it. Hamon burns him (double damage, no healing for a while); so does the sun.
+
+name = "Dio Brando"
+max_hp = 1000
+walk_speed = 108
+strength = 1.5  # a vampire's strength: he throws hard
+nature = "vampire"
+style = { type = "vampire", off = "base", on = "freeze" }
+
+# The vampire -----------------------------------------------------------------------------
+
+[stances.base]
+label = "VAMPIRE"
+
+# Claw, fingers, WRYYY: the same button three times, once the first one lands.
+[stances.base.moves.light]
+label = "GRIFFE"
+label_en = "CLAW"
+info = "Rapide, boit un peu de sang. Encore : doigts perçants, puis WRYYY"
+info_en = "Fast, drinks a little blood. Again: piercing fingers, then WRYYY"
+startup_f = 5
+active_f = 3
+recovery_f = 10
+damage = 30
+drain = 0.12
+reach = 15
+radius = 10
+hitstun_f = 19
+knockback = 80
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.base.moves.light2]
+label = "DOIGTS PERÇANTS"
+label_en = "PIERCING FINGERS"
+info = "Les doigts s'enfoncent et boivent le sang"
+info_en = "The fingers dig in and drink the blood"
+startup_f = 6
+active_f = 3
+recovery_f = 11
+damage = 34
+drain = 0.25
+reach = 15
+radius = 11
+hitstun_f = 21
+knockback = 100
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "grab"
+
+[stances.base.moves.light3]
+shout = "WRYYY !"
+label = "WRYYY"
+info = "Fin de l'enchaînement : envoie contre le mur"
+info_en = "Chain ender: sends into the wall"
+startup_f = 8
+active_f = 4
+recovery_f = 18
+damage = 46
+reach = 14
+radius = 12
+hitstun_f = 30
+knockback = 340
+hitstop_f = 8
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "uppercut"
+
+# The vampire's fingers plunge in: heavy, it drinks deep.
+[stances.base.moves.heavy]
+label = "DOIGTS VAMPIRES"
+label_en = "VAMPIRE FINGERS"
+info = "Lourd : les doigts plongent dans l'adversaire et volent beaucoup de vie"
+info_en = "Heavy: the fingers plunge into the opponent and steal a lot of life"
+startup_f = 13
+active_f = 4
+recovery_f = 22
+damage = 62
+drain = 0.35
+reach = 15
+radius = 12
+hitstun_f = 32
+knockback = 260
+hitstop_f = 10
+guard_damage = 1.6
+anim = "grab"
+
+# With a direction: a vampire's charge, armored by his undead body.
+[stances.base.moves.heavy_alt]
+label = "CHARGE DU VAMPIRE"
+label_en = "VAMPIRE CHARGE"
+info = "Avec une direction : fonce, encaisse un coup sans broncher et boit au passage"
+info_en = "With a direction: charges, takes a blow without flinching and drinks on the way"
+startup_f = 9
+active_f = 10
+recovery_f = 18
+lunge = 270
+armor = 1
+damage = 50
+drain = 0.2
+reach = 13
+radius = 12
+hitstun_f = 26
+knockback = 300
+hitstop_f = 8
+wall_bounce = true
+anim = "tackle"
+
+# Space Ripper Stingy Eyes, quick: two jets of fluid from the eyes that cut stone.
+[stances.base.moves.special]
+label = "YEUX LASER"
+label_en = "EYE BEAMS"
+info = "Deux jets sous pression jaillissent des yeux et portent très loin"
+info_en = "Two pressurized jets burst from the eyes and reach very far"
+blood_cost = 20
+shape = "line"
+fx = "beam"
+startup_f = 16
+active_f = 6
+recovery_f = 20
+damage = 54
+reach = 170
+radius = 3
+hitstun_f = 26
+knockback = 240
+hitstop_f = 6
+clashable = false
+anim = "special_eyes"
+
+# With a direction: a vampire's leap, high, onto where he aims.
+[stances.base.moves.special_alt]
+label = "BOND DE VAMPIRE"
+label_en = "VAMPIRE LEAP"
+info = "Avec une direction : bondit vers le point visé et retombe griffes en avant"
+info_en = "With a direction: leaps to the aimed spot and lands claws first"
+startup_f = 14
+active_f = 4
+recovery_f = 16
+leap = 160
+leap_height = 30
+leap_to = "cursor"
+invincible_f = 12
+damage = 46
+drain = 0.15
+reach = 0
+radius = 15
+hitstun_f = 24
+knockback = 240
+hitstop_f = 7
+anim = "leap"
+
+# Vaporization Freezing --------------------------------------------------------------------
+
+[stances.freeze]
+label = "GEL VAPORISANT"
+label_en = "VAPORIZATION FREEZING"
+walk_speed_mult = 0.94
+
+[stances.freeze.moves.light]
+label = "TOUCHER GELANT"
+label_en = "FREEZING TOUCH"
+info = "Le toucher gèle l'adversaire sur place un instant. Encore : griffe de givre"
+info_en = "The touch freezes the opponent solid for a moment. Again: frost claw"
+startup_f = 6
+active_f = 3
+recovery_f = 12
+damage = 24
+freeze_f = 34
+reach = 15
+radius = 11
+hitstun_f = 20
+knockback = 30
+hitstop_f = 6
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+anim = "grab"
+
+[stances.freeze.moves.light2]
+label = "GRIFFE DE GIVRE"
+label_en = "FROST CLAW"
+info = "S'enchaîne sur le toucher : gèle encore"
+info_en = "Follows the touch: freezes again"
+startup_f = 6
+active_f = 3
+recovery_f = 14
+damage = 36
+freeze_f = 26
+reach = 15
+radius = 12
+hitstun_f = 22
+knockback = 160
+hitstop_f = 6
+cancel_on_hit = ["heavy", "special"]
+anim = "heavy"
+
+# The frozen grip: he takes hold, freezes the body, drinks.
+[stances.freeze.moves.heavy]
+shout = "WRYYY !"
+label = "ÉTREINTE GELÉE"
+label_en = "FROZEN GRIP"
+info = "Saisie imparable : gèle longtemps et boit le sang. Lente : punie si elle rate"
+info_en = "Unblockable grab: freezes for long and drinks the blood. Slow: punished on a miss"
+startup_f = 14
+active_f = 3
+recovery_f = 30
+unblockable = true
+damage = 48
+drain = 0.3
+freeze_f = 70
+reach = 13
+radius = 12
+hitstun_f = 30
+knockback = 40
+hitstop_f = 12
+anim = "grab"
+
+[stances.freeze.moves.heavy_alt]
+label = "BRAS DE GLACE"
+label_en = "ICE ARM"
+info = "Avec une direction : fonce et gèle ce qu'il touche"
+info_en = "With a direction: charges and freezes what he touches"
+startup_f = 9
+active_f = 8
+recovery_f = 18
+lunge = 240
+damage = 40
+freeze_f = 40
+reach = 13
+radius = 12
+hitstun_f = 24
+knockback = 80
+hitstop_f = 8
+anim = "tackle"
+
+[stances.freeze.moves.special]
+label = "YEUX LASER"
+label_en = "EYE BEAMS"
+info = "Deux jets sous pression jaillissent des yeux et portent très loin"
+info_en = "Two pressurized jets burst from the eyes and reach very far"
+blood_cost = 20
+shape = "line"
+fx = "beam"
+startup_f = 16
+active_f = 6
+recovery_f = 20
+damage = 54
+reach = 170
+radius = 3
+hitstun_f = 26
+knockback = 240
+hitstop_f = 6
+clashable = false
+anim = "special_eyes"
+
+[stances.freeze.moves.special_alt]
+label = "BOND DE VAMPIRE"
+label_en = "VAMPIRE LEAP"
+info = "Avec une direction : bondit vers le point visé ; l'atterrissage gèle"
+info_en = "With a direction: leaps to the aimed spot; the landing freezes"
+startup_f = 14
+active_f = 4
+recovery_f = 16
+leap = 160
+leap_height = 30
+leap_to = "cursor"
+invincible_f = 12
+damage = 40
+freeze_f = 30
+reach = 0
+radius = 15
+hitstun_f = 22
+knockback = 120
+hitstop_f = 7
+anim = "leap"
+
+# Super moves -----------------------------------------------------------------------------
+
+# Heart Heat Attack (1 bar): Space Ripper Stingy Eyes at full power, across the arena.
+[moves.hha]
+shout = "SPACE RIPPER STINGY EYES !"
+label = "SPACE RIPPER STINGY EYES"
+info = "Les yeux laser à pleine puissance, à travers toute l'arène, invincible au démarrage"
+info_en = "The eye beams at full power, across the whole arena, invincible on startup"
+shape = "line"
+fx = "beam"
+startup_f = 18
+active_f = 8
+recovery_f = 24
+invincible_f = 18
+damage = 130
+reach = 300
+radius = 5
+hitstun_f = 36
+knockback = 420
+hitstop_f = 12
+wall_bounce = true
+clashable = false
+anim = "special_eyes"
+
+# Great Heat Attack (2 bars): a grab must land first; then Absorption, the fingers deep
+# in the opponent's flesh, drinking a big share of their life.
+[moves.gha]
+shout = "WRYYYYY !"
+label = "ABSORPTION"
+info = "Une saisie. Si elle prend : il boit une grosse part de la vie de l'adversaire"
+info_en = "A grab. If it takes hold: he drinks a big share of the opponent's life"
+startup_f = 10
+active_f = 4
+recovery_f = 26
+invincible_f = 10
+unblockable = true
+damage = 20
+reach = 14
+radius = 13
+hitstun_f = 40
+hitstop_f = 10
+clashable = false
+anim = "grab"
+cinematic = "absorption"
+cinematic_s = 3.2
+finish_damage = 220
+finish_drain = 0.6
+finish_hitstun_f = 50
+finish_knockback = 360
+finish_wall_bounce = true

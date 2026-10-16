@@ -882,6 +882,76 @@ class TornadoOverdrive(CutscenePlayer):
         self.body(world, user, spot, "pose", 0, self.side > 0)
 
 
+# Dio Brando: Absorption ------------------------------------------------------------------
+
+BLOOD_RED = (210, 24, 48)
+
+
+class Absorption(CutscenePlayer):
+    """The grab took hold: Dio's fingers sink into the opponent's neck and he drinks, the
+    heart pounding, the blood streaming up his arm, until he lets the body drop."""
+
+    length = 192
+    RELEASE = 172
+
+    def camera(self, f):
+        if f < 14:
+            return (self.u + self.v) * 0.5, 2
+        return (self.u + self.v) * 0.5 + Vec2(0, -18), 2
+
+    def grip(self) -> Vec2:
+        """Where Dio stands: right against his prey."""
+        return self.v - Vec2(self.side * 14, 0)
+
+    def cue(self, f):
+        fx, user = self.fx, self.scene.user
+        hit = self.chest(self.scene.target, self.v) + Vec2(0, -8)
+        if f == 1:
+            self.world_words.add(sfx.DON, self.head(self.scene.target, self.v), "impact", 2, 30)
+            fx.add(vfx.Flash(hit, 16, BLOOD_RED))
+            fx.focus(hit, heavy=True)
+            self.shake = 8
+        if f == 18:
+            self.shout("WRYYYYY !", (240, 54), 4, 70)
+        if 20 <= f < self.RELEASE and f % 16 == 4:
+            self.world_words.add(sfx.HEARTBEAT, hit + Vec2(-self.side * 10, -6), sfx.BLOOD, 2, 22)
+            fx.add(vfx.Ring(hit, BLOOD_RED, 2.2, 14, 2))
+            self.shake = max(self.shake, 3)
+        if f == 110:
+            self.world_words.menace(self.chest(user, self.grip()), -self.side)
+        if f == self.RELEASE:
+            fx.add(vfx.Flash(hit, 34, BLOOD_RED, 12))
+            fx.focus(hit, heavy=True)
+            self.world_words.add(sfx.DON, hit + Vec2(0, -12), "impact", 3, 40, 0.2, 2)
+            self.flash, self.shake = 6, 14
+
+    def scene_draw(self, world, f):
+        user, right = self.scene.user, self.side > 0
+        target = self.scene.target
+        if f >= self.RELEASE:
+            fallen = self.v + Vec2(self.side * min(20, (f - self.RELEASE) * 2), 0)
+            self.body(world, target, fallen, "ko", 1, self.side < 0)
+            self.body(world, user, self.grip(), "pose", 0, right)
+            return
+        self.victim(world, f)
+        spot = self.grip() if f >= 10 else self.u + (self.grip() - self.u) * (f / 10)
+        self.body(world, user, spot, "grab", 1 if f >= 10 else 0, right)
+        if f < 14:
+            return
+        neck = self.chest(target, self.v) + Vec2(-self.side * 2, -9)
+        hand = self.chest(user, spot) + Vec2(self.side * 8, -4)
+        # The blood, in drops climbing from the neck up the fingers.
+        for k in range(7):
+            t = ((f * 2 + k * 11) % 44) / 44
+            point = neck + (hand - neck) * t + Vec2(0, math.sin(t * 6.3 + k) * 2)
+            pygame.draw.circle(world, OUTLINE, point.as_ints(), 3)
+            pygame.draw.circle(world, BLOOD_RED, point.as_ints(), 2)
+            world.set_at((point + Vec2(-1, -1)).as_ints(), (255, 120, 130))
+        pulse = 0.5 + 0.5 * math.sin(f * 0.4)
+        glow = tuple(round(c * (0.25 + 0.25 * pulse)) for c in BLOOD_RED)
+        blit_glow(world, radial_glow(18, glow), self.chest(user, spot).as_ints())
+
+
 CUTSCENES = {
     "road_roller": RoadRoller,
     "star_finish": StarFinish,
@@ -890,6 +960,7 @@ CUTSCENES = {
     "hierophant_inside": HierophantInside,
     "sunlight_yellow_overdrive": SunlightYellowOverdrive,
     "tornado_overdrive": TornadoOverdrive,
+    "absorption": Absorption,
 }
 
 

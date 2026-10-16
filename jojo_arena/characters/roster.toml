@@ -38,6 +38,18 @@ blurb_en = "Fast and elusive: Zoom Punch, Ripple Cutter and great leaps."
 color = "#c8463c"
 aura = "#ffd040"
 
+[[fighters]]
+id = "dio_p1"
+part = 1
+name = "DIO BRANDO"
+kit = "dio_p1"
+sprite = "dio_p1/dio_p1"
+role = "BRUISER - VAMPIRE"
+blurb = "Il vole la vie, gèle ce qu'il touche et tire des yeux laser : seul le Hamon lui fait peur."
+blurb_en = "He steals life, freezes what he touches and fires eye beams: only Hamon scares him."
+color = "#a8223e"
+aura = "#ff4a6a"
+
 # Part 3: Stardust Crusaders --------------------------------------------------------------
 
 [[fighters]]

@@ -1,0 +1,137 @@
+# Dio Brando (Part 1): look file for tools/make_sprites.py.
+# Long, wavy golden hair, a violet scarf, a brown leather waistcoat with gold buttons
+# under an open crimson jacket with white cuffs, crimson trousers, tall boots.
+
+name = "Dio Brando"
+
+# Tall and lean, all coiled strength.
+# Signature pose (Pose key): see tools/spritegen/skeleton.py.
+pose = "frame_face"
+
+[build]
+head_r = 5.8
+neck = 1.2
+torso = 14
+legs = 17.5
+arms = 15
+shoulders = 8.8
+hips = 3.3
+torso_r = 6.2
+arm_r = 2.4
+leg_r = 2.5
+hand_r = 2.3
+foot_r = 2.4
+
+[palette]
+skin = "#f2d2b8"
+hair = "#f2d25a"
+scarf = "#7a48c8"
+vest = "#6a4228"
+jacket = "#a8223e"
+cuff = "#ecebf2"
+trousers = "#8c1c34"
+boots = "#3a2a24"
+gold = "#f0c23c"
+eyes = "#d8402e"
+
+[body]
+head = "skin"
+torso = "vest"
+arms = "jacket"
+hands = "skin"
+legs = "trousers"
+feet = "boots"
+
+[face]
+eyes = "eyes"
+eye_style = "wide"
+brows = true
+nose = true
+
+[[parts]]
+type = "hair"
+material = "hair"
+style = "long"
+length = 9
+volume = 8.6
+
+[[parts]]
+type = "scarf"
+material = "scarf"
+
+# The crimson jacket, open on the leather waistcoat and its gold buttons.
+[[parts]]
+type = "coat"
+material = "jacket"
+length = 0.18
+open = true
+opening = 5
+collar = true
+buttons = "gold"
+
+[[parts]]
+type = "gloves"
+material = "cuff"
+length = 0.14
+
+[[parts]]
+type = "boots"
+material = "boots"
+length = 0.42
+
+# Key-pose animations ------------------------------------------------------------------
+# [anims.<name>] replaces the generated animation of that name, or adds a new one that a
+# move picks in the kit (anim = "<name>"). One [[anims.<name>.<view>]] table per key pose,
+# for the views down, up and right (a view left out copies another).
+
+# Space Ripper Stingy Eyes: he draws back, then thrusts his face forward, eyes first.
+[anims.special_eyes]
+fps = 12
+phases = [2, 1, 1]
+tween = 1
+
+[[anims.special_eyes.right]]
+lean = -1.5
+head = [-1, 0]
+hand_r = [2, -14]
+hand_l = [3, -12]
+
+[[anims.special_eyes.right]]
+lean = -2
+head = [-2, 0]
+hand_r = [3, -16]
+hand_l = [4, -14]
+
+[[anims.special_eyes.right]]
+lean = 2.5
+head = [2, 1]
+hand_r = [-4, -2]
+hand_l = [-5, -2]
+foot_r = [3, 0]
+
+[[anims.special_eyes.right]]
+lean = 1
+head = [1, 0]
+hand_r = [-2, -1]
+hand_l = [-3, -1]
+
+[[anims.special_eyes.down]]
+head = [0, -1]
+hand_r = [-4, -16]
+hand_l = [4, -16]
+
+[[anims.special_eyes.down]]
+head = [0, -2]
+bob = 1
+hand_r = [-5, -17]
+hand_l = [5, -17]
+
+[[anims.special_eyes.down]]
+head = [0, 1]
+bob = -1
+hand_r = [2, 0]
+hand_l = [-2, 0]
+
+[[anims.special_eyes.down]]
+hand_r = [1, -1]
+hand_l = [-1, -1]

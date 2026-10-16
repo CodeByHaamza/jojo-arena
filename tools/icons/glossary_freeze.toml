@@ -1,0 +1,26 @@
+# Vaporization Freezing: an ice crystal.
+
+pixels = [
+    "................",
+    "....oo....oo....",
+    "...oIio..oiIo...",
+    "...oiIo..oIio...",
+    "....oIo..oIo....",
+    ".....oIooIo.....",
+    "..o..oIooIo..o..",
+    ".oiooooWWWoooio.",
+    ".oiIIIIWWWIIIiIo",
+    "..oooooWWWooooo.",
+    ".....oIooIo.....",
+    "....ooIo.oIo....",
+    "...oiIo..oIio...",
+    "....oio..oiIo...",
+    ".....o....oo....",
+    "................",
+]
+
+[palette]
+o = "#17121f"
+I = "#9ad8ff"
+i = "#5a9ad8"
+W = "#ffffff"

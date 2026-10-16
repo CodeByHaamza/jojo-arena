@@ -28,6 +28,21 @@ icon = "glossary_vampire"
 text = "Porter le masque de pierre fait de quelqu'un un vampire : il ne vieillit plus, se remet de presque toutes ses blessures et se nourrit du sang des humains. Il peut changer ses victimes en zombies qui lui obéissent. Le soleil et l'onde le réduisent en poussière."
 text_en = "Wearing the Stone Mask makes someone a vampire: they stop ageing, recover from almost any wound and feed on human blood. They can turn their victims into zombies who obey them. Sunlight and the Ripple turn them to dust."
 
+[[terms]]
+id = "freezing"
+name = "GEL VAPORISANT"
+name_en = "VAPORIZATION FREEZING"
+icon = "glossary_freeze"
+text = "Une technique de vampire : Dio vaporise l'eau de son corps pour aspirer la chaleur de ce qu'il touche, qui gèle aussitôt. Contre Jonathan, il s'en sert pour geler ses bras et arrêter son Hamon."
+text_en = "A vampire technique: Dio vaporizes the water in his body to draw the heat out of what he touches, which freezes at once. Against Jonathan, he uses it to freeze his arms and stop his Hamon."
+
+[[terms]]
+id = "stingy_eyes"
+name = "SPACE RIPPER STINGY EYES"
+icon = "glossary_stingy_eyes"
+text = "Dio met sous pression le liquide de ses yeux et le projette en deux jets si fins et si rapides qu'ils tranchent la pierre : des yeux laser."
+text_en = "Dio pressurizes the fluid in his eyeballs and fires it in two jets so thin and fast they cut through stone: eye beams."
+
 [[characters]]
 id = "jonathan"
 name = "JONATHAN JOESTAR"
@@ -53,3 +68,15 @@ family = "Son père porta le masque de pierre lors de l'expédition de 1858. Pè
 family_en = "His father wore the Stone Mask on the 1858 expedition. Father of Mario Zeppeli, grandfather of Caesar Zeppeli, Joseph's friend in Part 2."
 name_origin = "Araki l'a nommé d'après le groupe de rock Led Zeppelin, dont il admirait les musiciens."
 name_origin_en = "Araki named him after the rock band Led Zeppelin, whose musicians he admired."
+
+[[characters]]
+id = "dio_brando"
+name = "DIO BRANDO"
+fighter = "dio_p1"
+power = "VAMPIRE"
+text = "Fils d'un ivrogne, Dio entre chez les Joestar pour s'emparer de leur fortune et fait de la vie de Jonathan un enfer. Démasqué, il porte le masque de pierre et devient vampire : il gèle ce qu'il touche, tire des jets de ses yeux, change les morts en zombies. Brûlé par le Hamon de Jonathan, il survit, réduit à sa seule tête."
+text_en = "A drunkard's son, Dio joins the Joestar family to seize their fortune and makes Jonathan's life a nightmare. Unmasked, he puts on the Stone Mask and becomes a vampire: he freezes what he touches, shoots jets from his eyes, turns the dead into zombies. Burned by Jonathan's Hamon, he survives, reduced to his head alone."
+family = "Fils de Dario Brando. Adopté par George Joestar, frère adoptif de Jonathan. Il prendra plus tard le corps de Jonathan : c'est lui, le DIO de la partie 3."
+family_en = "Son of Dario Brando. Adopted by George Joestar, Jonathan's adoptive brother. He will later take Jonathan's body: he is the DIO of Part 3."
+name_origin = "Dio veut dire dieu en italien. Le nom évoque aussi le chanteur de heavy metal Ronnie James Dio et son groupe, Dio."
+name_origin_en = "Dio means god in Italian. The name also recalls the heavy metal singer Ronnie James Dio and his band, Dio."

@@ -1,0 +1,28 @@
+# Space Ripper Stingy Eyes: jets of fluid fired from the eyes.
+
+pixels = [
+    "................",
+    "................",
+    "................",
+    "....oooo........",
+    "...oWWWWo.......",
+    "..oWWWWWWooooooo",
+    ".oWWRRRWWWBBBBBB",
+    "oWWWRkRRWWwwwwww",
+    "oWWWRRRRWWwwwwww",
+    ".oWWRRRWWWBBBBBB",
+    "..oWWWWWWooooooo",
+    "...oooooo.......",
+    "................",
+    "................",
+    "................",
+    "................",
+]
+
+[palette]
+o = "#17121f"
+W = "#f4f1e8"
+R = "#c8202e"
+k = "#2a1018"
+B = "#ff6a8a"
+w = "#ffffff"
