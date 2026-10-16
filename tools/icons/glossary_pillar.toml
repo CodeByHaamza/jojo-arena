@@ -1,27 +1,28 @@
-# The Pillar Men: an ancient stone pillar, eyes glowing inside.
+# The Pillar Men: not the pillar - the man who slept inside it. A horned head of
+# living stone, eyes burning, shoulders made for crushing.
 
 pixels = [
-    "...oooooooooo...",
-    "..oLLLLLLLLLLo..",
-    "..oLLLLLLLLLLo..",
-    "...ogdgdgdggo...",
-    "...ogdgdgdggo...",
-    "...ogdgdgdggo...",
-    "...oggggggggo...",
-    "...oggYggYggo...",
-    "...oggggggggo...",
-    "...ogggddgggo...",
-    "...ogdgdgdggo...",
-    "...ogdgdgdggo...",
-    "...ogdgdgdggo...",
-    "..oLLLLLLLLLLo..",
-    "..oLLLLLLLLLLo..",
-    "...oooooooooo...",
+    "......oooo......",
+    "......ohho......",
+    ".....ohhhho.....",
+    "....oohhhhoo....",
+    "...osssssssso...",
+    "...osssssssso...",
+    "...osYYssYYso...",
+    "...osssssssso...",
+    "...ossdssdsso...",
+    "...ossddddsso...",
+    "....osssssso....",
+    ".....osssso.....",
+    "..osssssssssso..",
+    ".osssssssssssso.",
+    ".osssddddddssso.",
+    ".oooooooooooooo.",
 ]
 
 [palette]
 o = "#17121f"
-L = "#c8c0b0"
-g = "#9a9080"
-d = "#6a6256"
+s = "#c8a478"
+d = "#8f6a46"
 Y = "#ffd040"
+h = "#e4d6b4"

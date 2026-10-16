@@ -1,28 +1,28 @@
-# The Rokakaka: a spiky fruit of equivalent exchange.
+# The Rokakaka: the fruit of equivalent exchange. An oblong, warty, olive-green thing
+# on a woody stem, not a round orange one.
 
 pixels = [
-    "........o....o..",
-    ".......obooooGo.",
-    ".......oboGGGGo.",
-    ".......oboGGGo..",
-    "....o.orboooGo..",
-    "...oroOOOOoro...",
-    "....oOWOOOOo....",
-    "...oOWWWOOOOo...",
-    "..orOOWOOOOOro..",
-    "...oOOOOOOOOo...",
-    "...oOOOOOOOOo...",
-    "....oOOOOOOo....",
-    "...oroOOOOoro...",
-    "....o.ooro.o....",
-    "........o.......",
-    "................",
+    ".......oo.......",
+    ".......obo......",
+    "....oGGobo......",
+    "...oGGGGobo.....",
+    "....oGGGoobo....",
+    ".....oo.obbo....",
+    "....ooFFFFFFoo..",
+    "...oFsFFsFFsFFo.",
+    "..oFFsFFFsFFFsFo",
+    "..oFsFFFsFFFsFFo",
+    "..oFFsFFFsFFFsFo",
+    "..oFsFFFsFFFsFFo",
+    "...oFFsFFFsFFFo.",
+    "....oFFsFFFFo...",
+    ".....oFFFFo.....",
+    "......oooo......",
 ]
 
 [palette]
 o = "#17121f"
-O = "#e8904a"
-r = "#a8502a"
-W = "#ffd0a0"
 b = "#6a4a2a"
 G = "#4aa84a"
+F = "#8a9a46"
+s = "#cfe06a"
