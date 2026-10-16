@@ -1,7 +1,8 @@
 # Silver Chariot (Polnareff's Stand, Part 3): look file for tools/make_sprites.py.
-# A slender robotic knight in polished silver plate: helmet with a ridge, a jewel on
-# the forehead and pointed guards over the cheeks and jaw; heavy shoulder plates and
-# pointed elbow guards; a rapier with a basket hilt.
+# A slender robotic knight in polished silver plate with a cold blue sheen: a rounded
+# helmet with a ridge, a green jewel on the forehead, yellow eyes behind a dark visor
+# barred over the mouth, pointed cheek guards; huge round shoulder plates with spikes and
+# a ring boss; pointed elbow guards; a rapier with a cup hilt.
 
 name = "Silver Chariot"
 
@@ -24,12 +25,12 @@ hand_r = 2.1
 foot_r = 2.3
 
 [palette]
-armor = "#cfd4e2"
-trim = "#8a90a8"
-visor = "#2c3040"
-gem = "#58c8e8"
+armor = ["#5d6680", "#a7b0c8", "#d9dfec", "#ffffff"]
+trim = ["#363b50", "#666d8c", "#959cb8", "#cdd2e2"]
+visor = "#1f2230"
+gem = "#2fbf7a"
 blade = "#eef3ff"
-eyes = "#9fe6ff"
+eyes = "#f4d24a"
 
 [body]
 head = "armor"
@@ -43,18 +44,19 @@ feet = "trim"
 eyes = "eyes"
 eye_style = "wide"
 
-# Helmet: a ridge along the top, a dark visor, the forehead jewel, cheek guards.
+# Helmet: a ridge along the top, a dark barred visor, the forehead jewel, cheek guards.
 [[parts]]
 type = "hair"
 material = "armor"
 style = "crest"
-height = 2.5
-volume = 7.6
+height = 1.6
+volume = 7.4
 
 [[parts]]
 type = "mask"
 material = "visor"
 top = -1.5
+grill = "trim"
 
 [[parts]]
 type = "headband"
@@ -69,7 +71,9 @@ material = "armor"
 type = "pauldrons"
 material = "armor"
 rim = "trim"
-size = 4.6
+ring = "trim"
+size = 5.6
+spikes = 3
 
 [[parts]]
 type = "emblem"
@@ -96,5 +100,5 @@ material = "trim"
 [[parts]]
 type = "sword"
 material = "blade"
-length = 16
-basket = "trim"
+length = 17
+cup = "armor"

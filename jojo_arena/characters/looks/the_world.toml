@@ -1,7 +1,8 @@
 # The World (DIO's Stand, Part 3): look file for tools/make_sprites.py.
-# Golden, hugely muscled body; a V-shaped helmet leaning forward; a hose linking the
-# ears behind the head; two air tanks on the back with straps; pale ribbed tubes on
-# the shoulders, forearms and shins; hearts on the knees, elbows, belt and under the chin.
+# Gold with olive-green shadows, hugely muscled. A tall faceted helmet comes down to a
+# point over the face; the face under it is dark slate. Two big air tanks stand up behind
+# the shoulders, linked by a ribbed hose; ribbed treads over the shoulders; hearts on
+# the knees, elbows, belt and under the chin.
 
 name = "The World"
 
@@ -24,54 +25,52 @@ hand_r = 2.9
 foot_r = 2.7
 
 [palette]
-gold = "#e9c43c"
-deep = "#c99622"         # helmet and hearts
-rib = "#efe2b0"          # pale ribbed tubes and tanks
-eyes = "#e05a4a"
+# Gold shaded toward olive green, as in the anime.
+gold = ["#5f6a22", "#b0a636", "#e6cd4b", "#fff3a6"]
+deep = ["#4c5a1c", "#8f8a2a", "#cdb43c", "#f7e27c"]   # helmet, hearts, boots
+rib = ["#55692a", "#93a845", "#c8d872", "#eff6bc"]    # ribbed hose and treads
+slate = ["#1e2536", "#33405a", "#4c5d7c", "#7385a8"]  # the face and the joints
+eyes = "#f0b030"
 
 [body]
-head = "gold"
+head = "slate"
 torso = "gold"
 arms = "gold"
 hands = "gold"
 legs = "gold"
-feet = "gold"
+feet = "deep"
 
 [face]
 eyes = "eyes"
 eye_style = "wide"
-nose = true
 
 [[parts]]
 type = "helmet"
 material = "deep"
+style = "pyramid"
 tube = "rib"
 
 [[parts]]
 type = "tanks"
-material = "rib"
-straps = "deep"
+material = "gold"
+straps = "slate"
+above = 9
 
 [[parts]]
 type = "pauldrons"
 material = "rib"
-size = 4.2
-
-[[parts]]
-type = "gloves"
-material = "rib"
-length = 0.4
-ribbed = true
+size = 4.4
+rim = "deep"
 
 [[parts]]
 type = "boots"
-material = "rib"
+material = "deep"
 length = 0.45
 ribbed = true
 
 [[parts]]
 type = "belt"
-material = "deep"
+material = "slate"
 
 [[parts]]
 type = "emblem"

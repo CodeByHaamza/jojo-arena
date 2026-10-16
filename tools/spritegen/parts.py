@@ -306,7 +306,13 @@ def mask(sk: Skeleton, p: dict, look: Look) -> list[Part]:
         area = {q for q in head if _rel(sk, q)[1] > top and abs(_rel(sk, q)[0]) < 5.2}
     else:
         area = {q for q in head if _rel(sk, q)[1] > top and _rel(sk, q)[0] > 0.5}
-    return [Part(p["material"], area, z=51)]
+    parts = [Part(p["material"], area, z=51)]
+    grill = p.get("grill")
+    if grill:
+        # Vertical bars over the mouth, like a knight's visor.
+        bars = {q for q in area if _rel(sk, q)[1] > 2.2 and q[0] % 2 == 0}
+        parts.append(Part(grill, bars, z=51.2, tone=2))
+    return parts
 
 
 # Clothes -----------------------------------------------------------------------------
@@ -647,10 +653,13 @@ def scarf(sk: Skeleton, p: dict, look: Look) -> list[Part]:
 
 
 def pauldrons(sk: Skeleton, p: dict, look: Look) -> list[Part]:
-    """Rounded shoulder pads. Options: size (px), rim (color of their lower edge)."""
+    """Rounded shoulder pads. Options: size (px), rim (color of their lower edge),
+    spikes (how many points stick out of each), ring (color of a ring boss on each)."""
     mat = p["material"]
     size = p.get("size", 4.2)
     rim = p.get("rim")
+    spike_count = p.get("spikes", 0)
+    ring = p.get("ring")
     shoulder = sk.shoulder_y
     if sk.view == "right":
         far, near = sk.shoulders
@@ -670,6 +679,27 @@ def pauldrons(sk: Skeleton, p: dict, look: Look) -> list[Part]:
             edge = {(qx, qy) for qx, qy in dome if qy >= lowest[qx] - 1}
             parts.append(Part(rim, edge, z=z + 0.05, tone=2))
             parts.append(Part(rim, points([(x, y - 0.5)]), z=z + 0.06, tone=1))  # spiral boss
+        if ring:
+            boss = disc(x, y - size * 0.15, size * 0.55) - disc(x, y - size * 0.15, size * 0.25)
+            parts.append(Part(ring, boss & dome, z=z + 0.07, tone=1))
+        if spike_count:
+            outward = -1 if x < sk.center_x else 1
+            spikes: set[Pixel] = set()
+            for i in range(spike_count):
+                # Fanned over the top and the outer side of the pad.
+                angle = math.radians(-90 + outward * (25 + 110 * i / max(1, spike_count - 1)))
+                ux, uy = math.cos(angle), math.sin(angle)
+                base = (x + ux * (size - 0.5), y + uy * (size - 0.5))
+                tip = (x + ux * (size + 3.2), y + uy * (size + 3.2))
+                side = (-uy * 1.1, ux * 1.1)
+                spikes |= polygon(
+                    [
+                        (base[0] + side[0], base[1] + side[1]),
+                        tip,
+                        (base[0] - side[0], base[1] - side[1]),
+                    ]
+                )
+            parts.append(Part(mat, spikes, z=z - 0.1))
     return parts
 
 
@@ -847,6 +877,15 @@ def sword(sk: Skeleton, p: dict, look: Look) -> list[Part]:
             [(hand[0] + uy * s + ux * 2, hand[1] - ux * s + uy * 2) for s in (-1.5, 0, 1.5)]
         )
         parts.append(Part(guard, bar, z=z + 0.1, tone=1))
+    cup = p.get("cup")
+    if cup:
+        # A cup hilt: a round bell of metal in front of the fist.
+        r = sk.build.hand_r
+        room = r + 3.5  # the bell and its outline stay inside the cell
+        bx = min(max(hand[0] + ux * 1.5, room), look.cell - room)
+        by = min(max(hand[1] + uy * 1.5, room), look.cell - room)
+        bell = disc(bx, by, r + 1.4)
+        parts.append(Part(cup, bell, z=z + 0.6, highlight={min(bell)}))
     basket = p.get("basket")
     if basket:
         # A basket hilt: a cage of metal around the fist.
@@ -930,7 +969,22 @@ def helmet(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     def rel(q: Pixel) -> Point:
         return _rel(sk, q)
 
-    if sk.view == "down":
+    if p.get("style") == "pyramid":
+        # A tall faceted point: a wide brim over the face, rising to a peak.
+        if sk.view == "down":
+            shell = polygon([at(0, -14), at(-9, -3.5), at(0, 1.2), at(9, -3.5)])
+            facet = polygon([at(0, -14), at(0, 1.2), at(9, -3.5)])
+        elif sk.view == "up":
+            shell = polygon([at(0, -14), at(-9, -3.5), at(-6, 2), at(6, 2), at(9, -3.5)])
+            facet = polygon([at(0, -14), at(6, 2), at(9, -3.5)])
+        else:
+            shell = polygon([at(-7, -2), at(-2, -14), at(11, -3), at(5, 0.5), at(-6, 2.5)])
+            facet = polygon([at(-2, -14), at(11, -3), at(5, 0.5), at(1, -4)])
+        parts = [
+            Part(mat, shell, z=56, highlight=points([at(-2, -9)]) & shell),
+            Part(mat, facet & shell, z=56.1, tone=0),
+        ]
+    elif sk.view == "down":
         shell = {q for q in disc(*at(0, -0.8), 8.0 * k) if rel(q)[1] < -2.0}
         shell |= polygon([at(-6.5, -2.6), at(6.5, -2.6), at(0, 1.2)])
     elif sk.view == "up":
@@ -942,7 +996,8 @@ def helmet(sk: Skeleton, p: dict, look: Look) -> list[Part]:
             if rel(q)[1] < -2.0 or (rel(q)[0] < -2.5 and rel(q)[1] < 3.0)
         }
         shell |= polygon([at(1.5, -6.5), at(9.5, -2.8), at(5, -1.4), at(1.5, -2.2)])
-    parts = [Part(mat, shell, z=56, highlight=points([at(-4, -7)]) & shell)]
+    if p.get("style") != "pyramid":
+        parts = [Part(mat, shell, z=56, highlight=points([at(-4, -7)]) & shell)]
     tube = p.get("tube")
     if tube:
         if sk.view == "up":
@@ -960,19 +1015,27 @@ def helmet(sk: Skeleton, p: dict, look: Look) -> list[Part]:
 
 
 def tanks(sk: Skeleton, p: dict, look: Look) -> list[Part]:
-    """Two cylinders strapped on the back (air tanks). Option: straps (color)."""
+    """Two cylinders strapped on the back (air tanks). Options: straps (color), above (px
+    they stand up over the shoulders: then they show from the front too)."""
     mat = p["material"]
     shoulder, cx, tr = sk.shoulder_y, sk.center_x, sk.torso[2]
-    top_y, bottom_y = shoulder + 1, shoulder + 0.55 * sk.build.torso
+    above = p.get("above", 0)
+    top_y, bottom_y = shoulder + 1 - above, shoulder + 0.55 * sk.build.torso
     parts = []
+    if above and sk.view == "down":
+        for sign in (-1, 1):
+            x = cx + sign * (sk.build.shoulders - 2.2)
+            cylinder = capsule(x, top_y, x, shoulder + 2, 2.4)
+            parts.append(Part(mat, cylinder, z=5, highlight={min(cylinder)}))
     if sk.view == "up":
         for sign in (-1, 1):
-            x = cx + sign * 2.6
-            cylinder = capsule(x, top_y, x, bottom_y, 2.1)
+            x = cx + sign * (2.6 + (1.4 if above else 0))
+            cylinder = capsule(x, top_y, x, bottom_y, 2.4 if above else 2.1)
             parts.append(Part(mat, cylinder, z=31.5, highlight={min(cylinder)}))
     elif sk.view == "right":
         x = cx - tr - 1.2
-        parts.append(Part(mat, capsule(x, top_y, x, bottom_y, 2.1), z=29))
+        radius = 2.4 if above else 2.1
+        parts.append(Part(mat, capsule(x, top_y, x, bottom_y, radius), z=29))
     straps = p.get("straps")
     if straps and sk.view != "right":
         bands = set()
