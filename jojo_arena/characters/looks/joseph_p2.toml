@@ -1,0 +1,89 @@
+# Joseph Joestar, young (Part 2): look file for tools/make_sprites.py.
+# Messy brown hair, a dark green tank top, the striped scarf, black fingerless gloves
+# with studs, a brown belt, blue jeans and black boots.
+
+name = "Joseph Joestar"
+
+# Tall and broad like his grandfather, but lighter on his feet.
+# Signature pose (Pose key): "Your next line is...!", a finger pointed.
+pose = "point"
+
+[build]
+head_r = 5.9
+neck = 1.1
+torso = 14.5
+legs = 17.5
+arms = 15.5
+shoulders = 9.4
+hips = 3.5
+torso_r = 6.5
+arm_r = 2.8
+leg_r = 2.7
+hand_r = 2.3
+foot_r = 2.5
+
+[palette]
+skin = "#f0c49c"
+hair = "#6a4228"
+top = "#2f6a5a"
+scarf = "#e8cc48"
+stripe = "#3c8a50"
+gloves = "#2a2830"
+studs = "#c8ccd8"
+belt = "#7a4a2a"
+gold = "#f0c23c"
+jeans = "#4a6aac"
+boots = "#26222c"
+eyes = "#4aa070"
+
+[body]
+head = "skin"
+torso = "skin"
+arms = "skin"
+hands = "gloves"
+legs = "jeans"
+feet = "boots"
+
+[face]
+eyes = "eyes"
+eye_style = "wide"
+brows = true
+nose = true
+ear = true
+
+[[parts]]
+type = "hair"
+material = "hair"
+style = "short"
+volume = 7.5
+bangs = "fringe"
+bangs_length = 3
+
+[[parts]]
+type = "top"
+material = "top"
+neckline = 2
+length = 0.78
+
+[[parts]]
+type = "scarf"
+material = "scarf"
+stripes = "stripe"
+tail = 3
+
+[[parts]]
+type = "gloves"
+material = "gloves"
+length = 0.22
+studs = "studs"
+
+[[parts]]
+type = "belt"
+material = "belt"
+buckle = "gold"
+below = "jeans"
+
+[[parts]]
+type = "boots"
+material = "boots"
+length = 0.3

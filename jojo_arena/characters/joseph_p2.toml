@@ -1,0 +1,241 @@
+# Joseph Joestar, young (Part 2). GDD: "Hamon · Trickster": unpredictable, traps
+# everywhere. Hamon clackers that come back, delayed grenades, Hamon threads stretched
+# over the ground that trip. Frames (_f) are at 60 per second; speeds and knockback in
+# px per second.
+#
+# Style key held: Hamon breathing (the gauge fills, he stands still).
+# Pose: "Your next line is...!" He calls the opponent's next move: the same button as
+# their last attack. Right, the blow is caught and answered for free; wrong, he is hit.
+# Great Heat Attack: the hidden plan, every thread and grenade he laid blows up at once.
+# Feel: a brawler who never fights fair, and who knows when to run.
+
+name = "Joseph Joestar"
+max_hp = 980
+walk_speed = 108
+style = { type = "hamon" }
+pose_counter = "foreseen"
+pose_counter_ready_s = 0.33
+
+[stances.base]
+label = "HAMON"
+
+# Jab, clacker swing, clacker volley: the same button three times, once the first lands.
+[stances.base.moves.light]
+label = "DIRECT"
+label_en = "JAB"
+info = "Rapide. Encore la touche : coup de clackers, puis Clacker Volley"
+info_en = "Fast. Press again: clacker swing, then Clacker Volley"
+startup_f = 5
+active_f = 3
+recovery_f = 11
+damage = 28
+reach = 15
+radius = 10
+hitstun_f = 19
+knockback = 80
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.base.moves.light2]
+label = "COUP DE CLACKERS"
+label_en = "CLACKER SWING"
+info = "S'enchaîne sur le direct : les clackers frappent un peu plus loin"
+info_en = "Follows the jab: the clackers reach a little further"
+startup_f = 7
+active_f = 4
+recovery_f = 13
+damage = 34
+reach = 19
+radius = 10
+hitstun_f = 22
+knockback = 100
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "heavy"
+
+[stances.base.moves.light3]
+shout = "CLACKER VOLLEY !"
+label = "CLACKER VOLLEY"
+info = "Fin de l'enchaînement : les clackers chargés de Hamon envoient contre le mur"
+info_en = "Chain ender: Hamon-charged clackers send into the wall"
+hamon_cost = 15
+startup_f = 9
+active_f = 4
+recovery_f = 18
+damage = 44
+reach = 18
+radius = 12
+hitstun_f = 30
+knockback = 320
+hitstop_f = 9
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "uppercut"
+
+# Hamon threads: laid on the ground, they trip whoever steps on them with a spark.
+[stances.base.moves.heavy]
+label = "FIL DE HAMON"
+label_en = "HAMON THREAD"
+info = "Tend un fil au sol (3 max) : qui marche dessus trébuche sous une décharge"
+info_en = "Stretches a thread on the ground (3 max): stepping on it trips with a shock"
+startup_f = 10
+active_f = 1
+recovery_f = 16
+anim = "special"
+
+[stances.base.moves.heavy.trap]
+distance = 26
+radius = 13
+lifetime_s = 14
+max_count = 3
+
+[stances.base.moves.heavy.trap.projectile]
+look = "spark"
+speed = 360
+radius = 4
+damage = 36
+lifetime_s = 0.3
+hitstun_f = 40
+knockback = 40
+hitstop_f = 6
+
+# With a direction: the Joestar family's secret technique.
+[stances.base.moves.heavy_alt]
+shout = "LA FUITE !"
+shout_en = "RUN AWAY!"
+label = "TECHNIQUE SECRÈTE DES JOESTAR"
+label_en = "JOESTAR SECRET TECHNIQUE"
+info = "Avec une direction : la technique secrète de la famille, la fuite, invincible"
+info_en = "With a direction: the family's secret technique, running away, invincible"
+startup_f = 2
+active_f = 16
+recovery_f = 10
+invincible_f = 18
+lunge = -300
+anim = "dash"
+
+# The clackers thrown: they knock and come back to his hand.
+[stances.base.moves.special]
+label = "CLACKER BOOMERANG"
+info = "Les clackers volent, frappent et reviennent. Avec du Hamon, ils frappent plus fort"
+info_en = "The clackers fly, strike and come back. With Hamon, they hit harder"
+hamon_cost = 15
+startup_f = 10
+active_f = 1
+recovery_f = 22
+anim = "special"
+
+[stances.base.moves.special.projectile]
+look = "clacker"
+returns = true
+speed = 250
+radius = 6
+damage = 30
+lifetime_s = 1.3
+hitstun_f = 22
+knockback = 110
+hitstop_f = 5
+
+# With a direction: a grenade rolled along the ground, pin pulled.
+[stances.base.moves.special_alt]
+label = "GRENADE"
+info = "Avec une direction : une grenade dégoupillée roule et explose une seconde après"
+info_en = "With a direction: a grenade rolls along and blows up a second later"
+startup_f = 12
+active_f = 1
+recovery_f = 18
+cooldown_s = 1.5
+anim = "special"
+
+[stances.base.moves.special_alt.projectile]
+look = "grenade"
+explode_radius = 28
+drag = 0.94
+speed = 260
+radius = 4
+damage = 64
+lifetime_s = 1.1
+hitstun_f = 30
+knockback = 300
+hitstop_f = 8
+wall_bounce = true
+
+# The answer of the pose counter: "Your next line is..." - and it was.
+[stances.base.moves.foreseen]
+shout = "BINGO !"
+label = "TA PROCHAINE RÉPLIQUE SERA..."
+label_en = "YOUR NEXT LINE IS..."
+info = "Pose : il prédit que l'adversaire refera son dernier coup. S'il a raison, contre gratuit"
+info_en = "Pose: he predicts the opponent repeats their last attack. If right, a free counter"
+hamon = true
+startup_f = 2
+active_f = 4
+recovery_f = 16
+damage = 72
+reach = 16
+radius = 13
+hitstun_f = 34
+knockback = 360
+hitstop_f = 10
+wall_bounce = true
+clashable = false
+anim = "uppercut"
+
+# Super moves -----------------------------------------------------------------------------
+
+# Heart Heat Attack (1 bar): the tommy gun he hid, as against Straizo.
+[moves.hha]
+shout = "TOMMY GUN !"
+label = "TOMMY GUN"
+info = "La mitraillette cachée : une longue rafale, invincible au démarrage"
+info_en = "The hidden tommy gun: a long burst, invincible on startup"
+startup_f = 12
+active_f = 40
+recovery_f = 20
+invincible_f = 12
+anim = "special"
+
+[moves.hha.projectile]
+look = "bullet"
+speed = 480
+radius = 3
+damage = 13
+lifetime_s = 0.7
+hitstun_f = 12
+knockback = 30
+hitstop_f = 1
+waves = 10
+wave_every_f = 4
+count = 1
+
+# Great Heat Attack (2 bars): the hidden plan. Every thread and grenade he laid blows up
+# at once, and one more grenade was waiting right under the opponent's feet all along.
+[moves.gha]
+shout = "TOUT ÇA, C'ÉTAIT PRÉVU !"
+shout_en = "IT WAS ALL PART OF THE PLAN!"
+label = "UN PLAN CACHÉ"
+label_en = "A HIDDEN PLAN"
+info = "Tous ses fils et grenades explosent, plus une grenade cachée sous l'adversaire"
+info_en = "Every thread and grenade blows up, plus one hidden under the opponent"
+detonate = true
+startup_f = 14
+active_f = 1
+recovery_f = 24
+invincible_f = 14
+anim = "pose"
+
+[moves.gha.projectile]
+look = "grenade"
+origin = "ring"
+ring_radius = 0
+explode_radius = 34
+speed = 0
+radius = 4
+damage = 120
+lifetime_s = 0.3
+hitstun_f = 50
+knockback = 420
+hitstop_f = 12
+wall_bounce = true

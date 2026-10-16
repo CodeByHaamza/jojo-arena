@@ -88,6 +88,20 @@ blurb_en = "No Hamon, no Stand: a bladed hat that comes back, street blows, and 
 color = "#3c3a7a"
 aura = "#e86a9a"
 
+# Part 2: Battle Tendency -----------------------------------------------------------------
+
+[[fighters]]
+id = "joseph_p2"
+part = 2
+name = "JOSEPH JOESTAR"
+kit = "joseph_p2"
+sprite = "joseph_p2/joseph_p2"
+role = "TRICKSTER - HAMON"
+blurb = "Clackers qui reviennent, grenades et fils piégés : il prédit ton prochain coup."
+blurb_en = "Boomerang clackers, grenades and trip threads: he calls your next move."
+color = "#2f6a5a"
+aura = "#ffd040"
+
 # Part 3: Stardust Crusaders --------------------------------------------------------------
 
 [[fighters]]
