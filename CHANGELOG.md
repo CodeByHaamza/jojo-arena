@@ -113,6 +113,9 @@ des corrections seules une patch.
   « GRIFFE ») sont devenus les leurs. **Jotaro et DIO ne se jouent plus pareil** : Star
   Platinum frappe plus souvent pour moins, The World moins souvent pour plus, et Star
   Platinum attrape ce qu'on lui lance.
+- **Équilibrage.** Les longues lames de Kars récupèrent plus lentement : sa portée coûte
+  quelque chose quand elle rate (−6 et −7 en garde). Les coups de Speedwagon, les plus
+  faibles du jeu, tapent un peu plus fort et son marteau démarre plus vite.
 - **Kars éveillé a enfin ses pouvoirs.** Le soleil ne lui fait plus rien, son Onde à lui
   porte à 120, il tire **une volée de plumes puis un piranha qui te suit**, et un
   **tentacule de poulpe** te ramène à portée de ses griffes.
