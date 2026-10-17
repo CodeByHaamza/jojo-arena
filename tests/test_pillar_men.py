@@ -131,7 +131,12 @@ def test_wamuus_wind_mode_trades_speed_for_reach():
     assert wind.reach > bare.reach * 2
     assert wind.startup_f > bare.startup_f
     sandstorm = kit("wamuu").move("wind", "heavy")
-    assert sandstorm.hits >= 10 and "SANDSTORM" in sandstorm.label
+    assert "SANDSTORM" in sandstorm.label
+    # The storm is not a flurry of fists: it is two funnels that reach across the floor,
+    # wind up for a fifth of a second, and drag whoever is caught into the middle.
+    assert sandstorm.shape == "line" and sandstorm.reach > 80
+    assert sandstorm.startup_f >= 18 and sandstorm.pull > 0
+    assert sandstorm.hits >= 6
 
 
 def test_wamuu_answers_whoever_strikes_him_in_the_base_stance():

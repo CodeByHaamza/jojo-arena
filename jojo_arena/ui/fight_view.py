@@ -299,6 +299,12 @@ class Spark:
     angle: float = 0.0
 
 
+HELD_FX = ("gun", "vortex", "cables")
+# A multi-hit move only draws a flurry of blows when the blows are what it is: a
+# tornado or a vein is not a barrage of fists, whatever its hit count says.
+FLURRY_FX = ("", "limb", "blade", "blade_hair")
+
+
 class FightView:
     def __init__(self, stage: StageDef, fighter_defs: list[FighterDef]) -> None:
         from jojo_arena.stages import stage_renderer
@@ -895,6 +901,15 @@ class FightView:
         if attack.move.fx in ("tentacle", "hair"):
             self._draw_ground_tentacles(surface, fighter)
             return
+        if attack.move.fx == "beam":
+            self._draw_falling_beam(surface, fighter)
+            return
+        if attack.move.fx == "lenses":
+            self._draw_closing_lenses(surface, fighter)
+            return
+        if attack.move.fx == "bubbles":
+            self._draw_bubble_dome(surface, fighter)
+            return
         if attack.phase != 0:
             return
         progress = attack.frame / max(1, attack.move.startup_f)
@@ -907,6 +922,73 @@ class FightView:
         surface.fill(OUTLINE, block.inflate(2, 2))
         surface.fill((90, 96, 108), block)
         surface.fill((140, 146, 160), (block.x, block.y, block.w, 4))
+
+    def _draw_falling_beam(self, surface: pygame.Surface, fighter: Fighter) -> None:
+        """A beam coming straight down on a spot: a thread of light while it gathers,
+        then the column itself, bright enough to wash the floor out."""
+        attack, move = fighter.attack, fighter.attack.move
+        aura = self.fighter_defs[fighter.index].aura
+        target = attack.target
+        top = Vec2(target.x, 0)
+        if attack.phase == 0:
+            progress = attack.frame / max(1, move.startup_f)
+            pygame.draw.line(surface, shade(aura, 20), top.as_ints(), target.as_ints(), 1)
+            ring = round(move.radius * (1.5 - 0.5 * progress))
+            pygame.draw.circle(surface, shade(aura, -40), target.as_ints(), max(2, ring), 1)
+            return
+        width = max(4, round(move.radius * 0.6))
+        pygame.draw.line(surface, OUTLINE, top.as_ints(), target.as_ints(), width + 4)
+        pygame.draw.line(surface, aura, top.as_ints(), target.as_ints(), width)
+        pygame.draw.line(surface, (255, 248, 230), top.as_ints(), target.as_ints(), width // 3 + 1)
+        blit_glow(surface, radial_glow(round(move.radius * 1.6), shade(aura, -70)), target)
+        burst = round(move.radius * (0.6 + 0.4 * min(1.0, attack.active_offset / 3)))
+        pygame.draw.circle(surface, (255, 248, 230), target.as_ints(), burst, 2)
+
+    def _draw_closing_lenses(self, surface: pygame.Surface, fighter: Fighter) -> None:
+        """Bubble lenses flying into a ring around a spot, then every one of them bending
+        the sunlight onto what is standing in the middle."""
+        attack, move = fighter.attack, fighter.attack.move
+        target = attack.target - Vec2(0, 12)  # around the chest, not the ankles
+        count = 8
+        progress = 1.0
+        if attack.phase == 0:
+            progress = attack.frame / max(1, move.startup_f)
+        radius = move.radius * (2.0 - 1.0 * progress)
+        for i in range(count):
+            angle = math.tau * i / count + self.tick * 0.05
+            spot = target + Vec2.from_angle(angle, radius)
+            pygame.draw.circle(surface, OUTLINE, spot.as_ints(), 4)
+            pygame.draw.circle(surface, (196, 228, 244), spot.as_ints(), 3)
+            surface.set_at((round(spot.x) - 1, round(spot.y) - 1), (255, 255, 255))
+            if attack.phase > 0:
+                beam = (255, 232, 150) if (self.tick + i) % 4 else (255, 255, 255)
+                pygame.draw.line(surface, beam, spot.as_ints(), target.as_ints(), 1)
+        if attack.phase > 0:
+            blit_glow(surface, radial_glow(round(move.radius), (150, 120, 40)), target)
+            pygame.draw.circle(surface, (255, 236, 170), target.as_ints(), 4)
+
+    def _draw_bubble_dome(self, surface: pygame.Surface, fighter: Fighter) -> None:
+        """A dome of bubbles swelling around a spot, and then it bursts."""
+        attack, move = fighter.attack, fighter.attack.move
+        target = attack.target - Vec2(0, 12)  # around the chest, not the ankles
+        progress = 1.0
+        if attack.phase == 0:
+            progress = attack.frame / max(1, move.startup_f)
+        radius = move.radius * (0.4 + 0.6 * progress)
+        pygame.draw.circle(surface, (160, 200, 220), target.as_ints(), round(radius), 1)
+        for i in range(10):
+            angle = math.tau * i / 10 + self.tick * 0.07 + i
+            lift = math.sin(self.tick * 0.1 + i) * 3
+            spot = target + Vec2.from_angle(angle, radius * (0.55 + 0.45 * ((i % 3) / 2)))
+            spot = Vec2(spot.x, spot.y - 4 - lift)
+            size = 2 + i % 3
+            pygame.draw.circle(surface, OUTLINE, spot.as_ints(), size + 1)
+            pygame.draw.circle(surface, (210, 236, 248), spot.as_ints(), size)
+            surface.set_at((round(spot.x) - 1, round(spot.y) - 1), (255, 255, 255))
+        if attack.phase > 0:
+            burst = round(radius * (1.0 + 0.5 * min(1.0, attack.active_offset / 3)))
+            pygame.draw.circle(surface, (255, 255, 255), target.as_ints(), burst, 2)
+            blit_glow(surface, radial_glow(round(radius), (60, 90, 110)), target)
 
     def _draw_ground_tentacles(self, surface: pygame.Surface, fighter: Fighter) -> None:
         """Tentacles about to burst from the ground under the target: a ring that tightens,
@@ -1077,8 +1159,8 @@ class FightView:
             return
         attack = fighter.attack
         if fighter.state == State.ATTACK and attack is not None and attack.move.hits > 1:
-            if not attack.active:
-                return
+            if not attack.active or attack.move.fx not in FLURRY_FX:
+                return  # a storm, veins or cables draw themselves: no fists on top of them
             aim, length = attack.aim, attack.move.reach + attack.move.radius
             kind = {"blade": "blade", "blade_hair": "blade"}.get(attack.move.fx, "fists")
         elif fighter.state == State.CLASH:
@@ -1105,15 +1187,51 @@ class FightView:
             start, end = fighter.pos + view.chest, attack.dest + view.chest
             vfx.draw_reach(surface, start, end, color, attack.move.fx, 2)
             return
-        if not attack.active and attack.move.fx not in ("gun", "vortex"):
+        if not attack.active and attack.move.fx not in HELD_FX:
             return  # a gun is held up through the whole move, not only while it hits
         move = attack.move
         view = self.fighter_views[fighter.index]
+        aura = self.fighter_defs[fighter.index].aura
         if move.fx == "vortex":
-            # Both forearms spinning: the air does the hitting, not the fists.
+            # The forearms spin up through the startup, then both funnels are out at
+            # full length, then the air falls still again.
+            phase, spent, length = attack.phase_info()
+            grow = 1.0
+            if phase == 0:
+                grow = (spent + 1) / max(1, length)
+            elif phase == 2:
+                grow = max(0.0, 1.0 - 2.0 * (spent + 1) / max(1, length))
             origin = fighter.pos + view.chest
-            aura = self.fighter_defs[fighter.index].aura
-            vfx.draw_vortices(surface, origin, attack.aim, self.tick, move.reach + 10, aura)
+            vfx.draw_vortices(
+                surface,
+                origin,
+                attack.aim,
+                self.tick,
+                move.reach + 10,
+                aura,
+                grow,
+                14 + move.radius * 0.9,
+            )
+            return
+        if move.fx == "wind_beam":
+            # The horn is the barrel: it fires from the head, not from the hands.
+            horn = fighter.pos + Vec2(attack.aim.x * 3, -view.height + 4)
+            vfx.draw_wind_beam(surface, horn, attack.aim, move.reach, self.tick, aura)
+            return
+        if move.fx == "blade_fan":
+            hands = fighter.pos + view.chest
+            vfx.draw_blade_fan(
+                surface, hands, attack.aim, move.reach, max(12.0, move.radius), self.tick, aura
+            )
+            return
+        if move.fx == "cables":
+            hands = fighter.pos + view.chest
+            spread = max(10.0, move.radius * 1.5)
+            vfx.draw_cables(surface, hands, attack.aim, move.reach, spread, self.tick)
+            return
+        if move.fx == "blood_jet":
+            vein = fighter.pos + view.chest
+            vfx.draw_blood_jet(surface, vein, attack.aim, move.reach, self.tick)
             return
         if move.fx == "gun":
             hip = fighter.pos + view.chest + Vec2(0, 3)
@@ -1124,7 +1242,7 @@ class FightView:
             eyes = fighter.pos + Vec2(attack.aim.x * 2, -view.height + 9)
             tip = eyes + attack.aim * move.reach
             width = 2 if move.radius > 4 else 1
-            vfx.draw_reach(surface, eyes, tip, self.fighter_defs[fighter.index].aura, "beam", width)
+            vfx.draw_reach(surface, eyes, tip, aura, "beam", width)
             return
         if view.stand_presence(fighter) > 0 and view.stand is not None:
             start = fighter.stand_spot() + Vec2(0, -view.stand.chest - 6)
@@ -1133,7 +1251,7 @@ class FightView:
         grow = min(1.0, (attack.active_offset + 1) / 3)
         tip = fighter.pos + attack.aim * (move.reach * grow) + view.chest
         width = 3 if move.reach > 40 else 2
-        vfx.draw_reach(surface, start, tip, self.fighter_defs[fighter.index].aura, move.fx, width)
+        vfx.draw_reach(surface, start, tip, aura, move.fx, width)
 
     def _draw_cage(self, surface: pygame.Surface, match: Match) -> None:
         """The ring of chains on the floor, a stake in the middle, a chain to each neck."""

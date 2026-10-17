@@ -203,14 +203,14 @@ anim = "heavy_overdrive"
 [moves.gha]
 shout = "OVERDRIVE !"
 label = "SUNLIGHT YELLOW OVERDRIVE"
-info = "Un poing de Hamon. S'il touche : la rafale de Hamon du soleil, qui brûle les vampires"
-info_en = "A Hamon fist. On hit: the sunlight Hamon barrage that burns vampires"
+info = "Il fond sur lui. S'il touche : toute l'Onde, d'un seul coup"
+info_en = "He closes the gap. On hit: all the Ripple there is, in one blow"
 hamon = true
 startup_f = 12
 active_f = 4
 recovery_f = 26
 invincible_f = 12
-lunge = 140
+lunge = 240
 damage = 30
 reach = 15
 radius = 13

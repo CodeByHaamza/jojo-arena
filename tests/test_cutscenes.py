@@ -25,7 +25,7 @@ def test_the_fight_holds_during_the_cutscene_then_the_finish_lands():
     match = make_duel("dio_p3", "jotaro_p3", p1=(100, 100), p2=(124, 100))
     dio, jotaro = match.fighters
     dio.hh = 200
-    run_until(match, lambda m: m.cutscene is not None, 40, p1=GHA)
+    run_until(match, lambda m: m.cutscene is not None, 60, p1=GHA)
     hp, pos = jotaro.hp, jotaro.pos.copy()
     for _ in range(match.cutscene.frames_left - 1):
         match.step((NONE, press("light", move=(-1.0, 0.0))))  # nothing moves
@@ -38,7 +38,8 @@ def test_the_fight_holds_during_the_cutscene_then_the_finish_lands():
 
 
 def test_an_ultimate_that_misses_does_nothing_more():
-    match = make_duel("dio_p3", "jotaro_p3", p1=(100, 100), p2=(300, 100))
+    # Out of range: the road roller falls as far out as it can, and lands on nothing.
+    match = make_duel("dio_p3", "jotaro_p3", p1=(100, 100), p2=(340, 100))
     match.fighters[0].hh = 200
     events = run(match, 80, p1=GHA)
     assert "cutscene_start" not in kinds(events)

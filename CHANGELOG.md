@@ -79,7 +79,32 @@ des corrections seules une patch.
 - **Bruford** : ses cheveux accompagnent l'épée sur tous ses coups, et le deuxième coup de
   son enchaînement est un fouet de mèches qui porte plus loin que la lame.
 
+- **Aspiration.** Un coup peut tirer l'adversaire vers lui tant qu'il est actif
+  (`pull`, `pull_range`) : le Contrecoup de la Tornade de Wamuu l'arrache de l'autre bout
+  du terrain, et la Divine Sandstorm aspire ce qu'elle broie.
+- **Les ultimes ont la forme de leur technique.** Rift Atmosphérique : un rayon de vent
+  tiré par la corne, d'un bout à l'autre de l'arène. Les trucs du métier de Joseph : des
+  câbles lancés sur toute la largeur devant lui. Les Larmes d'Esidisi : un jet de sang
+  bouillant. Déluge de lumière de Kars : une nappe de neuf lames. Bubble Barrier et Burn
+  Black de Caesar : le dôme de bulles et le cercle de loupes se referment là où
+  l'adversaire se trouve. Autodestruction de Stroheim : tout ce qui l'entoure. Road
+  Roller : il tombe sur sa position.
+- **Divine Sandstorm** : les avant-bras tournent pendant tout le démarrage, puis deux
+  vraies tornades qui portent à 92 (150 pour la version ultime) et aspirent.
+- **La Chaîne d'Onde de Lisa Lisa.** Son premier coup ouvre une chaîne à
+  embranchements : trois touches pour la continuer, trois pour la finir, dont une prise
+  imparable. Personne d'autre n'a ça.
+- **Caesar** : l'Uppercut d'une main et le Ripple Kick (intouchable pendant le vol) à la
+  place de ses coups génériques, et ses Bubble Cutters ricochent sur les murs.
+
 ### Corrigé
+
+- **Une tornade n'est pas une rafale de poings.** Un coup multi-hit qui a son propre
+  effet (tornade, veines, câbles) affichait quand même une rafale de poings par-dessus.
+- **La Super Aja de Lisa Lisa** faisait tomber un bloc de béton : c'est maintenant une
+  colonne de lumière qui descend sur l'adversaire.
+- **Portées d'armes** : les cheveux et l'épée de Bruford, et la rapière de Silver
+  Chariot, portaient moins loin qu'un direct.
 
 - La grille de sélection des persos affichait une rangée de cases vides sous la partie 1 :
   elle s'arrête maintenant à la dernière rangée occupée.

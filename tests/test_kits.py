@@ -102,6 +102,7 @@ def test_every_signature_move_is_reachable():
             reachable |= shared_links - {""}  # an ultimate can chain or counter too
             for move in stance.moves.values():
                 reachable |= {move.chain, move.counter} - {""}
+                reachable |= {name for _, name in move.chains}  # a branching chain
             assert set(stance.moves) <= reachable, (fighter.id, set(stance.moves) - reachable)
 
 

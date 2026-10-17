@@ -135,6 +135,7 @@ class Match:
                 self.fighters[fighter.possessor].remote_pos = fighter.pos.copy()
         self._separate_bodies()
         self._release_attacks()
+        self._apply_suction()
         events += self._update_projectiles()
         events += self._update_traps()
         events += self._update_webs()
@@ -186,6 +187,28 @@ class Match:
         share_b = 0.0 if b.frozen else (1.0 if a.frozen else 0.5)
         a.pos, _, _ = self.arena.constrain(a.pos + normal * overlap * share_a, r)
         b.pos, _, _ = self.arena.constrain(b.pos - normal * overlap * share_b, r)
+
+    def _apply_suction(self) -> None:
+        """A move with `pull` drags the other fighter in while it is active: a vortex, or
+        veins round an ankle. It runs before the hitboxes, so whoever is dragged into the
+        mouth of the move is then ground up by it."""
+        for fighter in self.fighters:
+            attack = fighter.attack
+            move = attack.move if attack is not None else None
+            if fighter.frozen or attack is None or not attack.active or move.pull <= 0:
+                continue
+            target = self.opponent(fighter)
+            if not target.alive or target.frozen or target.state is State.CLASH:
+                continue
+            offset = fighter.pos - target.pos
+            distance = offset.length()
+            floor = self.rules.body_radius * 2
+            reach = move.pull_range or move.reach + move.radius
+            if distance > reach or distance <= floor:
+                continue  # out of the wind, or already in the middle of it
+            step = min(move.pull, distance - floor)
+            pulled = target.pos + offset.normalized() * step
+            target.pos, _, _ = self.arena.constrain(pulled, self.rules.body_radius)
 
     # Projectiles and traps ------------------------------------------------------------------
 

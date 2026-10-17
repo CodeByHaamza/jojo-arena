@@ -525,27 +525,203 @@ class EffectsLayer:
             effect.draw(surface)
 
 
+def _swirl(surface: pygame.Surface, center: Vec2, radius: float, turn: float, color, pale) -> None:
+    """One vortex seen from above: three arms of air winding into an eye, flattened a
+    little because the camera is not straight overhead."""
+    for arm in range(3):
+        points = []
+        for step in range(7):
+            far = 0.25 + 0.75 * step / 6
+            angle = turn + arm * math.tau / 3 + far * 2.6
+            points.append(
+                _ints(
+                    center
+                    + Vec2(math.cos(angle) * radius * far, math.sin(angle) * radius * far * 0.55)
+                )
+            )
+        pygame.draw.lines(surface, OUTLINE, False, points, 3)
+        pygame.draw.lines(surface, pale, False, points, 1)
+    box = pygame.Rect(0, 0, round(radius * 2), max(2, round(radius * 1.1)))
+    box.center = _ints(center)
+    pygame.draw.ellipse(surface, color, box, 1)
+    pygame.draw.circle(surface, OUTLINE, _ints(center), 2)
+    pygame.draw.circle(surface, (255, 255, 255), _ints(center), 1)
+
+
 def draw_vortices(
-    surface: pygame.Surface, origin: Vec2, aim: Vec2, tick: int, length: float, color
+    surface: pygame.Surface,
+    origin: Vec2,
+    aim: Vec2,
+    tick: int,
+    length: float,
+    color,
+    grow: float = 1.0,
+    width: float = 12.0,
 ) -> None:
-    """Two tornadoes turning in front of a fighter, one per forearm: the air between
-    his arms, not his fists. They lean along `aim` and spin with `tick`."""
+    """Two tornadoes, one spun up by each forearm. `grow` is how far the move has wound
+    up: at 0 the forearms are whirling at his sides and there is barely a draught, at 1
+    both storms are out at full length, swallowing everything between them."""
     d = aim.normalized() if aim.length_sq() else Vec2(1, 0)
     side = _side(d)
-    for which, offset in enumerate((-5.0, 5.0)):
+    reach = max(8.0, length * grow)
+    mouth = 3.0 + (width - 3.0) * grow
+    pale = tuple(min(255, c + 80) for c in color)
+    deep = tuple(c // 2 for c in color)
+    count = max(2, min(6, round(reach / 26)))
+    for which, offset in enumerate((-7.0, 7.0)):
         base = origin + side * offset
-        spin = tick * 0.55 + which * math.pi
-        points = []
-        for step in range(11):
-            t = step / 10
-            radius = 2.5 + 7.5 * t
-            along = d * (length * t)
-            swirl = side * (math.sin(spin + t * 7.0) * radius)
-            points.append(_ints(base + along + swirl - Vec2(0, t * 4)))
-        pygame.draw.lines(surface, OUTLINE, False, points, 4)
-        pygame.draw.lines(surface, color, False, points, 2)
-        pygame.draw.lines(surface, (255, 255, 255), False, points[-4:], 1)
-    blit_glow(surface, radial_glow(round(14 + length * 0.3), (60, 80, 90)), _ints(origin + d * 6))
+        spin = tick * 0.32 + which * math.pi
+        trail = [_ints(base)]
+        for i in range(count):
+            t = (i + 1) / count
+            center = base + d * (reach * t) - Vec2(0, 4 + t * 10)
+            radius = (3.0 + (mouth - 3.0) * t) * (0.85 + 0.15 * math.sin(tick * 0.3 + i))
+            trail.append(_ints(center))
+            _swirl(surface, center, radius, spin + i * 0.9, color, pale)
+            if grow >= 1.0:  # grit torn off the floor, riding round the outside
+                angle = spin * 1.9 + i * 1.7
+                grit = center + Vec2(math.cos(angle) * radius * 1.2, math.sin(angle) * radius * 0.7)
+                pygame.draw.circle(surface, (255, 255, 255), _ints(grit), 1)
+        pygame.draw.lines(surface, deep, False, trail, 1)  # the draught between them
+    glow = radial_glow(round(10 + reach * 0.22), (50, 70, 80))
+    blit_glow(surface, glow, _ints(origin + d * (reach * 0.5)))
+
+
+def _fill_shape(surface: pygame.Surface, points, color, alpha: int) -> None:
+    """A see-through polygon: the body of something you can still see the floor through."""
+    xs = [p[0] for p in points]
+    ys = [p[1] for p in points]
+    left, top = min(xs) - 1, min(ys) - 1
+    size = (max(2, max(xs) - left + 2), max(2, max(ys) - top + 2))
+    layer = pygame.Surface(size, pygame.SRCALPHA)
+    pygame.draw.polygon(layer, (*color, alpha), [(x - left, y - top) for x, y in points])
+    surface.blit(layer, (left, top))
+
+
+def draw_blade_fan(
+    surface: pygame.Surface, start: Vec2, aim: Vec2, length: float, spread: float, tick: int, color
+) -> None:
+    """A sheet of light blades thrown out at once, fanned across everything in front."""
+    d = aim.normalized() if aim.length_sq() else Vec2(1, 0)
+    side = _side(d)
+    pale = tuple(min(255, c + 70) for c in color)
+    for i in range(9):
+        offset = (i - 4) / 4 * spread
+        out = 0.55 + 0.45 * ((i * 3 + tick) % 7) / 6
+        base = start + side * (offset * 0.35) + Vec2(0, offset * 0.12)
+        tip = base + d * (length * out) + side * (offset * 0.5)
+        pygame.draw.line(surface, OUTLINE, _ints(base), _ints(tip), 4)
+        pygame.draw.line(surface, color, _ints(base), _ints(tip), 2)
+        pygame.draw.line(surface, (255, 255, 255), _ints(base + (tip - base) * 0.6), _ints(tip), 1)
+        pygame.draw.circle(surface, pale, _ints(tip), 2)
+    blit_glow(
+        surface,
+        radial_glow(round(16 + length * 0.12), tuple(c // 2 for c in color)),
+        _ints(start + d * (length * 0.4)),
+    )
+
+
+def draw_wind_beam(
+    surface: pygame.Surface, start: Vec2, aim: Vec2, length: float, tick: int, color
+) -> None:
+    """The air stream out of a horn: a straight razor of compressed air with turbulence
+    boiling off both sides of it, and the split it leaves in the air at the far end."""
+    d = aim.normalized() if aim.length_sq() else Vec2(1, 0)
+    side = _side(d)
+    tip = start + d * length
+    # The horn itself, out of his forehead: a drill, and the stream leaves its point.
+    horn = [
+        _ints(start - d * 3 + side * 4),
+        _ints(start + d * 9),
+        _ints(start - d * 3 - side * 4),
+    ]
+    pygame.draw.polygon(surface, OUTLINE, horn)
+    pygame.draw.polygon(surface, (214, 198, 150), horn, 1)
+    for ring in range(3):
+        along = start + d * (ring * 3)
+        pygame.draw.line(
+            surface,
+            (120, 104, 70),
+            _ints(along + side * (3.4 - ring)),
+            _ints(along - side * (3.4 - ring)),
+            1,
+        )
+    start = start + d * 9
+    tip = start + d * length
+    pygame.draw.line(surface, OUTLINE, _ints(start), _ints(tip), 7)
+    pygame.draw.line(surface, color, _ints(start), _ints(tip), 5)
+    pygame.draw.line(surface, (220, 245, 255), _ints(start), _ints(tip), 3)
+    pygame.draw.line(surface, (255, 255, 255), _ints(start), _ints(tip), 1)
+    steps = max(4, round(length / 14))
+    for step in range(steps):
+        t = (step + (tick % 6) / 6) / steps
+        swell = 4 + 7 * math.sin(t * 3.0)
+        axis = start + d * (length * t)
+        for way in (1, -1):
+            curl = [
+                _ints(axis + side * (swell * way) - d * 6),
+                _ints(axis + side * (swell * 1.5 * way)),
+                _ints(axis + side * (swell * way) + d * 7),
+            ]
+            pygame.draw.lines(surface, color, False, curl, 1)
+    # Where it lands, the air itself is split in two.
+    for way in (1, -1):
+        crack = [
+            _ints(tip),
+            _ints(tip + d * 7 + side * (9 * way)),
+            _ints(tip + d * 2 + side * (18 * way)),
+        ]
+        pygame.draw.lines(surface, (255, 255, 255), False, crack, 1)
+    blit_glow(surface, radial_glow(14, (90, 120, 130)), _ints(start))
+    blit_glow(surface, radial_glow(18, (120, 150, 160)), _ints(tip))
+
+
+def draw_cables(
+    surface: pygame.Surface, start: Vec2, aim: Vec2, length: float, spread: float, tick: int
+) -> None:
+    """Steel cables thrown out in a fan, taut, each ending in a hooked weight: the trap
+    is already laid across everything in front of him."""
+    d = aim.normalized() if aim.length_sq() else Vec2(1, 0)
+    side = _side(d)
+    for i in range(5):
+        offset = (i - 2) / 2 * spread
+        out = min(1.0, (tick % 7) / 7 + 0.55)  # they snap taut, then thrum
+        end = start + d * (length * out) + side * offset
+        sag = side * (offset * 0.15) + Vec2(0, 2 + abs(offset) * 0.1)
+        mid = (start + end) * 0.5 + sag
+        curve = [_ints(start), _ints(mid), _ints(end)]
+        pygame.draw.lines(surface, OUTLINE, False, curve, 3)
+        pygame.draw.lines(surface, (214, 206, 186), False, curve, 1)
+        pygame.draw.circle(surface, OUTLINE, _ints(end), 3)
+        pygame.draw.circle(surface, (150, 142, 126), _ints(end), 2)
+        pygame.draw.line(surface, (240, 236, 220), _ints(end), _ints(end + d * 4), 1)
+    blit_glow(surface, radial_glow(12, (80, 76, 60)), _ints(start + d * 6))
+
+
+def draw_blood_jet(
+    surface: pygame.Surface, start: Vec2, aim: Vec2, length: float, tick: int
+) -> None:
+    """Boiling blood pumped out of a vein: a thick dark jet, orange where it is hottest,
+    spitting drops and steam the whole way along."""
+    d = aim.normalized() if aim.length_sq() else Vec2(1, 0)
+    side = _side(d)
+    points, steps = [], max(4, round(length / 10))
+    for step in range(steps + 1):
+        t = step / steps
+        wobble = math.sin(tick * 0.4 + t * 5.0) * (2 + 4 * t)
+        points.append(_ints(start + d * (length * t) + side * wobble))
+    pygame.draw.lines(surface, OUTLINE, False, points, 7)
+    pygame.draw.lines(surface, (120, 16, 24), False, points, 5)
+    pygame.draw.lines(surface, (198, 42, 30), False, points, 3)
+    pygame.draw.lines(surface, (255, 166, 60), False, points, 1)
+    for i, point in enumerate(points):
+        if (i + tick // 2) % 3:
+            continue
+        drop = Vec2(*point) + side * ((i % 2 * 2 - 1) * (4 + i)) - Vec2(0, 3 + i)
+        pygame.draw.circle(surface, (198, 42, 30), _ints(drop), 2)
+        surface.set_at(_ints(drop - Vec2(0, 2)), (255, 196, 120))
+    blit_glow(surface, radial_glow(13, (120, 50, 20)), points[0])
+    blit_glow(surface, radial_glow(10, (140, 60, 20)), points[-1])
 
 
 def draw_gun(surface: pygame.Surface, start: Vec2, aim: Vec2, tick: int) -> None:

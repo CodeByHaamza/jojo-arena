@@ -398,7 +398,10 @@ class Fighter:
                         return []
                 slot = self._take_buffered(attack.move.cancel_on_hit)
                 move = None
-                if slot and slot == attack.slot and attack.move.chain:
+                if slot and (branch := attack.move.chain_for(slot)):
+                    # A branching chain: each button continues it a different way.
+                    move = self.kit.move(self.stance, branch)
+                elif slot and slot == attack.slot and attack.move.chain:
                     move = self.kit.move(self.stance, attack.move.chain)
                 elif slot:
                     move = self.move_for(slot, frame)
@@ -602,9 +605,14 @@ class Fighter:
         if slot:
             self.prev_slot, self.last_slot = self.last_slot, slot
         self.set_state(State.ATTACK)
-        self.attack = Attack(
-            move, aim, self._serial, target=target.copy(), slot=slot, start=self.pos.copy()
-        )
+        spot = target.copy()
+        if move.at_target and move.reach > 0:
+            # It lands on the spot the opponent stands on - but only so far out. For a
+            # move that falls from the sky, `reach` is how far away it can be dropped.
+            offset = spot - self.pos
+            if offset.length() > move.reach:
+                spot = self.pos + offset.normalized() * move.reach
+        self.attack = Attack(move, aim, self._serial, target=spot, slot=slot, start=self.pos.copy())
         self.attack.dest = dest
         self.attack.hamon = move.hamon
         self.blood = max(0.0, self.blood - move.blood_cost)

@@ -296,9 +296,6 @@ anim = "dash"
 [awakening]
 stance = "ultimate"
 bars = 2
-# Five seconds of standing perfectly still with a stone mask over his face: he takes
-# double, he cannot answer, and a real blow (20 frames of hitstun or more) knocks it
-# off him and gives half the gauge back. Survive it and the fight stops to watch.
 charge_s = 5
 vulnerable_mult = 2.0
 break_hitstun_f = 20
@@ -308,6 +305,10 @@ cinematic_s = 4.6
 sun_immune = true
 label = "SUPER AJA"
 label_en = "SUPER AJA"
+
+# Five seconds of standing perfectly still with a stone mask over his face: he takes
+# double, he cannot answer, and a real blow (20 frames of hitstun or more) knocks it
+# off him and gives half the gauge back. Survive it and the fight stops to watch.
 
 [stances.ultimate]
 label = "FORME DE VIE ULTIME"
@@ -473,15 +474,15 @@ anim = "heavy"
 shout = "KISAI KATTO !"
 label = "DÉLUGE DE LUMIÈRE"
 label_en = "DELUGE OF LIGHT"
-info = "Un coup. S'il touche : toutes les lames et toute la lumière, d'un coup"
-info_en = "One blow. On hit: every blade and all the light, at once"
-startup_f = 14
-active_f = 4
+info = "Une nappe de lames de lumière devant lui. Si elle touche : tout, d'un coup"
+info_en = "A sheet of light blades in front of him. If it catches: everything at once"
+startup_f = 16
+active_f = 6
 recovery_f = 28
 invincible_f = 14
 damage = 30
-reach = 18
-radius = 13
+reach = 124
+radius = 18
 hitstun_f = 40
 hitstop_f = 10
 clashable = false
@@ -492,3 +493,5 @@ finish_damage = 250
 finish_hitstun_f = 50
 finish_knockback = 420
 finish_wall_bounce = true
+shape = "line"
+fx = "blade"

@@ -162,6 +162,8 @@ class MoveDef:
     last_damage: int | None = None  # damage of the last hit of a rush (the finisher)
     last_wall_bounce: bool = False
     lunge: float = 0.0  # px/frame forward during startup and active frames
+    pull: float = 0.0  # px/frame the opponent is dragged toward the user while active
+    pull_range: float = 0.0  # px: how far the suction reaches (0 = reach + radius)
     at_target: bool = False  # the hitbox lands where the opponent stood at the start
     unblockable: bool = False  # grabs
     drain: float = 0.0  # share of the damage dealt that heals the attacker
@@ -172,6 +174,9 @@ class MoveDef:
     disarm_f: int = 0  # the Stand's own moves are unavailable this long afterwards
     buff: str = ""  # name of a buff (kit [buffs]) started by this move
     chain: str = ""  # the same button, once this connects, continues into this move
+    # ...or a choice of buttons, each leading somewhere else (Lisa Lisa's Ripple Chain).
+    # Pairs, not a dict: a move is frozen and used as a key (cooldowns), so it must hash.
+    chains: tuple[tuple[str, str], ...] = ()
     # Cutscene: when this move lands ("hit") or as soon as it starts ("start"), the fight
     # holds for a cutscene of `cinematic_f` frames, then the finishing blow lands.
     cinematic: str = ""  # which cutscene the view plays
@@ -211,6 +216,13 @@ class MoveDef:
     def total_f(self) -> int:
         return self.startup_f + self.active_f + self.recovery_f
 
+    def chain_for(self, slot: str) -> str:
+        """The move this one continues into when `slot` is pressed after it connects."""
+        for button, name in self.chains:
+            if button == slot:
+                return name
+        return ""
+
     @classmethod
     def from_data(cls, name: str, data: dict) -> MoveDef:
         projectile = data.get("projectile")
@@ -241,6 +253,8 @@ class MoveDef:
             last_wall_bounce=data.get("last_wall_bounce", False),
             last_damage=data.get("last_damage"),
             lunge=per_frame(data.get("lunge", 0)),
+            pull=per_frame(data.get("pull", 0)),
+            pull_range=data.get("pull_range", 0.0),
             at_target=data.get("at_target", False),
             unblockable=data.get("unblockable", False),
             drain=data.get("drain", 0.0),
@@ -251,6 +265,7 @@ class MoveDef:
             disarm_f=seconds_to_frames(data.get("disarm_s", 0)),
             buff=data.get("buff", ""),
             chain=data.get("chain", ""),
+            chains=tuple(sorted(data.get("chains", {}).items())),
             cinematic=data.get("cinematic", ""),
             cinematic_f=seconds_to_frames(data.get("cinematic_s", 0)),
             cinematic_at=data.get("cinematic_at", "hit"),
@@ -384,7 +399,7 @@ def parse_kit(data: dict, kit_id: str, source: str = "kit", hh_bar: float = 100.
     buffs = {name: BuffDef.from_data(b) for name, b in data.get("buffs", {}).items()}
     for stance_name, stance in stances.items():
         for move in [*stance.moves.values(), *shared.values()]:
-            for link in (move.chain, move.counter):
+            for link in (move.chain, move.counter, *(n for _, n in move.chains)):
                 if link and link not in stance.moves and link not in shared:
                     raise ValueError(
                         f"{source}: move '{move.name}' leads to unknown move '{link}' "

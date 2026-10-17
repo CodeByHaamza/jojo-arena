@@ -45,7 +45,7 @@ Les coups d'une posture : `[stances.<nom>.moves.<touche>]`, où la touche est `l
 | `anim` | Animation à jouer (par défaut, le nom de la touche). Une variante `famille_nom` (`special_splash`) se dessine dans la fiche de look ; une planche qui ne l'a pas (le Stand) joue la famille (`special`) |
 | `shout` | Cri écrit à l'écran quand le coup sort ; pour une rafale, à chaque coup (`ORA`, `MUDA`) |
 | `stand_flash` | Le Stand apparaît le temps de ce coup, même rangé |
-| `fx` | Dessin pendant la phase active : `limb` (doigt, bras), `tentacle`, `blade`, `hair` (mèches), `chain` (chaîne), `beam` (jets des yeux), `lens` (rayon à travers une bulle), `scarf` (écharpe ondulante) ou `scarf_spear` (écharpe rigide), `blade_hair` (la lame et les mèches ensemble), `vortex` (deux tornades devant lui, Divine Sandstorm) ou `gun` (une mitraillette tenue à la hanche), jusqu'à `reach`. `vortex` et `gun` sont dessinés pendant tout le coup, pas seulement quand il peut toucher |
+| `fx` | Dessin pendant la phase active : `limb` (doigt, bras), `tentacle`, `blade`, `hair` (mèches), `chain` (chaîne), `beam` (jets des yeux), `lens` (rayon à travers une bulle), `scarf` (écharpe ondulante) ou `scarf_spear` (écharpe rigide), `blade_hair` (la lame et les mèches ensemble), `vortex` (deux tornades devant lui, Divine Sandstorm), `wind_beam` (le rayon d'air qui sort de la corne), `cables` (des câbles lancés en éventail), `blood_jet` (du sang bouillant pompé dans une veine), `blade_fan` (une nappe de lames de lumière) ou `gun` (une mitraillette tenue à la hanche), jusqu'à `reach`. `vortex`, `cables` et `gun` sont dessinés pendant tout le coup, pas seulement quand il peut toucher. Avec `at_target` : `beam` (une colonne de lumière qui tombe sur place), `lenses` (des loupes qui se referment en cercle puis tirent), `bubbles` (un dôme de bulles qui gonfle et éclate), `tentacle`/`hair` (qui jaillissent du sol) ; sans `fx`, un objet lourd qui tombe du ciel |
 
 Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de même `label_en` pour une posture, et `role_en`, `blurb_en`, `name_en` dans le roster). Sans traduction, le texte français s'affiche.
 
@@ -59,6 +59,7 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `invincible_f` | Premières images où l'on ne peut pas être touché |
 | `cooldown_s` | Délai avant de pouvoir réutiliser le coup |
 | `cancel_on_hit` | Touches qui annulent ce coup quand il a touché (enchaînements) |
+| `chains` | Chaîne à embranchements : `{ light = "...", heavy = "..." }`, une suite différente par touche, une fois que le coup a porté (la Chaîne d'Onde de Lisa Lisa) |
 | `chain` | Nom du coup suivant quand on réappuie sur la même touche après avoir touché (ex. `light` → `light2` → `light3` : trois coups différents). La touche doit être dans `cancel_on_hit` |
 
 ### Zone de frappe
@@ -68,10 +69,12 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `reach` | Distance du centre de la zone devant le perso |
 | `radius` | Rayon de la zone (0 = pas de coup au corps à corps) |
 | `shape` | `circle` (un cercle à `reach`) ou `line` (une ligne du corps jusqu'à `reach`, sans angle mort de près) |
-| `at_target` | La zone tombe là où se trouvait l'adversaire au début du coup |
+| `at_target` | La zone tombe là où se trouvait l'adversaire au début du coup ; `reach` sert alors de **distance maximale** de largage (0 = sans limite) |
 | `leap` | Bond pendant le démarrage, jusqu'à cette distance |
 | `leap_to` | Vers l'adversaire (`target`, s'arrête à côté de lui) ou vers le point visé (`cursor` : souris, sinon stick droit, sinon direction tenue) |
 | `leap_height` | Hauteur du saut à l'écran (0 = glisse au sol, comme un grappin) |
+| `pull` | Aspire l'adversaire vers le perso à chaque image active (vitesse) : tornade, veines autour de la cheville |
+| `pull_range` | Portée de l'aspiration (0 = `reach` + `radius`) |
 | `lunge` | Avance pendant le démarrage et la phase active (vitesse) ; une rafale continue d'avancer à chaque coup ; négatif : recule |
 
 ### Effet sur l'adversaire
