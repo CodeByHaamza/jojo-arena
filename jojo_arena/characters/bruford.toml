@@ -5,7 +5,10 @@
 # A zombie: Hamon burns him (double damage) and so does the sun. No style key.
 # Feel: a knight who keeps you at the length of his sword, then of his hair.
 
+# His hair carries what he picks up: his hands stay free, and he swings it from the
+# length of his hair, over a wide arc.
 name = "Bruford"
+prop_hold = "hair"
 max_hp = 1000
 walk_speed = 102
 nature = "zombie"
@@ -78,23 +81,24 @@ anim = "special"
 
 # A two-handed stroke of Luck: heavy, it caves a guard in.
 [stances.base.moves.heavy]
-label = "COUP DE LUCK"
-label_en = "STROKE OF LUCK"
-info = "Lourd coup d'épée à deux mains, les mèches enroulées autour ; casse la garde"
-info_en = "A heavy two-handed stroke, his hair wound around the blade; crushes guards"
+label = "LUCK AU BOUT DES CHEVEUX"
+label_en = "LUCK AT THE END OF HIS HAIR"
+info = "Les cheveux font tournoyer l'épée loin devant lui ; casse la garde"
+info_en = "His hair swings the sword far out in front of him; crushes guards"
 fx = "blade_hair"
-startup_f = 15
+startup_f = 17
 active_f = 4
 recovery_f = 22
 damage = 72
-reach = 26
-radius = 17
+reach = 48
+radius = 11
 hitstun_f = 34
 knockback = 320
 hitstop_f = 11
 wall_bounce = true
 guard_damage = 2.2
 anim = "heavy"
+shape = "line"
 
 # With a direction: the knight's charge, sword first.
 [stances.base.moves.heavy_alt]

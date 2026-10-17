@@ -8,48 +8,16 @@ just puts both fighters back in place.
 from __future__ import annotations
 
 from collections.abc import Callable
-from dataclasses import dataclass
 
 from jojo_arena.combat.arena import Arena
 from jojo_arena.combat.events import Event
-from jojo_arena.combat.fighter import Fighter, State
+from jojo_arena.combat.fighter import State
 from jojo_arena.combat.kit import Kit
 from jojo_arena.combat.match import Match
 from jojo_arena.combat.rounds import Phase, RoundResult
 from jojo_arena.combat.rules import Rules
+from jojo_arena.combat.stats import COMBO_STATES, Combo
 from jojo_arena.engine.actions import NEUTRAL, InputFrame
-
-# States in which a combo goes on: the defender cannot do anything yet.
-COMBO_STATES = (State.HITSTUN, State.GUARD_BROKEN, State.KO)
-SHOW_COMBO_F = 120  # a finished combo stays on screen this long
-
-
-@dataclass
-class Combo:
-    """Hits landed in a row on one defender, and the damage they did."""
-
-    hits: int = 0
-    damage: int = 0
-    live: bool = False  # the defender is still stuck in it
-    shown_f: int = 0  # frames left on screen once it is over
-
-    def update(self, events: list[Event], defender: Fighter) -> None:
-        for event in events:
-            if event.kind != "hit" or event.fighter != defender.index:
-                continue
-            if not self.live:
-                self.hits, self.damage, self.live = 0, 0, True
-            self.hits += 1
-            self.damage += round(event.value)
-        if self.live and defender.state not in COMBO_STATES and not defender.frozen:
-            self.live = False
-            self.shown_f = SHOW_COMBO_F
-        elif not self.live and self.shown_f > 0:
-            self.shown_f -= 1
-
-    @property
-    def visible(self) -> bool:
-        return self.hits > 0 and (self.live or self.shown_f > 0)
 
 
 class Training:

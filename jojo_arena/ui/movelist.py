@@ -178,7 +178,12 @@ def build_pages(
         note = text.SYS_SUPER_INFO if len(supers) == 2 else ""
         pages.append(MovePage(text.PAGE_SUPER, tuple(supers), note))
 
-    prop_info = text.SYS_PROP_INFO if fdef.stand_sprite else text.SYS_PROP_INFO_HANDS
+    wrapped = kit.prop_hold != "hands"  # hair or tendrils carry it, not hands
+    if wrapped:
+        prop_info, swing_info = text.SYS_PROP_INFO_WRAPPED, text.SYS_PROP_SWING_INFO_WRAPPED
+    else:
+        prop_info = text.SYS_PROP_INFO if fdef.stand_sprite else text.SYS_PROP_INFO_HANDS
+        swing_info = text.SYS_PROP_SWING_INFO
     stand_info = text.SYS_STYLE_INFO
     stand_label = text.SYS_STAND
     if fdef.stand_name:
@@ -197,6 +202,7 @@ def build_pages(
         MoveEntry((key("dash"),), text.SYS_DASH, text.SYS_DASH_INFO),
         MoveEntry((key("pose"),), text.SYS_POSE, text.SYS_POSE_INFO),
         MoveEntry((key("pose"),), text.SYS_PROP, prop_info),
+        MoveEntry((key("heavy"),), text.SYS_PROP_SWING, swing_info),
     ]
     if kit.pose_counter:
         # Posing calls the opponent's next move: right, it is answered at once.

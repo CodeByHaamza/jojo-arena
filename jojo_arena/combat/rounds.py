@@ -18,6 +18,7 @@ from jojo_arena.combat.fighter import State
 from jojo_arena.combat.kit import Kit
 from jojo_arena.combat.match import Match
 from jojo_arena.combat.rules import Rules
+from jojo_arena.combat.stats import FightStats
 from jojo_arena.engine.actions import NEUTRAL, InputFrame
 
 ROUNDS_TO_WIN_CHOICES = (1, 3, 5)
@@ -59,6 +60,7 @@ class Rounds:
         self.sudden_death = False
         self.result: RoundResult | None = None
         self.winner: int | None = None  # of the whole fight
+        self.stats = FightStats()  # what each of them did, for the screen at the end
         self.match: Match
         self._start_round(carry=(0.0, 0.0))
 
@@ -110,6 +112,7 @@ class Rounds:
         match = self.match
         cinematic = match.cinematic  # clash, super flash or stopped time: the clock waits
         events = match.step(inputs)
+        self.stats.update(events, match.fighters)
         if not self.sudden_death and not cinematic:
             self.timer_f = max(0, self.timer_f - 1)
         a, b = match.fighters

@@ -358,6 +358,7 @@ class Kit:
     stance_tags: dict[str, str] = field(default_factory=dict)  # short name for the HUD
     awakening: AwakeningDef | None = None  # what the Power Up key turns them into
     strength: float = 1.0  # the Stand's raw power: how fast and hard it throws props
+    prop_hold: str = "hands"  # "hair": his hair carries and swings what he picks up
     nature: str = "human"  # "vampire", "pillar_man"...: what Hamon burns
     pose_heal_per_s: float = 0.0  # posing heals this much life per second
     pose_counter: str = ""  # posing a moment, the next blow is answered with this move
@@ -428,6 +429,7 @@ def parse_kit(data: dict, kit_id: str, source: str = "kit", hh_bar: float = 100.
     return Kit(
         id=kit_id,
         strength=data.get("strength", 1.0),
+        prop_hold=data.get("prop_hold", "hands"),
         nature=data.get("nature", "human"),
         pose_heal_per_s=data.get("pose_heal_per_s", 0.0),
         pose_counter=pose_counter,

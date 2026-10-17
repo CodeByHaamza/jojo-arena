@@ -137,8 +137,14 @@ class FighterView:
             phase = fighter.attack.phase_info()
         else:
             anim = STATE_ANIMS.get(fighter.state, "idle")
-            if fighter.carrying is not None and sprites is self.sprites and self.stand is None:
-                anim = "carry"  # no Stand to hold it: he holds it himself, both hands up
+            hands_free = fighter.kit.prop_hold == "hair"  # his hair holds it for him
+            if (
+                fighter.carrying is not None
+                and sprites is self.sprites
+                and self.stand is None
+                and not hands_free
+            ):
+                anim = "carry"  # nothing else to hold it: he holds it, both hands up
         name, spec = self.resolve(sprites, anim)
         attack = fighter.attack
         rushing = attack is not None and attack.move.hits > 1 and attack.active
@@ -313,6 +319,7 @@ class FightView:
         self.fighter_views = [FighterView(d) for d in fighter_defs]
         self.fighter_defs = fighter_defs
         self.sparks: list[Spark] = []
+        self._fx_voiced: dict[int, tuple[int, int]] = {}  # a move's own sound, once
         self.shake = 0
         self.flash = 0  # white screen flash frames left
         self.waves: list[list] = []  # time stop shockwaves: [center, age]
@@ -758,6 +765,7 @@ class FightView:
             else:
                 self.fighter_views[item.index].draw_stand(surface, item, self.tick)
         for fighter in match.fighters:
+            self._voice_of_move(fighter)
             self._draw_reach(surface, fighter)
             self._draw_rush(surface, fighter)
             self._draw_reticle(surface, fighter)
@@ -1080,6 +1088,37 @@ class FightView:
         moved = replace(obstacle, rect=Rect(center.x - w / 2, center.y - h / 2, w, h), flash=0)
         self.renderer.draw_obstacle(surface, moved)
 
+    def _draw_wrapped_prop(
+        self, surface: pygame.Surface, fighter: Fighter, obstacle, spot: Vec2
+    ) -> None:
+        """A prop carried by something that is not a hand: strands reach out to it, it
+        hangs there, and they coil around it. Bruford's hair does this, and so would a
+        Stand's tendrils."""
+        view = self.fighter_views[fighter.index]
+        color = self.fighter_defs[fighter.index].aura
+        tendrils = fighter.kit.prop_hold == "tendrils"
+        if tendrils:
+            # They unravel from the Stand, not from a head of hair.
+            if view.stand is not None:
+                anchor = fighter.stand_spot() + Vec2(0, -view.stand.chest)
+            else:
+                anchor = fighter.pos + view.chest
+        else:
+            anchor = fighter.pos + Vec2(0, -view.height + 5)
+        look = "tentacle" if tendrils else "hair"
+        for i in range(3):
+            side = (i - 1) * 3.0
+            start = anchor + Vec2(side, i * 1.5)
+            vfx.draw_reach(surface, start, spot + Vec2(side * 0.5, 2), color, look, 2)
+        self._draw_prop_at(surface, obstacle, spot)
+        # ...and the coils that close over it, drawn on top so it reads as held.
+        half_w, half_h = obstacle.rect.w / 2 + 1, obstacle.rect.h / 2 + 1
+        for i in (-1, 1):
+            box = pygame.Rect(0, 0, round(half_w * 2), max(3, round(half_h)))
+            box.center = (round(spot.x), round(spot.y + i * half_h * 0.45))
+            pygame.draw.ellipse(surface, OUTLINE, box.inflate(2, 2), 3)
+            pygame.draw.ellipse(surface, color, box, 1)
+
     def _draw_carried_props(self, surface: pygame.Surface, match: Match) -> None:
         """Props held over the head, and the key that picks up the nearest one."""
         reach = match.rules.throw_reach + match.rules.body_radius
@@ -1088,6 +1127,29 @@ class FightView:
             if fighter.carrying is not None:
                 obstacle = match.arena.obstacles[fighter.carrying]
                 half = obstacle.rect.h / 2 + 1
+                attack = fighter.attack
+                wrapped = fighter.kit.prop_hold != "hands"
+                if attack is not None and attack.move.name == "prop_swing":
+                    # Swung: it comes round in front of him, at the end of the blow.
+                    phase, spent, length = attack.phase_info()
+                    swing = min(1.0, (spent + 1) / max(1, length)) if phase else 0.0
+                    if phase == 2:
+                        swing = max(0.0, 1.0 - (spent + 1) / max(1, length))
+                    top = fighter.pos + attack.aim * (attack.move.reach * swing)
+                    top += Vec2(0, -half - view.height * (1 - swing) * 0.9)
+                    if wrapped:
+                        self._draw_wrapped_prop(surface, fighter, obstacle, top)
+                        continue
+                    self._draw_prop_at(surface, obstacle, top)
+                    continue
+                if wrapped:
+                    # Not over his head where nothing can be seen: held out behind him,
+                    # at the end of the hair (or the tendrils), swaying as he moves.
+                    back = -1.0 if fighter.facing.x >= 0 else 1.0
+                    sway = math.sin(self.tick * 0.07 + fighter.index) * 2.0
+                    spot = fighter.pos + Vec2(back * 22.0, -view.height * 0.55 + sway)
+                    self._draw_wrapped_prop(surface, fighter, obstacle, spot)
+                    continue
                 if view.stand is not None:
                     # The Stand holds it up over its own head.
                     spot = fighter.stand_spot()
@@ -1172,6 +1234,18 @@ class FightView:
         seed = self.tick * 13 + fighter.index * 7
         origin = self._strike_origin(fighter)
         vfx.draw_flurry(surface, origin, aim, color, seed, length, 12, kind)
+
+    def _voice_of_move(self, fighter: Fighter) -> None:
+        """A move with an effect of its own makes its own noise, once, as it goes active:
+        the storm, the air stream, the gun, the veins. Impacts are not the only sound."""
+        attack = fighter.attack
+        key = (fighter.index, attack.serial) if attack is not None else None
+        if attack is None or not attack.active or self._fx_voiced.get(fighter.index) == key:
+            return
+        self._fx_voiced[fighter.index] = key
+        name = sounds.FX_SOUNDS.get(attack.move.fx)
+        if name:
+            audio.play(name)
 
     def _draw_reach(self, surface: pygame.Surface, fighter: Fighter) -> None:
         """A finger, tentacle or blade stretching out while the move is active."""

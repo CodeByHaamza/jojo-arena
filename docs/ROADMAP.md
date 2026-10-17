@@ -118,7 +118,7 @@ Classées par ce qu'elles apportent pour ce qu'elles coûtent.
 - [ ] **Power Up et jauge d'Éveil** (déjà dans la roadmap) : la touche existe, elle ne sert à rien ; c'est la mécanique manquante la plus visible.
 - [ ] **Partie 4** (Josuke, Crazy Diamond qui répare le décor et renvoie les projectiles) : le décor destructible existe déjà, Crazy Diamond lui donnerait un sens.
 - [ ] **Deuxième arène par partie** : le château de Wamuu (piliers à casser), la grotte de Santana. Les arènes font autant pour l'identité d'une partie que les persos.
-- [ ] **Écran de fin de combat** : meilleur combo, dégâts totaux, temps — lu directement du combat, sans nouvelle mécanique.
+- [x] **Écran de fin de combat** : dégâts, meilleur combo, plus gros coup, ultimes et durée, par perso — comptés par `combat/stats.py` pendant le combat et affichés au-dessus du menu de revanche.
 
 ### Plus gros, mais c'est là que le jeu devient un jeu
 

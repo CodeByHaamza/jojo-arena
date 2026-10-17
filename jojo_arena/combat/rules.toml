@@ -82,6 +82,24 @@ hitstun_f = 26
 knockback = 260
 hitstop_f = 8
 
+[prop_swing]
+# Carrying a prop, the heavy button swings it: slow to come out, heavy, and wide.
+# A fighter who does not hold it in his hands (kit: prop_hold = "hair" or "tendrils")
+# swings it from the length of his hair, or of his Stand's tendrils, not of an arm.
+startup_f = 16
+active_f = 5
+recovery_f = 26
+damage = 72
+reach = 16
+radius = 17
+hitstun_f = 32
+knockback = 330
+hitstop_f = 10
+wrapped_reach = 46
+wrapped_radius = 26
+wrapped_damage = 84
+wrapped_throw = 0.7          # ...but there is far less of him behind a throw
+
 [training]
 refill_after_s = 1.0          # infinite life: it refills once the fighter has recovered this long
 

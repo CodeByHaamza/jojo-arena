@@ -16,9 +16,9 @@ from jojo_arena.combat.clash import Clash
 from jojo_arena.combat.cutscene import Cutscene
 from jojo_arena.combat.events import Event
 from jojo_arena.combat.fighter import Attack, Fighter, State
-from jojo_arena.combat.kit import Kit, ProjectileDef
+from jojo_arena.combat.kit import Kit, MoveDef, ProjectileDef
 from jojo_arena.combat.projectile import Projectile
-from jojo_arena.combat.rules import Rules
+from jojo_arena.combat.rules import Rules, per_frame
 from jojo_arena.combat.traps import Trap, Web, web_layout
 from jojo_arena.engine.actions import InputFrame
 from jojo_arena.engine.geometry import Rect, Vec2, circles_overlap
@@ -546,6 +546,10 @@ class Match:
                     events += self._drop(fighter, fighter.pos)  # knocked: it falls
                 elif fighter.state != State.CLASH and frame.was_pressed("pose"):
                     events += self._throw(fighter)
+                elif fighter.can_act() and frame.was_pressed("heavy"):
+                    events += self._swing(fighter)
+                    frames[fighter.index] = _without(frame, ("pose", "heavy"))
+                    continue
                 frames[fighter.index] = _without(frame, ("pose",))  # no posing with it
                 continue
             if fighter.remote or not fighter.can_act() or not frame.was_pressed("pose"):
@@ -557,6 +561,30 @@ class Match:
                 frames[fighter.index] = _without(frame, ("pose",))
                 events.append(Event("pickup", fighter.pos, fighter.index))
         return (frames[0], frames[1]), events
+
+    def _swing(self, fighter: Fighter) -> list[Event]:
+        """Heavy button while carrying: he swings the thing. Hair and tendrils carry
+        further than an arm does, so they swing it from further out, over a wider arc."""
+        wrapped = fighter.kit.prop_hold != "hands"  # hair or tendrils, not arms
+        values = self.rules.prop_swing
+        move = MoveDef(
+            name="prop_swing",
+            startup_f=values["startup_f"],
+            active_f=values["active_f"],
+            recovery_f=values["recovery_f"],
+            damage=values["wrapped_damage"] if wrapped else values["damage"],
+            reach=values["wrapped_reach"] if wrapped else values["reach"],
+            radius=values["wrapped_radius"] if wrapped else values["radius"],
+            shape="line" if wrapped else "circle",
+            hitstun_f=values["hitstun_f"],
+            knockback=per_frame(values["knockback"]),
+            hitstop_f=values["hitstop_f"],
+            wall_bounce=True,
+            anim="heavy",
+            label="COUP D'OBJET",
+        )
+        fighter.start_attack(move, self.opponent(fighter).pos)
+        return [Event("prop_swing", fighter.pos, fighter.index)]
 
     def _prop_within_reach(self, fighter: Fighter) -> int | None:
         best, best_gap = None, self.rules.throw_reach + self.rules.body_radius
@@ -578,7 +606,10 @@ class Match:
         if not aim.length_sq():
             aim = fighter.facing
         # A Stand built for brute force (Star Platinum, The World...) hurls it much harder.
+        # Hair and tendrils reach further than arms, but cannot put a body behind a throw.
         power = fighter.kit.strength
+        if fighter.kit.prop_hold != "hands":
+            power *= rules.prop_swing["wrapped_throw"]
         defn = ProjectileDef(
             speed=rules.throw_speed * power,
             radius=rules.throw_radius,

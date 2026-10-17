@@ -101,6 +101,21 @@ des corrections seules une patch.
   30 % — un maillon de son enchaînement lui coûtait du Hamon pour rien ; Esidisi de 18 %
   à 23 %, son sang lui coûte moins cher.
 
+- **Bilan de fin de combat.** Une fois le dernier round joué : dégâts, meilleur combo,
+  plus gros coup, ultimes dépensés et durée, pour chacun des deux, aux couleurs des
+  persos.
+- **Les coups font du bruit.** La tornade souffle, la corne de Wamuu siffle, la Tommy
+  Gun crache, les veines d'Esidisi giclent, les câbles de Joseph cliquettent et les
+  lames sonnent. Avant, seul le moment où ça touchait faisait un son.
+- **Frapper avec ce qu'on porte.** En portant une caisse ou une jarre, la touche Lourd
+  la balance : lent, large, et on la garde en main pour recommencer ou la lancer.
+- **Bruford porte avec ses cheveux.** On voit les mèches s'enrouler autour de l'objet,
+  tenu derrière lui, mains libres — et il le balance au bout de ses cheveux, trois fois
+  plus loin qu'un bras. En échange il le **lance moins fort** : on ne met pas son
+  corps derrière un jet tenu à bout de mèches. Hierophant Green fait pareil avec
+  ses tentacules.
+- **L'épée de Bruford est au bout de ses cheveux** : son coup lourd porte à 48 au lieu
+  de 26.
 ### Corrigé
 
 - **Une tornade n'est pas une rafale de poings.** Un coup multi-hit qui a son propre

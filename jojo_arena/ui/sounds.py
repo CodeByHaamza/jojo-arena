@@ -207,6 +207,52 @@ def _pop() -> array:
     return _render(0.06, voice)
 
 
+def _wind() -> array:
+    """A tornado: a band of noise rising, with the air beating round it."""
+    state = {"low": 0.0, "band": 0.0}
+
+    def voice(t, p, rng):
+        noise = rng.uniform(-1, 1)
+        state["low"] += (noise - state["low"]) * 0.12
+        state["band"] += (state["low"] - state["band"]) * (0.05 + 0.25 * p)
+        beat = 0.75 + 0.25 * math.sin(2 * math.pi * 11 * t)
+        return 1.5 * state["band"] * beat * math.sin(math.pi * p) ** 0.6
+
+    return _render(0.45, voice, seed=23)
+
+
+def _splat() -> array:
+    """Boiling blood pumped out: a wet burst, thick and low."""
+    state = {"low": 0.0}
+
+    def voice(t, p, rng):
+        state["low"] += (rng.uniform(-1, 1) - state["low"]) * 0.2
+        gulp = math.sin(_sweep(t, 420, 120, 0.3)) * _decay(p, 2.2)
+        return 0.45 * gulp + 0.9 * state["low"] * _decay(p, 3.0)
+
+    return _render(0.3, voice, seed=29)
+
+
+def _blade() -> array:
+    """Steel coming out: a short bright ring sliding up."""
+
+    def voice(t, p, _rng):
+        return math.sin(_sweep(t, 2200, 3200, 0.12)) * _decay(p, 2.6) * 0.35
+
+    return _render(0.12, voice)
+
+
+def _gunshot() -> array:
+    """A submachine gun: a crack, then the shots rattling on."""
+
+    def voice(t, p, rng):
+        crack = rng.uniform(-1, 1) * _decay(min(1.0, p * 6), 2.0)
+        rattle = rng.uniform(-1, 1) if (t * 16) % 1 < 0.35 else 0.0
+        return 0.8 * crack + 0.35 * rattle * _decay(p, 1.4)
+
+    return _render(0.35, voice, seed=31)
+
+
 def build_sounds(player: AudioPlayer) -> None:
     """Make every sound once, at start-up."""
     library = {
@@ -227,6 +273,10 @@ def build_sounds(player: AudioPlayer) -> None:
         "beam": _beam(),
         "boom": _boom(),
         "pop": _pop(),
+        "wind": _wind(),
+        "splat": _splat(),
+        "blade": _blade(),
+        "gunshot": _gunshot(),
         "stylish": _ping((1320, 1760), 0.25, 2),
         "menu_move": _blip(660, 660, 0.035),
         "menu_ok": _blip(660, 990, 0.08),
@@ -235,6 +285,28 @@ def build_sounds(player: AudioPlayer) -> None:
     }
     for name, samples in library.items():
         player.add(name, samples)
+
+
+# What a move with an effect of its own sounds like, played the frame it goes active.
+FX_SOUNDS: dict[str, str] = {
+    "vortex": "wind",
+    "wind_beam": "wind",
+    "gun": "gunshot",
+    "blood_jet": "splat",
+    "tentacle": "splat",
+    "cables": "chain",
+    "blade": "blade",
+    "blade_fan": "blade",
+    "blade_hair": "blade",
+    "beam": "beam",
+    "lenses": "beam",
+    "bubbles": "pop",
+    "scarf": "whoosh",
+    "scarf_spear": "whoosh",
+    "hair": "whoosh",
+    "limb": "whoosh",
+    "chain": "chain",
+}
 
 
 # Which sound each event of the fight makes (a name, or a function of the event).
@@ -256,6 +328,8 @@ EVENT_SOUNDS: dict[str, Callable[[Event], str]] = {
     "cage_end": lambda e: "chain",
     "stylish": lambda e: "stylish",
     "throw": lambda e: "whoosh",
+    "prop_swing": lambda e: "whoosh",
+    "pickup": lambda e: "chain",
     "prop_break": lambda e: "hit",
     "explosion": lambda e: "boom",
     "burst": lambda e: "pop",

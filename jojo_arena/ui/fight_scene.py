@@ -27,7 +27,7 @@ from jojo_arena.ui.menu import Menu, MenuItem
 from jojo_arena.ui.movelist import MoveListPanel
 from jojo_arena.ui.music import track_for_stage
 from jojo_arena.ui.rumble import FightRumble, pad_slots
-from jojo_arena.ui.widgets import GOLD, draw_box, draw_toast, veil
+from jojo_arena.ui.widgets import DIM, GOLD, WHITE, draw_box, draw_toast, veil
 
 RESULT_MENU_AFTER_F = 120  # let the victory sink in before offering a rematch
 TOAST_F = 90
@@ -320,12 +320,40 @@ class FightScene(Scene):
             font.draw(surface, title, (center, box.y + 8), GOLD, scale=scale, align="center")
             self.pause_menu.draw(surface, center, box.y + 36, spacing=15)
         elif self.result_menu is not None:
+            self._draw_summary(surface, center)
             box = pygame.Rect(0, 0, 200, 56)
-            box.midtop = (center, 160)
+            box.midtop = (center, 182)
             draw_box(surface, box)
             self.result_menu.draw(surface, center, box.y + 9, spacing=15)
         if self.move_list is not None:
             self.move_list.draw(surface)
+
+    def _draw_summary(self, surface: pygame.Surface, center: int) -> None:
+        """What each of them did over the whole fight, over the rematch menu."""
+        stats = self.rounds.stats
+        left, right = stats.sides
+        box = pygame.Rect(0, 0, 240, 92)
+        box.midtop = (center, 84)
+        draw_box(surface, box)
+        font.draw(surface, text.RESULT_SUMMARY, (center, box.y + 5), GOLD, align="center")
+        combo = text.STAT_COMBO_VALUE
+        rows = (
+            (text.STAT_DAMAGE, str(left.damage), str(right.damage)),
+            (
+                text.STAT_BEST_COMBO,
+                combo.format(hits=left.best_combo_hits, damage=left.best_combo_damage),
+                combo.format(hits=right.best_combo_hits, damage=right.best_combo_damage),
+            ),
+            (text.STAT_BIGGEST_HIT, str(left.biggest_hit), str(right.biggest_hit)),
+            (text.STAT_SUPERS, str(left.supers), str(right.supers)),
+        )
+        for i, (label, a, b) in enumerate(rows):
+            y = box.y + 19 + i * 12
+            font.draw(surface, label, (center, y), DIM, align="center")
+            font.draw(surface, a, (box.x + 8, y), self.fighter_defs[0].color)
+            font.draw(surface, b, (box.right - 8, y), self.fighter_defs[1].color, align="right")
+        secs = text.STAT_TIME.format(secs=stats.seconds)
+        font.draw(surface, secs, (center, box.bottom - 11), WHITE, align="center")
 
     def draw_overlay(self, surface: pygame.Surface) -> None:
         """Extra layer over the HUD, for fight variants (training)."""

@@ -6,6 +6,8 @@
 # arena itself fires at you.
 
 name = "Noriaki Kakyoin"
+# Hierophant unravels into tendrils: they are what carries a crate, not its hands.
+prop_hold = "tendrils"
 max_hp = 980
 walk_speed = 108
 strength = 0.8  # Hierophant Green: slender, it throws softly

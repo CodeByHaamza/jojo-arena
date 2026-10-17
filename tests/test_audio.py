@@ -47,6 +47,23 @@ def test_every_event_sound_exists(recorder):
         assert choose(Event(kind, None, 0, 100)) in recorder.added, kind
 
 
+def test_every_move_effect_has_a_sound_that_exists(recorder):
+    for fx, name in sounds.FX_SOUNDS.items():
+        assert name in recorder.added, fx
+
+
+def test_every_effect_a_kit_uses_has_a_voice(recorder):
+    """A move drawn with an effect of its own should be heard, not only seen."""
+    from jojo_arena.characters import load_roster
+
+    silent = set()
+    for entry in load_roster():
+        for move in entry.kit.all_moves():
+            if move.fx and move.fx not in sounds.FX_SOUNDS:
+                silent.add(move.fx)
+    assert silent == set(), f"these effects make no sound: {sorted(silent)}"
+
+
 def test_events_make_their_sounds_once_per_step(recorder):
     events = [Event("hit", None, 1, 30), Event("hit", None, 1, 30), Event("hit", None, 0, 120)]
     sounds.play_events(events + [Event("walk", None, 0)])

@@ -70,6 +70,13 @@ FR = {
     "RESTART": "RECOMMENCER",
     "LEAVE_FIGHT": "QUITTER LE COMBAT",
     "REMATCH": "REVANCHE",
+    "RESULT_SUMMARY": "BILAN DU COMBAT",
+    "STAT_DAMAGE": "DÉGÂTS",
+    "STAT_BEST_COMBO": "MEILLEUR COMBO",
+    "STAT_BIGGEST_HIT": "PLUS GROS COUP",
+    "STAT_SUPERS": "ULTIMES",
+    "STAT_COMBO_VALUE": "{hits} X {damage}",
+    "STAT_TIME": "DURÉE : {secs} S",
     "SETTINGS": "RÉGLAGES",
     "TO_TITLE": "RETOUR AU TITRE",
     "MOVE_LIST": "LISTE DES COUPS",
@@ -167,7 +174,19 @@ FR = {
     "SYS_POSE_INFO": "Maintenir : remplit la jauge Heart Heat",
     "SYS_PROP": "OBJETS",
     "SYS_PROP_INFO": "Près d'une caisse ou d'une jarre : le Stand la prend. Encore : il la lance",
-    "SYS_PROP_INFO_HANDS": "Près d'une caisse ou d'une jarre : il la soulève. Encore : il la lance",
+    "SYS_PROP_INFO_HANDS": (
+        "Près d'une caisse ou d'une jarre : il la soulève à deux mains. Encore : il la lance"
+    ),
+    "SYS_PROP_INFO_WRAPPED": (
+        "Près d'une caisse ou d'une jarre : ses cheveux s'enroulent autour. Encore : il la lance"
+    ),
+    "SYS_PROP_SWING": "COUP D'OBJET",
+    "SYS_PROP_SWING_INFO": (
+        "En portant un objet : il le balance. Lourd, large, et il le garde en main"
+    ),
+    "SYS_PROP_SWING_INFO_WRAPPED": (
+        "En portant un objet : il le balance au bout de ses cheveux, loin et large"
+    ),
     "SYS_SUPER_INFO": "Touche seule : HHA. Avec une direction et 2 barres : GHA",
     "SYS_FLASH": "FLASH CANCEL",
     "SYS_FLASH_INFO": "Garde pendant un coup : l'annule ({cost})",
@@ -401,6 +420,13 @@ EN = {
     "RESTART": "RESTART",
     "LEAVE_FIGHT": "LEAVE THE FIGHT",
     "REMATCH": "REMATCH",
+    "RESULT_SUMMARY": "FIGHT SUMMARY",
+    "STAT_DAMAGE": "DAMAGE",
+    "STAT_BEST_COMBO": "BEST COMBO",
+    "STAT_BIGGEST_HIT": "BIGGEST HIT",
+    "STAT_SUPERS": "ULTIMATES",
+    "STAT_COMBO_VALUE": "{hits} X {damage}",
+    "STAT_TIME": "TIME: {secs}S",
     "SETTINGS": "SETTINGS",
     "TO_TITLE": "BACK TO TITLE",
     "MOVE_LIST": "MOVE LIST",
@@ -495,7 +521,15 @@ EN = {
     "SYS_POSE_INFO": "Hold: fills the Heart Heat gauge",
     "SYS_PROP": "PROPS",
     "SYS_PROP_INFO": "Near a crate or a jar: the Stand picks it up. Again: it throws it",
-    "SYS_PROP_INFO_HANDS": "Near a crate or a jar: lift it overhead. Again: throw it",
+    "SYS_PROP_INFO_HANDS": (
+        "Near a crate or a jar: lift it overhead in both hands. Again: throw it"
+    ),
+    "SYS_PROP_INFO_WRAPPED": "Near a crate or a jar: his hair coils around it. Again: he throws it",
+    "SYS_PROP_SWING": "SWING IT",
+    "SYS_PROP_SWING_INFO": "While carrying: he swings it. Heavy, wide, and he keeps hold of it",
+    "SYS_PROP_SWING_INFO_WRAPPED": (
+        "While carrying: he swings it at the end of his hair, far out and wide"
+    ),
     "SYS_SUPER_INFO": "Key alone: HHA. With a direction and 2 bars: GHA",
     "SYS_FLASH": "FLASH CANCEL",
     "SYS_FLASH_INFO": "Guard during a move: cancels it ({cost})",
