@@ -58,6 +58,8 @@ class Match:
         self.traps: list[Trap] = []
         self.webs: list[Web] = []
         self._last_prop_pos: dict[int, Vec2] = {}
+        # Training can stretch or shorten stopped time; a real fight leaves it at 1.
+        self.time_stop_mult = 1.0
         self.cutscene: Cutscene | None = None
         self.hitstop = 0
         self.slowmo = 0  # steps left at half speed (Stylish Evade)
@@ -166,7 +168,8 @@ class Match:
             move = attack.move
             if move.time_stop_f and (move.time_stop_at == "start" or attack.active):
                 attack.stopped_time = True
-                events += interactions.start_time_stop(self, fighter, move.time_stop_f)
+                frames = max(1, round(move.time_stop_f * self.time_stop_mult))
+                events += interactions.start_time_stop(self, fighter, frames)
         return events
 
     # Bodies -----------------------------------------------------------------------------

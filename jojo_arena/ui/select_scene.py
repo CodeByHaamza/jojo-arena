@@ -267,7 +267,8 @@ class CharacterSelectScene(Scene):
                 pygame.draw.rect(surface, (96, 84, 132), rect, 1)
                 if part is not None:
                     draw_icon(surface, part.emblem, (rect.right - 10, rect.y + 1))
-            else:
+            elif part is None or not part.complete:
+                # An empty cell of a part still being filled: more are coming.
                 surface.fill((20, 16, 34), rect)
                 pygame.draw.rect(surface, (52, 46, 72), rect, 1)
                 font.draw(surface, "?", (rect.centerx, rect.y + 11), FAINT, align="center")

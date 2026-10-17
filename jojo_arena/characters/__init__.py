@@ -44,6 +44,7 @@ class PartDef:
     setting: str  # where and when it takes place
     colors: tuple[Color, Color]  # two accent colors
     emblem: str = ""  # icon name: a little symbol of the part
+    complete: bool = False  # every fighter planned for it is in: no empty cells
 
 
 def load_parts() -> list[PartDef]:
@@ -55,6 +56,7 @@ def load_parts() -> list[PartDef]:
             setting=localized(entry, "setting"),
             colors=(parse_color(entry["colors"][0]), parse_color(entry["colors"][1])),
             emblem=entry.get("emblem", ""),
+            complete=entry.get("complete", False),
         )
         for entry in sorted(data["parts"], key=lambda e: e["number"])
     ]

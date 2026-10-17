@@ -95,8 +95,8 @@ radius = 17
 hitstun_f = 32
 knockback = 330
 hitstop_f = 10
-wrapped_reach = 46
-wrapped_radius = 26
+wrapped_reach = 78
+wrapped_radius = 30
 wrapped_damage = 84
 wrapped_throw = 0.7          # ...but there is far less of him behind a throw
 

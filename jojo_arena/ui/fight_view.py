@@ -211,7 +211,11 @@ class FighterView:
         blit_glow(surface, radial_glow(26, aura), chest)
         if self.throw_f > 0:
             image = self._stand_pose(fighter, "heavy", 2).copy()  # the throw
-        elif fighter.carrying is not None and fighter.state != State.ATTACK:
+        elif (
+            fighter.carrying is not None
+            and fighter.state != State.ATTACK
+            and fighter.kit.prop_hold == "hands"
+        ):
             image = self._stand_pose(fighter, "carry", 0).copy()  # holding it up
         else:
             image = self.current_frame(fighter, self.stand).copy()
