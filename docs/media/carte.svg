@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 240" width="820" height="240" role="img" aria-label="JoJo Arena — carte de projet">
+  <title>JoJo Arena — carte de projet</title>
+  <desc>Carte pour un profil GitHub.</desc>
+  <rect width="820" height="240" rx="14" fill="#140f1e"/>
+  <rect x="1" y="1" width="818" height="238" rx="14" fill="none" stroke="#7a48c8" stroke-width="2" opacity="0.6"/>
+  <text x="40" y="210" font-family="'Noto Sans JP','Yu Gothic','Hiragino Kaku Gothic ProN','MS PGothic',sans-serif" font-weight="700" font-size="34" fill="#7a48c8" opacity="0.2">ゴ
+    <animate attributeName="opacity" values="0.08;0.6;0.08" dur="2.2s" begin="0.0s" repeatCount="indefinite"/>
+    <animateTransform attributeName="transform" type="translate" values="0 12;0 -8;0 12" dur="2.2s" begin="0.0s" repeatCount="indefinite"/>
+  </text>
+  <text x="90" y="226" font-family="'Noto Sans JP','Yu Gothic','Hiragino Kaku Gothic ProN','MS PGothic',sans-serif" font-weight="700" font-size="34" fill="#7a48c8" opacity="0.2">ゴ
+    <animate attributeName="opacity" values="0.08;0.6;0.08" dur="2.2s" begin="0.3s" repeatCount="indefinite"/>
+    <animateTransform attributeName="transform" type="translate" values="0 12;0 -8;0 12" dur="2.2s" begin="0.3s" repeatCount="indefinite"/>
+  </text>
+  <text x="700" y="70" font-family="'Noto Sans JP','Yu Gothic','Hiragino Kaku Gothic ProN','MS PGothic',sans-serif" font-weight="700" font-size="34" fill="#7a48c8" opacity="0.2">ゴ
+    <animate attributeName="opacity" values="0.08;0.6;0.08" dur="2.2s" begin="0.6s" repeatCount="indefinite"/>
+    <animateTransform attributeName="transform" type="translate" values="0 12;0 -8;0 12" dur="2.2s" begin="0.6s" repeatCount="indefinite"/>
+  </text>
+  <text x="760" y="54" font-family="'Noto Sans JP','Yu Gothic','Hiragino Kaku Gothic ProN','MS PGothic',sans-serif" font-weight="700" font-size="34" fill="#7a48c8" opacity="0.2">ゴ
+    <animate attributeName="opacity" values="0.08;0.6;0.08" dur="2.2s" begin="0.9s" repeatCount="indefinite"/>
+    <animateTransform attributeName="transform" type="translate" values="0 12;0 -8;0 12" dur="2.2s" begin="0.9s" repeatCount="indefinite"/>
+  </text>
+  <text x="40" y="76" font-family="'Trebuchet MS',Verdana,sans-serif" font-weight="700" font-size="42" fill="#f0c23c">JOJO ARENA</text>
+  <text x="40" y="104" font-family="'Trebuchet MS',Verdana,sans-serif" font-size="15" fill="#cdbbe8">Arena fighter 1v1 · pixel art vu de dessus · fan game</text>
+  <text x="40" y="140" font-family="'Trebuchet MS',Verdana,sans-serif" font-size="13" fill="#fff6d0">Python 3.12 · pygame-ce · simulation deterministe a 60 Hz</text>
+  <text x="40" y="162" font-family="'Trebuchet MS',Verdana,sans-serif" font-size="13" fill="#fff6d0">19 persos · 3 arenes · 942 tests · 94 % de couverture</text>
+  <text x="40" y="202" font-family="'Trebuchet MS',Verdana,sans-serif" font-weight="700" font-size="16" fill="#fff6d0">developpe par Hamza Karrouchi</text>
+  <rect x="40" y="210" width="240" height="2" fill="#f0c23c" opacity="0.3"/>
+  <rect x="40" y="209" width="60" height="4" rx="2" fill="#fff6d0">
+    <animate attributeName="x" values="40;220;40" dur="4s" repeatCount="indefinite"/>
+  </rect>
+  <text x="560" y="96" font-family="'Trebuchet MS',Verdana,sans-serif" font-weight="700" font-size="26" fill="#f0c23c" opacity="0.5">ORA
+    <animate attributeName="x" values="560;700;560" dur="5.0s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.2;0.7;0.2" dur="5.0s" repeatCount="indefinite"/>
+  </text>
+  <text x="560" y="134" font-family="'Trebuchet MS',Verdana,sans-serif" font-weight="700" font-size="26" fill="#7ab8f0" opacity="0.5">MUDA
+    <animate attributeName="x" values="560;700;560" dur="6.0s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.2;0.7;0.2" dur="6.0s" repeatCount="indefinite"/>
+  </text>
+  <text x="560" y="172" font-family="'Noto Sans JP','Yu Gothic','Hiragino Kaku Gothic ProN','MS PGothic',sans-serif" font-weight="700" font-size="26" fill="#7a48c8" opacity="0.5">ドドド
+    <animate attributeName="x" values="560;700;560" dur="4.4s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.2;0.7;0.2" dur="4.4s" repeatCount="indefinite"/>
+  </text>
+</svg>

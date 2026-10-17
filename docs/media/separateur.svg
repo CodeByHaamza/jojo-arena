@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 30" width="960" height="30" role="img" aria-label="Separateur">
+  <title>Separateur</title>
+  <desc>Lignes de vitesse.</desc>
+  <line x1="0" y1="26" x2="30" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="0.0s" repeatCount="indefinite"/>
+  </line>
+  <line x1="38" y1="26" x2="68" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="0.07s" repeatCount="indefinite"/>
+  </line>
+  <line x1="76" y1="26" x2="106" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="0.14s" repeatCount="indefinite"/>
+  </line>
+  <line x1="114" y1="26" x2="144" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="0.21000000000000002s" repeatCount="indefinite"/>
+  </line>
+  <line x1="152" y1="26" x2="182" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="0.28s" repeatCount="indefinite"/>
+  </line>
+  <line x1="190" y1="26" x2="220" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="0.35000000000000003s" repeatCount="indefinite"/>
+  </line>
+  <line x1="228" y1="26" x2="258" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="0.42000000000000004s" repeatCount="indefinite"/>
+  </line>
+  <line x1="266" y1="26" x2="296" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="0.49000000000000005s" repeatCount="indefinite"/>
+  </line>
+  <line x1="304" y1="26" x2="334" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="0.56s" repeatCount="indefinite"/>
+  </line>
+  <line x1="342" y1="26" x2="372" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="0.6300000000000001s" repeatCount="indefinite"/>
+  </line>
+  <line x1="380" y1="26" x2="410" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="0.7000000000000001s" repeatCount="indefinite"/>
+  </line>
+  <line x1="418" y1="26" x2="448" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="0.77s" repeatCount="indefinite"/>
+  </line>
+  <line x1="456" y1="26" x2="486" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="0.8400000000000001s" repeatCount="indefinite"/>
+  </line>
+  <line x1="494" y1="26" x2="524" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="0.9100000000000001s" repeatCount="indefinite"/>
+  </line>
+  <line x1="532" y1="26" x2="562" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="0.9800000000000001s" repeatCount="indefinite"/>
+  </line>
+  <line x1="570" y1="26" x2="600" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="1.05s" repeatCount="indefinite"/>
+  </line>
+  <line x1="608" y1="26" x2="638" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="1.12s" repeatCount="indefinite"/>
+  </line>
+  <line x1="646" y1="26" x2="676" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="1.1900000000000002s" repeatCount="indefinite"/>
+  </line>
+  <line x1="684" y1="26" x2="714" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="1.2600000000000002s" repeatCount="indefinite"/>
+  </line>
+  <line x1="722" y1="26" x2="752" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="1.33s" repeatCount="indefinite"/>
+  </line>
+  <line x1="760" y1="26" x2="790" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="1.4000000000000001s" repeatCount="indefinite"/>
+  </line>
+  <line x1="798" y1="26" x2="828" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="1.4700000000000002s" repeatCount="indefinite"/>
+  </line>
+  <line x1="836" y1="26" x2="866" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="1.54s" repeatCount="indefinite"/>
+  </line>
+  <line x1="874" y1="26" x2="904" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="1.61s" repeatCount="indefinite"/>
+  </line>
+  <line x1="912" y1="26" x2="942" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="1.6800000000000002s" repeatCount="indefinite"/>
+  </line>
+  <line x1="950" y1="26" x2="980" y2="4" stroke="#7a48c8" stroke-width="2" opacity="0.35">
+    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s" begin="1.7500000000000002s" repeatCount="indefinite"/>
+  </line>
+  <text x="480" y="22" text-anchor="middle" font-family="'Noto Sans JP','Yu Gothic','Hiragino Kaku Gothic ProN','MS PGothic',sans-serif" font-weight="700" font-size="18" fill="#f0c23c" opacity="0.8">ゴ ゴ ゴ ゴ ゴ</text>
+</svg>

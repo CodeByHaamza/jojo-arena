@@ -5,7 +5,7 @@
 **Un arena fighter 1v1 en temps réel, en pixel art vu de dessus.**
 
 Fan game non officiel de JoJo's Bizarre Adventure — Python 3.12, pygame-ce
-19 persos · 3 arènes · simulation déterministe à 60 images par seconde
+**Parties 1 et 2 complètes** · 19 persos · 3 arènes · simulation déterministe à 60 images par seconde
 
 [![CI](https://github.com/CodeByHaamza/jojo-arena/actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-942-2ea24a.svg)](tests/)
@@ -18,7 +18,7 @@ Fan game non officiel de JoJo's Bizarre Adventure — Python 3.12, pygame-ce
 
 </div>
 
----
+<img src="docs/media/separateur.svg" width="100%" alt="">
 
 ## La question
 
@@ -39,6 +39,14 @@ qui démarre en 4 images et laisse +1 en garde interdit à l'adversaire de rejou
 invisible à l'œil. Tout ce qui suit est donc **mesuré**, pas ressenti.
 
 ---
+
+## Un échange, image par image
+
+<div align="center">
+<img src="docs/media/ascii.svg" alt="Un échange en ASCII : approche, clash, ORA ORA ORA, temps arrêté, cinématique" width="700">
+</div>
+
+<img src="docs/media/separateur.svg" width="100%" alt="">
 
 ## Trois coups, trois façons de se battre
 
@@ -78,7 +86,7 @@ ne contient **aucune référence à JoJo**. Un coup produit des événements (`h
 `clash`, `cutscene_start`…) que le rendu, les sons, la vibration et la frise des frames lisent
 chacun de leur côté. C'est ce qui rend les replays exacts et le rollback possible plus tard.
 
----
+<img src="docs/media/separateur.svg" width="100%" alt="">
 
 ## Ce qui est mesuré
 
@@ -97,6 +105,14 @@ chacun de leur côté. C'est ce qui rend les replays exacts et le rollback possi
 | **Équilibrage** | 24 % à 78 % de victoires | bot contre bot, 100 combats par perso ; [ce que le bot mesure mal](docs/GDD.md) est écrit noir sur blanc |
 | **Couverture** | **94 %** sur 13 623 lignes | `combat/` et `characters/` sont la règle du jeu : ils doivent être couverts |
 
+<div align="center">
+<img src="docs/media/audit.svg" alt="Sortie réelle de tools/audit_kits.py" width="100%">
+</div>
+
+Cette sortie n'est pas recopiée à la main : elle est **produite en exécutant réellement la
+commande**, par [`tools/make_readme_art.py`](tools/make_readme_art.py). Un README qui recopie
+un résultat finit toujours par mentir dessus.
+
 ### Un résultat non trivial
 
 Trois mesures successives mettent **Kars en tête (81 %, puis 69 %, puis 78 %)**. L'explication
@@ -107,7 +123,7 @@ plus rapides et les plus sûres. Une arme longue doit coûter quelque chose quan
 pokes récupèrent plus lentement (−6 et −7 en garde, −19 pour le coup de jambe), et son identité
 — la plus grande allonge du casting — est intacte.
 
----
+<img src="docs/media/separateur.svg" width="100%" alt="">
 
 ## Le roster
 
@@ -151,7 +167,7 @@ l'œuvre partage : Absorption, Zoom Punch, Overdrive, Space Ripper Stingy Eyes.
 </tr>
 </table>
 
----
+<img src="docs/media/separateur.svg" width="100%" alt="">
 
 ## Démarrage
 
@@ -188,7 +204,7 @@ icônes et les animations de ce README sont générés par le code du dépôt.
 | 6 | Mode histoire, arène par partie | ⏳ |
 | 7 | En ligne en rollback — la simulation déterministe le prépare | ⏳ |
 
----
+<img src="docs/media/separateur.svg" width="100%" alt="">
 
 ## Mode entraînement
 
@@ -247,6 +263,16 @@ Pour changer les touches : `controls.json` dans `%APPDATA%\JoJoArena\`. Supprime
 revenir aux réglages par défaut.
 
 </details>
+
+---
+
+### La carte du projet
+
+<div align="center">
+<img src="docs/media/carte.svg" alt="Carte du projet JoJo Arena" width="84%">
+</div>
+
+<sub>Pour un profil GitHub ou un README d'organisation : `python tools/make_readme_art.py carte`.</sub>
 
 ---
 

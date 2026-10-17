@@ -38,6 +38,11 @@ UI = "'Trebuchet MS',Verdana,sans-serif"
 JP = "'Noto Sans JP','Yu Gothic','Hiragino Kaku Gothic ProN','MS PGothic',sans-serif"
 
 
+def escape(text: str) -> str:
+    """XML text: the ASCII drawings are full of < and >."""
+    return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
 def header(width: int, height: int, title: str, description: str) -> str:
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}"'
@@ -239,6 +244,203 @@ def stats_card() -> str:
     return "".join(out)
 
 
+def divider() -> str:
+    """A thin manga divider: speed lines sweeping, with the menace on top of them."""
+    width, height = 960, 30
+    out = [header(width, height, "Separateur", "Lignes de vitesse.")]
+    for i in range(26):
+        x = i * 38
+        out.append(
+            f'  <line x1="{x}" y1="26" x2="{x + 30}" y2="4" stroke="{PURPLE}"'
+            f' stroke-width="2" opacity="0.35">\n'
+            f'    <animate attributeName="opacity" values="0.12;0.5;0.12" dur="2.4s"'
+            f' begin="{i * 0.07}s" repeatCount="indefinite"/>\n'
+            "  </line>\n"
+        )
+    out.append(
+        f'  <text x="480" y="22" text-anchor="middle" font-family="{JP}" font-weight="700"'
+        f' font-size="18" fill="{GOLD}" opacity="0.8">ゴ ゴ ゴ ゴ ゴ</text>\n'
+    )
+    out.append("</svg>\n")
+    return "".join(out)
+
+
+ASCII_FIGHT = [
+    [
+        "   o                                        o   ",
+        "  /|\\        . . . . . . . . . . .        /|\\  ",
+        "  / \\                                     / \\  ",
+        "              approche, garde haute             ",
+    ],
+    [
+        "       o                            o           ",
+        "      /|\\      >>>        <<<      /|\\          ",
+        "      / \\                          / \\          ",
+        "            les deux avancent                   ",
+    ],
+    [
+        "          o                    o                ",
+        "         /|X====  CLASH!  ====X|\\               ",
+        "         / \\                  / \\              ",
+        "        deux coups se croisent : on martele     ",
+    ],
+    [
+        "          o                                     ",
+        "         /|/  ORA ORA ORA ORA ORA  >>>  o       ",
+        "         / \\                           /|\\     ",
+        "        seize coups, six degats chacun          ",
+    ],
+    [
+        "          o                                     ",
+        "         /|\\   ***  ZA WARUDO  ***      o       ",
+        "         / \\                           -+-      ",
+        "        le temps s'arrete : personne ne bouge   ",
+    ],
+    [
+        "          o                                     ",
+        "         /|\\  ======  DORARARA  ======>  x      ",
+        "         / \\                            /|\\    ",
+        "        la cinematique part : K.O.              ",
+    ],
+]
+
+
+def ascii_fight() -> str:
+    """A whole exchange in ASCII, one frame at a time, the way a terminal would show it."""
+    width, height = 660, 200
+    hold = 1.6
+    total = hold * len(ASCII_FIGHT)
+    out = [header(width, height, "Un echange en ASCII", "Les six temps d'un echange.")]
+    out.append(f'  <rect width="{width}" height="{height}" rx="8" fill="#0f0b17"/>\n')
+    out.append(
+        f'  <rect x="0" y="0" width="{width}" height="26" rx="8" fill="#241b33"/>\n'
+        f'  <circle cx="18" cy="13" r="5" fill="{BLOOD}"/>\n'
+        f'  <circle cx="36" cy="13" r="5" fill="{GOLD}"/>\n'
+        f'  <circle cx="54" cy="13" r="5" fill="{JADE}"/>\n'
+        f'  <text x="80" y="18" font-family="monospace" font-size="12"'
+        f' fill="{LILAC}">jojo-arena — un round</text>\n'
+    )
+    for i, frame in enumerate(ASCII_FIGHT):
+        begin = i * hold
+        out.append('  <g opacity="0">\n')
+        out.append(
+            f'    <animate attributeName="opacity" values="0;1;1;0"'
+            f' keyTimes="0;0.06;0.94;1" dur="{hold}s" begin="{begin}s"'
+            f' repeatCount="indefinite" repeatDur="{total * 99}s"/>\n'
+        )
+        for line_no, line in enumerate(frame):
+            colour = LILAC if line_no == 3 else PALE
+            size = 13 if line_no == 3 else 15
+            line = escape(line)
+            out.append(
+                f'    <text x="26" y="{60 + line_no * 26}" font-family="monospace"'
+                f' font-size="{size}" fill="{colour}" xml:space="preserve">{line}</text>\n'
+            )
+        out.append("  </g>\n")
+    out.append("</svg>\n")
+    return "".join(out)
+
+
+def terminal(lines: list[tuple[str, str]], title: str, width: int = 900) -> str:
+    """A terminal window drawn as SVG, from lines the repo really printed."""
+    height = 48 + 18 * len(lines)
+    out = [header(width, height, title, "Sortie reelle d'une commande du depot.")]
+    out.append(f'  <rect width="{width}" height="{height}" rx="8" fill="#0f0b17"/>\n')
+    out.append(
+        f'  <rect x="0" y="0" width="{width}" height="26" rx="8" fill="#241b33"/>\n'
+        f'  <circle cx="18" cy="13" r="5" fill="{BLOOD}"/>\n'
+        f'  <circle cx="36" cy="13" r="5" fill="{GOLD}"/>\n'
+        f'  <circle cx="54" cy="13" r="5" fill="{JADE}"/>\n'
+        f'  <text x="80" y="18" font-family="monospace" font-size="12"'
+        f' fill="{LILAC}">{title}</text>\n'
+    )
+    for i, (text_line, colour) in enumerate(lines):
+        safe = escape(text_line)
+        out.append(
+            f'  <text x="18" y="{46 + i * 18}" font-family="monospace" font-size="13"'
+            f' fill="{colour}" xml:space="preserve" opacity="0">{safe}\n'
+            f'    <animate attributeName="opacity" values="0;1" dur="0.2s"'
+            f' begin="{i * 0.12}s" fill="freeze"/>\n'
+            "  </text>\n"
+        )
+    out.append("</svg>\n")
+    return "".join(out)
+
+
+def audit_terminal() -> str:
+    """Run the audit for real and draw what it printed: a README that copies a result by
+    hand ends up lying about it."""
+    import contextlib
+    import io
+
+    from tools import audit_kits
+
+    buffer = io.StringIO()
+    with contextlib.redirect_stdout(buffer):
+        audit_kits.main()
+    keep, lines = [], buffer.getvalue().splitlines()
+    for line in lines:
+        if line.startswith("=="):
+            keep.append((line, GOLD))
+        elif "aucun" in line or ": 0 ==" in line:
+            keep.append((line, JADE))
+        elif "partage dans l" in line or "partagé dans l" in line:
+            keep.append((line, LILAC))
+        elif line.strip():
+            keep.append((line, PALE))
+        if len(keep) >= 14:
+            break
+    keep.insert(0, ("$ python tools/audit_kits.py", GOLD))
+    return terminal(keep, "audit_kits.py — ce qui se repete d'un perso a l'autre")
+
+
+def profile_card() -> str:
+    """A card for a GitHub profile: the project, who writes it, and the menace around it."""
+    width, height = 820, 240
+    out = [header(width, height, "JoJo Arena — carte de projet", "Carte pour un profil GitHub.")]
+    out.append(f'  <rect width="{width}" height="{height}" rx="14" fill="{NIGHT}"/>\n')
+    out.append(
+        f'  <rect x="1" y="1" width="{width - 2}" height="{height - 2}" rx="14"'
+        f' fill="none" stroke="{PURPLE}" stroke-width="2" opacity="0.6"/>\n'
+    )
+    for x, y, delay in ((40, 210, 0.0), (90, 226, 0.3), (700, 70, 0.6), (760, 54, 0.9)):
+        out.append(menace(x, y, delay, 34))
+    out.append(
+        f'  <text x="40" y="76" font-family="{UI}" font-weight="700" font-size="42"'
+        f' fill="{GOLD}">JOJO ARENA</text>\n'
+        f'  <text x="40" y="104" font-family="{UI}" font-size="15" fill="{LILAC}">'
+        "Arena fighter 1v1 · pixel art vu de dessus · fan game</text>\n"
+        f'  <text x="40" y="140" font-family="{UI}" font-size="13" fill="{PALE}">'
+        "Python 3.12 · pygame-ce · simulation deterministe a 60 Hz</text>\n"
+        f'  <text x="40" y="162" font-family="{UI}" font-size="13" fill="{PALE}">'
+        "19 persos · 3 arenes · 942 tests · 94 % de couverture</text>\n"
+    )
+    # The line that says who writes it, with a Ripple running under it.
+    out.append(
+        f'  <text x="40" y="202" font-family="{UI}" font-weight="700" font-size="16"'
+        f' fill="{PALE}">developpe par Hamza Karrouchi</text>\n'
+        f'  <rect x="40" y="210" width="240" height="2" fill="{GOLD}" opacity="0.3"/>\n'
+        f'  <rect x="40" y="209" width="60" height="4" rx="2" fill="{PALE}">\n'
+        f'    <animate attributeName="x" values="40;220;40" dur="4s" repeatCount="indefinite"/>\n'
+        "  </rect>\n"
+    )
+    # ORA / MUDA drifting on the right, the way they drift across the fight.
+    for i, (word, colour, y, dur) in enumerate(
+        (("ORA", GOLD, 96, 5.0), ("MUDA", "#7ab8f0", 134, 6.0), ("ドドド", PURPLE, 172, 4.4))
+    ):
+        out.append(
+            f'  <text x="560" y="{y}" font-family="{JP if i == 2 else UI}" font-weight="700"'
+            f' font-size="26" fill="{colour}" opacity="0.5">{word}\n'
+            f'    <animate attributeName="x" values="560;700;560" dur="{dur}s"'
+            ' repeatCount="indefinite"/>\n'
+            f'    <animate attributeName="opacity" values="0.2;0.7;0.2" dur="{dur}s"'
+            ' repeatCount="indefinite"/>\n'
+            "  </text>\n"
+        )
+    out.append("</svg>\n")
+    return "".join(out)
+
+
 def faces(out_dir: Path) -> list[Path]:
     """One face per fighter, rendered by the game's own sprite generator."""
     import pygame
@@ -266,6 +468,10 @@ DRAWINGS = {
     "chiffres": counters,
     "boucle": loop,
     "stats": stats_card,
+    "separateur": divider,
+    "ascii": ascii_fight,
+    "audit": audit_terminal,
+    "carte": profile_card,
 }
 
 
