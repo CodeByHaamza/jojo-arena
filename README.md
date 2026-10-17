@@ -1,68 +1,128 @@
-# JoJo Arena
+<div align="center">
 
-Fan game **gratuit, open source et non commercial** : un arena fighter 1v1 en temps réel, en pixel art vu de dessus, avec un grand roster des 9 parties de JoJo's Bizarre Adventure.
+<img src="docs/media/banner.svg" alt="JoJo Arena" width="100%">
+
+[![CI](https://github.com/CodeByHaamza/jojo-arena/actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
+[![Licence MIT](https://img.shields.io/badge/licence-MIT-f0c23c?style=flat-square)](LICENSE)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12+-7a48c8?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![pygame-ce](https://img.shields.io/badge/pygame--ce-2.5-3d63c8?style=flat-square)](https://pyga.me/)
+[![19 persos](https://img.shields.io/badge/roster-19%20persos-c8403a?style=flat-square)](#le-roster)
+[![3 arènes](https://img.shields.io/badge/ar%C3%A8nes-3-2ea24a?style=flat-square)](#les-arènes)
+
+### ゴ ゴ ゴ ゴ ゴ
+
+**Un arena fighter 1v1 en temps réel, en pixel art vu de dessus.**
+Stands, Hamon, vampires, Hommes du Pilier, arrêt du temps et ultimes en cinématique.
+Gratuit, open source, non commercial.
+
+<img src="docs/media/fight.png" alt="Jotaro contre DIO au Caire" width="100%">
+
+</div>
 
 > **Fan game non officiel.** Ce projet est gratuit, sans but lucratif, et n'est affilié ni à Hirohiko Araki, ni à Shueisha, ni à David Production, ni à CyberConnect2. JoJo's Bizarre Adventure et toutes les marques citées appartiennent à leurs propriétaires respectifs.
 
-## État du projet
+---
 
-Prototype jouable : le moteur (**Vague 0**) et quatre persos de la Partie 3 (**Vague 1**) : Jotaro, Kakyoin, DIO et Polnareff, chacun avec son Stand et ses coups. Deux modes sont jouables, **Entraînement** et **Combat local** ; Histoire, Arcade, Contre l'IA et En ligne sont annoncés dans le menu et arriveront plus tard. Le game design complet est dans [docs/GDD.md](docs/GDD.md).
+## Le roster
 
-Ce qui marche déjà :
+19 persos jouables sur trois parties (plus deux mannequins d'entraînement), chacun avec ses vraies techniques, ses répliques et son Stand.
 
-- attaques légère, lourde et spéciale, enchaînements de trois coups sur la même touche, baisse des dégâts sur les longs combos ;
-- coups variés : contres, bonds, coups blindés, casse-garde, tentacule qui attire, grappin visé à la souris ou au stick droit ;
-- garde (−80 % de dégâts), jauge de garde et Guard Break ;
-- dash avec invincibilité, Stylish Evade (esquive au dernier moment : ralenti) ;
-- jauge Heart Heat à 3 barres, HHA (1 barre), Flash Cancel (½ barre), Pose, Résolution ;
-- clash : deux attaques simultanées, on martèle pour gagner le duel ; rafale contre rafale, l'écran passe en face-à-face (5 s) ;
-- onomatopées façon JoJo (ゴゴゴ, ドン, ORA, MUDA…), poses iconiques, effets d'impact ;
-- ultimes en cinématique avec caméra (Road Roller, Ora Ora final, clones de Chariot, toile de Hierophant), seulement si le premier coup touche ;
-- mode contrôle de Hierophant Green (maintenir Stand) avec possession ;
-- caisses et jarres : le Stand les prend (Pose) et les lance (Pose), plus ou moins fort selon sa puissance ; elles reviennent à leur place ;
-- recul, rebond sur les murs, étals et caisses cassables ;
-- touche Stand : le Stand apparaît à côté de son manieur et change les coups ; un coup sur le Stand blesse son manieur ;
-- coups propres à chaque perso : arrêt du temps (Jotaro, DIO), couteaux, saisie qui draine la vie, fils piégés, Emerald Splash, Armor Off, GHA (2 barres) ;
-- rounds (1, 3 ou 5 gagnants), timer de 99 s, mort subite en cas d'égalité ;
-- trois arènes : le Caire de nuit (P3), le manoir Joestar en flammes (P1) et le **château suisse** des Hommes du Pilier (P2 : dalles froides, neige, braseros, piliers sculptés) ;
-- **l'aube** dans le manoir Joestar et au château : les rais de soleil tombent sous les fenêtres, puis s'allongent jusqu'au mur du fond et s'élargissent — 39 % du manoir, 77 % du château, où il ne reste presque plus d'ombre ; un vampire, un zombie ou un Homme du Pilier qui s'y attarde brûle de plus en plus vite et y laisse le round ;
-- clavier et manette (Xbox, DualShock 4, DualSense), touches modifiables ;
-- menus : écran titre partie par partie, menu principal, sélection des persos en onglets par partie (fiche, Stand, rôle), **choix de l'arène avec un aperçu de chaque décor**, écran VS, pause, options (dont la langue : français ou anglais) ;
-- glossaire : termes du lore, personnages et Stands, partie par partie ;
-- **éveil** sur la touche Power Up : Kars pose le masque de pierre et la Super Aja (2 barres), devient la **forme de vie ultime** — le soleil ne lui fait plus rien et tout son moveset change, sans retour en arrière ;
-- roster : 21 persos sur les parties 1, 2 et 3 — la **partie 2 est complète**, Hommes du Pilier compris (Wamuu, Esidisi, Kars, Santana) et Stroheim avec ses lampes à ultraviolets ;
-- modes : combat local, contre l'IA (quatre niveaux), Arcade (six combats jusqu'à DIO), entraînement ;
-- liste des coups de chaque perso, avec les vraies touches du joueur (sélection des persos et pause) ;
-- entraînement poussé : mannequin immobile, en garde, joué par J2, qui **répète une action de son kit** (ORA ORA ORA, Star Finger, ultime...) avec le **délai de ton choix** entre chaque, ou qui **rejoue une suite enregistrée** ; vie et jauge infinies, compteur de combo et de dégâts, données de frames des deux côtés et **frise des frames** avec l'avantage mesuré.
+| Partie | Persos |
+| --- | --- |
+| **P1 · Phantom Blood** | Jonathan Joestar · Will A. Zeppeli · DIO Brando · Bruford · Tarkus · Speedwagon |
+| **P2 · Battle Tendency** ✅ *complète* | Joseph Joestar · Caesar Zeppeli · Lisa Lisa · Straizo · **Wamuu** · **Esidisi** · **Kars** · **Santana** · Stroheim |
+| **P3 · Stardust Crusaders** | Jotaro Kujo · Noriaki Kakyoin · DIO · Jean Pierre Polnareff |
+
+<table>
+<tr>
+<td width="50%"><img src="docs/media/select.png" alt="Écran de sélection des persos"></td>
+<td width="50%"><img src="docs/media/castle.png" alt="Le château suisse des Hommes du Pilier"></td>
+</tr>
+<tr>
+<td align="center"><b>Sélection</b> — fiche, Stand, rôle, onglet par partie</td>
+<td align="center"><b>Château suisse</b> — le canon à vent de Wamuu</td>
+</tr>
+</table>
+
+### Les arènes
+
+Le **Caire de nuit** (P3) · le **manoir Joestar en flammes** (P1) · le **château suisse** des Hommes du Pilier (P2).
+
+Dans le manoir et au château, **l'aube se lève** : les rais de soleil tombent sous les fenêtres, s'allongent jusqu'au mur du fond et s'élargissent — 39 % du manoir, 77 % du château, où il ne reste presque plus d'ombre. Un vampire, un zombie ou un Homme du Pilier qui s'y attarde brûle de plus en plus vite, et y laisse le round.
+
+---
+
+## Ce qui rend chaque perso différent
+
+- **Stands** (Jotaro, DIO, Kakyoin, Polnareff) : touche Stand, le Stand apparaît et change tous les coups ; un coup sur le Stand blesse son manieur. Hierophant Green se **contrôle à distance** et possède sa cible.
+- **Hamon** (Jonathan, Zeppeli, Joseph, Caesar, Lisa Lisa) : respiration qui charge la jauge, coups chargés qui brûlent les morts-vivants. Lisa Lisa a sa **Chaîne d'Onde** d'ASBR : un coup d'ouverture, **trois suites, trois fins** — personne d'autre ne l'a.
+- **Vampires et zombies** (DIO, Straizo, Bruford, Tarkus) : jauge de sang, gel, régénération — et le soleil qui les tue.
+- **Hommes du Pilier** (Wamuu, Esidisi, Kars, Santana) : un **Mode** (流法) par perso, qui change tout le moveset. Divine Sandstorm fait tourner les avant-bras de Wamuu puis sort **deux tornades** qui aspirent ; les veines d'Esidisi crachent du sang à 500 degrés ; Kars a la plus grande allonge du casting.
+- **Éveil** (touche Power Up) : Kars pose le masque de pierre et la Super Aja — **5 secondes immobile et vulnérable**, puis cinématique, et il devient la **forme de vie ultime** : le soleil ne lui fait plus rien et tout son moveset change, sans retour en arrière.
+- **Les ultimes ont la forme de leur technique** : le Rift Atmosphérique sort de la **corne** de Wamuu et traverse l'arène, Joseph lance des **câbles** sur toute la largeur, les loupes de Caesar se referment **là où tu te trouves**, le rouleau compresseur de DIO tombe sur ta position.
+
+---
 
 ## Jouer
 
 Télécharge `JoJoArena.exe` dans la dernière [Release](../../releases) et lance-le. Rien à installer.
 
-- **F11** ou **Alt+Entrée** : plein écran.
-- **Échap** (ou Start) : pause. En entraînement, la pause contient les réglages (mannequin, vie, jauge, replacer).
-- **Tab** (ou Y) sur la sélection des persos : liste des coups du perso survolé. Elle est aussi dans la pause.
-- **F3** en combat : affiche les zones de frappe. En entraînement, les touches reconnues s'affichent en bas à gauche.
+| Touche | Effet |
+| --- | --- |
+| **F11** / **Alt+Entrée** | plein écran |
+| **Échap** (ou Start) | pause — en entraînement, elle contient tous les réglages |
+| **Tab** (ou Y) | liste des coups du perso (sélection des persos et pause) |
+| **F3** | affiche les zones de frappe |
 
-### Mode entraînement
+### Combat
 
-La pause (**Échap**) contient les réglages, et l'entrée **Réglages du mannequin** ouvre tout ce qu'il faut pour travailler un coup :
+- légère, lourde, spéciale, **enchaînements de trois coups** sur la même touche, dégâts dégressifs sur les longs combos ;
+- garde (−80 %), jauge de garde et **Guard Break** ; dash invincible et **Stylish Evade** (esquive au dernier moment, ralenti) ;
+- jauge **Heart Heat** à 3 barres : **HHA** (1 barre), **GHA** (2 barres, en cinématique), **Flash Cancel** (½ barre), Pose, Résolution ;
+- **clash** : deux attaques se croisent, on martèle pour gagner le duel ; rafale contre rafale, l'écran passe en face-à-face ;
+- contres, bonds, coups blindés, casse-garde, tentacule qui attire, grappin visé à la souris ou au stick droit ;
+- **objets** : caisses et jarres se ramassent (Pose) et se lancent (Pose) — ou **se balancent** (Lourd). Bruford les attrape **avec ses cheveux** et frappe trois fois plus loin, mais lance moins fort ;
+- décor cassable, rebonds sur les murs, recul ;
+- onomatopées (ゴゴゴ, ドン, ORA, MUDA…), poses, impacts, et **chaque effet a son propre son**.
+
+### Après le combat
+
+Un **bilan** : dégâts, meilleur combo, plus gros coup, ultimes dépensés et durée, pour chacun des deux.
+
+---
+
+## Mode entraînement
+
+<div align="center">
+<img src="docs/media/training.png" alt="Le mode entraînement, frise des frames et données de frames" width="90%">
+</div>
+
+La pause (**Échap**) ouvre **Réglages du mannequin** :
 
 | Réglage | Effet |
 | --- | --- |
-| **Action** | ce que le mannequin répète, choisi parmi les coups de **son** kit (avec la posture qu'il faut : il sort son Stand tout seul), plus dash et pose |
-| **Délai** | images d'attente entre deux répétitions, comptées dès qu'il est libre d'agir. **0 = riposte à la frame près** (reversal) : de quoi vérifier si ton coup est vraiment sûr |
-| **Enchaîne** | il continue l'enchaînement du coup (ORA, ORA ORA, ORAAA) au lieu de s'arrêter au premier |
+| **Action** | ce que le mannequin répète, choisi parmi les coups de **son** kit (il sort son Stand tout seul), plus dash et pose |
+| **Délai** | images d'attente entre deux répétitions, comptées dès qu'il est libre. **0 = riposte à la frame près** : de quoi vérifier si ton coup est vraiment sûr |
+| **Enchaîne** | il continue l'enchaînement (ORA, ORA ORA, ORAAA) au lieu de s'arrêter au premier |
 | **Se rapproche** | il marche vers toi tant que son coup ne peut pas porter |
-| **Entre deux** | il ne fait rien, ou il tient la garde : pour travailler les combos sur un adversaire qui bloque |
-| **Enregistrer une action** | J2 joue le mannequin, puis **Échap** arrête : la suite enregistrée est rejouée en boucle (avec le même délai) |
-| **Frise des frames** | deux bandes, une par perso, une colonne par image |
+| **Entre deux** | il ne fait rien, ou il tient la garde |
+| **Enregistrer** | J2 joue le mannequin, **Échap** arrête : la suite est rejouée en boucle |
 
-La frise se lit comme dans les jeux de combat : **jaune** = démarrage, **rouge** = actif (le coup peut toucher), **bleu** = récupération, **violet** = dégâts subis, **gris** = blocage, **vert** = garde, **blanc** = tout est figé (impact, temps arrêté, cinématique). À droite s'affiche l'avantage **mesuré** du dernier échange (`J1 TOUCHÉ +6`) : si ton coup est à −3 en garde et que le mannequin riposte avec un coup qui démarre en 4, tu le vois arriver.
+Et pour regarder un coup à la loupe :
 
-En bas à gauche, la ligne de données de frames donne le dernier coup de chaque côté au format habituel : `DIRECT 4/3/10 +6/-2` (démarrage / actif / récupération, puis avantage touché / en garde).
+| Touche | Effet |
+| --- | --- |
+| **F6** | vitesse 100 % → 50 % → 25 % |
+| **F7** | gèle le monde |
+| **F8** | avance d'exactement **une image** |
 
-### Contrôles par défaut
+La **frise des frames** se lit comme dans les jeux de combat : **jaune** = démarrage, **rouge** = actif, **bleu** = récupération, **violet** = dégâts subis, **gris** = blocage, **vert** = garde, **blanc** = tout est figé (impact, temps arrêté, cinématique). À droite, l'avantage **mesuré** du dernier échange (`J1 TOUCHÉ +6`). En bas, les données du dernier coup de chaque côté : `DIRECT 4/3/10 +6/-2`.
+
+Le réglage du mannequin est **gardé d'une session à l'autre**.
+
+---
+
+## Contrôles
 
 Les touches sont liées à leur **position** sur le clavier : ZQSD en AZERTY correspond à WASD en QWERTY.
 
@@ -75,43 +135,59 @@ Les touches sont liées à leur **position** sur le clavier : ZQSD en AZERTY cor
 | Stand on/off | I | RB / R1 | R | 8 |
 | Dash / esquive | Espace | A / Croix | V | 0 |
 | Garde (Flash Cancel pendant une attaque) | Maj gauche | LB / L1 | C | 1 |
-| Heart Heat : HHA ; direction + Heart Heat : GHA (2 barres) | O | RT / R2 | T | 9 |
-| Pose (près d'un objet : le Stand le prend, puis le lance) | P | Select / Touchpad | Y | 7 |
-| Power Up : **éveil** (Kars : la Super Aja, 2 barres) | U | LT / L2 | B | 3 |
+| Heart Heat : HHA ; direction + Heart Heat : GHA | O | RT / R2 | T | 9 |
+| Pose (près d'un objet : le prend, puis le lance) | P | Select / Touchpad | Y | 7 |
+| Power Up : **éveil** | U | LT / L2 | B | 3 |
 
-Choisis la configuration (J1 clavier + J2 manette, clavier partagé, deux manettes) dans **Options** ou sur l'écran VS du **Combat local**, qui permet aussi de choisir l'arène (le Caire de nuit, le manoir Joestar en flammes, ou au hasard). Options affiche aussi le tableau des touches des deux joueurs (modifiables avec « Changer les touches »), et règle la langue du jeu (français ou anglais), gardée dans `settings.json` à côté de `controls.json`.
+<details>
+<summary><b>Les bonnes touches, quel que soit ton matériel</b></summary>
 
-### Les bonnes touches, quel que soit ton matériel
+Les touches sont liées à une **position physique**, pas à une lettre : le jeu se joue pareil en AZERTY et en QWERTY, et il **affiche partout le nom imprimé sur ta touche** (`W` devient `Z` en AZERTY). Pareil pour les manettes : le jeu lit le constructeur dans l'identifiant SDL, donc une **DualShock 4 / DualSense affiche CROIX, CARRÉ, OPTIONS** là où une **manette Xbox affiche A, X, MENU, VIEW**.
 
-Les touches sont liées à une **position physique**, pas à une lettre : le jeu se joue pareil en AZERTY et en QWERTY, et il **affiche partout le nom imprimé sur ta touche** (`W` devient `Z` en AZERTY). Pareil pour les manettes : le jeu lit le constructeur dans l'identifiant SDL de la manette, donc une **DualShock 4 / DualSense affiche CROIX, CARRÉ, OPTIONS** là où une **manette Xbox affiche A, X, MENU, VIEW**.
-
-Deux réglages dans Options si la détection se trompe (manette générique, disposition système différente du clavier physique) :
+Deux réglages dans Options si la détection se trompe :
 
 | Réglage | Valeurs |
 | --- | --- |
 | **Clavier** | `AUTO (QWERTY)` — ce que le système annonce — ou `AZERTY` / `QWERTY` forcé |
 | **Manette** | `AUTO (XBOX)` — ce que la manette annonce — ou `XBOX` / `PLAYSTATION` forcé |
 
-Ça ne change **que les noms affichés** : les touches réelles ne bougent pas. Sous le tableau, le jeu affiche le nom exact des manettes qu'il voit, pour vérifier d'un coup d'œil qu'elles sont bien détectées.
+Ça ne change **que les noms affichés**. Sous le tableau, le jeu affiche le nom exact des manettes qu'il voit.
 
-### Vibration et barre lumineuse
+Pour changer les touches, modifie `controls.json` dans `%APPDATA%\JoJoArena\` puis relance le jeu. Supprime-le pour revenir aux réglages par défaut.
 
-Les coups se sentent dans les mains : celui qui encaisse prend le poids du coup (moteur lourd), celui qui le place en sent le claquement (moteur léger, plus court). Guard Break, mur, K.O., gel, contre, arrêt du temps et ultimes ont chacun leur vibration. Sur une **DualShock 4 ou une DualSense**, la barre lumineuse prend la couleur du perso qu'on joue. Réglage **Vibration** dans Options, de 0 (coupée) à 10.
+</details>
 
-Pour changer les touches, modifie `controls.json` dans `%APPDATA%\JoJoArena\` puis relance le jeu. Le fichier explique les noms de touches. Supprime-le pour revenir aux réglages par défaut.
+<details>
+<summary><b>Vibration et barre lumineuse</b></summary>
+
+Les coups se sentent dans les mains : celui qui encaisse prend le poids du coup (moteur lourd), celui qui le place en sent le claquement (moteur léger, plus court). Guard Break, mur, K.O., gel, contre, arrêt du temps et ultimes ont chacun leur vibration. Sur une **DualShock 4 ou une DualSense**, la barre lumineuse prend la couleur du perso qu'on joue. Réglage **Vibration** dans Options, de 0 à 10.
+
+</details>
+
+### Modes
+
+Combat local · Contre l'IA (quatre niveaux) · Arcade (six combats jusqu'à DIO) · Entraînement. Histoire et En ligne sont annoncés dans le menu et arriveront plus tard — la simulation est déjà déterministe, ce qui prépare le rollback.
+
+---
 
 ## Développement
 
-Pour contribuer, commence par [CONTRIBUTING.md](CONTRIBUTING.md). La doc du projet :
+Il faut **Python 3.12** ou plus récent, et `pygame-ce`. Rien d'autre : les sprites, les
+sons, les icônes et même l'animation de ce README sont générés par le code du dépôt.
 
-- [docs/GDD.md](docs/GDD.md) : le game design, qui fait foi ;
-- [docs/ROADMAP.md](docs/ROADMAP.md) : ce qui est fait, en cours et à venir ;
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) : l'organisation du code ;
-- [docs/KITS.md](docs/KITS.md) : tous les champs d'un kit de perso ;
-- [docs/INFRA.md](docs/INFRA.md) : tests, CI, Docker, crochets git, Releases ;
-- [docs/AGENTS.md](docs/AGENTS.md) : comment le travail se découpe entre agents.
+| Fichier | Contenu |
+| --- | --- |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | par où commencer pour contribuer |
+| [docs/GDD.md](docs/GDD.md) | le game design, qui fait foi |
+| [docs/ROADMAP.md](docs/ROADMAP.md) | ce qui est fait, en cours et à venir |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | l'organisation du code |
+| [docs/KITS.md](docs/KITS.md) | tous les champs d'un kit de perso |
+| [docs/INFRA.md](docs/INFRA.md) | tests, CI, Docker, crochets git, Releases |
+| [docs/AGENTS.md](docs/AGENTS.md) | comment le travail se découpe entre agents |
+| [CHANGELOG.md](CHANGELOG.md) | ce que chaque version apporte |
 
-Il faut Python 3.12 ou plus récent.
+<details>
+<summary><b>Installer, lancer, tester, construire le .exe</b></summary>
 
 ```powershell
 python -m venv .venv
@@ -132,6 +208,7 @@ Le `Makefile` regroupe les commandes courantes ; `make` tout seul affiche la lis
 | `make test-fast` | les tests sans ceux qui lancent le jeu entier |
 | `make screens` | capture tous les écrans dans `screenshots/tour/` |
 | `make sprites`, `make exe`, `make clean` | planches de sprites, `.exe`, nettoyage |
+| `make clip` | réenregistre l'animation du README (`docs/media/fight.png`) |
 
 Sous Windows il faut un GNU make : `winget install ezwinports.make` ou `choco install make` (ou `mingw32-make`). Les commandes marchent pareil dans PowerShell, cmd ou Git Bash.
 
@@ -193,7 +270,10 @@ git push origin v0.1.0
 
 GitHub Actions (`.github/workflows/release.yml`) lance les tests, construit le `.exe`, vérifie qu'il démarre, puis publie la Release avec le `.exe` en pièce jointe.
 
-## Organisation du code
+</details>
+
+<details>
+<summary><b>L'organisation du code</b></summary>
 
 ```text
 jojo_arena/
@@ -209,7 +289,14 @@ tests/          pytest
 
 Toutes les valeurs d'équilibrage sont dans des fichiers TOML commentés : `combat/rules.toml` (règles globales) et `characters/*.toml` (attaques de chaque perso).
 
+</details>
+
 ## Créer ou modifier l'apparence d'un perso
+
+Les sprites sont **générés à partir d'une fiche de données**, sans dessin à la main.
+
+<details>
+<summary><b>Toutes les options d'une fiche d'apparence</b></summary>
 
 Les sprites des persos sont **générés à partir d'une fiche de données**, sans dessin à la main. La fiche se trouve dans `jojo_arena/characters/looks/<id>.toml` (voir `jotaro_p3.toml` et `kakyoin.toml`). Elle contient :
 
@@ -254,6 +341,24 @@ Une planche est un PNG en cases carrées (64 × 64 pour les persos générés) a
 - Une planche dessinée à la main peut remplacer une planche générée, sans changer le code : il suffit de garder les mêmes noms de fichiers.
 - Si une planche manque, le jeu affiche une forme simple de la couleur du perso.
 
-## Licence
+</details>
 
-Code sous licence [MIT](LICENSE).
+## Licence et mentions
+
+Code sous licence [MIT](LICENSE). Les visuels de ce README sont capturés dans le jeu par
+[`tools/record_clip.py`](tools/record_clip.py) (animation PNG écrite sans aucune
+bibliothèque, voir [`tools/make_apng.py`](tools/make_apng.py)).
+
+**Fan game non officiel, gratuit et sans but lucratif**, non affilié à Hirohiko Araki,
+Shueisha, David Production ou CyberConnect2. JoJo's Bizarre Adventure et toutes les
+marques citées appartiennent à leurs propriétaires respectifs.
+
+---
+
+<div align="center">
+
+### ゴ ゴ ゴ ゴ ゴ
+
+*Yare yare daze.*
+
+</div>

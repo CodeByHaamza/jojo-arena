@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 220" width="960" height="220" role="img" aria-label="JoJo Arena">
+  <title>JoJo Arena</title>
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f0c23c"/>
+      <stop offset="45%" stop-color="#fff3c0"/>
+      <stop offset="55%" stop-color="#fff3c0"/>
+      <stop offset="100%" stop-color="#e0862e"/>
+      <animateTransform attributeName="gradientTransform" type="translate"
+        values="-1 0; 1 0; -1 0" dur="6s" repeatCount="indefinite"/>
+    </linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#241b33"/>
+      <stop offset="100%" stop-color="#140f1e"/>
+    </linearGradient>
+    <pattern id="stripes" width="56" height="56" patternUnits="userSpaceOnUse" patternTransform="rotate(28)">
+      <rect width="56" height="56" fill="none"/>
+      <rect width="18" height="56" fill="#7a48c8" opacity="0.10"/>
+    </pattern>
+  </defs>
+
+  <rect width="960" height="220" fill="url(#sky)"/>
+  <rect width="960" height="220" fill="url(#stripes)"/>
+
+  <!-- The menace, rising behind the title, each one on its own beat. -->
+  <g font-family="'Noto Sans JP','Yu Gothic','Hiragino Kaku Gothic ProN',sans-serif"
+     font-size="46" font-weight="bold" fill="#7a48c8">
+    <text x="64" y="186" opacity="0.20">ゴ
+      <animate attributeName="opacity" values="0.10;0.55;0.10" dur="2.4s" repeatCount="indefinite"/>
+      <animateTransform attributeName="transform" type="translate" values="0 10; 0 -6; 0 10"
+        dur="2.4s" repeatCount="indefinite"/>
+    </text>
+    <text x="118" y="196" opacity="0.20">ゴ
+      <animate attributeName="opacity" values="0.10;0.55;0.10" dur="2.4s" begin="0.3s" repeatCount="indefinite"/>
+      <animateTransform attributeName="transform" type="translate" values="0 10; 0 -6; 0 10"
+        dur="2.4s" begin="0.3s" repeatCount="indefinite"/>
+    </text>
+    <text x="820" y="92" opacity="0.20">ゴ
+      <animate attributeName="opacity" values="0.10;0.55;0.10" dur="2.4s" begin="0.6s" repeatCount="indefinite"/>
+      <animateTransform attributeName="transform" type="translate" values="0 10; 0 -6; 0 10"
+        dur="2.4s" begin="0.6s" repeatCount="indefinite"/>
+    </text>
+    <text x="874" y="78" opacity="0.20">ゴ
+      <animate attributeName="opacity" values="0.10;0.55;0.10" dur="2.4s" begin="0.9s" repeatCount="indefinite"/>
+      <animateTransform attributeName="transform" type="translate" values="0 10; 0 -6; 0 10"
+        dur="2.4s" begin="0.9s" repeatCount="indefinite"/>
+    </text>
+  </g>
+
+  <!-- The title, with the light sweeping across the gold. -->
+  <g text-anchor="middle" font-family="'Trebuchet MS',Verdana,sans-serif" font-weight="bold">
+    <text x="480" y="106" font-size="76" fill="#17121f" stroke="#17121f" stroke-width="14"
+          stroke-linejoin="round">JOJO ARENA</text>
+    <text x="480" y="106" font-size="76" fill="url(#gold)">JOJO ARENA</text>
+    <text x="480" y="140" font-size="19" fill="#c8b8e8" letter-spacing="5">
+      ARENA FIGHTER 1v1 &#183; PIXEL ART &#183; FAN GAME
+    </text>
+  </g>
+
+  <!-- A line of light under it, sweeping like a Ripple. -->
+  <rect x="300" y="158" width="360" height="2" fill="#f0c23c" opacity="0.35"/>
+  <rect x="300" y="158" width="90" height="2" fill="#fff3c0">
+    <animate attributeName="x" values="300;570;300" dur="4s" repeatCount="indefinite"/>
+  </rect>
+</svg>

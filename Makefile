@@ -24,12 +24,13 @@ P1 ?= jotaro_p3
 P2 ?= dio_p3
 ROUNDS ?= 3
 SCENE ?= title
+STAGE ?= cairo_night
 FIGHTS ?= 20
 ARGS ?=
 
 .DEFAULT_GOAL := help
 .PHONY: help install hooks run menu training fight versus demo test test-fast lint format check balance \
-        screens screenshot sprites icons exe clean
+        screens screenshot clip sprites icons exe clean
 
 help:
 	$(info JoJo Arena - make targets)
@@ -56,6 +57,7 @@ help:
 	$(info $(INDENT)make coverage     tests with a coverage report, and htmlcov/index.html)
 	$(info $(INDENT)make docker-check lint and tests in a container, as on a clean machine)
 	$(info $(INDENT)make screens      screenshot tour of every screen into screenshots/tour/)
+	$(info $(INDENT)make clip         re-record the README animation into docs/media/)
 	$(info $(INDENT)make screenshot   picture of one screen: SCENE=menu or select or options...)
 	$(info )
 	$(info Build)
@@ -131,6 +133,9 @@ screens: $(VENV_PY)
 
 screenshot: $(VENV_PY)
 	$(PY) -m jojo_arena --scene $(SCENE) --p1 $(P1) --p2 $(P2) --frames 90 --screenshot screenshots/$(SCENE).png
+
+clip: $(VENV_PY)
+	$(PY) tools/record_clip.py docs/media/fight.png --p1 $(P1) --p2 $(P2) --stage $(STAGE)
 
 # Build ----------------------------------------------------------------------------------
 
