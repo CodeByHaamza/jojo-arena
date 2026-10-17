@@ -1,4 +1,5 @@
-# Lisa Lisa (Part 2). GDD: "Hamon · Contrôle": elegant and acrobatic, counters. Her scarf, woven from
+# Lisa Lisa (Part 2). GDD: "Hamon · Contrôle": elegant and acrobatic, counters.
+# Her Ripple Chain (ASBR) is hers alone: one starter, three ways on, three ways to end. Her scarf, woven from
 # Satiporoja beetle silk, carries the Hamon perfectly: a long-range whip that can turn
 # stiff as a spear. Her guard bonus: the Snake Muffler, a Hamon parry that sends back
 # what comes at her. Great Heat Attack: the scarf trap, wrapped and set ablaze with Hamon.
@@ -15,68 +16,162 @@ style = { type = "hamon" }
 [stances.base]
 label = "HAMON"
 
-# The scarf flicked out, twice, then a Hamon lash: the same button three times.
+# The Ripple Chain (波紋チェイン): her signature in All-Star Battle R, and the only one
+# in the roster. The first blow opens it, three buttons carry it on, three end it - so
+# what is coming next cannot be read from the first hit.
 [stances.base.moves.light]
-label = "COUP D'ÉCHARPE"
-label_en = "SCARF FLICK"
-info = "L'écharpe claque à mi-distance. Encore la touche : revers, puis fouet de Hamon"
-info_en = "The scarf snaps at mid range. Press again: backhand, then Hamon lash"
-shape = "line"
-fx = "scarf"
+shout = "MAÎTRESSE DU HAMON !"
+shout_en = "RIPPLE MASTER!"
+label = "MAÎTRESSE DU HAMON"
+label_en = "RIPPLE MASTER"
+info = "Elle glisse et frappe du plat de la main. Ouvre la Chaîne d'Onde : 3 suites possibles"
+info_en = "She slides in and strikes with her hand. Opens the Ripple Chain: three ways on"
 startup_f = 7
 active_f = 3
-recovery_f = 12
-damage = 24
-reach = 34
-radius = 6
-hitstun_f = 18
-knockback = 70
+recovery_f = 13
+lunge = 150
+damage = 22
+reach = 24
+radius = 11
+hitstun_f = 20
+knockback = 80
 hitstop_f = 4
 cancel_on_hit = ["light", "heavy", "special"]
-chain = "light2"
+chains = { light = "scarf_smack", heavy = "drop_kick", special = "style_kick" }
 anim = "light"
 
-[stances.base.moves.light2]
-label = "REVERS D'ÉCHARPE"
-label_en = "SCARF BACKHAND"
-info = "S'enchaîne sur le coup d'écharpe"
-info_en = "Follows the scarf flick"
+# Chain, first link: the scarf, the flip kick, or the spin - whichever button is pressed.
+[stances.base.moves.scarf_smack]
+label = "CETTE ÉCHARPE ME SUFFIT"
+label_en = "ALL I NEED IS THIS SCARF"
+info = "Suite : l'écharpe claque deux fois. Trois fins possibles"
+info_en = "Follow-up: the scarf cracks twice. Three ways to finish"
 shape = "line"
 fx = "scarf"
 startup_f = 8
-active_f = 3
-recovery_f = 13
-damage = 28
-reach = 36
+active_f = 10
+recovery_f = 14
+hits = 2
+hit_every_f = 5
+damage = 15
+last_damage = 19
+reach = 38
 radius = 6
-hitstun_f = 21
+hitstun_f = 20
 knockback = 90
-hitstop_f = 5
+hitstop_f = 4
 cancel_on_hit = ["light", "heavy", "special"]
-chain = "light3"
+chains = { light = "bad_time", heavy = "snake_muffler", special = "prepare_to_die" }
 anim = "heavy"
 
-[stances.base.moves.light3]
-shout = "HAMON !"
-label = "PIROUETTE DE HAMON"
-label_en = "HAMON PIROUETTE"
-info = "Fin de l'enchaînement : une pirouette, l'écharpe chargée de Hamon envoie contre le mur"
-info_en = "Chain ender: a pirouette, the Hamon-charged scarf sends into the wall"
+[stances.base.moves.drop_kick]
+shout = "MEURS DANS LES REGRETS."
+shout_en = "DIE WITH REGRET."
+label = "MEURS DANS LES REGRETS"
+label_en = "DIE WITH REGRET"
+info = "Suite : un salto et deux talons qui font rebondir au sol"
+info_en = "Follow-up: a flip and a two-hit drop kick that bounces off the ground"
+startup_f = 9
+active_f = 8
+recovery_f = 16
+hits = 2
+hit_every_f = 4
+damage = 18
+last_damage = 24
+reach = 20
+radius = 13
+hitstun_f = 24
+knockback = 110
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chains = { light = "bad_time", heavy = "snake_muffler", special = "prepare_to_die" }
+anim = "heel_drop"
+
+[stances.base.moves.style_kick]
+label = "RÉGLONS ÇA AVEC STYLE"
+label_en = "SETTLE THIS WITH STYLE"
+info = "Suite : elle pivote sur une main, deux coups de pied"
+info_en = "Follow-up: she spins on one hand, two kicks"
+startup_f = 8
+active_f = 9
+recovery_f = 15
+hits = 2
+hit_every_f = 5
+damage = 16
+last_damage = 22
+reach = 26
+radius = 12
+hitstun_f = 22
+knockback = 100
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chains = { light = "bad_time", heavy = "snake_muffler", special = "prepare_to_die" }
+anim = "pirouette"
+
+# Chain enders. One sends flying, one bounces off the floor, one goes through the guard.
+[stances.base.moves.bad_time]
+shout = "TU TOMBES MAL."
+shout_en = "YOU PICKED A BAD TIME."
+label = "TU TOMBES MAL"
+label_en = "A BAD TIME TO TEST ME"
+info = "Fin de chaîne : l'écharpe chargée de Hamon tournoie et envoie contre le mur"
+info_en = "Chain ender: the Hamon-charged scarf twirls and sends into the wall"
 hamon_cost = 15
 shape = "line"
 fx = "scarf"
 startup_f = 10
 active_f = 4
-recovery_f = 18
-damage = 40
-reach = 38
+recovery_f = 20
+damage = 46
+reach = 40
 radius = 7
-hitstun_f = 30
-knockback = 320
+hitstun_f = 32
+knockback = 340
 hitstop_f = 9
 wall_bounce = true
 cancel_on_hit = ["special"]
 anim = "pirouette"
+
+[stances.base.moves.snake_muffler]
+shout = "SNAKE MUFFLER !"
+label = "SNAKE MUFFLER"
+info = "Fin de chaîne : elle prend appui sur son écharpe, salto, et le fait rebondir au sol"
+info_en = "Chain ender: she props herself on her scarf and flips him off the ground"
+hamon_cost = 15
+armor = 1
+startup_f = 12
+active_f = 5
+recovery_f = 22
+damage = 52
+reach = 22
+radius = 14
+hitstun_f = 36
+knockback = 300
+hitstop_f = 10
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "heel_drop"
+
+[stances.base.moves.prepare_to_die]
+shout = "PRÉPARE-TOI À MOURIR."
+shout_en = "PREPARE TO DIE."
+label = "PRÉPARE-TOI À MOURIR"
+label_en = "PREPARE TO DIE"
+info = "Fin de chaîne : elle passe au-dessus de lui et lui envoie l'onde dans la tête. Imparable"
+info_en = "Chain ender: she flips over him and sends the Ripple into his head. Unblockable"
+hamon = true
+hamon_cost = 25
+unblockable = true
+startup_f = 13
+active_f = 4
+recovery_f = 24
+damage = 62
+reach = 16
+radius = 12
+hitstun_f = 34
+knockback = 220
+hitstop_f = 11
+anim = "special"
 
 # The scarf cast far: it wraps the opponent and reels them in.
 [stances.base.moves.heavy]
@@ -123,11 +218,13 @@ wall_bounce = true
 clashable = false
 anim = "special"
 
-# Snake Muffler: the scarf coiled around her; a blow is caught and answered with Hamon,
-# a projectile flies back where it came from.
+# The Stylish Evade: the scarf coiled around her; a blow is caught and answered with
+# Hamon, and a projectile flies back where it came from.
 [stances.base.moves.special]
-shout = "SNAKE MUFFLER !"
-label = "SNAKE MUFFLER"
+shout = "ESQUIVE STYLÉE !"
+shout_en = "STYLISH EVADE!"
+label = "ESQUIVE STYLÉE"
+label_en = "STYLISH EVADE"
 info = "Parade de Hamon : un coup est attrapé et puni, un projectile est renvoyé"
 info_en = "Hamon parry: a blow is caught and punished, a projectile is sent back"
 counter = "muffler_strike"
@@ -210,6 +307,7 @@ anim = "pose"
 
 # Great Heat Attack (2 barres) : elle ne frappe pas, elle attend. Frappez-la au corps à
 # corps pendant qu'elle pose, et c'est fini. Le seul ultime du jeu qui soit un contre.
+reach = 130
 [moves.gha]
 shout = "UN CÂLIN ? ESSAIE DONC."
 shout_en = "GIVE ME A HUG? JUST TRY IT."

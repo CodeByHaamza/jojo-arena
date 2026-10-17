@@ -140,13 +140,23 @@ def build_pages(
                 entries.append(
                     MoveEntry((text.WHEN_STRUCK,), answer.label or answer.name, _info(answer), True)
                 )
-            # A chain: the same button again, once the previous blow connects.
-            depth = 1
-            while move.chain and move.chain in stance.moves and depth < 6:
-                move = stance.moves[move.chain]
-                depth += 1
-                presses = (key(slot),) * depth
-                entries.append(MoveEntry(presses, move.label or move.name, _info(move), True))
+            # A chain, once the previous blow connects: the same button again, or - for
+            # a branching chain - whichever button is pressed next.
+            queue, seen = [((key(slot),), move)], {move.name}
+            while queue:
+                presses, link = queue.pop(0)
+                steps = dict(link.chains)  # branching: a button each
+                if link.chain:
+                    steps.setdefault(slot, link.chain)
+                for next_slot, name in steps.items():
+                    following = stance.moves.get(name)
+                    if following is None or following.name in seen or len(presses) >= 5:
+                        continue
+                    seen.add(following.name)
+                    keys = presses + (key(next_slot),)
+                    label = following.label or following.name
+                    entries.append(MoveEntry(keys, label, _info(following), True))
+                    queue.append((keys, following))
         if entries:
             title = kit.stance_labels.get(stance_name, stance_name.upper())
             pages.append(MovePage(title, tuple(entries)))
