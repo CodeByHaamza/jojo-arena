@@ -36,7 +36,7 @@ chain = "light2"
 [stances.base.moves.light2]
 label = "UPPERCUT D'UNE MAIN"
 label_en = "ONE-FISTED UPPERCUT"
-info = "S'enchaîne sur le direct : un uppercut de Hamon qui décolle"
+info = "S'enchaîne sur le direct : un uppercut qui décolle"
 info_en = "Follows the jab: a Ripple uppercut that launches"
 startup_f = 8
 active_f = 3
@@ -50,7 +50,6 @@ hitstop_f = 5
 cancel_on_hit = ["light", "heavy", "special"]
 chain = "light3"
 anim = "uppercut"
-hamon_cost = 10
 
 [stances.base.moves.light3]
 shout = "RIPPLE KICK !"
@@ -81,7 +80,7 @@ shout = "BUBBLE CUTTER !"
 label = "BUBBLE CUTTER"
 info = "Quatre bulles tranchantes, deux vagues, et elles ricochent sur les murs"
 info_en = "Four cutting bubbles, two waves, and they come off the walls"
-hamon_cost = 15
+hamon_cost = 10
 startup_f = 12
 active_f = 1
 recovery_f = 22
@@ -134,11 +133,11 @@ hitstop_f = 5
 label = "BUBBLE LAUNCHER"
 info = "Trois bulles à tête chercheuse, lentes mais tenaces"
 info_en = "Three slow but stubborn homing bubbles"
-hamon_cost = 10
+hamon_cost = 8
 startup_f = 12
 active_f = 1
 recovery_f = 24
-cooldown_s = 1.6
+cooldown_s = 1.2
 anim = "special"
 
 [stances.base.moves.special.projectile]

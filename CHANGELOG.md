@@ -96,6 +96,10 @@ des corrections seules une patch.
   imparable. Personne d'autre n'a ça.
 - **Caesar** : l'Uppercut d'une main et le Ripple Kick (intouchable pendant le vol) à la
   place de ses coups génériques, et ses Bubble Cutters ricochent sur les murs.
+- **Équilibrage.** Kars descend de 81 % à 69 % de victoires contre le reste du casting
+  (1000 PV, lames de lumière moins fortes, déluge moins long) ; Caesar remonte de 21 % à
+  30 % — un maillon de son enchaînement lui coûtait du Hamon pour rien ; Esidisi de 18 %
+  à 23 %, son sang lui coûte moins cher.
 
 ### Corrigé
 
