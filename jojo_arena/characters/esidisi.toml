@@ -18,8 +18,8 @@ label = "SANS MODE"
 label_en = "NO MODE"
 
 [stances.base.moves.light]
-label = "GRIFFE"
-label_en = "CLAW"
+label = "GRIFFE BRÛLANTE"
+label_en = "BURNING CLAW"
 info = "Rapide. Encore : revers, puis coup de coude"
 info_en = "Fast. Again: backhand, then elbow"
 startup_f = 4
@@ -35,8 +35,8 @@ cancel_on_hit = ["light", "heavy", "special"]
 chain = "light2"
 
 [stances.base.moves.light2]
-label = "REVERS"
-label_en = "BACKHAND"
+label = "REVERS BOUILLANT"
+label_en = "BOILING BACKHAND"
 info = "S'enchaîne sur la griffe"
 info_en = "Follows the claw"
 startup_f = 5

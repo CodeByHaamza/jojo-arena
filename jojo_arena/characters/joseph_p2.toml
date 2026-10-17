@@ -21,8 +21,8 @@ label = "HAMON"
 
 # Jab, clacker swing, clacker volley: the same button three times, once the first lands.
 [stances.base.moves.light]
-label = "DIRECT"
-label_en = "JAB"
+label = "COUP EN TRAÎTRE"
+label_en = "CHEAP SHOT"
 info = "Rapide. Encore la touche : coup de clackers, puis Clacker Volley"
 info_en = "Fast. Press again: clacker swing, then Clacker Volley"
 startup_f = 5

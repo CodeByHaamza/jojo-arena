@@ -20,8 +20,8 @@ label_en = "ZOMBIE KNIGHT"
 # Thrust, hair whip, piercing hair: the same button three times, once the first lands.
 # The sword never swings alone - his hair rides with every stroke.
 [stances.base.moves.light]
-label = "ESTOC"
-label_en = "THRUST"
+label = "ESTOC DE CHEVALIER"
+label_en = "KNIGHT'S THRUST"
 info = "L'épée Luck porte loin, les mèches la suivent. Encore : fouet, puis cheveux perçants"
 info_en = "The sword Luck reaches far, his locks riding with it. Again: whip, then piercing hair"
 shape = "line"

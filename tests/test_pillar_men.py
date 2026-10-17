@@ -289,3 +289,31 @@ def test_nobody_else_awakens_yet():
 
     with_awakening = [f.id for f in load_roster() if f.kit.awakening is not None]
     assert with_awakening == ["kars"]
+
+
+def test_the_ultimate_life_form_has_what_the_ultimate_life_form_has():
+    """Awakened, Kars is not a Pillar Man with better numbers: the sun means nothing to
+    him, he makes his own Ripple, he fires what he has absorbed, and a tentacle drags
+    you back in. (jojowiki ASBR/Kars, Ultimate Thing skills.)"""
+    kit_ = kit("kars")
+    assert kit_.awakening.sun_immune
+    ripple = kit_.move("ultimate", "special")
+    assert ripple.hamon and ripple.reach >= 100  # his own Ripple, and it reaches
+    genes = kit_.move("ultimate", "heavy_alt")
+    assert genes.projectile is not None and genes.projectile.homing > 0  # the piranha follows
+    tentacle = kit_.move("ultimate", "heavy")
+    assert tentacle.pull > 0 and tentacle.fx == "tentacle"
+
+
+def test_the_sun_stops_mattering_once_the_mask_is_on():
+    match = make_duel("kars", "mannequin_red", p1=(150, 100), p2=(260, 100))
+    kars = match.fighters[0]
+    kars.hp = kars.max_hp
+    kars.sun_f = 300  # he has been standing in it
+    before = kars.hp
+    kars.hh = match.rules.hh_max
+    kars.complete_awakening()
+    assert kars.sun_proof
+    match.arena.sun_spread_f = 1  # full daylight, straight away
+    run(match, 120)
+    assert kars.hp >= before - 1  # the light does nothing to him now

@@ -145,6 +145,8 @@ clashable = false
 anim = "light"
 
 # The wires wound inside his headpiece: they cut, and the Ripple does not run through them.
+info = "La réponse du contre : sa corne a lu le vent, le coup part avant le tien"
+info_en = "The counter's answer: his horn read the wind, and he strikes first"
 [stances.base.moves.special_alt]
 label = "FILS ANTI-ONDE"
 label_en = "ANTI-RIPPLE WIRES"

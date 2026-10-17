@@ -19,8 +19,8 @@ label = "VOYOU D'OGRE STREET"
 label_en = "OGRE STREET THUG"
 
 [stances.base.moves.light]
-label = "DIRECT"
-label_en = "JAB"
+label = "COUP DE RUE"
+label_en = "STREET PUNCH"
 info = "Rapide. Encore : crochet, puis coup de genou"
 info_en = "Fast. Again: hook, then knee"
 startup_f = 4
@@ -36,8 +36,8 @@ cancel_on_hit = ["light", "heavy", "special"]
 chain = "light2"
 
 [stances.base.moves.light2]
-label = "CROCHET"
-label_en = "HOOK"
+label = "CROCHET D'OGRE STREET"
+label_en = "OGRE STREET HOOK"
 info = "S'enchaîne sur le direct"
 info_en = "Follows the jab"
 startup_f = 5
@@ -73,21 +73,24 @@ anim = "kick"
 
 # The Ogre Street headbutt.
 [stances.base.moves.heavy]
-label = "COUP DE BOULE"
-label_en = "HEADBUTT"
-info = "Le coup de tête des bas quartiers ; casse la garde"
-info_en = "The headbutt of the back streets; crushes guards"
-startup_f = 13
-active_f = 3
-recovery_f = 20
-damage = 62
-reach = 12
-radius = 11
-hitstun_f = 32
-knockback = 240
-hitstop_f = 10
-guard_damage = 2.5
-anim = "headbutt"
+label = "MARTEAU DE FORGE"
+label_en = "SLEDGEHAMMER"
+info = "Il n'a pas l'Onde, il a un marteau : lent, énorme, et il casse la garde"
+info_en = "No Ripple, but a sledgehammer: slow, enormous, and it crushes guards"
+startup_f = 19
+active_f = 4
+recovery_f = 28
+damage = 88
+reach = 16
+radius = 13
+hitstun_f = 36
+knockback = 400
+hitstop_f = 12
+guard_damage = 2.2
+anim = "heavy"
+shout = "UN SEUL COUP SUFFIT !"
+shout_en = "ONE SWING IS ENOUGH!"
+wall_bounce = true
 
 [stances.base.moves.heavy_alt]
 label = "CHARGE DE VOYOU"
@@ -380,8 +383,8 @@ shout = "SPEEDWAGON SE RETIRE AVEC STYLE !"
 shout_en = "SPEEDWAGON WITHDRAWS COOLLY!"
 label = "SPEEDWAGON SE RETIRE AVEC STYLE"
 label_en = "SPEEDWAGON WITHDRAWS COOLLY"
-info = "Il se retire, intouchable, et soigne ses blessures en chemin"
-info_en = "He withdraws, untouchable, and tends his wounds on the way"
+info = "Il lance son chapeau, se retire intouchable, et soigne ses blessures en chemin"
+info_en = "He throws his hat, withdraws untouchable, and tends his wounds on the way"
 startup_f = 4
 active_f = 60
 recovery_f = 10
@@ -389,6 +392,19 @@ invincible_f = 74
 lunge = -90
 buff = "cool"
 anim = "pose"
+
+[moves.gha.projectile]
+look = "hat"
+returns = true
+speed = 320
+radius = 7
+damage = 58
+lifetime_s = 1.5
+hitstun_f = 32
+knockback = 280
+hitstop_f = 7
+count = 2
+spread_deg = 24
 
 [buffs.cool]
 duration_s = 5

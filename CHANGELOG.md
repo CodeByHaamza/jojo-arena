@@ -108,6 +108,21 @@ des corrections seules une patch.
 - **Bilan de fin de combat.** Une fois le dernier round joué : dégâts, meilleur combo,
   plus gros coup, ultimes dépensés et durée, pour chacun des deux, aux couleurs des
   persos.
+- **Passe sur les 19 persos.** Plus aucun coup n'est identique au chiffre près entre deux
+  personnages (il y en avait sept), et les noms génériques (six « DIRECT », quatre
+  « GRIFFE ») sont devenus les leurs. **Jotaro et DIO ne se jouent plus pareil** : Star
+  Platinum frappe plus souvent pour moins, The World moins souvent pour plus, et Star
+  Platinum attrape ce qu'on lui lance.
+- **Kars éveillé a enfin ses pouvoirs.** Le soleil ne lui fait plus rien, son Onde à lui
+  porte à 120, il tire **une volée de plumes puis un piranha qui te suit**, et un
+  **tentacule de poulpe** te ramène à portée de ses griffes.
+- **Les cinq ultimes qui ne montraient rien** en montrent : trois impacts pour le poing
+  de Jotaro et le pied de The World, le corps qui coule pour Santana, **le sol qui
+  craque** pour Tarkus, le chapeau lancé pour Speedwagon.
+- **Tarkus, Straizo et Speedwagon** ont les techniques de leur fiche : Enfer et Ciel :
+  Tueur de Serpent (il saute par-dessus toi, la chaîne remonte d'en dessous), la
+  régénération instantanée de Straizo (il recolle sa chair, et en sort affaibli), et le
+  marteau de forge de Speedwagon.
 - **Les coups font du bruit.** La tornade souffle, la corne de Wamuu siffle, la Tommy
   Gun crache, les veines d'Esidisi giclent, les câbles de Joseph cliquettent et les
   lames sonnent. Avant, seul le moment où ça touchait faisait un son.

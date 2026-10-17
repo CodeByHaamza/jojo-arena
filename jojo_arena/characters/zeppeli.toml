@@ -16,8 +16,8 @@ label = "HAMON"
 
 # Jab, kick, Hamon kick: the same button three times, once the first one lands.
 [stances.base.moves.light]
-label = "DIRECT"
-label_en = "JAB"
+label = "DIRECT DU MAÎTRE"
+label_en = "THE MASTER'S JAB"
 info = "Très rapide. Encore la touche : coup de pied, puis coup de pied Hamon"
 info_en = "Very fast. Press again: kick, then Hamon kick"
 startup_f = 4

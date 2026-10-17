@@ -1287,6 +1287,11 @@ class FightView:
                 14 + move.radius * 0.9,
             )
             return
+        if move.fx == "shock":
+            # A blow into the floor: it travels out along the ground, not out of a fist.
+            grow = min(1.0, (attack.active_offset + 1) / max(1, move.active_f))
+            vfx.draw_shock(surface, fighter.pos, move.radius * (0.4 + 0.6 * grow), self.tick, aura)
+            return
         if move.fx == "wind_beam":
             # The horn is the barrel: it fires from the head, not from the hands.
             horn = fighter.pos + Vec2(attack.aim.x * 3, -view.height + 4)

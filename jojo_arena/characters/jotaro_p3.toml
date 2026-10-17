@@ -21,13 +21,13 @@ label_en = "NO STAND"
 
 # Jab, hook, uppercut: the same button three times, once the first one lands.
 [stances.base.moves.light]
-label = "DIRECT"
-label_en = "JAB"
+label = "DIRECT DE DÉLINQUANT"
+label_en = "DELINQUENT'S JAB"
 info = "Rapide. Encore la touche : crochet, puis uppercut"
 info_en = "Fast. Press again: hook, then uppercut"
 startup_f = 4
 active_f = 3
-recovery_f = 10
+recovery_f = 9
 damage = 28
 reach = 15
 radius = 10
@@ -38,8 +38,8 @@ cancel_on_hit = ["light", "heavy", "special"]
 chain = "light2"
 
 [stances.base.moves.light2]
-label = "CROCHET"
-label_en = "HOOK"
+label = "CROCHET DU LYCÉE"
+label_en = "SCHOOLYARD HOOK"
 info = "S'enchaîne sur le direct"
 info_en = "Follows the jab"
 startup_f = 5
@@ -75,8 +75,8 @@ anim = "uppercut"
 
 # The headbutt: slow, but it smashes through a guard.
 [stances.base.moves.heavy]
-label = "COUP DE TÊTE"
-label_en = "HEADBUTT"
+label = "COUP DE TÊTE DE JOTARO"
+label_en = "JOTARO'S HEADBUTT"
 info = "Casse-garde : vide la jauge de garde trois fois plus vite"
 info_en = "Guard crusher: drains the guard gauge three times faster"
 startup_f = 14
@@ -134,13 +134,14 @@ anim = "tackle"
 # "Yare yare daze": hands in the pockets... strike him and Star Platinum strikes back.
 [stances.base.moves.special_alt]
 label = "YARE YARE DAZE"
-info = "Contre : si on le frappe, Star Platinum surgit et cogne"
-info_en = "Counter: if struck, Star Platinum bursts out and strikes"
+info = "Avec une direction : il attend. Un coup est attrapé, un projectile renvoyé"
+info_en = "With a direction: he waits. A blow is caught, a thrown thing sent back"
 startup_f = 4
 active_f = 26
 recovery_f = 16
 counter = "counter_ora"
 anim = "counter_yare"
+reflect = true
 
 [stances.base.moves.counter_ora]
 label = "ORA ! (CONTRE)"
@@ -162,6 +163,8 @@ clashable = false
 anim = "light"
 
 # Star Platinum out --------------------------------------------------------------------
+info = "La réponse du contre : Star Platinum saisit le coup et répond d'un ORA"
+info_en = "The counter's answer: Star Platinum catches the blow and answers with an ORA"
 
 [stances.stand]
 label = "AVEC STAR PLATINUM"
@@ -176,8 +179,8 @@ info = "Poing de Star Platinum. Encore : ORA ORA, puis ORAAA !"
 info_en = "Star Platinum's fist. Again: ORA ORA, then ORAAA!"
 startup_f = 4
 active_f = 3
-recovery_f = 9
-damage = 34
+recovery_f = 10
+damage = 30
 reach = 22
 radius = 12
 hitstun_f = 20
@@ -191,11 +194,11 @@ label = "ORA ORA"
 info = "Deux poings d'un coup"
 info_en = "Two fists at once"
 startup_f = 5
-active_f = 6
-recovery_f = 10
+active_f = 5
+recovery_f = 9
 hits = 2
 hit_every_f = 3
-damage = 20
+damage = 17
 reach = 23
 radius = 13
 hitstun_f = 22
@@ -211,10 +214,10 @@ label_en = "ORAAA!"
 shout = "ORAAA !"
 info = "Uppercut de Star Platinum : envoie contre le mur"
 info_en = "Star Platinum's uppercut: sends into the wall"
-startup_f = 8
+startup_f = 7
 active_f = 4
-recovery_f = 20
-damage = 55
+recovery_f = 17
+damage = 48
 reach = 22
 radius = 14
 hitstun_f = 32
@@ -228,15 +231,15 @@ anim = "uppercut"
 [stances.stand.moves.heavy]
 shout = "ORA"
 label = "ORA ORA ORA"
-info = "Rafale de 14 coups qui pousse, le dernier envoie contre le mur"
-info_en = "A 14-hit barrage that pushes, the last hit sends into the wall"
+info = "Rafale de 16 coups qui pousse, le dernier envoie contre le mur"
+info_en = "A 16-blow barrage that pushes, and the last one sends into the wall"
 startup_f = 10
-active_f = 42
+active_f = 48
 recovery_f = 20
-hits = 14
+hits = 16
 hit_every_f = 3
 lunge = 50
-damage = 7
+damage = 6
 last_damage = 40
 reach = 24
 radius = 14
@@ -308,14 +311,14 @@ anim = "light"
 shout = "ORAA !"
 label = "POING ÉCRASANT"
 label_en = "CRUSHING FIST"
-info = "Invincible au démarrage, projette"
-info_en = "Invincible on startup, launches"
+info = "Trois fois le même poing, de plus en plus fort ; invincible au démarrage"
+info_en = "The same fist three times, harder each time; invincible on startup"
 stand_flash = true
 startup_f = 18
 active_f = 5
 recovery_f = 26
 invincible_f = 18
-damage = 160
+damage = 45
 reach = 20
 radius = 16
 hitstun_f = 36
@@ -327,6 +330,11 @@ anim = "heavy"
 
 # Great Heat Attack (2 bars): a Star Platinum punch must land first; then time stops,
 # a final Ora Ora rush, and time moves again on the last blow.
+hits = 3
+hit_every_f = 6
+last_damage = 80
+last_knockback = 460
+last_wall_bounce = true
 [moves.gha]
 shout = "ORA !"
 label = "ORA ORA FINAL"

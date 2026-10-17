@@ -18,8 +18,8 @@ label = "HAMON"
 
 # Jab, hook, Overdrive: the same button three times, once the first one lands.
 [stances.base.moves.light]
-label = "DIRECT"
-label_en = "JAB"
+label = "DIRECT DE BOXE"
+label_en = "BOXER'S JAB"
 info = "Lourd pour un coup rapide. Encore la touche : crochet, puis Overdrive"
 info_en = "Heavy for a quick blow. Press again: hook, then Overdrive"
 startup_f = 6

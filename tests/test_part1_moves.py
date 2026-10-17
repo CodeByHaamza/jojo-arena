@@ -141,8 +141,11 @@ def test_each_friend_brings_a_moveset_of_their_own():
     kempo = kit_.move("amato", "heavy")
     assert len({street.label, knives.label, kempo.label}) == 3  # three different blows
     assert knives.projectile is not None and knives.projectile.count == 3  # thrown knives
-    assert kempo.damage > street.damage  # the kempo kick hits hardest
-    assert kempo.reach <= street.reach + 6  # but he has to be right there
+    # Speedwagon has no Ripple, he has a sledgehammer: the heaviest of the three, and
+    # the slowest. The kempo kick comes out quicker for less.
+    assert street.damage > kempo.damage
+    assert street.startup_f > kempo.startup_f
+    assert kempo.reach <= street.reach + 6  # and the kempo master has to be right there
 
 
 def test_tattoo_throws_and_amato_answers():

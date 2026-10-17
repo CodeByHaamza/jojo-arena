@@ -31,7 +31,7 @@ label_en = "NO STAND"
 
 # Savate kicks: the same button three times.
 [stances.base.moves.light]
-label = "SAVATE"
+label = "ESTOC DE CHARIOT"
 info = "Coup de pied rapide. Encore : chassé, puis fouetté"
 info_en = "Fast kick. Again: side kick, then whip kick"
 startup_f = 4
@@ -46,6 +46,7 @@ hitstop_f = 4
 cancel_on_hit = ["light", "heavy", "special"]
 chain = "light2"
 anim = "kick"
+label_en = "CHARIOT THRUST"
 
 [stances.base.moves.light2]
 label = "CHASSÉ"
@@ -67,13 +68,13 @@ anim = "kick"
 
 [stances.base.moves.light3]
 label = "FOUETTÉ"
-label_en = "WHIP KICK"
+label_en = "DOUBLE THRUST"
 info = "Fin de l'enchaînement : envoie contre le mur"
 info_en = "Chain ender: sends into the wall"
-startup_f = 7
+startup_f = 8
 active_f = 4
 recovery_f = 16
-damage = 44
+damage = 46
 reach = 18
 radius = 12
 hitstun_f = 30

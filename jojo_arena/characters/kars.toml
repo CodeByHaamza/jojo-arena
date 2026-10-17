@@ -19,8 +19,8 @@ label = "SANS MODE"
 label_en = "NO MODE"
 
 [stances.base.moves.light]
-label = "REVERS"
-label_en = "BACKHAND"
+label = "REVERS TRANCHANT"
+label_en = "CUTTING BACKHAND"
 info = "Rapide et net. Encore : coup monté, puis talon"
 info_en = "Quick and clean. Again: a rising blow, then a heel"
 startup_f = 4
@@ -360,51 +360,61 @@ anim = "heavy"
 
 # The animal he turns a hand into, to see what it does.
 [stances.ultimate.moves.heavy]
-shout = "INUTILE !"
-shout_en = "USELESS!"
-label = "MAIN QUI DÉVORE"
-label_en = "DEVOURING HAND"
-info = "Sa main devient une bête qui mord huit fois et lui rend la vie prise"
-info_en = "His hand becomes a beast that bites eight times and gives him back what it takes"
-startup_f = 11
-active_f = 26
+shout = "CE N'EST PAS POSSIBLE !"
+shout_en = "THIS CANNOT BE!"
+label = "TENTACULE DE POULPE"
+label_en = "THIS CANNOT BE!"
+info = "Un tentacule de poulpe balaie devant lui et ramène l'adversaire à portée de griffes"
+info_en = "An octopus tentacle sweeps and drags the opponent back into claw range"
+shape = "line"
+fx = "tentacle"
+startup_f = 13
+active_f = 16
 recovery_f = 22
-hits = 8
-hit_every_f = 3
-damage = 13
-last_damage = 44
-drain = 0.3
-reach = 24
-radius = 14
-hitstun_f = 14
-knockback = 40
-last_knockback = 420
-last_wall_bounce = true
-hitstop_f = 1
-anim = "light"
+hits = 3
+hit_every_f = 6
+pull = 260
+pull_range = 90
+damage = 22
+last_damage = 48
+reach = 76
+radius = 9
+hitstun_f = 20
+knockback = -140
+last_knockback = 120
+hitstop_f = 5
+anim = "special"
 
+# The genes of everything he has ever touched: feathers first, then the piranha that
+# follows you. ("The power of supreme genes!", ASBR.)
+drain = 0.25
 [stances.ultimate.moves.heavy_alt]
-label = "AILES"
-label_en = "WINGS"
-info = "Avec une direction : il se fait des ailes et fond sur le point visé"
-info_en = "With a direction: he grows wings and drops on the point you aim at"
-startup_f = 9
-active_f = 6
-recovery_f = 16
-invincible_f = 9
-leap = 150
-leap_to = "cursor"
-leap_height = 34
-damage = 56
-drain = 0.2
-reach = 15
-radius = 13
-hitstun_f = 28
-knockback = 300
-hitstop_f = 8
-anim = "leap"
+shout = "LE POUVOIR DES GÈNES SUPRÊMES !"
+shout_en = "THE POWER OF SUPREME GENES!"
+label = "GÈNES SUPRÊMES"
+label_en = "SUPREME GENES"
+info = "Avec une direction : une volée de plumes, puis un piranha qui te suit"
+info_en = "With a direction: a volley of feathers, then a piranha that follows you"
+startup_f = 14
+active_f = 1
+recovery_f = 24
+anim = "special"
 
-# What he is for: the Ripple, his own, hotter than anything Joseph ever made.
+[stances.ultimate.moves.heavy_alt.projectile]
+look = "blade"
+speed = 300
+radius = 5
+damage = 26
+lifetime_s = 1.4
+hitstun_f = 22
+knockback = 150
+hitstop_f = 5
+count = 3
+spread_deg = 26
+waves = 2
+wave_every_f = 10
+homing_deg_s = 90
+
 [stances.ultimate.moves.special]
 shout = "MON ONDE !"
 shout_en = "MY RIPPLE!"

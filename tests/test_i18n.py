@@ -76,10 +76,10 @@ def test_localized_takes_the_translation_or_the_original():
 
 def test_characters_and_stages_load_in_the_current_language():
     jab = get_fighter("jotaro_p3").kit.move("base", "light")
-    assert jab.label == "DIRECT"
+    assert jab.label == "DIRECT DE DÉLINQUANT"
     i18n.set_language("en")
     jotaro = get_fighter("jotaro_p3")
-    assert jotaro.kit.move("base", "light").label == "JAB"
+    assert jotaro.kit.move("base", "light").label == "DELINQUENT'S JAB"
     assert jotaro.role == "BRAWLER - SHORT RANGE"
     assert jotaro.kit.stance_labels["base"] == "NO STAND"
     assert load_stage("cairo_night").name == "Cairo, a street at night"

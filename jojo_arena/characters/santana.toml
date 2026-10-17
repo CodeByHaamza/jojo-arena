@@ -17,15 +17,15 @@ label = "SANS MODE"
 label_en = "NO MODE"
 
 [stances.base.moves.light]
-label = "COUP DE POING"
-label_en = "PUNCH"
+label = "PAUME DU PILIER"
+label_en = "PILLAR PALM"
 info = "Court et lourd. Encore : revers, puis coup de tête"
 info_en = "Short and heavy. Again: backhand, then headbutt"
-startup_f = 5
+startup_f = 6
 active_f = 3
 recovery_f = 11
-damage = 30
-reach = 15
+damage = 34
+reach = 16
 radius = 11
 hitstun_f = 20
 knockback = 100
@@ -34,8 +34,8 @@ cancel_on_hit = ["light", "heavy", "special"]
 chain = "light2"
 
 [stances.base.moves.light2]
-label = "REVERS"
-label_en = "BACKHAND"
+label = "REVERS DE PIERRE"
+label_en = "STONE BACKHAND"
 info = "S'enchaîne sur le poing"
 info_en = "Follows the punch"
 startup_f = 6
@@ -52,8 +52,8 @@ chain = "light3"
 anim = "heavy"
 
 [stances.base.moves.light3]
-label = "COUP DE TÊTE"
-label_en = "HEADBUTT"
+label = "COUP DE TÊTE DU PILIER"
+label_en = "PILLAR HEADBUTT"
 info = "Fin de l'enchaînement : envoie contre le mur"
 info_en = "Chain ender: sends into the wall"
 startup_f = 8
@@ -154,8 +154,8 @@ anim = "special"
 shout = "..."
 label = "ÉTREINTE DU PILIER"
 label_en = "PILLAR'S EMBRACE"
-info = "Il se referme sur l'adversaire et boit ; invincible au démarrage"
-info_en = "He closes around the opponent and drinks; invincible on startup"
+info = "Son corps coule et se referme sur toi ; imparable, et il boit en même temps"
+info_en = "His body flows and closes over you; unblockable, and he drinks as it goes"
 startup_f = 16
 active_f = 5
 recovery_f = 26
@@ -163,7 +163,7 @@ invincible_f = 16
 unblockable = true
 damage = 150
 drain = 0.4
-reach = 16
+reach = 30
 radius = 14
 hitstun_f = 36
 knockback = 400
@@ -173,6 +173,8 @@ clashable = false
 anim = "grab"
 
 # Great Heat Attack (2 bars): he takes the whole body in, the way he took the room.
+fx = "tentacle"
+shape = "line"
 [moves.gha]
 label = "ABSORPTION TOTALE"
 label_en = "TOTAL ABSORPTION"

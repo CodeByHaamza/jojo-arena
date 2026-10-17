@@ -88,13 +88,17 @@ def measure(slot: str, guard: bool) -> tuple[int, int | None]:
 
 
 def test_a_blow_that_lands_measures_the_advantage_its_data_announces():
-    assert measure("heavy", guard=False) == (11, 11)  # the headbutt
-    assert measure("light", guard=False) == (6, 6)  # the jab
+    # What matters is that the two agree: the meter measures what the data computes.
+    # (The numbers themselves move when a move's frames are tuned.)
+    for slot, expected in (("heavy", 11), ("light", 7)):
+        measured, announced = measure(slot, guard=False)
+        assert measured == announced == expected, slot
 
 
 def test_a_blocked_blow_measures_the_advantage_its_data_announces():
-    assert measure("heavy", guard=True) == (-3, -3)  # punishable: it loses 3 frames
-    assert measure("light", guard=True) == (-2, -2)
+    for slot, expected in (("heavy", -3), ("light", -1)):
+        measured, announced = measure(slot, guard=True)
+        assert measured == announced == expected, slot
 
 
 def test_the_measured_advantage_says_who_it_belongs_to():

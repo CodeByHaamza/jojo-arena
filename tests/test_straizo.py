@@ -3,6 +3,8 @@ that burns him."""
 
 from helpers import NONE, kinds, make_duel, press, run, run_held, run_until
 
+from jojo_arena.characters import get_fighter
+
 GHA = press("heart_heat", move=(1.0, 0.0))
 
 
@@ -33,3 +35,22 @@ def test_lisa_lisas_hamon_riposte_burns_straizo():
     riposte = lisa.kit.move("base", "muffler_strike")
     burned = round(riposte.damage * match.rules.hamon_vs_weak_mult)
     assert straizo.max_hp - straizo.hp == burned
+
+
+def test_the_ripple_is_not_his_to_hold():
+    """He drank from the stone mask: the Ripple burns him. No Hamon tool, no Hamon move -
+    and the scarf of Satiporoja beetle silk is Lisa Lisa's, not his."""
+    kit = get_fighter("straizo").kit
+    for move in kit.all_moves():
+        assert not move.hamon, move.name
+        assert move.hamon_cost == 0, move.name
+        assert "SATIPOROJA" not in (move.label or "").upper(), move.name
+    assert get_fighter("straizo").kit.nature == "vampire"  # and the sun and Hamon say so
+
+
+def test_he_puts_himself_back_together_and_pays_for_it():
+    regeneration = get_fighter("straizo").kit.move("base", "special_alt")
+    assert regeneration.buff == "regeneration"
+    buff = get_fighter("straizo").kit.buffs["regeneration"]
+    assert buff.heal_per_s > 0  # the flesh comes back...
+    assert buff.damage_taken_mult > 1  # ...and he is weak while it does

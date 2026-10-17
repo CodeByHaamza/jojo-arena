@@ -57,7 +57,7 @@ help:
 	$(info $(INDENT)make coverage     tests with a coverage report, and htmlcov/index.html)
 	$(info $(INDENT)make docker-check lint and tests in a container, as on a clean machine)
 	$(info $(INDENT)make screens      screenshot tour of every screen into screenshots/tour/)
-	$(info $(INDENT)make clip         re-record the README animation into docs/media/)
+	$(info $(INDENT)make clip         re-record every README animation into docs/media/)
 	$(info $(INDENT)make screenshot   picture of one screen: SCENE=menu or select or options...)
 	$(info )
 	$(info Build)
@@ -135,7 +135,10 @@ screenshot: $(VENV_PY)
 	$(PY) -m jojo_arena --scene $(SCENE) --p1 $(P1) --p2 $(P2) --frames 90 --screenshot screenshots/$(SCENE).png
 
 clip: $(VENV_PY)
-	$(PY) tools/record_clip.py docs/media/fight.png --p1 $(P1) --p2 $(P2) --stage $(STAGE)
+	$(PY) tools/record_clip.py docs/media/fight.png --p1 jotaro_p3 --p2 dio_p3 		--stage cairo_night --frames 185 --every 5 --skip 200
+	$(PY) tools/record_clip.py docs/media/sandstorm.png --p2 wamuu --action wind/heavy 		--stage swiss_castle --frames 160 --every 5 --scale 1 --skip 150 --gap 40
+	$(PY) tools/record_clip.py docs/media/deluge.png --p2 kars --action gha 		--stage swiss_castle --frames 300 --every 8 --scale 1 --skip 120 --gap 40
+	$(PY) tools/record_clip.py docs/media/roadroller.png --p2 dio_p3 --action gha 		--stage cairo_night --frames 330 --every 9 --scale 1 --skip 120 --gap 26
 
 # Build ----------------------------------------------------------------------------------
 

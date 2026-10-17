@@ -21,8 +21,8 @@ label = "VAMPIRE"
 
 # Claw, fingers, WRYYY: the same button three times, once the first one lands.
 [stances.base.moves.light]
-label = "GRIFFE"
-label_en = "CLAW"
+label = "GRIFFE DE DIO"
+label_en = "DIO'S CLAW"
 info = "Rapide, boit un peu de sang. Encore : doigts perçants, puis WRYYY"
 info_en = "Fast, drinks a little blood. Again: piercing fingers, then WRYYY"
 startup_f = 5

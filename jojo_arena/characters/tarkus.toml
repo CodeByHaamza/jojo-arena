@@ -176,19 +176,20 @@ anim = "sweep"
 
 # Great Heat Attack (2 bars): the giant's grip must land first; then the Neck Breaker,
 # the chain around the neck and all his weight on it.
+fx = "shock"
 [moves.gha]
-label = "BRISE-NUQUE"
-label_en = "NECK BREAKER"
-info = "Une saisie. Si elle prend : la chaîne au cou, il serre de tout son poids"
-info_en = "A grab. If it takes hold: the chain round the neck, he pulls with all his weight"
-startup_f = 12
+label = "ENFER ET CIEL : TUEUR DE SERPENT"
+label_en = "HELL HEAVEN SNAKE KILL"
+info = "Il saute par-dessus toi et la chaîne remonte d'en dessous. Si elle prend : il tire"
+info_en = "He leaps over you and the chain comes up from below. If it holds: he pulls"
+startup_f = 16
 active_f = 4
 recovery_f = 28
 invincible_f = 12
 unblockable = true
 damage = 26
-reach = 15
-radius = 14
+reach = 34
+radius = 12
 hitstun_f = 40
 hitstop_f = 10
 clashable = false
@@ -199,3 +200,8 @@ finish_damage = 270
 finish_hitstun_f = 54
 finish_knockback = 480
 finish_wall_bounce = true
+shout = "TENCHI RAI JASATSU !"
+shape = "line"
+fx = "chain"
+leap = 140
+leap_height = 54

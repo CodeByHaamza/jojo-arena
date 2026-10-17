@@ -52,6 +52,23 @@ Dans le manoir et au château, **l'aube se lève** : les rais de soleil tombent 
 
 ---
 
+## Trois coups, trois façons de se battre
+
+<table>
+<tr>
+<td width="33%"><img src="docs/media/sandstorm.png" alt="Divine Sandstorm"></td>
+<td width="33%"><img src="docs/media/deluge.png" alt="Déluge de lumière"></td>
+<td width="33%"><img src="docs/media/roadroller.png" alt="Road Roller"></td>
+</tr>
+<tr>
+<td align="center"><b>DIVINE SANDSTORM</b><br>Wamuu fait tourner ses avant-bras, puis <b>deux tornades</b> aspirent et broient</td>
+<td align="center"><b>DÉLUGE DE LUMIÈRE</b><br>Kars jette une <b>nappe de neuf lames</b> devant lui</td>
+<td align="center"><b>ROAD ROLLER</b><br>Temps arrêté, et le rouleau tombe <b>là où tu te trouves</b></td>
+</tr>
+</table>
+
+---
+
 ## Ce qui rend chaque perso différent
 
 - **Stands** (Jotaro, DIO, Kakyoin, Polnareff) : touche Stand, le Stand apparaît et change tous les coups ; un coup sur le Stand blesse son manieur. Hierophant Green se **contrôle à distance** et possède sa cible.
@@ -208,7 +225,8 @@ Le `Makefile` regroupe les commandes courantes ; `make` tout seul affiche la lis
 | `make test-fast` | les tests sans ceux qui lancent le jeu entier |
 | `make screens` | capture tous les écrans dans `screenshots/tour/` |
 | `make sprites`, `make exe`, `make clean` | planches de sprites, `.exe`, nettoyage |
-| `make clip` | réenregistre l'animation du README (`docs/media/fight.png`) |
+| `make clip` | réenregistre les quatre animations du README dans `docs/media/` |
+| `python tools/audit_kits.py` | ce qui se répète d'un perso à l'autre, les ultimes qui ne montrent rien |
 
 Sous Windows il faut un GNU make : `winget install ezwinports.make` ou `choco install make` (ou `mingw32-make`). Les commandes marchent pareil dans PowerShell, cmd ou Git Bash.
 

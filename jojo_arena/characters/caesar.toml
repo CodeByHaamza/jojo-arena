@@ -17,8 +17,8 @@ label = "HAMON"
 
 # Jab, high kick, Hamon heel: the same button three times, once the first one lands.
 [stances.base.moves.light]
-label = "DIRECT"
-label_en = "JAB"
+label = "POING DE BULLES"
+label_en = "BUBBLE FIST"
 info = "Rapide. Encore la touche : coup de pied haut, puis talon de Hamon"
 info_en = "Fast. Press again: high kick, then Hamon heel"
 startup_f = 5

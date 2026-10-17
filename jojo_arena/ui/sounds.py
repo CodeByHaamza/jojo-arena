@@ -290,6 +290,7 @@ def build_sounds(player: AudioPlayer) -> None:
 # What a move with an effect of its own sounds like, played the frame it goes active.
 FX_SOUNDS: dict[str, str] = {
     "vortex": "wind",
+    "shock": "boom",
     "wind_beam": "wind",
     "gun": "gunshot",
     "blood_jet": "splat",

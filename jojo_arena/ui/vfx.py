@@ -548,6 +548,27 @@ def _swirl(surface: pygame.Surface, center: Vec2, radius: float, turn: float, co
     pygame.draw.circle(surface, (255, 255, 255), _ints(center), 1)
 
 
+def draw_shock(surface: pygame.Surface, center: Vec2, radius: float, tick: int, color) -> None:
+    """A blow that lands on the floor: rings running out across the ground, cracks under
+    them, and the dust they throw up."""
+    pale = tuple(min(255, c + 60) for c in color)
+    for ring in range(3):
+        grow = radius * (0.45 + 0.28 * ring)
+        box = pygame.Rect(0, 0, round(grow * 2), max(3, round(grow * 0.85)))
+        box.center = _ints(center)
+        pygame.draw.ellipse(surface, OUTLINE, box.inflate(2, 2), 3)
+        pygame.draw.ellipse(surface, pale if ring == 0 else color, box, 1)
+    for i in range(7):
+        angle = math.tau * i / 7 + (tick % 7) * 0.1
+        start = center + Vec2(math.cos(angle) * radius * 0.3, math.sin(angle) * radius * 0.26)
+        end = center + Vec2(math.cos(angle) * radius * 0.95, math.sin(angle) * radius * 0.8)
+        pygame.draw.line(surface, OUTLINE, _ints(start), _ints(end), 3)
+        pygame.draw.line(surface, pale, _ints(start), _ints(end), 1)
+    blit_glow(
+        surface, radial_glow(round(radius * 0.7), tuple(c // 2 for c in color)), _ints(center)
+    )
+
+
 def draw_vortices(
     surface: pygame.Surface,
     origin: Vec2,

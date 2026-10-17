@@ -19,14 +19,14 @@ label = "VAMPIRE"
 
 # Claw, cross claw, finger stab: the same button three times, once the first one lands.
 [stances.base.moves.light]
-label = "GRIFFE"
-label_en = "CLAW"
+label = "GRIFFE DU DISCIPLE"
+label_en = "THE DISCIPLE'S CLAW"
 info = "Rapide. Encore la touche : griffe croisée, puis doigts qui percent"
 info_en = "Fast. Press again: cross claw, then piercing fingers"
-startup_f = 5
+startup_f = 6
 active_f = 3
-recovery_f = 11
-damage = 28
+recovery_f = 12
+damage = 26
 reach = 15
 radius = 10
 hitstun_f = 19
@@ -36,8 +36,8 @@ cancel_on_hit = ["light", "heavy", "special"]
 chain = "light2"
 
 [stances.base.moves.light2]
-label = "GRIFFE CROISÉE"
-label_en = "CROSS CLAW"
+label = "GRIFFES EN CISEAUX"
+label_en = "SCISSOR CLAWS"
 info = "S'enchaîne sur la griffe"
 info_en = "Follows the claw"
 startup_f = 7
@@ -92,8 +92,8 @@ anim = "grab"
 
 # With a direction: a vampire's leap toward where he aims.
 [stances.base.moves.heavy_alt]
-label = "BOND DE VAMPIRE"
-label_en = "VAMPIRE LEAP"
+label = "BOND DE STRAIZO"
+label_en = "STRAIZO'S LEAP"
 info = "Avec une direction : bondit vers le point visé et retombe griffes en avant"
 info_en = "With a direction: leaps to the aimed spot and lands claws first"
 startup_f = 14
@@ -132,27 +132,19 @@ anim = "special_eyes"
 
 # With a direction: three short jets in a fan.
 [stances.base.moves.special_alt]
-label = "JETS EN ÉVENTAIL"
-label_en = "JET FAN"
-info = "Avec une direction : trois jets courts en éventail"
-info_en = "With a direction: three short jets in a fan"
-blood_cost = 15
-startup_f = 12
-active_f = 1
-recovery_f = 18
-anim = "special_eyes"
-
-[stances.base.moves.special_alt.projectile]
-look = "jet"
-speed = 560
-radius = 3
-damage = 24
-lifetime_s = 0.35
-hitstun_f = 18
-knockback = 100
-hitstop_f = 3
-count = 3
-spread_deg = 36
+shout = "JE ME RECONSTRUIS !"
+shout_en = "I AM PUTTING MYSELF BACK TOGETHER!"
+label = "RÉGÉNÉRATION INSTANTANÉE"
+label_en = "INSTANT REGENERATION"
+info = "Avec une direction : il recolle sa chair (+12 PV/s pendant 4 s), mais il en sort affaibli"
+info_en = "With a direction: he puts his flesh back (+12 HP/s for 4 s), and comes out weakened"
+blood_cost = 25
+startup_f = 14
+active_f = 4
+recovery_f = 26
+buff = "regeneration"
+cooldown_s = 10
+anim = "pose"
 
 # The sniper stance ------------------------------------------------------------------------
 # He slows down and takes aim; every button is a jet from the eyes.
@@ -288,3 +280,9 @@ finish_damage = 240
 finish_hitstun_f = 50
 finish_knockback = 420
 finish_wall_bounce = true
+
+[buffs.regeneration]
+# "Full regeneration drains energy and leaves him weakened" (jojowiki/Straizo).
+duration_s = 4
+heal_per_s = 12
+damage_taken_mult = 1.4
