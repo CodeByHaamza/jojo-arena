@@ -78,6 +78,12 @@ class TrainingScene(FightScene):
             for who in ctx.controls.active_preset.players
         ]
         self.meter_panel = FrameMeterPanel((text.P1, text.P2), METER_COLUMNS)
+        self.dummy.load_json(ctx.settings.training)  # the setup from last time
+        # Watching a move frame by frame: F6 speed, F7 freeze, F8 one step.
+        self.speed_div = 1
+        self.frozen = False
+        self.single_step = False
+        self.slow_f = 0
 
     @property
     def training(self) -> Training:
@@ -130,6 +136,17 @@ class TrainingScene(FightScene):
 
     # Update -----------------------------------------------------------------------------
 
+    def handle_event(self, event: pygame.event.Event) -> None:
+        super().handle_event(event)
+        if event.type != pygame.KEYDOWN:
+            return
+        if event.key == pygame.K_F6:
+            self.speed_div = {1: 2, 2: 4, 4: 1}[self.speed_div]
+        elif event.key == pygame.K_F7:
+            self.frozen = not self.frozen
+        elif event.key == pygame.K_F8:
+            self.frozen, self.single_step = True, True
+
     def update(self) -> None:
         if self.dummy.recording_now and self.pause_menu is None and self.move_list is None:
             # While recording, the pause key ends the recording instead of pausing.
@@ -137,6 +154,18 @@ class TrainingScene(FightScene):
             if menu.was_pressed("pause") or menu.was_pressed("back"):
                 self.dummy.stop_recording()
                 return
+        if self.pause_menu is not None or self.move_list is not None:
+            super().update()
+            return
+        if self.frozen and not self.single_step:
+            # The world holds still; the pause key still answers.
+            if self.ctx.read_menu().was_pressed("pause"):
+                self.pause_menu = Menu(self._pause_items())
+            return
+        self.slow_f += 1
+        if not self.single_step and self.slow_f % self.speed_div:
+            return  # slow motion: this frame is drawn, but the world does not move
+        self.single_step = False
         super().update()
 
     def on_step(self, events: list) -> None:
@@ -160,6 +189,12 @@ class TrainingScene(FightScene):
                 self._serials[index] = attack.serial
                 self.last_moves[index] = attack.move
         return frames
+
+    def _go_to_menu(self) -> None:
+        """Leaving the room: the dummy's setup is kept for next time."""
+        self.ctx.settings.training = self.dummy.to_json()
+        self.ctx.save_settings()
+        super()._go_to_menu()
 
     def apply_command(self, command: dict) -> None:
         if "life" in command:
@@ -346,6 +381,14 @@ class TrainingScene(FightScene):
             font.draw(surface, hits, (x, 44), color, scale=2, align=align)
             damage = text.COMBO_DAMAGE.format(n=combo.damage)
             font.draw(surface, damage, (x, 64), WHITE if combo.live else DIM, align=align)
+        if self.frozen or self.speed_div > 1:
+            # Under the title, in the middle: the combo counters sit at the edges.
+            label = (
+                text.TRAIN_FROZEN
+                if self.frozen
+                else text.TRAIN_SPEED.format(pct=100 // self.speed_div)
+            )
+            font.draw(surface, label, (width // 2, 46), GOLD, align="center")
         font.draw(surface, self.hint, (width // 2, height - 12), FAINT, align="center")
         if self.inputs_shown:
             tag = (text.P1, text.P2)[self.watched]

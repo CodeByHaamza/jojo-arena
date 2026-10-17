@@ -110,3 +110,31 @@ def test_reset_puts_fighters_back_and_keeps_the_options():
     assert training.match.fighters[0].pos == Vec2(150, 100)
     assert training.infinite_hh is False
     assert training.match.fighters[0].hh == 0
+
+
+def test_the_dummy_setup_is_saved_and_read_back():
+    """Setting the dummy up takes a dozen presses: it survives leaving the room."""
+    from jojo_arena.characters import get_fighter
+    from jojo_arena.combat.dummy import After, Dummy, DummyPlayer, dummy_actions
+    from jojo_arena.settings import parse_settings
+
+    dummy = DummyPlayer(dummy_actions(get_fighter("jotaro_p3").kit))
+    dummy.select("base/heavy")
+    dummy.plan.delay_f = 12
+    dummy.plan.approach = True
+    dummy.plan.mode = Dummy.ACTION
+    dummy.plan.after = After.GUARD
+    saved = dummy.to_json()
+
+    # The same setup put back on another character: the action is kept by name.
+    other = DummyPlayer(dummy_actions(get_fighter("kakyoin").kit))
+    other.load_json(saved)
+    assert other.action.key == "base/heavy"
+    assert other.plan.delay_f == 12 and other.plan.approach
+    assert other.plan.mode is Dummy.ACTION and other.plan.after is After.GUARD
+
+    # And it goes through settings.json without losing anything.
+    assert parse_settings({"training": saved}).training == saved
+    nonsense = DummyPlayer(dummy_actions(get_fighter("jotaro_p3").kit))
+    nonsense.load_json({"action": "no/such/move", "delay_f": 9999, "mode": "nope"})
+    assert nonsense.plan.delay_f != 9999  # a delay that is not on the dial is ignored

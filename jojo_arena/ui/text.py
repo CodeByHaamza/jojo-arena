@@ -201,6 +201,8 @@ FR = {
     ),
     # Training
     "TRAINING": "ENTRAÎNEMENT",
+    "TRAIN_FROZEN": "GELÉ - F8 : UNE IMAGE",
+    "TRAIN_SPEED": "VITESSE {pct} %",
     "DUMMY_MODE": "MANNEQUIN",
     "DUMMY_STAND": "IMMOBILE",
     "DUMMY_GUARD": "GARDE",
@@ -543,6 +545,8 @@ EN = {
         "Under {threshold} % life: +{bonus} % damage, guarding no longer costs life"
     ),
     "TRAINING": "TRAINING",
+    "TRAIN_FROZEN": "FROZEN - F8: ONE FRAME",
+    "TRAIN_SPEED": "SPEED {pct}%",
     "DUMMY_MODE": "DUMMY",
     "DUMMY_STAND": "STILL",
     "DUMMY_GUARD": "GUARD",

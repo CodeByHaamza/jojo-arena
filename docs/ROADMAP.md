@@ -109,13 +109,13 @@ Classées par ce qu'elles apportent pour ce qu'elles coûtent.
 ### Rapides et qui se sentent tout de suite
 
 - [ ] **Défis d'entraînement** : « fais 5 coups d'affilée avec Jotaro », « punis le coup de tête », « sors le Star Finger après une garde ». Le mode entraînement sait déjà tout mesurer (combo, frise, avantage) ; il ne manque qu'une liste d'objectifs en TOML et un écran de validation. C'est ce qui apprend le jeu à un joueur sans tutoriel.
-- [ ] **Sauver un réglage d'entraînement** : l'action du mannequin, le délai et les options dans `settings.json`, pour retrouver sa situation de travail en relançant.
-- [ ] **Vitesse d'entraînement** : jouer à 50 % ou 25 % de vitesse pour voir un enchaînement se dérouler. Le pas fixe le permet sans toucher à la simulation.
-- [ ] **Arrêt sur image et avance image par image** en entraînement (F7 / F8) : la frise devient un outil d'analyse complet.
+- [x] **Sauver un réglage d'entraînement** : l'action du mannequin (par son nom, pas son numéro), le délai et les options sont gardés dans `settings.json` en quittant la salle.
+- [x] **Vitesse d'entraînement** : F6 passe de 100 % à 50 % puis 25 %, en sautant des pas de simulation.
+- [x] **Arrêt sur image et avance image par image** en entraînement : F7 gèle le monde, F8 avance d'exactement une image.
 
 ### Le jeu lui-même
 
-- [ ] **Power Up et jauge d'Éveil** (déjà dans la roadmap) : la touche existe, elle ne sert à rien ; c'est la mécanique manquante la plus visible.
+- [x] **Power Up et éveil** : la touche déclenche l'éveil d'un kit qui en déclare un (`[awakening]`) — 5 s immobile et vulnérable, cinématique, nouveau moveset (Kars).
 - [ ] **Partie 4** (Josuke, Crazy Diamond qui répare le décor et renvoie les projectiles) : le décor destructible existe déjà, Crazy Diamond lui donnerait un sens.
 - [ ] **Deuxième arène par partie** : le château de Wamuu (piliers à casser), la grotte de Santana. Les arènes font autant pour l'identité d'une partie que les persos.
 - [x] **Écran de fin de combat** : dégâts, meilleur combo, plus gros coup, ultimes et durée, par perso — comptés par `combat/stats.py` pendant le combat et affichés au-dessus du menu de revanche.

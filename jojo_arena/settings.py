@@ -23,6 +23,8 @@ class Settings:
     rumble: int = 7  # pad rumble, 0 (off) to 10
     layout: str = "auto"  # auto, azerty, qwerty
     pad_style: str = "auto"  # auto, xbox, playstation
+    # The training dummy as it was left: action key, delay, and the switches.
+    training: dict = field(default_factory=dict)
 
     def to_json(self) -> dict:
         return {
@@ -33,6 +35,7 @@ class Settings:
             "rumble": self.rumble,
             "layout": self.layout,
             "pad_style": self.pad_style,
+            "training": self.training,
         }
 
 
@@ -57,6 +60,8 @@ def parse_settings(data: object) -> Settings:
         settings.layout = data["layout"]
     if isinstance(data, dict) and data.get("pad_style") in PAD_STYLES:
         settings.pad_style = data["pad_style"]
+    if isinstance(data, dict) and isinstance(data.get("training"), dict):
+        settings.training = data["training"]  # checked where it is used, not here
     return settings
 
 

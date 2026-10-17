@@ -382,3 +382,29 @@ def test_every_arena_has_a_preview_drawn_from_the_real_stage(ctx):
             thumb.get_at((x, y))[:3] for x in range(0, PREVIEW[0], 7) for y in range(0, 100, 7)
         }
         assert len(colors) > 8, stage_id  # a real picture, not a flat rectangle
+
+
+def test_training_freezes_steps_one_frame_and_runs_at_half_speed(ctx):
+    """F7 freezes the room, F8 advances exactly one step, F6 halves the speed."""
+    training = start(ctx, TrainingScene(ctx, ("jotaro_p3", "jotaro_p3")))
+
+    def key(code):
+        training.handle_event(pygame.event.Event(pygame.KEYDOWN, key=code, scancode=0, mod=0))
+
+    key(pygame.K_F7)
+    assert training.frozen
+    held = training.rounds.phase_f
+    steps(ctx, 10)
+    assert training.rounds.phase_f == held  # nothing moves
+
+    key(pygame.K_F8)
+    steps(ctx, 1)
+    assert training.rounds.phase_f == held + 1  # exactly one
+    assert training.frozen
+
+    key(pygame.K_F7)
+    key(pygame.K_F6)
+    assert not training.frozen and training.speed_div == 2
+    held = training.rounds.phase_f
+    steps(ctx, 8)
+    assert training.rounds.phase_f - held == 4  # one step out of two

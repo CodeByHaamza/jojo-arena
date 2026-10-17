@@ -160,6 +160,35 @@ class DummyPlayer:
                 self.plan.action = index
                 return
 
+    def to_json(self) -> dict:
+        """The settings as they are, by the action's key: a number would not survive a
+        change of character or of roster."""
+        plan = self.plan
+        return {
+            "mode": str(plan.mode),
+            "action": self.action.key,
+            "delay_f": plan.delay_f,
+            "chain": plan.chain,
+            "approach": plan.approach,
+            "after": str(plan.after),
+        }
+
+    def load_json(self, data: dict) -> None:
+        """Put back what was saved, ignoring anything that no longer makes sense."""
+        if not isinstance(data, dict):
+            return
+        plan = self.plan
+        if data.get("mode") in tuple(Dummy):
+            plan.mode = Dummy(data["mode"])
+        if data.get("after") in tuple(After):
+            plan.after = After(data["after"])
+        if isinstance(data.get("delay_f"), int) and data["delay_f"] in DELAYS:
+            plan.delay_f = data["delay_f"]
+        plan.chain = bool(data.get("chain", plan.chain))
+        plan.approach = bool(data.get("approach", plan.approach))
+        if isinstance(data.get("action"), str):
+            self.select(data["action"])
+
     def retarget(self, actions: Sequence[DummyAction]) -> None:
         """A new dummy character: its own catalog, keeping the action if it still exists."""
         key = self.action.key

@@ -101,6 +101,10 @@ des corrections seules une patch.
   30 % — un maillon de son enchaînement lui coûtait du Hamon pour rien ; Esidisi de 18 %
   à 23 %, son sang lui coûte moins cher.
 
+- **Le réglage du mannequin est gardé** d'une session à l'autre : son action, son délai
+  et ses options sont là en revenant.
+- **Entraînement au ralenti et image par image.** F6 : 100 %, 50 %, 25 %. F7 : gel.
+  F8 : une image. De quoi regarder un enchaînement se dérouler au lieu de le deviner.
 - **Bilan de fin de combat.** Une fois le dernier round joué : dégâts, meilleur combo,
   plus gros coup, ultimes dépensés et durée, pour chacun des deux, aux couleurs des
   persos.
@@ -124,7 +128,6 @@ des corrections seules une patch.
   colonne de lumière qui descend sur l'adversaire.
 - **Portées d'armes** : les cheveux et l'épée de Bruford, et la rapière de Silver
   Chariot, portaient moins loin qu'un direct.
-
 - La grille de sélection des persos affichait une rangée de cases vides sous la partie 1 :
   elle s'arrête maintenant à la dernière rangée occupée.
 
