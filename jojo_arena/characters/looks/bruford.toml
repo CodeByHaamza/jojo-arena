@@ -32,6 +32,7 @@ cloth = "#98aed0"
 boots = "#5a5a66"
 steel = "#d0d4e0"
 eyes = "#ff8a3a"
+scar = "#8e8498"
 
 [body]
 head = "skin"
@@ -46,6 +47,7 @@ eyes = "eyes"
 eye_style = "wide"
 brows = true
 nose = true
+scar = "scar"
 
 # The wild mane that he fights with.
 [[parts]]
@@ -61,6 +63,12 @@ back_length = 10
 type = "headband"
 material = "gold"
 gem = "gold"
+
+# The collar plate ends in a decorated metal disc.
+[[parts]]
+type = "emblem"
+material = "gold"
+shape = "circle"
 
 [[parts]]
 type = "coat"

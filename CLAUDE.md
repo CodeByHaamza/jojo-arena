@@ -94,6 +94,29 @@ ligne**, et cite-la dans le commentaire du fichier concerné.
 - Si une source manque ou se contredit, dis-le au propriétaire au lieu de combler le
   trou.
 
+### Imaginer un perso : la liste à suivre
+
+Avant d'écrire la moindre ligne d'un nouveau perso, on cherche **en ligne** et on écrit
+ce qu'on a trouvé dans le commentaire en tête de son kit :
+
+1. **Fiche JoJo Wiki** du perso : apparence (pour `looks/`), personnalité (pour le
+   ressenti), histoire (pour le glossaire), et la liste de ses **techniques nommées**.
+2. **Son Stand**, s'il en a un : fiche du Stand, ses pouvoirs, sa portée, son apparence,
+   son type (proche, longue portée, autonome, lié à un objet), ses stats officielles.
+3. **Ses listes de coups dans les jeux** : **All-Star Battle R** d'abord (c'est notre
+   référence gameplay : Style Action, skills, HHA, GHA), puis **Eyes of Heaven** (coups
+   différents, assists, DHA).
+4. **Choisir entre les deux et le dire** : si une technique existe dans les deux jeux,
+   on prend celle qui se lit le mieux en vue de dessus et dans notre moteur, et on
+   écrit **pourquoi** en commentaire (« EoH : la version qui se déplace, plus lisible
+   ici qu'une version au sol »). Un coup d'EoH ou d'ASBR qui n'existe pas dans le manga
+   reste jouable : c'est de la matière officielle.
+5. **Ce qui ne rentre pas** : si une technique ne peut pas marcher chez nous (verticalité,
+   caméra, 3D), on le dit au propriétaire et on propose l'équivalent le plus proche au
+   lieu d'inventer autre chose en silence.
+6. **La forme avant les chiffres** : hitbox, portée et effet suivent la technique (voir
+   la règle ci-dessus), puis `jojo-balance` mesure.
+
 ## Licence et mentions
 
 - Code sous licence **MIT**.

@@ -23,7 +23,7 @@ foot_r = 2.3
 
 [palette]
 skin = "#f2c8a6"
-hair = "#c4573f"
+hair = "#cf6450"
 uniform = "#3e522f"      # dark olive-green school uniform
 gold = "#e8c03a"
 cherry = "#b52a64"
@@ -54,10 +54,10 @@ style = "swept"
 volume = 7.9
 back_length = 7
 bangs = "curl"
-bangs_side = "left"
-bangs_length = 11
-bangs_width = 1.6
-bangs_spread = 3.5
+bangs_side = "right"
+bangs_length = 9.0
+bangs_width = 1.5
+bangs_spread = -1.6  # it hangs over his face, not beside it
 
 # Long closed gakuran: high collar with gold pins, gold buttons and cuff buttons.
 [[parts]]

@@ -24,11 +24,12 @@ foot_r = 2.3
 [palette]
 skin = "#e8d0c0"
 hair = "#2a2430"
-coat = "#7a5636"
+coat = "#e6e4ec"
 shirt = "#3a3044"
 trousers = "#2e2a36"
-boots = "#22202a"
+boots = "#4a3426"
 gold = "#d8b048"
+scarf = "#55525e"
 eyes = "#e03030"
 
 [body]
@@ -51,6 +52,11 @@ material = "hair"
 style = "long"
 length = 8
 volume = 8.2
+
+# The scarf of Satiporoja beetle silk, dark grey in the anime.
+[[parts]]
+type = "scarf"
+material = "scarf"
 
 [[parts]]
 type = "coat"

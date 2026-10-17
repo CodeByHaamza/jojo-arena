@@ -28,3 +28,19 @@ on purpose - the GDD wins over the wiki, it is a game first.
 
 The game is a free, non-commercial, unofficial fan game: never copy artwork, audio or
 text from the rights holders into the repository. Facts and names, yes; assets, no.
+
+## Imaginer un perso : ce que tu cherches avant d'écrire
+
+`WebSearch` / `WebFetch`, à chaque fois, dans cet ordre, et tu cites la page dans le
+commentaire du fichier :
+
+1. la **fiche JoJo Wiki** du perso (apparence, personnalité, techniques nommées) ;
+2. la **fiche de son Stand** (pouvoir, portée, apparence, type, stats) ;
+3. sa **liste de coups All-Star Battle R** (Style Action, skills, HHA, GHA) ;
+4. sa **liste de coups Eyes of Heaven** (coups différents, assists, DHA).
+
+Quand une technique existe dans les deux jeux, tu choisis celle qui se lit le mieux en
+vue de dessus **et tu écris pourquoi** dans le commentaire du coup. Un coup qui n'existe
+que dans un jeu reste de la matière officielle, il est jouable. Une technique qui ne peut
+pas marcher chez nous (verticalité, 3D) se signale au propriétaire : on ne la remplace
+pas par une invention sans le dire.

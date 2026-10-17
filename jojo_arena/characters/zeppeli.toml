@@ -33,14 +33,14 @@ cancel_on_hit = ["light", "heavy", "special"]
 chain = "light2"
 
 [stances.base.moves.light2]
-label = "COUP DE PIED"
-label_en = "KICK"
-info = "S'enchaîne sur le direct"
-info_en = "Follows the jab"
+label = "SENDÔ WAVE KICK"
+label_en = "SENDO WAVE KICK"
+info = "S'enchaîne sur le direct : un genou d'Onde qui déchire les morts-vivants"
+info_en = "Follows the jab: a Ripple knee that tears the undead apart"
 startup_f = 5
 active_f = 3
 recovery_f = 10
-damage = 30
+damage = 34
 reach = 17
 radius = 11
 hitstun_f = 20
@@ -51,10 +51,10 @@ chain = "light3"
 anim = "kick"
 
 [stances.base.moves.light3]
-label = "COUP DE PIED HAMON"
+label = "OVERDRIVE"
 label_en = "HAMON KICK"
-info = "Fin de l'enchaînement : envoie contre le mur"
-info_en = "Chain ender: sends into the wall"
+info = "Fin de l'enchaînement : l'Onde passe dans le membre et le repousse"
+info_en = "Chain ender: the Ripple runs through the limb and sends him back"
 hamon_cost = 20
 startup_f = 7
 active_f = 4

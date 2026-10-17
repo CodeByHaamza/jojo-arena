@@ -56,14 +56,15 @@ scar = "scar"
 type = "hair"
 material = "hair"
 style = "short"
-volume = 7.4
-back_length = 8
+volume = 7.6
+back_length = 6.5
 
 [[parts]]
 type = "top_hat"
 material = "hat"
 bowler = true
 band = "hat_band"
+height = 5.0
 
 [[parts]]
 type = "coat"

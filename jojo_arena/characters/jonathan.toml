@@ -35,22 +35,24 @@ cancel_on_hit = ["light", "heavy", "special"]
 chain = "light2"
 
 [stances.base.moves.light2]
-label = "CROCHET"
+label = "ZOOM PUNCH"
 label_en = "HOOK"
-info = "S'enchaîne sur le direct"
-info_en = "Follows the jab"
-startup_f = 7
+info = "S'enchaîne sur le direct : il déboîte l'épaule pour frapper de plus loin"
+info_en = "Follows the jab: he dislocates the joint to reach much further"
+startup_f = 8
 active_f = 3
 recovery_f = 13
-damage = 40
-reach = 16
-radius = 12
+damage = 38
+reach = 32
+radius = 7
 hitstun_f = 23
 knockback = 110
 hitstop_f = 6
 cancel_on_hit = ["light", "heavy", "special"]
 chain = "light3"
 anim = "heavy"
+shape = "line"
+fx = "limb"
 
 [stances.base.moves.light3]
 shout = "OVERDRIVE !"

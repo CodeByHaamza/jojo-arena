@@ -27,7 +27,7 @@ skin = "#f0c49c"
 hair = "#3c3c9e"          # indigo
 top = "#3d63c8"
 pad = "#8a5530"
-belt = "#c8403a"
+belt = "#e0862e"
 gold = "#f0c23c"
 trousers = "#8c909e"
 boots = "#3a2c28"
@@ -62,8 +62,7 @@ fill = 0.55
 type = "top"
 material = "top"
 neckline = 2
-length = 0.45
-torn = true
+length = 0.62
 
 [[parts]]
 type = "pauldrons"
