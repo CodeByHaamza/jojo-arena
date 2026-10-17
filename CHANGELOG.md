@@ -116,6 +116,9 @@ des corrections seules une patch.
 - **Équilibrage.** Les longues lames de Kars récupèrent plus lentement : sa portée coûte
   quelque chose quand elle rate (−6 et −7 en garde). Les coups de Speedwagon, les plus
   faibles du jeu, tapent un peu plus fort et son marteau démarre plus vite.
+- **La forme de vie ultime ne retombe plus entre les rounds**, et sa naissance a la
+  cinématique qu'elle mérite : la pierre qui se pose, le masque qui se referme, la
+  lumière qui déchire le corps, les ailes qui s'ouvrent.
 - **Kars éveillé a enfin ses pouvoirs.** Le soleil ne lui fait plus rien, son Onde à lui
   porte à 120, il tire **une volée de plumes puis un piranha qui te suit**, et un
   **tentacule de poulpe** te ramène à portée de ses griffes.

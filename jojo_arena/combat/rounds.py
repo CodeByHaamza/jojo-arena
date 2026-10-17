@@ -60,6 +60,7 @@ class Rounds:
         self.sudden_death = False
         self.result: RoundResult | None = None
         self.winner: int | None = None  # of the whole fight
+        self.awakened = [False, False]  # an awakening is for the whole fight, not a round
         self.stats = FightStats()  # what each of them did, for the screen at the end
         self.match: Match
         self._start_round(carry=(0.0, 0.0))
@@ -80,6 +81,10 @@ class Rounds:
         self.match = Match(self.kits, self.rules, self.arena_factory())
         for fighter, hh in zip(self.match.fighters, carry, strict=True):
             fighter.hh = hh
+        for fighter, was_awake in zip(self.match.fighters, self.awakened, strict=True):
+            # The Stone Mask does not come off between rounds: he starts awakened.
+            if was_awake and fighter.kit.awakening is not None:
+                fighter.complete_awakening()
             if self.sudden_death:
                 fighter.hp = self.rules.sudden_death_hp
         self.timer_f = self.rules.round_timer_f
@@ -154,6 +159,7 @@ class Rounds:
             return [Event("match_over", fighter=self.winner)]
         # Nobody won yet, or both reached the target together: play on.
         self.sudden_death = len(reached) == 2 or self.sudden_death
+        self.awakened = [fighter.awakened for fighter in self.match.fighters]
         carry = (0.0, 0.0)
         if self.rules.carry_heart_heat:
             carry = (self.match.fighters[0].hh, self.match.fighters[1].hh)

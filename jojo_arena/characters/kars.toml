@@ -301,7 +301,8 @@ vulnerable_mult = 2.0
 break_hitstun_f = 20
 refund = 0.5
 cinematic = "ultimate_thing"
-cinematic_s = 4.6
+# 5,5 s : la pierre se pose, le masque se referme, la lumière sort, les ailes s'ouvrent.
+cinematic_s = 5.5
 sun_immune = true
 label = "SUPER AJA"
 label_en = "SUPER AJA"

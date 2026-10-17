@@ -1,0 +1,26 @@
+#!/bin/sh
+# Keeps work off main: push a branch and open a pull request instead.
+# Enable once with: make hooks
+# GitHub's own branch protection needs a public repository or a Pro plan, so this hook
+# is what guards main here. In a real emergency: ALLOW_MAIN_PUSH=1 git push origin main
+remote_ref_prefix="refs/heads/"
+protected="main"
+
+if [ "${ALLOW_MAIN_PUSH:-0}" = "1" ]; then
+    exit 0
+fi
+
+while read -r _local_ref _local_sha remote_ref _remote_sha; do
+    branch=${remote_ref#"$remote_ref_prefix"}
+    if [ "$branch" = "$protected" ]; then
+        echo "pre-push: main is protected here." >&2
+        echo "          Work on a branch and open a pull request:" >&2
+        echo "            git switch -c feat/what-you-are-doing" >&2
+        echo "            git push -u origin feat/what-you-are-doing" >&2
+        echo "            gh pr create --fill" >&2
+        echo "          To push to main anyway: ALLOW_MAIN_PUSH=1 git push origin main" >&2
+        exit 1
+    fi
+done
+
+exit 0
