@@ -19,10 +19,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from jojo_arena.combat.rules import HZ
 from jojo_arena.engine.data import seconds_to_frames
 from jojo_arena.engine.geometry import Rect, Vec2
-
-HZ = 60
 
 
 @dataclass(frozen=True)
