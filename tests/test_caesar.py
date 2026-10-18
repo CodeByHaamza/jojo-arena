@@ -66,8 +66,9 @@ def test_a_lens_fires_sunlight_so_the_undead_take_it_twice():
     for foe in ("mannequin_red", "santana"):
         match = lenses_laid(foe)
         target = match.fighters[1]
-        run_until(match, lambda m: m.fighters[1].hp < m.fighters[1].max_hp, 300,
-                  p2=hold(move=(-1.0, 0.0)))
+        run_until(
+            match, lambda m: m.fighters[1].hp < m.fighters[1].max_hp, 300, p2=hold(move=(-1.0, 0.0))
+        )
         run_held(match, 20)
         hurt[foe] = target.max_hp - target.hp
     assert hurt["santana"] > hurt["mannequin_red"] * 1.5, hurt

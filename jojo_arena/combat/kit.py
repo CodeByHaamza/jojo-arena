@@ -398,7 +398,6 @@ class Kit:
         return any(move.time_stop_f > 0 for move in self.all_moves())
 
 
-
 def _projectile_status(move: MoveDef) -> tuple[tuple[str, int], ...]:
     """The statuses a move's projectiles carry, wherever they come from."""
     shots = [move.projectile]

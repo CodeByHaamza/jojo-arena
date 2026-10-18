@@ -363,7 +363,7 @@ def test_what_he_sends_off_as_an_animal_comes_back_fed():
 
 
 def test_the_wings_carry_him_further_than_he_can_walk():
-    """"Bird-like wings that enable him to fly" (jojowiki, Kars)."""
+    """ "Bird-like wings that enable him to fly" (jojowiki, Kars)."""
     match = make_duel("kars", "joseph_p2", p1=(150, 100), p2=(360, 100))
     kars, joseph = match.fighters
     kars.complete_awakening()

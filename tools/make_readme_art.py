@@ -585,7 +585,7 @@ def statuses() -> str:
     out.append(f'  <rect width="{width}" height="{height}" fill="{NIGHT}"/>\n')
     out.append(
         f'  <text x="26" y="36" font-family="{UI}" font-weight="700" font-size="17"'
-        f" fill=\"{GOLD}\">CE QU'UN COUP LAISSE DERRIÈRE LUI</text>\n"
+        f' fill="{GOLD}">CE QU\'UN COUP LAISSE DERRIÈRE LUI</text>\n'
     )
     for i, (key, name, color, who, effect) in enumerate(rows):
         defn = rules.statuses[key]
