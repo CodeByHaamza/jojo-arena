@@ -415,3 +415,25 @@ def test_training_freezes_steps_one_frame_and_runs_at_half_speed(ctx):
     held = training.rounds.phase_f
     steps(ctx, 8)
     assert training.rounds.phase_f - held == 4  # one step out of two
+
+
+def test_the_arena_screen_sets_the_sun_and_the_events_and_hands_them_on(ctx, tmp_path):
+    arenas = start(ctx, StageSelectScene(ctx, "versus", ("jonathan", "jotaro_p3")))
+    assert arenas.choice == "joestar_mansion"
+    keys(ctx, "Down", "Right", "Right")  # sun: dawn -> day -> none
+    assert arenas.sun == "off"
+    keys(ctx, "Down", "Left")  # events: on -> off
+    assert not arenas.events
+    keys(ctx, "Down", "Right")  # back on the arena row: the arena changes again
+    assert arenas.choice == "swiss_castle"
+    pygame.image.save(ctx.display.surface, str(tmp_path / "arenas.png"))
+    keys(ctx, "Return")
+    setup = ctx.scenes.current
+    assert setup.stage_options.sun == "off" and not setup.stage_options.events
+    setup.menu.select("fight")
+    keys(ctx, "Return")
+    fight = ctx.scenes.current
+    assert isinstance(fight, FightScene)
+    arena = fight.rounds.match.arena
+    assert not arena.sun_windows and not arena.hazards.drops
+    assert fight.replay_meta()["stage_options"] == {"sun": "off", "events": False}

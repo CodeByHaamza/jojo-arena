@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from jojo_arena.combat.hazards import Hazards
 from jojo_arena.engine.geometry import Rect, RoundedRect, Vec2, push_circle_out_of_rect
 
 
@@ -96,6 +97,7 @@ class Arena:
     sun_spread_f: int = 0  # frames for the beams to reach the far wall (0 = at once)
     sun_widen: float = 0.3  # how much wider a beam gets on the way, as a share of it
     cage: Cage | None = None
+    hazards: Hazards = field(default_factory=Hazards)  # falling things, traps, slippery floor
 
     def sun_spread(self, tick: int) -> float:
         """How far the sun has climbed: 0 when dawn breaks, 1 once it fills the room."""

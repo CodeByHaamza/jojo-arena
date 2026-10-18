@@ -32,6 +32,24 @@ rect = [218, 40, 44, 92]
 [[sun.windows]]
 rect = [366, 40, 44, 92]
 
+# Event: the chandelier. It gives way every 30 s over whoever's turn it is (it takes
+# turns), its shadow growing on the floor first; whatever is under it when it lands is
+# crushed through any guard, and its wreck lies there a moment. Not a scene of this
+# mansion in the manga - the chandelier that comes down on everyone is in Dio's castle
+# (Phantom Blood, chapter 39) - but the owner asked for it here, the way Eyes of Heaven
+# gives each arena its own hazard. Off with the "events" option of the arena screen.
+[[drops]]
+look = "chandelier"
+spots = [[150, 128], [240, 146], [330, 128]]
+first_s = 20
+every_s = 30
+warning_s = 1.6
+radius = 26
+damage = 120
+hitstun_f = 40
+knockback = 260
+wreck_s = 4
+
 [prop_kinds.pillar]
 hp = 160
 

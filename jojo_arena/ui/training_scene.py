@@ -19,6 +19,7 @@ from jojo_arena.combat.training import Training
 from jojo_arena.context import GameContext
 from jojo_arena.engine import font
 from jojo_arena.engine.actions import InputFrame, merge_frames
+from jojo_arena.stages.base import StageOptions
 from jojo_arena.ui import text
 from jojo_arena.ui.fight_scene import FightScene
 from jojo_arena.ui.frame_meter import COLORS, FrameMeterPanel, draw_legend
@@ -65,8 +66,15 @@ class TrainingScene(FightScene):
         ctx: GameContext,
         fighter_ids: tuple[str, str] = ("jotaro_p3", "dio_p3"),
         stage_id: str = "cairo_night",
+        stage_options: StageOptions | None = None,
     ) -> None:
-        super().__init__(ctx, rounds_to_win=0, fighter_ids=fighter_ids, stage_id=stage_id)
+        super().__init__(
+            ctx,
+            rounds_to_win=0,
+            fighter_ids=fighter_ids,
+            stage_id=stage_id,
+            stage_options=stage_options,
+        )
         player = ctx.controls.active_preset.players[0]
         self.pause_key = action_label(player, "pause", ctx.inputs)
         self.hint = text.TRAINING_HINT.format(key=self.pause_key)
@@ -127,7 +135,7 @@ class TrainingScene(FightScene):
 
     def _new_rounds(self) -> None:
         kits = (self.fighter_defs[0].kit, self.fighter_defs[1].kit)
-        self.rounds = Training(kits, self.rules, self.stage.build_arena)
+        self.rounds = Training(kits, self.rules, self.build_arena)
         self.pause_menu = None
         self.result_menu = None
         self.pause_page = "main"
