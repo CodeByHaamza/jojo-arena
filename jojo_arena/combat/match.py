@@ -888,6 +888,7 @@ class Match:
                 )
                 fighter.pos, _, _ = new.constrain(spot, self.rules.body_radius)
                 fighter.glide = Vec2()
+                fighter.carrying = None  # props belong to their room: it stays behind
             self.arena = new
             self.projectiles, self.traps, self.webs = [], [], []
             return [Event("arena_exit", event.pos, event.fighter)]

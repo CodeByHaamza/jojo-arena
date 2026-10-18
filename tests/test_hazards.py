@@ -222,3 +222,17 @@ def test_arenas_with_events_play_the_same_fight_twice():
 
     for stage_id in ("joestar_mansion", "air_supplena", "swiss_castle"):
         assert play(stage_id) == play(stage_id), stage_id
+
+
+def test_a_prop_carried_through_the_wall_stays_in_the_room_it_came_from():
+    """Props are counted per arena: holding one of the hall's outside would point at
+    nothing (or at the wrong thing) in the courtyard."""
+    match = duel("swiss_castle", "joseph_p2", "wamuu", at=((300, 160), (300, 70)))
+    joseph = match.fighters[0]
+    joseph.carrying = len(match.arena.obstacles) - 1  # the last prop of the hall
+    match.arena.obstacles[-1].carried_by = 0
+    match.fighters[1].take_hit(0, 30, Vec2(0, -9), True)
+    for _ in range(40):
+        match.step((NONE, NONE))
+    assert match.arena.name == "st_moritz"
+    assert joseph.carrying is None
