@@ -8,6 +8,14 @@ des corrections seules une patch.
 
 ### Ajouté
 
+- **Options d'arène.** Sur l'écran des arènes (Haut/Bas) : le soleil (aucun, à l'aube,
+  plein jour) et les événements de l'arène (oui/non). Les replays s'en souviennent.
+- **Événements d'arène.** Au manoir Joestar, le lustre tombe toutes les 30 s sur l'un
+  des deux combattants, son ombre au sol d'abord, et aucune garde ne tient.
+- **Nouvelle arène : l'île d'Air Supplena.** La flaque d'huile au pied du pilier de
+  l'Hell Climb fait glisser tout le monde, sauf ceux qui respirent l'Onde ; projeté dans
+  une des fosses, on se prend les pics (l'Onde protège, comme dans Eyes of Heaven).
+
 - **Santana refait.** Il entre vraiment dans ton corps : il te dirige et te mange, et
   tu le chasses en martelant les boutons (l'Onde le chasse trois fois plus vite, et le
   brûle). Il file sous le sol, rend les balles qu'on lui tire, encaisse un coup pendant

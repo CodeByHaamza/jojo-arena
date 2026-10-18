@@ -659,6 +659,19 @@ class FightView:
                 aura = self.fighter_defs[1 - event.fighter].aura
                 fx.add(vfx.Ring(pos, aura, 3.0, 18, 3))
                 words.add(sfx.MENACE * 4, self._head(victim), "menace", 2, 60, 0.25, 1)
+            elif kind == "hazard_warn":
+                # Something overhead starts to give.
+                words.add(sfx.MENACE * 3, event.pos + Vec2(0, -30), "menace", 2, 40, 0.3, 1)
+            elif kind == "hazard_drop":
+                self.impact(event.pos, frames=1, punch=4)
+                self.shake = max(self.shake, 12)
+                fx.dust(event.pos, 14, 2.4, 4, (120, 110, 104), 26)
+                fx.add(vfx.Ring(event.pos, (255, 220, 160), (event.value or 20) / 6, 16, 2))
+                words.add(sfx.DOGO, event.pos + Vec2(0, -22), "impact", 3, 40, 0.3, 2)
+            elif kind == "hazard_spikes":
+                self.shake = max(self.shake, 8)
+                fx.focus(pos, heavy=True)
+                words.add(sfx.BAKI, pos + Vec2(0, -16), "impact", 2, 30, 0.4, 1)
             elif kind in ("infiltrate", "infiltrate_end") and event.fighter is not None:
                 # A body going into another one, or tearing back out of it.
                 flesh = self.fighter_defs[event.fighter].color
@@ -868,6 +881,7 @@ class FightView:
             aura = self.fighter_defs[web.owner].aura
             for a, b in web.edges:
                 vfx.draw_thread(surface, web.nodes[a], web.nodes[b], aura, self.tick)
+        self._draw_hazards_under(surface, match)
         for fighter in match.fighters:
             self._draw_falling_strike(surface, fighter)
         drawables = [(o.rect.bottom, 0, o) for o in match.arena.obstacles if o.solid]
@@ -883,6 +897,9 @@ class FightView:
                 self.fighter_views[item.index].draw(surface, item, self.tick)
             else:
                 self.fighter_views[item.index].draw_stand(surface, item, self.tick)
+        for drop in match.arena.hazards.drops:
+            if drop.spot is not None:
+                vfx.draw_falling(surface, drop.defn.look, drop.spot, drop.warning)
         for fighter in match.fighters:
             self._draw_hidden(surface, fighter, match)
             self._voice_of_move(fighter)
@@ -1136,6 +1153,24 @@ class FightView:
             root = target + Vec2(math.cos(angle) * move.radius * 0.6, math.sin(angle) * 4)
             tip = root + Vec2(math.cos(angle) * 3, -26 * rise)
             vfx.draw_reach(surface, root, tip, aura, move.fx, 2)
+
+    def _draw_hazards_under(self, surface: pygame.Surface, match: Match) -> None:
+        """On the floor, under everyone: the wreck of what fell, the shadow of what is
+        about to, and spikes that have sprung."""
+        hazards = match.arena.hazards
+        for i, drop in enumerate(hazards.drops):
+            if drop.wreck_left > 0 and drop.wreck_at is not None:
+                vfx.draw_wreck(surface, drop.defn.look, drop.wreck_at, i * 31 + drop.turn)
+            if drop.spot is not None:
+                vfx.draw_drop_shadow(surface, drop.spot, drop.defn.radius, drop.warning)
+        for zone in hazards.zones:
+            if zone.sprung_left > 0 and zone.defn.rearm_f > 0:
+                rect = pygame.Rect(
+                    *(round(v) for v in (zone.defn.rect.x, zone.defn.rect.y)),
+                    round(zone.defn.rect.w),
+                    round(zone.defn.rect.h),
+                )
+                vfx.draw_spikes(surface, rect, zone.sprung_left / zone.defn.rearm_f)
 
     def _draw_hidden(self, surface: pygame.Surface, fighter: Fighter, match: Match) -> None:
         """A body that is not on screen still shows where it is: a mound of flesh running

@@ -150,6 +150,7 @@ class Match:
         events += self._resolve_projectile_hits()
         events += self._apply_sunlight()
         events += self._apply_statuses()
+        events += self._update_hazards()
         events += self._update_awakenings()
         events += self._update_cage()
         for fighter in self.fighters:
@@ -827,7 +828,8 @@ class Match:
         active = self.sun_active
         if active and not self.dawn_announced:
             self.dawn_announced = True
-            events.append(Event("dawn", None))
+            if self.arena.sun_after_f > 0:  # in broad daylight, there is no dawn to call
+                events.append(Event("dawn", None))
         spread = self.arena.sun_spread(self.tick)
         for fighter in self.fighters:
             fighter.in_sun = active and fighter.alive and self.arena.in_sun(fighter.pos, spread)
@@ -841,6 +843,81 @@ class Match:
                 events.append(Event("ko", fighter.pos, fighter.index))
             if self.tick % 10 == 0:
                 events.append(Event("sunburn", fighter.pos, fighter.index, int(fighter.blood == 0)))
+        return events
+
+    # The arena itself ---------------------------------------------------------------------
+
+    def _update_hazards(self) -> list[Event]:
+        """What falls from the ceiling and what springs from the floor. Stopped time
+        stops it too: nothing in the room moves but the one who stopped it."""
+        hazards = self.arena.hazards
+        if self.time_stop is not None:
+            return []
+        events: list[Event] = []
+        for drop in hazards.drops:
+            events += self._update_drop(drop)
+        for zone in hazards.zones:
+            events += self._update_trap_zone(zone)
+        return events
+
+    def _update_drop(self, drop) -> list[Event]:
+        defn = drop.defn
+        if drop.wreck_left > 0:
+            drop.wreck_left -= 1
+        drop.countdown -= 1
+        if drop.countdown == defn.warning_f:
+            # It starts to give: over whoever's turn it is, its shadow on the floor.
+            aimed = self.fighters[drop.turn % 2].pos
+            drop.turn += 1
+            drop.spot = min(defn.spots, key=lambda spot: (spot - aimed).length_sq())
+            return [Event("hazard_warn", drop.spot.copy(), None, defn.radius)]
+        if drop.countdown > 0 or drop.spot is None:
+            if drop.countdown <= 0:
+                drop.countdown = defn.every_f  # nobody to aim at: try again later
+            return []
+        spot, drop.spot = drop.spot, None
+        drop.countdown = defn.every_f
+        drop.wreck_at, drop.wreck_left = spot, defn.wreck_f
+        events = [Event("hazard_drop", spot, None, defn.radius)]
+        reach = defn.radius + self.rules.hurt_radius
+        for fighter in self.fighters:
+            if not fighter.alive or fighter.invincible:
+                continue
+            away = fighter.pos - spot
+            if away.length_sq() > reach * reach:
+                continue
+            push = away.normalized() if away.length_sq() > 1e-6 else Vec2(1, 0)
+            events += self._hazard_hit(fighter, defn.damage, defn.hitstun_f, push * defn.knockback)
+        return events
+
+    def _update_trap_zone(self, zone) -> list[Event]:
+        defn = zone.defn
+        zone.sprung_left = max(0, zone.sprung_left - 1)
+        if zone.rearm_left > 0:
+            zone.rearm_left -= 1
+            return []
+        for fighter in self.fighters:
+            knocked = fighter.state == State.HITSTUN and fighter.velocity.length() >= defn.min_speed
+            if not knocked or not fighter.alive or not defn.rect.contains(fighter.pos):
+                continue
+            zone.rearm_left, zone.sprung_left = defn.rearm_f, defn.rearm_f
+            events = [Event("hazard_spikes", fighter.pos.copy(), fighter.index)]
+            if defn.spare_style and fighter.kit.style == defn.spare_style:
+                return events  # it springs, and does not bite this one
+            out = fighter.pos - defn.rect.center
+            push = out.normalized() if out.length_sq() > 1e-6 else Vec2(0, 1)
+            return events + self._hazard_hit(
+                fighter, defn.damage, defn.hitstun_f, push * defn.knockback
+            )
+        return []
+
+    def _hazard_hit(self, fighter: Fighter, damage: int, hitstun_f: int, knock: Vec2) -> list:
+        """The arena strikes: no guard holds against a falling chandelier."""
+        alive = fighter.alive
+        fighter.take_hit(damage, hitstun_f, knock, True)
+        events = [Event("hit", fighter.pos.copy(), fighter.index, damage)]
+        if alive and not fighter.alive:
+            events.append(Event("ko", fighter.pos.copy(), fighter.index))
         return events
 
     def _apply_statuses(self) -> list[Event]:

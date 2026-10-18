@@ -1,0 +1,128 @@
+# Air Supplena Island (Part 2): Lisa Lisa's island in the Adriatic, half an hour by boat
+# north of Venice, where Joseph and Caesar train the Ripple.
+# Sources (searched 18/10/2026; JoJo Wiki "Air Supplena Island", "Ripple Teacher Lisa
+# Lisa (Story Arc)", chapter 72): the Hell Climb Pillar, 24 m high, with oil flowing over
+# it in a loop like a fountain; only the Ripple lets a body stick to it, and Lisa Lisa
+# kicks the boys down into the oil. In Eyes of Heaven, the spikes of this stage hurt
+# every fighter except Ripple users - so they do here too.
+# Coordinates are internal pixels (screen is 480 x 270). Rects are [x, y, width, height].
+
+name = "L'île d'Air Supplena"
+name_en = "Air Supplena Island"
+part = 2
+outdoors = true
+
+[bounds]
+rect = [16, 42, 448, 210]
+corner_radius = 18
+
+[spawns]
+p1 = [128, 150]
+p2 = [352, 150]
+
+# Open sky over the Adriatic: once the sun is up, it comes down over the whole island
+# from the north, and nothing is left in the shade.
+[sun]
+after_s = 58
+spread_s = 26
+widen = 0.0
+
+[[sun.windows]]
+rect = [16, 42, 448, 12]
+
+# The pool of oil at the foot of the Hell Climb Pillar. A body slides on it - unless it
+# breathes the Ripple, which is how Joseph and Caesar stood on oil at all.
+[[surfaces]]
+look = "oil"
+rect = [180, 98, 120, 92]
+grip = 0.07
+slide = 0.3
+spare_style = "hamon"
+
+# Event: the spiked pits on either side. Knocked into one, the spikes come up; Ripple
+# users are spared (Eyes of Heaven). Off with the "events" option of the arena screen.
+[[trap_zones]]
+look = "spikes"
+rect = [22, 96, 44, 104]
+damage = 90
+hitstun_f = 34
+knockback = 280
+min_speed = 110
+rearm_s = 1.2
+spare_style = "hamon"
+
+[[trap_zones]]
+look = "spikes"
+rect = [414, 96, 44, 104]
+damage = 90
+hitstun_f = 34
+knockback = 280
+min_speed = 110
+rearm_s = 1.2
+spare_style = "hamon"
+
+# The Hell Climb Pillar itself: it does not break.
+[prop_kinds.hell_pillar]
+hp = 0
+
+[prop_kinds.column]
+hp = 150
+
+# Amphorae from the villa can be picked up (Pose key) and thrown; broken, they come back.
+[prop_kinds.amphora]
+hp = 22
+throwable = true
+throw_damage = 38
+respawn_s = 9
+
+[[props]]
+kind = "hell_pillar"
+rect = [228, 132, 24, 22]
+
+[[props]]
+kind = "column"
+rect = [112, 70, 14, 14]
+
+[[props]]
+kind = "column"
+rect = [354, 216, 14, 14]
+
+[[props]]
+kind = "amphora"
+rect = [90, 224, 9, 9]
+
+[[props]]
+kind = "amphora"
+rect = [382, 66, 9, 9]
+
+[[props]]
+kind = "amphora"
+rect = [160, 226, 9, 9]
+
+# Braziers on the terrace: the light of the evening.
+[[lanterns]]
+pos = [92, 40]
+
+[[lanterns]]
+pos = [388, 40]
+
+[palette]
+sea = [36, 82, 120]
+sea_light = [58, 112, 150]
+sea_dark = [26, 60, 92]
+foam = [196, 222, 232]
+cliff = [118, 104, 88]
+cliff_dark = [84, 72, 62]
+paving = [176, 162, 136]
+paving_light = [190, 176, 150]
+paving_dark = [156, 142, 118]
+seam = [126, 112, 92]
+oil = [52, 40, 30]
+oil_sheen = [120, 104, 70]
+marble = [214, 208, 196]
+marble_dark = [168, 160, 150]
+curb = [150, 136, 112]
+iron = [64, 60, 66]
+iron_light = [140, 136, 146]
+lantern = [255, 190, 120]
+sun = [255, 220, 160]

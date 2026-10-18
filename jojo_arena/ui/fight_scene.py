@@ -19,6 +19,7 @@ from jojo_arena.engine import font, music
 from jojo_arena.engine.actions import NEUTRAL, InputFrame
 from jojo_arena.engine.scene import Scene
 from jojo_arena.stages import load_stage
+from jojo_arena.stages.base import StageOptions
 from jojo_arena.ui import text
 from jojo_arena.ui.fight_view import FightView
 from jojo_arena.ui.hud import Hud
@@ -45,9 +46,11 @@ class FightScene(Scene):
         stage_id: str = "cairo_night",
         bots: tuple[bool, bool] = (False, False),
         cpu_level: int = 2,
+        stage_options: StageOptions | None = None,
     ) -> None:
         super().__init__()
         self.ctx = ctx
+        self.stage_options = stage_options or StageOptions()
         self.fighter_ids = fighter_ids
         self.fighter_defs = [get_fighter(i) for i in fighter_ids]
         self.stage = load_stage(stage_id)
@@ -102,8 +105,13 @@ class FightScene(Scene):
             "mode": self.mode,
             "fighters": list(self.fighter_ids),
             "stage": self.stage_id,
+            "stage_options": self.stage_options.to_data(),
             "rounds_to_win": self.rounds_to_win,
         }
+
+    def build_arena(self):
+        """A fresh arena for a round, with the options chosen on the arena screen."""
+        return self.stage.build_arena(self.stage_options)
 
     def replays_dir(self) -> Path:
         return self.ctx.controls_path.parent / "replays"
@@ -124,7 +132,7 @@ class FightScene(Scene):
 
     def _new_rounds(self) -> None:
         kits = (self.fighter_defs[0].kit, self.fighter_defs[1].kit)
-        self.rounds = Rounds(kits, self.rules, self.stage.build_arena, self.rounds_to_win)
+        self.rounds = Rounds(kits, self.rules, self.build_arena, self.rounds_to_win)
         self.pause_menu = None
         self.result_menu = None
         self.replay = Replay(self.replay_meta())

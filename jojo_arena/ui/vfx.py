@@ -1101,3 +1101,104 @@ def draw_statuses(surface: pygame.Surface, center: Vec2, height: float, names, t
         drawing = STATUS_DRAWINGS.get(name)
         if drawing is not None:
             drawing(surface, center, height, tick)
+
+
+# Arena hazards: things that fall, spikes that spring --------------------------------
+
+BRASS, BRASS_DARK, BRASS_LIGHT = (196, 150, 64), (128, 92, 40), (250, 214, 120)
+CANDLE = (255, 236, 190)
+SNOW, SNOW_SHADE = (232, 238, 248), (176, 188, 212)
+SPIKE, SPIKE_LIGHT = (164, 160, 168), (226, 224, 230)
+
+
+def draw_drop_shadow(surface: pygame.Surface, spot: Vec2, radius: float, warning: float) -> None:
+    """The floor going dark where something is about to land: it grows as it falls."""
+    size = max(2, round(radius * (0.35 + 0.65 * warning)))
+    alpha = round(60 + 110 * warning)
+    shadow = pygame.Surface((size * 2, size), pygame.SRCALPHA)
+    pygame.draw.ellipse(shadow, (0, 0, 0, alpha), shadow.get_rect())
+    surface.blit(shadow, (round(spot.x) - size, round(spot.y) - size // 2))
+    if warning > 0.5:  # the last moment: a ring that says "move"
+        pygame.draw.ellipse(
+            surface,
+            (255, 90, 70),
+            (round(spot.x - radius), round(spot.y - radius / 2), round(radius * 2), round(radius)),
+            1,
+        )
+
+
+def draw_chandelier(surface: pygame.Surface, center: Vec2, scale: float = 1.0) -> None:
+    """A brass chandelier seen from above: a ring of arms, a candle on each."""
+    ring = max(4, round(12 * scale))
+    pygame.draw.circle(surface, OUTLINE, _ints(center), ring + 2)
+    pygame.draw.circle(surface, BRASS_DARK, _ints(center), ring + 1, 2)
+    pygame.draw.circle(surface, BRASS, _ints(center), ring, 1)
+    for i in range(8):
+        arm = center + Vec2.from_angle(math.tau * i / 8, ring)
+        pygame.draw.line(surface, BRASS_DARK, _ints(center), _ints(arm), 1)
+        surface.fill(CANDLE, (round(arm.x), round(arm.y) - 2, 1, 2))
+    pygame.draw.circle(surface, BRASS_LIGHT, _ints(center), max(2, ring // 3))
+
+
+def draw_chandelier_wreck(surface: pygame.Surface, spot: Vec2, seed: int) -> None:
+    """What is left on the floor: a bent ring, arms snapped off, glass everywhere."""
+    rng = random.Random(seed)
+    pygame.draw.ellipse(surface, OUTLINE, (spot.x - 13, spot.y - 6, 26, 12), 2)
+    pygame.draw.ellipse(surface, BRASS_DARK, (spot.x - 12, spot.y - 5, 24, 10), 1)
+    for _ in range(14):
+        piece = spot + Vec2(rng.uniform(-22, 22), rng.uniform(-9, 9))
+        color = rng.choice((BRASS, BRASS_DARK, (210, 230, 240)))
+        surface.fill(color, (round(piece.x), round(piece.y), rng.choice((1, 2)), 1))
+
+
+def draw_snow_slab(surface: pygame.Surface, center: Vec2, scale: float = 1.0) -> None:
+    w, h = max(4, round(22 * scale)), max(3, round(12 * scale))
+    rect = pygame.Rect(0, 0, w, h)
+    rect.center = _ints(center)
+    pygame.draw.rect(surface, OUTLINE, rect.inflate(2, 2), border_radius=3)
+    pygame.draw.rect(surface, SNOW, rect, border_radius=3)
+    surface.fill(SNOW_SHADE, (rect.x + 1, rect.bottom - 3, rect.w - 2, 2))
+
+
+def draw_snow_wreck(surface: pygame.Surface, spot: Vec2, seed: int) -> None:
+    rng = random.Random(seed)
+    for _ in range(9):
+        piece = spot + Vec2(rng.uniform(-18, 18), rng.uniform(-7, 7))
+        size = rng.randint(3, 6)
+        pygame.draw.ellipse(surface, SNOW_SHADE, (piece.x, piece.y + 1, size, size // 2 + 1))
+        pygame.draw.ellipse(surface, SNOW, (piece.x, piece.y, size, size // 2 + 1))
+
+
+DROP_LOOKS = {"chandelier": draw_chandelier, "snow_slab": draw_snow_slab}
+WRECK_LOOKS = {"chandelier": draw_chandelier_wreck, "snow_slab": draw_snow_wreck}
+DROP_FALL = 0.35  # the last share of the warning, the thing is visibly falling
+
+
+def draw_falling(surface: pygame.Surface, look: str, spot: Vec2, warning: float) -> None:
+    """The thing itself, dropping from the top of the screen onto its shadow."""
+    drawing = DROP_LOOKS.get(look)
+    if drawing is None or warning < 1 - DROP_FALL:
+        return
+    t = (warning - (1 - DROP_FALL)) / DROP_FALL
+    height = (1 - t * t) * (spot.y + 20)
+    drawing(surface, spot - Vec2(0, height), 0.8 + 0.2 * t)
+
+
+def draw_wreck(surface: pygame.Surface, look: str, spot: Vec2, seed: int) -> None:
+    drawing = WRECK_LOOKS.get(look)
+    if drawing is not None:
+        drawing(surface, spot, seed)
+
+
+def draw_spikes(surface: pygame.Surface, rect: pygame.Rect, up: float) -> None:
+    """Spikes standing up out of a pit: `up` 1 when they have just sprung."""
+    if up <= 0:
+        return
+    tall = max(1, round(9 * min(1.0, up * 2)))
+    for y in range(rect.top + 6, rect.bottom - 1, 8):
+        for x in range(rect.left + 4 + (y // 8 % 2) * 4, rect.right - 3, 8):
+            pygame.draw.polygon(
+                surface, OUTLINE, [(x - 2, y + 1), (x + 1, y - tall - 1), (x + 4, y + 1)]
+            )
+            pygame.draw.polygon(surface, SPIKE, [(x - 1, y), (x + 1, y - tall), (x + 3, y)])
+            surface.set_at((x + 1, y - tall), SPIKE_LIGHT)

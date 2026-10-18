@@ -37,6 +37,7 @@ class State(StrEnum):
 
 
 ACTIONABLE = frozenset({State.IDLE, State.WALK})
+GLIDE_REST = 0.0004  # (px/frame)²: slower than this, a sliding body has stopped
 GUARDING = frozenset({State.GUARD, State.BLOCKSTUN})
 # "guard" is buffered only for Flash Cancel; holding it is read directly.
 BUFFERED_ACTIONS = (*ATTACK_SLOTS, "dash", "heart_heat", "stand", "guard", "power_up")
@@ -168,6 +169,8 @@ class Fighter:
         # Possessed: someone else steers this fighter's walk for a while.
         self.possessed_f = 0
         self.possessor: int | None = None
+        # Walking on a floor that does not grip: the speed the body is still carrying.
+        self.glide = Vec2()
         self.host = False  # possessed by a whole body inside it, not by a Stand
         # Infiltrated: this fighter's body is inside the other one's (index), for a while.
         self.inside: int | None = None
@@ -810,10 +813,15 @@ class Fighter:
                     # Slide along the surface: drop the part of the speed going into it.
                     self.velocity = self.velocity - normal * self.velocity.dot(normal)
             self.pos = pos
-            new_speed = max(0.0, self.velocity.length() - self.rules.knockback_friction)
+            _, slide = arena.hazards.grip_at(pos, self.kit.style)
+            friction = self.rules.knockback_friction * slide
+            new_speed = max(0.0, self.velocity.length() - friction)
             self.velocity = self.velocity.normalized() * new_speed
+            self.glide = Vec2()
         elif self.state == State.DASH and self.state_f < self.rules.dash_duration_f:
             step = self.dash_dir * self.rules.dash_speed
+            if arena.hazards.surfaces:
+                self.glide = step  # off a dash on ice, the body keeps going
             self.pos, _, _ = arena.constrain(self.pos + step, radius)
         elif self._leaping():
             attack = self.attack
@@ -821,11 +829,22 @@ class Fighter:
             self.pos, _, _ = arena.constrain(
                 attack.start + (attack.dest - attack.start) * t, radius
             )
+            self.glide = Vec2()
         elif self._lunging():
             step = self.attack.aim * self.attack.move.lunge
             self.pos, _, _ = arena.constrain(self.pos + step, radius)
-        elif self.walk_dir.length_sq():
-            self.pos, _, _ = arena.constrain(self.pos + self.walk_dir * self.walk_speed(), radius)
+            self.glide = Vec2()
+        elif self.walk_dir.length_sq() or self.glide.length_sq() > GLIDE_REST:
+            # On a normal floor the body goes where it is walked; on oil or ice it only
+            # leans that way, and keeps sliding the way it was going.
+            grip, _ = arena.hazards.grip_at(self.pos, self.kit.style)
+            wanted = self.walk_dir * self.walk_speed() if self.walk_dir.length_sq() else Vec2()
+            self.glide = wanted if grip >= 1 else self.glide + (wanted - self.glide) * grip
+            if self.glide.length_sq() <= GLIDE_REST:
+                self.glide = Vec2()
+            self.pos, normal, _ = arena.constrain(self.pos + self.glide, radius)
+            if normal is not None and self.glide.dot(normal) < 0:
+                self.glide = self.glide - normal * self.glide.dot(normal)  # along the wall
         if self.remote_pos is not None and self.remote_dir.length_sq():
             # The Stand flies where it is steered, within its range of its user.
             speed = self.style.params.get("remote_speed", 150) / HZ
