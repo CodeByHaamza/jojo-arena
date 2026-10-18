@@ -212,6 +212,7 @@ hitstun_f = 40
 hitstop_f = 12
 clashable = false
 anim = "pose"
+fx = "explosion"
 cinematic = "self_destruct"
 cinematic_s = 3.4
 finish_damage = 290

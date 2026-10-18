@@ -291,6 +291,7 @@ def build_sounds(player: AudioPlayer) -> None:
 FX_SOUNDS: dict[str, str] = {
     "vortex": "wind",
     "shock": "boom",
+    "explosion": "boom",
     "wind_beam": "wind",
     "gun": "gunshot",
     "blood_jet": "splat",
@@ -340,6 +341,8 @@ EVENT_SOUNDS: dict[str, Callable[[Event], str]] = {
     "trap_popped": lambda e: "pop",
     "reflect": lambda e: "hamon",
     "foreseen": lambda e: "stylish",
+    "infiltrate": lambda e: "splat",
+    "infiltrate_end": lambda e: "splat",
 }
 
 

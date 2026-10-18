@@ -24,6 +24,7 @@ FELT: dict[str, Shake] = {
     "freeze": Shake(low=0.30, high=0.70, ms=300),
     "cage": Shake(low=0.45, high=0.35, ms=260),
     "possessed": Shake(low=0.25, high=0.45, ms=400),
+    "infiltrate_end": Shake(low=0.4, high=0.3, ms=220),
     "drain": Shake(low=0.35, high=0.15, ms=180),
     "sunburn": Shake(low=0.20, high=0.30, ms=200),
     "stylish": Shake(low=0.10, high=0.35, ms=120),

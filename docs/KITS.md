@@ -72,6 +72,7 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `shape` | `circle` (un cercle à `reach`) ou `line` (une ligne du corps jusqu'à `reach`, sans angle mort de près) |
 | `at_target` | La zone tombe là où se trouvait l'adversaire au début du coup ; `reach` sert alors de **distance maximale** de largage (0 = sans limite) |
 | `leap` | Bond pendant le démarrage, jusqu'à cette distance |
+| `burrow` | Avec `leap` : le perso file sous le sol pendant le démarrage (seule une bosse du sol est dessinée) ; à combiner avec `invincible_f` |
 | `leap_to` | Vers l'adversaire (`target`, s'arrête à côté de lui) ou vers le point visé (`cursor` : souris, sinon stick droit, sinon direction tenue) |
 | `leap_height` | Hauteur du saut à l'écran (0 = glisse au sol, comme un grappin) |
 | `pull` | Aspire l'adversaire vers le perso à chaque image active (vitesse) : tornade, veines autour de la cheville |
@@ -111,6 +112,8 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `counter` | Coup de contre : un coup au corps à corps reçu pendant la phase active est annulé, et ce coup-ci (le nom d'un autre coup) part aussitôt |
 | `reflect` | Tant que le coup est actif, un projectile qui atteint le perso repart en sens inverse et devient le sien (le Snake Muffler de Lisa Lisa) |
 | `possess_s` | Coup du Stand piloté : s'il touche, tu diriges la marche de l'adversaire pendant cette durée |
+| `infiltrate_s` | Le corps entier du perso entre dans celui de l'adversaire s'il touche (Santana) : il disparaît (plus de hitbox, le soleil ne l'atteint plus), dirige la marche de l'hôte pendant cette durée et le mange. L'hôte le chasse plus vite en martelant n'importe quel bouton ; l'Onde le chasse encore plus vite et le brûle (`[infiltration]` dans `rules.toml`) |
+| `inside_dps` | Avec `infiltrate_s` : dégâts par seconde infligés de l'intérieur ; `drain` en rend cette part au perso |
 | `armor` | Nombre de coups encaissés sans broncher pendant le démarrage et la phase active (on prend les dégâts) |
 
 ### Rafales

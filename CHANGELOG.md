@@ -8,6 +8,13 @@ des corrections seules une patch.
 
 ### Ajouté
 
+- **Santana refait.** Il entre vraiment dans ton corps : il te dirige et te mange, et
+  tu le chasses en martelant les boutons (l'Onde le chasse trois fois plus vite, et le
+  brûle). Il file sous le sol, rend les balles qu'on lui tire, encaisse un coup pendant
+  son Épée de côtes, et son HHA **Meat Invade** lance sa chair à tes trousses.
+- **Explosions.** Boule de feu, fumée, débris et braises : le Road Roller de DIO saute
+  en plusieurs fois, l'autodestruction de Stroheim part en chaîne jusqu'à sa cible, et
+  son GHA, même raté, explose aussi en combat.
 - **Entraînement avancé.** Le mannequin peut répéter **une action choisie dans son
   propre kit** (ORA ORA ORA, Star Finger, HHA, GHA, dash, pose…), avec le **délai de ton
   choix** entre chaque répétition, compté dès qu'il redevient libre d'agir — délai 0 =
@@ -164,6 +171,8 @@ des corrections seules une patch.
   de 26.
 ### Corrigé
 
+- Parties 1 et 2 : le curseur ne peut plus se poser sur une case vide (on pouvait
+  « choisir » un perso qui n'existe pas).
 - **Une tornade n'est pas une rafale de poings.** Un coup multi-hit qui a son propre
   effet (tornade, veines, câbles) affichait quand même une rafale de poings par-dessus.
 - **La Super Aja de Lisa Lisa** faisait tomber un bloc de béton : c'est maintenant une

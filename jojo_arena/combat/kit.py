@@ -205,6 +205,11 @@ class MoveDef:
     leap_height: float = 0.0  # px: height of the jump arc, for the view (0 = slide)
     armor: int = 0  # hits taken without flinching during startup and active frames
     possess_f: int = 0  # on a clean hit, the user steers the opponent's walk this long
+    # On a clean hit, the user's whole body slips inside the opponent's: hidden in there
+    # for this long, it walks them about and eats them (`inside_dps`, `drain` of it).
+    infiltrate_f: int = 0
+    inside_dps: float = 0.0
+    burrow: bool = False  # the view: the user travels under the floor through its startup
     guard_damage: float = 1.0  # multiplies the guard gauge damage when blocked
     stand_flash: bool = False  # the Stand appears for this move even when called back
     fx: str = ""  # drawn while active: "limb", "tentacle" or "blade" out to `reach`
@@ -293,6 +298,9 @@ class MoveDef:
             leap_height=data.get("leap_height", 0.0),
             armor=data.get("armor", 0),
             possess_f=seconds_to_frames(data.get("possess_s", 0)),
+            infiltrate_f=seconds_to_frames(data.get("infiltrate_s", 0)),
+            inside_dps=data.get("inside_dps", 0.0),
+            burrow=data.get("burrow", False),
             guard_damage=data.get("guard_damage", 1.0),
             stand_flash=data.get("stand_flash", False),
             fx=data.get("fx", ""),

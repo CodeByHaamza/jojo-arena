@@ -69,6 +69,15 @@ freeze_f = 10                # both freeze when a counter catches a blow
 hold_s = 0.5                 # hold the Stand key this long to take control
 break_stun_s = 0.8           # hit while controlling: the Stand snaps back, stunned
 
+[infiltration]
+# A body that gets inside another one (Santana). The host walks where the intruder
+# pushes, and can fight back by mashing any button; the Ripple pushes it out faster.
+tick_every_f = 15            # it eats in bites, four a second
+struggle_f = 5               # each button the host presses cuts the stay this many frames
+hamon_struggle_mult = 3.0    # a Hamon user's body repels the intruder this much faster
+hamon_expel_damage = 40      # pushed out by the Ripple: it burns on the way (x2 on undead)
+expel_stun_f = 18            # the host staggers as the body tears out of it
+
 [throw]
 # Props: Pose near one, the Stand grabs it; Pose again, the Stand throws it. A kit's
 # `strength` multiplies the speed, damage and knockback of its throws.
