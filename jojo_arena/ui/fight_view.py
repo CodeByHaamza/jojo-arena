@@ -661,9 +661,7 @@ class FightView:
                 words.add(sfx.MENACE * 4, self._head(victim), "menace", 2, 60, 0.25, 1)
             elif kind == "arena_exit":
                 # Through the wall: the fight goes on in the arena behind it.
-                from jojo_arena.stages import load_stage, stage_renderer
-
-                self.renderer = stage_renderer(load_stage(match.arena.name))
+                self.follow_arena(match)
                 self.impact(event.pos, frames=2, punch=6)
                 self.shake = max(self.shake, 16)
                 self.flash = max(self.flash, 8)
@@ -824,7 +822,18 @@ class FightView:
             self._seen[i] = (fighter.state, serial)
             self._block_word_f[i] = max(0, self._block_word_f[i] - 1)
 
+    def follow_arena(self, match: Match) -> None:
+        """Draw the arena the fight is really in: another one after an exit, the first
+        one again when a new round starts in it."""
+        name = match.arena.name
+        if name and name != self.renderer.stage.id:
+            from jojo_arena.stages import load_stage, stage_renderer
+
+            self.renderer = stage_renderer(load_stage(name))
+
     def update(self, match: Match | None = None) -> None:
+        if match is not None:
+            self.follow_arena(match)
         for view in self.fighter_views:
             view.throw_f = max(0, view.throw_f - 1)
         self.impact_f = max(0, self.impact_f - 1)

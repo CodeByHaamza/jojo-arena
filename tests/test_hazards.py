@@ -184,3 +184,41 @@ def test_st_moritz_is_reached_not_picked():
     from jojo_arena.stages import REACHED_IDS, STAGE_IDS
 
     assert "st_moritz" in REACHED_IDS and "st_moritz" not in STAGE_IDS
+
+
+def test_the_view_comes_back_inside_when_the_next_round_starts(monkeypatch):
+    import pygame
+
+    from jojo_arena.characters import get_fighter as fighter
+    from jojo_arena.ui.fight_view import FightView
+
+    monkeypatch.setenv("SDL_VIDEODRIVER", "dummy")
+    pygame.display.init()
+    try:
+        match, _ = slammed_north()
+        view = FightView(load_stage("swiss_castle"), [fighter("joseph_p2"), fighter("wamuu")])
+        view.update(match)
+        assert view.renderer.stage.id == "st_moritz"
+        again = duel("swiss_castle", "joseph_p2", "wamuu")  # what a new round builds
+        view.update(again)
+        assert view.renderer.stage.id == "swiss_castle"
+    finally:
+        pygame.display.quit()
+
+
+def test_arenas_with_events_play_the_same_fight_twice():
+    """The chandelier, the spikes and the way out depend on nothing but the fight."""
+    from test_determinism import scripted
+
+    frames = scripted(seed=11, steps=2400)
+
+    def play(stage_id: str) -> tuple:
+        match = duel(stage_id, "jotaro_p3", "wamuu")
+        kinds = []
+        for pair in frames:
+            kinds += [(e.kind, e.fighter) for e in match.step(pair)]
+        bodies = tuple((f.hp, f.pos.x, f.pos.y) for f in match.fighters)
+        return match.arena.name, tuple(kinds), bodies
+
+    for stage_id in ("joestar_mansion", "air_supplena", "swiss_castle"):
+        assert play(stage_id) == play(stage_id), stage_id
