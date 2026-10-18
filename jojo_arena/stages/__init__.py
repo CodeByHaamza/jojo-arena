@@ -10,10 +10,12 @@ _DIR = Path(__file__).parent
 
 # Explicit list (no dynamic import) so PyInstaller bundles every stage.
 STAGE_IDS = ("joestar_mansion", "swiss_castle", "air_supplena", "cairo_night")
+# Arenas that are never picked, only reached: the courtyard the Swiss castle opens on.
+REACHED_IDS = ("st_moritz",)
 
 
 def load_stage(stage_id: str) -> StageDef:
-    if stage_id not in STAGE_IDS:
+    if stage_id not in STAGE_IDS + REACHED_IDS:
         raise KeyError(f"unknown stage '{stage_id}'")
     return load_stage_def(_DIR / f"{stage_id}.toml", stage_id)
 
@@ -30,6 +32,7 @@ def stage_renderer(stage: StageDef):
     from jojo_arena.stages.air_supplena import AirSupplenaRenderer
     from jojo_arena.stages.cairo_night import CairoNightRenderer
     from jojo_arena.stages.joestar_mansion import JoestarMansionRenderer
+    from jojo_arena.stages.st_moritz import StMoritzRenderer
     from jojo_arena.stages.swiss_castle import SwissCastleRenderer
 
     renderers = {
@@ -37,5 +40,6 @@ def stage_renderer(stage: StageDef):
         "joestar_mansion": JoestarMansionRenderer,
         "swiss_castle": SwissCastleRenderer,
         "air_supplena": AirSupplenaRenderer,
+        "st_moritz": StMoritzRenderer,
     }
     return renderers[stage.id](stage)

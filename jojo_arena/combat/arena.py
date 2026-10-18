@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
 
 from jojo_arena.combat.hazards import Hazards
@@ -98,6 +99,9 @@ class Arena:
     sun_widen: float = 0.3  # how much wider a beam gets on the way, as a share of it
     cage: Cage | None = None
     hazards: Hazards = field(default_factory=Hazards)  # falling things, traps, slippery floor
+    name: str = ""  # which arena this is (the view draws it by this name)
+    # Builds another arena by name, when an exit takes the fight there (stage layer).
+    elsewhere: Callable[[str], Arena] | None = None
 
     def sun_spread(self, tick: int) -> float:
         """How far the sun has climbed: 0 when dawn breaks, 1 once it fills the room."""

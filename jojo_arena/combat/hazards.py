@@ -6,7 +6,9 @@ Three kinds, each described by a stage's data file and blind to who is fighting:
   that is marked a moment before (a shadow growing on the floor);
 - a **trap zone**: a patch of floor that springs when somebody is knocked into it;
 - a **surface**: a floor that does not grip, where a body keeps sliding the way it was
-  going (and gets carried further by a blow).
+  going (and gets carried further by a blow);
+- an **exit**: a stretch of wall that gives way when somebody is slammed into it, and
+  the fight goes on in another arena (named by the stage, built by the stage layer).
 
 A kit style can be spared by a trap or a surface (`spare_style`): what that style
 means is the stage's business, the engine only compares names.
@@ -104,6 +106,18 @@ class SurfaceDef:
         )
 
 
+@dataclass(frozen=True)
+class ExitDef:
+    """A stretch of wall a body can be slammed through, into another arena."""
+
+    rect: Rect  # a wall bounce inside this zone breaks through
+    to: str  # the arena the fight goes on in
+
+    @classmethod
+    def from_data(cls, data: dict) -> ExitDef:
+        return cls(rect=Rect(*data["rect"]), to=data["to"])
+
+
 @dataclass
 class Drop:
     """A drop in play: when it falls next, and where its last wreck lies."""
@@ -140,6 +154,7 @@ class Hazards:
     drops: list[Drop] = field(default_factory=list)
     zones: list[TrapZone] = field(default_factory=list)
     surfaces: tuple[SurfaceDef, ...] = ()
+    exits: tuple[ExitDef, ...] = ()
 
     @classmethod
     def build(
@@ -147,8 +162,9 @@ class Hazards:
         drops: tuple[DropDef, ...] = (),
         zones: tuple[TrapZoneDef, ...] = (),
         surfaces: tuple[SurfaceDef, ...] = (),
+        exits: tuple[ExitDef, ...] = (),
     ) -> Hazards:
-        return cls([Drop(d) for d in drops], [TrapZone(z) for z in zones], surfaces)
+        return cls([Drop(d) for d in drops], [TrapZone(z) for z in zones], surfaces, exits)
 
     def grip_at(self, pos: Vec2, style: str) -> tuple[float, float]:
         """(grip, slide) of the floor under `pos` for a body of this kit style."""
@@ -168,6 +184,10 @@ def parse_hazards(data: dict) -> tuple[tuple[DropDef, ...], tuple[TrapZoneDef, .
         if not drop.spots or drop.every_f <= drop.warning_f:
             raise ValueError("a drop needs spots, and to fall less often than it warns")
     return drops, zones
+
+
+def parse_exits(data: dict) -> tuple[ExitDef, ...]:
+    return tuple(ExitDef.from_data(e) for e in data.get("exits", []))
 
 
 def parse_surfaces(data: dict) -> tuple[SurfaceDef, ...]:

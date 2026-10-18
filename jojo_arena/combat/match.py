@@ -130,9 +130,12 @@ class Match:
             if attack.move.cinematic:
                 events += self._start_cutscene(fighter, self.opponent(fighter), attack)
                 return events  # the whole fight holds from now on
+        moved: list[Event] = []
         for fighter in self.fighters:
             if not fighter.frozen:
-                events += fighter.integrate(self.arena)
+                moved += fighter.integrate(self.arena)
+        events += moved
+        events += self._take_exits(moved)
         for fighter in self.fighters:
             if fighter.possessed_f > 0 and fighter.possessor is not None:
                 # The Stand is inside the possessed body and moves with it.
@@ -859,6 +862,37 @@ class Match:
         for zone in hazards.zones:
             events += self._update_trap_zone(zone)
         return events
+
+    def _take_exits(self, moved: list[Event]) -> list[Event]:
+        """A body slammed through a wall that gives way: the fight goes on in the arena
+        behind it. Both fighters keep their place along the wall and their distance from
+        it; what was flying or laid in the old room stays there."""
+        hazards = self.arena.hazards
+        if not hazards.exits or self.arena.elsewhere is None:
+            return []
+        for event in moved:
+            if event.kind != "wall_bounce" or event.fighter is None:
+                continue
+            exit_ = next((e for e in hazards.exits if e.rect.contains(event.pos)), None)
+            if exit_ is None:
+                continue
+            old, new = self.arena, self.arena.elsewhere(exit_.to)
+            for fighter in self.fighters:
+                # Out through the wall: the same place along it, the same distance from
+                # it, now on the other side of it in the new arena.
+                share = (fighter.pos.x - old.bounds.rect.left) / max(1.0, old.bounds.rect.w)
+                depth = fighter.pos.y - old.bounds.rect.top
+                spot = Vec2(
+                    new.bounds.rect.left + share * new.bounds.rect.w,
+                    new.bounds.rect.top + depth,
+                )
+                fighter.pos, _, _ = new.constrain(spot, self.rules.body_radius)
+                fighter.glide = Vec2()
+                fighter.carrying = None  # props belong to their room: it stays behind
+            self.arena = new
+            self.projectiles, self.traps, self.webs = [], [], []
+            return [Event("arena_exit", event.pos, event.fighter)]
+        return []
 
     def _update_drop(self, drop) -> list[Event]:
         defn = drop.defn

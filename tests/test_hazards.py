@@ -131,6 +131,18 @@ def test_oil_carries_you_on_unless_you_breathe_the_ripple():
     assert slide_after_walking("jotaro_p3", "cairo_night", (186, 110)) == 0
 
 
+def test_in_st_moritz_nobody_keeps_their_footing():
+    assert slide_after_walking("joseph_p2", "st_moritz", (100, 160)) > 10
+
+
+def test_a_body_starts_slowly_on_snow():
+    match = duel("st_moritz", "jotaro_p3", "mannequin_blue", at=((100, 160), (440, 240)))
+    start = match.fighters[0].pos.x
+    match.step((walk(1.0), NONE))
+    first_step = match.fighters[0].pos.x - start
+    assert 0 < first_step < match.fighters[0].walk_speed() * 0.5
+
+
 def test_a_stage_without_hazards_plays_exactly_as_before():
     """No surface: walking is the old one-to-one walk, to the bit."""
     match = duel("cairo_night", "jotaro_p3", "mannequin_blue")
@@ -138,3 +150,89 @@ def test_a_stage_without_hazards_plays_exactly_as_before():
     start = jotaro.pos.copy()
     match.step((walk(1.0), NONE))
     assert jotaro.pos == start + Vec2(1.0, 0) * jotaro.walk_speed()
+
+
+# The Swiss castle: its event is the way out --------------------------------------------
+
+
+def slammed_north(options=None) -> tuple[Match, list]:
+    """Wamuu sent hard into the north wall of the hall, where the windows are."""
+    match = duel("swiss_castle", "joseph_p2", "wamuu", options, at=((300, 160), (300, 70)))
+    match.fighters[1].take_hit(0, 30, Vec2(0, -9), True)
+    events = []
+    for _ in range(20):
+        events += match.step((NONE, NONE))
+    return match, events
+
+
+def test_slammed_through_the_north_wall_the_fight_goes_on_outside():
+    match, events = slammed_north()
+    assert any(e.kind == "arena_exit" for e in events)
+    assert match.arena.name == "st_moritz"
+    joseph, wamuu = match.fighters
+    assert joseph.pos.y > wamuu.pos.y, "both keep their distance from the broken wall"
+    assert match.arena.hazards.surfaces, "and outside, the snow does not grip"
+
+
+def test_with_events_off_the_wall_holds():
+    match, events = slammed_north(StageOptions(events=False))
+    assert not any(e.kind == "arena_exit" for e in events)
+    assert match.arena.name == "swiss_castle"
+
+
+def test_st_moritz_is_reached_not_picked():
+    from jojo_arena.stages import REACHED_IDS, STAGE_IDS
+
+    assert "st_moritz" in REACHED_IDS and "st_moritz" not in STAGE_IDS
+
+
+def test_the_view_comes_back_inside_when_the_next_round_starts(monkeypatch):
+    import pygame
+
+    from jojo_arena.characters import get_fighter as fighter
+    from jojo_arena.ui.fight_view import FightView
+
+    monkeypatch.setenv("SDL_VIDEODRIVER", "dummy")
+    pygame.display.init()
+    try:
+        match, _ = slammed_north()
+        view = FightView(load_stage("swiss_castle"), [fighter("joseph_p2"), fighter("wamuu")])
+        view.update(match)
+        assert view.renderer.stage.id == "st_moritz"
+        again = duel("swiss_castle", "joseph_p2", "wamuu")  # what a new round builds
+        view.update(again)
+        assert view.renderer.stage.id == "swiss_castle"
+    finally:
+        pygame.display.quit()
+
+
+def test_arenas_with_events_play_the_same_fight_twice():
+    """The chandelier, the spikes and the way out depend on nothing but the fight."""
+    from test_determinism import scripted
+
+    frames = scripted(seed=11, steps=2400)
+
+    def play(stage_id: str) -> tuple:
+        match = duel(stage_id, "jotaro_p3", "wamuu")
+        kinds = []
+        for pair in frames:
+            kinds += [(e.kind, e.fighter) for e in match.step(pair)]
+        bodies = tuple((f.hp, f.pos.x, f.pos.y) for f in match.fighters)
+        return match.arena.name, tuple(kinds), bodies
+
+    for stage_id in ("joestar_mansion", "air_supplena", "swiss_castle"):
+        assert play(stage_id) == play(stage_id), stage_id
+
+
+def test_a_prop_carried_through_the_wall_stays_in_the_room_it_came_from():
+    """Props are counted per arena: holding one of the hall's outside would point at
+    nothing (or at the wrong thing) in the courtyard."""
+    match = duel("swiss_castle", "joseph_p2", "wamuu", at=((300, 160), (300, 70)))
+    joseph = match.fighters[0]
+    joseph.carrying = len(match.arena.obstacles) - 1  # the last prop of the hall
+    match.arena.obstacles[-1].carried_by = 0
+    match.fighters[1].take_hit(0, 30, Vec2(0, -9), True)
+    for _ in range(40):
+        match.step((NONE, NONE))
+    assert match.arena.name == "st_moritz"
+    assert joseph.carrying is None

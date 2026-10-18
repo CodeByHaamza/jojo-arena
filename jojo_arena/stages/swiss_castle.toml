@@ -37,6 +37,13 @@ rect = [278, 42, 40, 76]
 [[sun.windows]]
 rect = [388, 42, 40, 76]
 
+# Event: the way out. Slam somebody into the north wall hard enough to bounce off it
+# and it gives way: the fight goes on outside, in the snow of St. Moritz (st_moritz.toml),
+# where nobody keeps their footing. Off with the "events" option of the arena screen.
+[[exits]]
+rect = [16, 30, 448, 34]
+to = "st_moritz"
+
 # The pillars the Pillar Men came out of: solid, and they take a beating.
 [prop_kinds.pillar]
 hp = 200

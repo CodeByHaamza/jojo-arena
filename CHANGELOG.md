@@ -15,6 +15,10 @@ des corrections seules une patch.
 - **Nouvelle arène : l'île d'Air Supplena.** La flaque d'huile au pied du pilier de
   l'Hell Climb fait glisser tout le monde, sauf ceux qui respirent l'Onde ; projeté dans
   une des fosses, on se prend les pics (l'Onde protège, comme dans Eyes of Heaven).
+- **Le château suisse a son événement : sortir.** Projeté assez fort contre le mur
+  nord de la salle, on le traverse, et le combat continue dehors, dans la neige de
+  St. Moritz devant l'hôtel de Gessler : personne n'y tient debout (seul le chemin
+  dégagé vers la porte accroche un peu), et la neige du toit tombe par plaques.
 
 - **Santana refait.** Il entre vraiment dans ton corps : il te dirige et te mange, et
   tu le chasses en martelant les boutons (l'Onde le chasse trois fois plus vite, et le
