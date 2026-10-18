@@ -173,6 +173,8 @@ part = 2
 name = "KARS"
 kit = "kars"
 sprite = "kars/kars"
+# The Ultimate Life Form is not the same body: wings, loose hair, white blades.
+body_sprites = { ultimate = "kars_ultimate/kars_ultimate" }
 role = "HOMME DU PILIER - LUMIERE"
 role_en = "PILLAR MAN - LIGHT"
 blurb = "Celui qui a fait les masques de pierre. Des lames lui sortent des bras et ricochent sur les murs."

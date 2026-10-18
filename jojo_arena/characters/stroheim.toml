@@ -118,6 +118,8 @@ knockback = 30
 last_knockback = 280
 hitstop_f = 2
 anim = "special"
+status = "burn"
+status_s = 2.2
 
 # The lamps. This is why he was built: a Pillar Man in them takes double.
 [stances.base.moves.special]

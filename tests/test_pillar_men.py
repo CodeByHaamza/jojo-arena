@@ -345,3 +345,40 @@ def test_the_mask_does_not_come_off_between_rounds():
     again = rounds.match.fighters[0]
     assert again.awakened and again.stance == "ultimate"
     assert again.sun_proof  # and the sun still means nothing to him
+
+
+def test_what_he_sends_off_as_an_animal_comes_back_fed():
+    """The hand he turns into a flesh-eating squirrel (jojowiki, Kars): it chases, it
+    bites, and what it eats goes back to him."""
+    match = make_duel("kars", "joseph_p2", p1=(150, 100), p2=(300, 100))
+    kars, joseph = match.fighters
+    kars.complete_awakening()
+    run(match, 4)
+    kars.hp = kars.max_hp - 150
+    hurt, fed = joseph.hp, kars.hp
+    run(match, 2, p1=press("heavy", move=(1.0, 0.0)))
+    run(match, 220)
+    assert joseph.hp < hurt  # it found him across the arena
+    assert kars.hp > fed  # and it brought him back a mouthful
+
+
+def test_the_wings_carry_him_further_than_he_can_walk():
+    """"Bird-like wings that enable him to fly" (jojowiki, Kars)."""
+    match = make_duel("kars", "joseph_p2", p1=(150, 100), p2=(360, 100))
+    kars, joseph = match.fighters
+    kars.complete_awakening()
+    run(match, 4)
+    start = kars.pos.x
+    run(match, 60, p1=press("special", move=(1.0, 0.0)))
+    flown = kars.pos.x - start
+    assert flown > 150, flown  # further than a walk, in a third of a second
+    assert joseph.hp < joseph.max_hp  # and the landing is a blow
+
+
+def test_awakened_his_heart_heat_attack_is_not_the_blade_storm_any_more():
+    kit_ = kit("kars")
+    blades = kit_.move("light", "hha")
+    beasts = kit_.move("ultimate", "hha")
+    assert beasts is not blades
+    assert beasts.projectile is not None and beasts.projectile.origin == "ring"
+    assert beasts.projectile.count >= 5  # they close in from every side

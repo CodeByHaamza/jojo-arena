@@ -87,6 +87,36 @@ def sun_amount(match: Match) -> float:
     return max(0.0, 0.3 * (now - (after - lead)) / lead)
 
 
+# A body under a status effect takes its colour (added to the sprite, so it reads at
+# any distance): fire warms it, cold drains it, a current flickers over it. Kept low:
+# added light saturates a pale sprite into one flat colour, and then nobody can tell
+# who is on fire.
+STATUS_TINTS = {
+    "burn": (48, 16, 0, 0),
+    "chill": (14, 38, 64, 0),
+    "shock": (26, 20, 0, 0),
+}
+
+
+def status_tint(fighter: Fighter) -> tuple[int, int, int, int] | None:
+    """The tint of the statuses on this body, pulsing with what is left of them."""
+    names = fighter.statuses.active
+    if not names:
+        return None
+    red = green = blue = 0
+    for name in names:
+        tint = STATUS_TINTS.get(name)
+        if tint is None:
+            continue
+        beat = 0.6 if name == "shock" and (fighter.statuses.frames(name) // 3) % 2 else 1.0
+        red, green, blue = (
+            min(255, red + round(tint[0] * beat)),
+            min(255, green + round(tint[1] * beat)),
+            min(255, blue + round(tint[2] * beat)),
+        )
+    return (red, green, blue, 0) if red or green or blue else None
+
+
 class FighterView:
     def __init__(self, fighter_def: FighterDef) -> None:
         self.fighter_def = fighter_def
@@ -103,6 +133,13 @@ class FighterView:
         self.shadow = (round(14 + self.height * 0.25), 7)
         self.stand: SheetSprites | None = None
         self.stands: dict[str, SheetSprites] = {}
+        # A stance that changes the body itself: its own sheet.
+        self.bodies: dict[str, SheetSprites] = {}
+        for stance, name in fighter_def.body_sprites.items():
+            base = SPRITES_DIR / name
+            self.bodies[stance] = SheetSprites.load(
+                base.with_suffix(".png"), base.with_suffix(".toml"), fighter_def.palette or None
+            )
         self.throw_f = 0  # frames left of the Stand's throw pose (view only)
         if fighter_def.stand_sprite:
             base = SPRITES_DIR / fighter_def.stand_sprite
@@ -128,9 +165,15 @@ class FighterView:
             name = "idle"  # an animation nobody planned for: never crash, stand still
         return name, sprites.spec(name) or AnimSpec(name, 1)
 
+    def body_sheet(self, fighter: Fighter):
+        """The sheet this body is drawn from: another one once he has become something
+        else (Kars in his Ultimate form)."""
+        return self.bodies.get(fighter.stance, self.sprites)
+
     def current_frame(self, fighter: Fighter, sprites=None) -> pygame.Surface:
         """The fighter's frame; with `sprites`, the same animation from another sheet."""
-        sprites = sprites or self.sprites
+        own = self.body_sheet(fighter)
+        sprites = sprites or own
         phase = None
         if fighter.state == State.ATTACK and fighter.attack is not None:
             anim = fighter.attack.move.anim
@@ -140,7 +183,7 @@ class FighterView:
             hands_free = fighter.kit.prop_hold == "hair"  # his hair holds it for him
             if (
                 fighter.carrying is not None
-                and sprites is self.sprites
+                and sprites is own
                 and self.stand is None
                 and not hands_free
             ):
@@ -167,6 +210,9 @@ class FighterView:
         elif fighter.possessed_f > 0 and (fighter.possessed_f // 4) % 2 == 0:
             image = image.copy()
             image.fill((0, 70, 30, 0), special_flags=pygame.BLEND_RGB_ADD)
+        elif tint := status_tint(fighter):
+            image = image.copy()
+            image.fill(tint, special_flags=pygame.BLEND_RGB_ADD)
         return image
 
     # The Stand ---------------------------------------------------------------------------
@@ -263,7 +309,7 @@ class FighterView:
     def draw(self, surface: pygame.Surface, fighter: Fighter, tick: int) -> None:
         self.draw_aura(surface, fighter, tick)
         image = self.current_frame(fighter)
-        ax, ay = self.sprites.anchor
+        ax, ay = self.body_sheet(fighter).anchor
         ay += round(self.lift(fighter))
         _, flip = sprite_direction(fighter.facing.x, fighter.facing.y)
         if flip:
@@ -289,6 +335,8 @@ class FighterView:
             # A faint second pass over the body so the aura also tints the sprite.
             tint = tuple(round(c * 0.18) for c in self.fighter_def.aura)
             blit_glow(surface, radial_glow(18, tint), fighter.pos + self.chest)
+        if fighter.statuses.active:
+            vfx.draw_statuses(surface, fighter.pos, self.height, fighter.statuses.active, tick)
         if fighter.state == State.GUARD_BROKEN:
             # Dizzy stars circling over the head.
             for i in range(3):
@@ -402,6 +450,9 @@ class FightView:
             elif event.kind == "trap_triggered":
                 aura = self.fighter_defs[event.fighter].aura
                 self.sparks.append(Spark(event.pos + Vec2(0, -8), 12, 12, aura, 12, 6))
+            elif event.kind == "trap_popped":
+                # A lens going out without firing: a bubble, and nothing else.
+                self.sparks.append(Spark(event.pos + Vec2(0, -6), 9, 9, (200, 240, 255), 10, 5))
             elif event.kind == "drain":
                 self.sparks.append(Spark(pos, 16, 16, (230, 40, 60), 12, 6))
             elif event.kind == "hamon":
@@ -425,6 +476,28 @@ class FightView:
 
     def _head(self, fighter: Fighter) -> Vec2:
         return fighter.pos + Vec2(0, -self.fighter_views[fighter.index].height - 8)
+
+    def _status_event(self, kind: str, event: Event, match: Match, pos: Vec2) -> None:
+        """A status catching, and the beat of one that is already working. The word is
+        said once, when it takes; after that it is the body that shows it."""
+        fx, words = self.fx, self.words
+        if kind == "status_tick":
+            active = match.fighters[event.fighter].statuses.active
+            colors = {"burn": (120, 70, 40), "chill": (210, 236, 255), "shock": (240, 220, 120)}
+            for name in active:
+                fx.dust(event.pos + Vec2(0, -10), 3, 1.0, 1, colors.get(name, (150, 140, 160)), 20)
+            return
+        name = kind.removeprefix("status_")
+        if name == "burn":
+            fx.add(vfx.Flash(pos, 14, (255, 170, 60), 7))
+            fx.dust(event.pos, 6, 1.4, 2, (160, 90, 40), 22)
+            words.add(sfx.SIZZLE, pos + Vec2(0, -15), "impact", 2, 28, 0.4, 1)
+        elif name == "chill":
+            fx.add(vfx.Ring(pos, (190, 230, 255), 2.0, 12, 2))
+            words.add(sfx.FREEZE, pos + Vec2(0, -15), sfx.ICE, 2, 26, 0.4, 1)
+        elif name == "shock":
+            fx.add(vfx.Flash(pos, 14, (255, 244, 170), 6))
+            words.add(sfx.CRACKLE, pos + Vec2(0, -15), sfx.HAMON, 2, 26, 0.4, 1)
 
     def _comic(self, events: list[Event], match: Match) -> None:
         """Sound effects written on screen and impact effects, comic-book style."""
@@ -599,6 +672,8 @@ class FightView:
                 fx.add(vfx.Flash(pos, 16, (200, 236, 255), 8))
                 fx.dust(event.pos, 6, 1.2, 2, (220, 240, 255), 18)
                 words.add(sfx.FREEZE, pos + Vec2(0, -14), sfx.ICE, 2, 30, 0.4, 1)
+            elif kind.startswith("status_") and event.fighter is not None:
+                self._status_event(kind, event, match, pos)
             elif kind == "sunburn" and event.fighter is not None:
                 fx.dust(event.pos + Vec2(0, -10), 3, 0.8, 1, (120, 110, 110), 22)
                 if event.value:

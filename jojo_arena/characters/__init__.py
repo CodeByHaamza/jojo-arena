@@ -28,6 +28,9 @@ class FighterDef:
     stand_sprite: str = ""  # sheet of the Stand shown while it is out (if any)
     # Characters who call in more than one helper: a sheet per stance.
     stand_sprites: dict[str, str] = field(default_factory=dict)
+    # A stance that changes the body itself (Kars, once he is the Ultimate Life
+    # Form): his own sheet, used instead of `sprite` while he is in it.
+    body_sprites: dict[str, str] = field(default_factory=dict)
     stand_name: str = ""
     role: str = ""  # one line, for the character select screen
     blurb: str = ""  # a short presentation
@@ -86,6 +89,7 @@ def load_roster() -> list[FighterDef]:
                 palette=palette,
                 stand_sprite=entry.get("stand_sprite", ""),
                 stand_sprites=dict(entry.get("stand_sprites", {})),
+                body_sprites=dict(entry.get("body_sprites", {})),
                 stand_name=entry.get("stand_name", ""),
                 role=localized(entry, "role"),
                 blurb=localized(entry, "blurb"),

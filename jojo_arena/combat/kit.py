@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from jojo_arena.combat.rules import HZ, per_frame
+from jojo_arena.combat.status import KINDS
 from jojo_arena.engine.data import load_toml, seconds_to_frames
 from jojo_arena.engine.i18n import localized
 
@@ -39,6 +40,10 @@ class ProjectileDef:
     returns: bool = False  # a boomerang: it comes back to its owner's hand
     explode_radius: float = 0.0  # a grenade: no hit on contact, it blows up when it runs out
     drag: float = 1.0  # speed kept each frame (below 1: it rolls to a stop)
+    status: str = ""  # what it leaves on whoever it hits: "burn", "chill", "shock"
+    status_f: int = 0
+    hamon: bool = False  # it carries the Ripple itself (sunlight through a lens)
+    drain: float = 0.0  # share of its damage given back to its owner as life
 
     @classmethod
     def from_data(cls, data: dict) -> ProjectileDef:
@@ -63,6 +68,10 @@ class ProjectileDef:
             look=data.get("look", "orb"),
             returns=data.get("returns", False),
             explode_radius=data.get("explode_radius", 0.0),
+            status=data.get("status", ""),
+            status_f=seconds_to_frames(data.get("status_s", 0)),
+            hamon=data.get("hamon", False),
+            drain=data.get("drain", 0.0),
             drag=data.get("drag", 1.0),
         )
 
@@ -76,6 +85,7 @@ class TrapDef:
     lifetime_f: int
     max_count: int  # the oldest disappears when one more is laid
     projectile: ProjectileDef  # what it fires at the opponent when triggered
+    fragile: bool = False  # a blow landed on its owner pops it where it stands
 
     @classmethod
     def from_data(cls, data: dict) -> TrapDef:
@@ -85,6 +95,7 @@ class TrapDef:
             lifetime_f=seconds_to_frames(data["lifetime_s"]),
             max_count=data.get("max_count", 3),
             projectile=ProjectileDef.from_data(data["projectile"]),
+            fragile=data.get("fragile", False),
         )
 
 
@@ -204,6 +215,8 @@ class MoveDef:
     blood_cost: int = 0  # vampires: the move needs and spends this much blood
     hp_cost: int = 0  # the user tears itself up to do it: it needs, and pays, this much life
     freeze_f: int = 0  # the blow freezes the opponent solid this long (Vaporization Freezing)
+    status: str = ""  # left on the opponent afterwards: "burn", "chill", "shock"
+    status_f: int = 0
     cage_f: int = 0  # on a clean hit, a ring of chains closes around both this long
     cage_radius: float = 0.0
     detonate: bool = False  # sets off every trap and grenade the user has laid
@@ -290,6 +303,8 @@ class MoveDef:
             blood_cost=data.get("blood_cost", 0),
             hp_cost=data.get("hp_cost", 0),
             freeze_f=data.get("freeze_f", 0),
+            status=data.get("status", ""),
+            status_f=seconds_to_frames(data.get("status_s", 0)),
             cage_f=seconds_to_frames(data.get("cage_s", 0)),
             cage_radius=data.get("cage_radius", 0.0),
             detonate=data.get("detonate", False),
@@ -383,6 +398,15 @@ class Kit:
         return any(move.time_stop_f > 0 for move in self.all_moves())
 
 
+
+def _projectile_status(move: MoveDef) -> tuple[tuple[str, int], ...]:
+    """The statuses a move's projectiles carry, wherever they come from."""
+    shots = [move.projectile]
+    if move.trap is not None:
+        shots.append(move.trap.projectile)
+    return tuple((s.status, s.status_f) for s in shots if s is not None)
+
+
 def load_kit(path: Path, hh_bar: float = 100.0) -> Kit:
     return parse_kit(load_toml(path), path.stem, path.name, hh_bar)
 
@@ -409,6 +433,11 @@ def parse_kit(data: dict, kit_id: str, source: str = "kit", hh_bar: float = 100.
     for move in [*shared.values(), *(m for s in stances.values() for m in s.moves.values())]:
         if move.buff and move.buff not in buffs:
             raise ValueError(f"{source}: move '{move.name}' uses unknown buff '{move.buff}'")
+        for status, frames in ((move.status, move.status_f), *_projectile_status(move)):
+            if status and status not in KINDS:
+                raise ValueError(f"{source}: move '{move.name}' has unknown status '{status}'")
+            if status and frames <= 0:
+                raise ValueError(f"{source}: move '{move.name}' sets a status with no status_s")
         if move.leap_to not in ("target", "cursor"):
             raise ValueError(f"{source}: move '{move.name}' has unknown leap_to")
         if move.cinematic and (move.cinematic_f <= 0 or move.cinematic_at not in ("hit", "start")):

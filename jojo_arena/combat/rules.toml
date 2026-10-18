@@ -145,6 +145,33 @@ burn_max_mult = 3.5           # ...this many times faster. Standing in it is a d
 burn_cool_per_f = 3           # out of the light, that build-up drops this fast per frame
 hamon_breath_mult = 1.5       # Hamon breathing fills faster in the sun
 
+[status]
+# Altérations d'état (GDD "Altérations d'état"): a blow can leave something behind that
+# keeps working after the impact. A second hit refreshes it, it never stacks, and each
+# one has its own ceiling so nobody is cooked to death from across the arena.
+tick_every_f = 6              # the life lost is announced this often, not every frame
+
+[status.burn]
+# Fire: Esidisi's blood at five hundred degrees, Stroheim's flamethrower.
+max_s = 2.6
+damage_per_s = 26
+blocks_regen = true           # a burning wound does not close, undead or not
+
+[status.chill]
+# Cold: DIO's Vaporization Freezing. The blood thickens; thawed, the limbs stay slow.
+max_s = 2.2
+walk_mult = 0.6
+no_breath = true              # too cold to breathe the Ripple, too cold to drink
+
+[status.shock]
+# A current: the Ripple conducted through a Satiporoja scarf, which works as a
+# lightning rod. The muscles answer to it instead of to their owner.
+max_s = 1.8
+damage_per_s = 10
+walk_mult = 0.85
+no_meter = true               # no Heart Heat while the body is not his own
+guard_drain_per_s = 18
+
 [stance]
 switch_f = 12                 # time to bring the Stand out or call it back
 

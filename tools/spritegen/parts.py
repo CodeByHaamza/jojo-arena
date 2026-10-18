@@ -81,14 +81,35 @@ def hair(sk: Skeleton, p: dict, look: Look) -> list[Part]:
 
     if style == "long":
         length = p.get("length", 10)
+        # `wind`: the locks are not hanging, they are streaming. Head units sideways.
+        wind = p.get("wind", 0.0)
         if sk.view == "down":
-            locks = capsule(*at(-6.5, -1), *at(-6.8, length), 2.1 * k)
-            locks |= capsule(*at(6.5, -1), *at(6.8, length), 2.1 * k)
+            locks = capsule(*at(-6.5, -1), *at(-6.8 - wind * 0.5, length), 2.1 * k)
+            locks |= capsule(*at(6.5, -1), *at(6.8 + wind * 0.5, length), 2.1 * k)
         elif sk.view == "up":
             locks = capsule(*at(0, 0), *at(0, length), 6.2 * k)
         else:
-            locks = capsule(*at(-3.5, 0), *at(-5, length), 3.0 * k)
+            locks = capsule(*at(-3.5, 0), *at(-5 - wind * 0.4, length), 3.0 * k)
         parts.append(Part(mat, locks, z=53))
+        if wind:
+            # Loose hair caught by the wind: long tufts blown out behind the head.
+            if sk.view == "right":
+                blown = [((-3.5, -4), (-4 - wind, -9)), ((-4, -1), (-5 - wind, -5))]
+            elif sk.view == "up":
+                blown = [((-5, 0), (-6 - wind, 5)), ((5, 0), (6 + wind, 5))]
+            else:
+                blown = [
+                    ((-6, -3), (-6 - wind, -9)),
+                    ((6, -3), (6 + wind, -9)),
+                    ((-5.5, 0.5), (-6 - wind * 0.9, -3)),
+                    ((5.5, 0.5), (6 + wind * 0.9, -3)),
+                    ((-6, -5.5), (-4 - wind * 0.6, -12)),
+                    ((6, -5.5), (4 + wind * 0.6, -12)),
+                ]
+            streaming: set[Pixel] = set()
+            for base, tip in blown:
+                streaming |= _tuft(sk, base, tip, 2.4)
+            parts.append(Part(mat, streaming, z=52.5))
     elif style == "tower":
         h = p.get("height", 6)
         if sk.view == "right":
@@ -997,6 +1018,98 @@ def tendrils(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     return [Part(p["material"], strands, z=34 if sk.view == "right" else 9.5, tone=1)]
 
 
+def wings(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """Feathered wings growing from the shoulder blades.
+
+    Options: span (px from the shoulder to the longest feather), feathers (per wing),
+    sweep (radians the last feather is swept back), tip (material of the outer
+    feathers), spread (0 folded against the back, 1 opened wide).
+
+    Seen from above - which is how this game is seen - a wing is a fan: the first
+    feather points straight out from the shoulder, each next one is shorter and swept
+    further back, so the tips draw the curved trailing edge. Behind the body when it
+    faces the camera, over its back when it is turned away, and in profile only the far
+    wing shows.
+    """
+    mat = p["material"]
+    tip_mat = p.get("tip", mat)
+    span = p.get("span", 16.0)
+    count = max(3, p.get("feathers", 6))
+    sweep = p.get("sweep", 1.15)
+    spread = p.get("spread", 0.85)
+    y = sk.shoulder_y + 1
+    if sk.view == "right":
+        roots, ways, z = [(sk.shoulders[0][0] + 1.5, y)], [-1], 1.0
+        back = -1  # facing right: behind is to the left, and the wing lies along it
+    elif sk.view == "up":
+        (lx, _), (rx, _) = sk.shoulders
+        roots, ways, z = [(lx + 1, y), (rx - 1, y)], [-1, 1], 40.0  # we see his back
+        back = 1
+    else:
+        (lx, _), (rx, _) = sk.shoulders
+        roots, ways, z = [(lx + 1, y), (rx - 1, y)], [-1, 1], 1.0
+        back = -1
+    parts: list[Part] = []
+    for (root_x, root_y), way in zip(roots, ways, strict=True):
+        for i in range(count):
+            t = i / (count - 1)
+            angle = sweep * t * (0.5 + 0.5 * spread)
+            length = span * (1.0 - 0.45 * t) * (0.55 + 0.45 * spread)
+            tip_x = root_x + way * length * math.cos(angle)
+            tip_y = root_y + back * length * math.sin(angle) - 1
+            # A wing that leaves the cell is a wing cut off by the sprite's edge.
+            thick = 1.6 - 0.7 * t
+            low, high = 2 + thick, look.cell - 3 - thick
+            tip_x = max(low, min(high, tip_x))
+            tip_y = max(low, min(high, tip_y))
+            feather = capsule(root_x, root_y - 0.5, tip_x, tip_y, thick)
+            material = tip_mat if t > 0.55 else mat
+            parts.append(Part(material, feather, z=z - i * 0.02, tone=1 if t > 0.55 else None))
+    return parts
+
+
+def arm_blade(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """A curved blade growing out of a forearm - part of the arm, not something held.
+
+    Options: length (px past the hand), width (at the root), curve (how far the tip
+    sweeps aside), back (how far it also runs back toward the elbow), both (false: only
+    the near arm in profile).
+
+    Kars does not carry a sword: the Light Blades come out of his forearms and sweep
+    round like a scythe, which is why this is a body part with a curve to it.
+    """
+    mat = p["material"]
+    length = p.get("length", 13)
+    width = p.get("width", 1.5)
+    curve = p.get("curve", 5.0)
+    back = p.get("back", 6.0)
+    parts: list[Part] = []
+    arms = [0, 1] if (sk.view != "right" or p.get("both", True)) else [1]
+    for arm in arms:
+        shoulder, hand = sk.shoulders[arm], sk.hands[arm]
+        dx, dy = hand[0] - shoulder[0], hand[1] - shoulder[1]
+        norm = math.hypot(dx, dy) or 1e-6
+        ux, uy = dx / norm, dy / norm
+        side = -1 if hand[0] < sk.center_x else 1  # it sweeps away from the body
+        px, py = uy * side, -ux * side  # perpendicular, pointing away from the body
+        low, high = 2 + width, look.cell - 3 - width
+        root = (hand[0] - ux * back + px * 0.9, hand[1] - uy * back + py * 0.9)
+        blade: set[Pixel] = set()
+        previous, steps = root, 10
+        for i in range(1, steps + 1):
+            t = i / steps
+            point = (
+                root[0] + ux * length * t + px * curve * t * t,
+                root[1] + uy * length * t + py * curve * t * t,
+            )
+            point = (max(low, min(high, point[0])), max(low, min(high, point[1])))
+            blade |= capsule(*previous, *point, max(0.5, width * (1 - 0.75 * t)))
+            previous = point
+        z = {"down": 59.5, "up": 14.5, "right": 61.5 if arm else 8.0}[sk.view]
+        parts.append(Part(mat, blade, z=z, tone=2))
+    return parts
+
+
 def sword(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     """A thin blade held in the screen-right (profile: near) hand, along the forearm.
 
@@ -1334,6 +1447,8 @@ PART_TYPES: dict[str, Callable[[Skeleton, dict, Look], list[Part]]] = {
     "body_lines": body_lines,
     "veins": veins,
     "tendrils": tendrils,
+    "wings": wings,
+    "arm_blade": arm_blade,
     "sword": sword,
     "boots": boots,
     "top": top,
