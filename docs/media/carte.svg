@@ -22,7 +22,7 @@
   <text x="40" y="76" font-family="'Trebuchet MS',Verdana,sans-serif" font-weight="700" font-size="42" fill="#f0c23c">JOJO ARENA</text>
   <text x="40" y="104" font-family="'Trebuchet MS',Verdana,sans-serif" font-size="15" fill="#cdbbe8">Arena fighter 1v1 · pixel art vu de dessus · fan game</text>
   <text x="40" y="140" font-family="'Trebuchet MS',Verdana,sans-serif" font-size="13" fill="#fff6d0">Python 3.12 · pygame-ce · simulation deterministe a 60 Hz</text>
-  <text x="40" y="162" font-family="'Trebuchet MS',Verdana,sans-serif" font-size="13" fill="#fff6d0">19 persos · 3 arenes · 942 tests · 94 % de couverture</text>
+  <text x="40" y="162" font-family="'Trebuchet MS',Verdana,sans-serif" font-size="13" fill="#fff6d0">19 persos · 3 arenes · 959 tests · 94 % de couverture</text>
   <text x="40" y="202" font-family="'Trebuchet MS',Verdana,sans-serif" font-weight="700" font-size="16" fill="#fff6d0">developpe par Hamza Karrouchi</text>
   <rect x="40" y="210" width="240" height="2" fill="#f0c23c" opacity="0.3"/>
   <rect x="40" y="209" width="60" height="4" rx="2" fill="#fff6d0">

@@ -36,6 +36,7 @@ class FighterDef:
     blurb: str = ""  # a short presentation
     selectable: bool = True  # placeholders stay out of the character select screen
     part: int = 0  # the JoJo part the character comes from (0: none, like the dummies)
+    side: str = ""  # "hero" or "villain": which camp the title screen lines it up with
 
 
 @dataclass(frozen=True)
@@ -95,6 +96,7 @@ def load_roster() -> list[FighterDef]:
                 blurb=localized(entry, "blurb"),
                 selectable=entry.get("selectable", True),
                 part=entry.get("part", 0),
+                side=entry.get("side", ""),
             )
         )
     return roster

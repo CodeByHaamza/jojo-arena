@@ -8,7 +8,7 @@ Fan game non officiel de JoJo's Bizarre Adventure — Python 3.12, pygame-ce
 **Parties 1 et 2 complètes** · 19 persos · 3 arènes · simulation déterministe à 60 images par seconde
 
 [![CI](https://github.com/CodeByHaamza/jojo-arena/actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-942-2ea24a.svg)](tests/)
+[![Tests](https://img.shields.io/badge/tests-959-2ea24a.svg)](tests/)
 [![Couverture](https://img.shields.io/badge/couverture-94%25-2ea24a.svg)](docs/INFRA.md#couverture)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-3776ab.svg)](https://www.python.org/)
 [![pygame-ce](https://img.shields.io/badge/pygame--ce-2.5-3d63c8.svg)](https://pyga.me/)
@@ -68,6 +68,23 @@ est un rayon de 46, un piège est une large nappe devant soi, une saisie est imp
 hitbox de poing n'est permise que si la technique est un poing — et
 [un test le vérifie](tests/test_ultimates.py) sur tout le roster.
 
+<img src="docs/media/separateur.svg" width="100%" alt="">
+
+## Ce qu'un coup laisse derrière lui
+
+<div align="center">
+<img src="docs/media/etats.svg" alt="Les trois altérations d'état : feu, gel, courant" width="100%">
+</div>
+
+Trois **altérations d'état**, et rien d'autre : le moteur n'en connaît pas une quatrième tant
+que personne n'écrit ses règles. Elles ne prennent que sur un coup qui **touche vraiment** —
+gardé, il ne reste rien — un second coup les **relance sans les empiler**, et le temps arrêté
+suspend ce qui brûle comme le reste. Le sang à cinq cents degrés d'Esidisi empêche une plaie
+de se refermer, le gel de DIO coupe un manieur de l'onde de sa propre jauge, et l'écharpe de
+Lisa Lisa conduit l'onde comme un paratonnerre. Les chiffres sont dans
+[`combat/rules.toml`](jojo_arena/combat/rules.toml), et le jeu les explique au joueur dans
+l'onglet **Règles du combat** du glossaire.
+
 ---
 
 ## La boucle d'un round
@@ -93,7 +110,7 @@ chacun de leur côté. C'est ce qui rend les replays exacts et le rollback possi
 > *Un jeu qui tourne n'est pas un jeu juste.*
 
 <div align="center">
-<img src="docs/media/chiffres.svg" alt="19 persos, 3 arènes, 941 tests, 94 % de couverture, 60 images par seconde" width="100%">
+<img src="docs/media/chiffres.svg" alt="19 persos, 3 arènes, 959 tests, 94 % de couverture, 60 images par seconde" width="100%">
 </div>
 
 | Critère | Mesure | Comment |
@@ -126,6 +143,14 @@ pokes récupèrent plus lentement (−6 et −7 en garde, −19 pour le coup de 
 <img src="docs/media/separateur.svg" width="100%" alt="">
 
 ## Le roster
+
+<div align="center">
+<img src="docs/media/camps.svg" alt="Les deux camps : avec les Joestar, contre eux" width="100%">
+</div>
+
+Sur l'écran-titre, la distribution d'une partie ne s'aligne pas en vrac : les deux camps se
+font face, comme dans le manga. Stroheim est un officier du Reich et n'a rien d'un gentil,
+mais dans la partie 2 il se bat aux côtés de Joseph — il se range donc de ce côté-là.
 
 <div align="center">
 
@@ -186,7 +211,7 @@ python -m venv .venv
 **Dépendances** — Python ≥ 3.12 et **pygame-ce**, rien d'autre : les sprites, les sons, les
 icônes et les animations de ce README sont générés par le code du dépôt.
 
-**Temps d'exécution typique** — la suite complète : **≈ 5 min 40** (942 tests). Les tests sans
+**Temps d'exécution typique** — la suite complète : **≈ 5 min 30** (959 tests). Les tests sans
 écran (`make test-fast`) : **≈ 40 s**. Le lint : **≈ 3 s**.
 
 ---
@@ -200,9 +225,10 @@ icônes et les animations de ce README sont générés par le code du dépôt.
 | 2 | Partie 1 : Jonathan, Zeppeli, DIO, Bruford, Tarkus, Speedwagon | ✅ complète |
 | 3 | Partie 2 : Joseph, Caesar, Lisa Lisa, Straizo, les Hommes du Pilier, Stroheim | ✅ complète |
 | 4 | Éveil (Power Up), objets portés et lancés, bilan de fin de combat | ✅ |
-| 5 | Altérations d'état (feu, gel, foudre), partie 4 | ⏳ |
-| 6 | Mode histoire, arène par partie | ⏳ |
-| 7 | En ligne en rollback — la simulation déterministe le prépare | ⏳ |
+| 5 | Altérations d'état : feu, gel, courant | ✅ |
+| 6 | Partie 4 : Josuke, Okuyasu, Kira et leurs Stands | ⏳ |
+| 7 | Mode histoire, arène par partie | ⏳ |
+| 8 | En ligne en rollback — la simulation déterministe le prépare | ⏳ |
 
 <img src="docs/media/separateur.svg" width="100%" alt="">
 
@@ -210,6 +236,8 @@ icônes et les animations de ce README sont générés par le code du dépôt.
 
 <div align="center">
 <img src="docs/media/training.png" alt="Frise des frames, données de frames et compteur de combo" width="92%">
+
+<img src="docs/media/frames.svg" alt="Démarrage, frames actives, récupération et avantage sur garde" width="100%">
 </div>
 
 Le mannequin **répète une action de son propre kit** avec le délai de ton choix, compté dès

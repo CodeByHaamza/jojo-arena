@@ -64,12 +64,47 @@ def menace(x: float, y: float, delay: float, size: int = 40) -> str:
     )
 
 
+def test_count() -> int:
+    """How many tests the suite really has: asked of pytest, never typed by hand.
+
+    If pytest is not around (someone just wants the pictures), the test files are counted
+    instead, which is the same number give or take the parametrised cases.
+    """
+    import ast
+    import re
+    import subprocess
+    import sys
+
+    try:
+        done = subprocess.run(
+            [sys.executable, "-m", "pytest", "--collect-only", "-q"],
+            capture_output=True,
+            text=True,
+            timeout=180,
+        )
+        found = re.search(r"(\d+) tests? collected", done.stdout)
+        if found:
+            return int(found.group(1))
+    except (OSError, subprocess.SubprocessError):
+        pass
+    total = 0
+    for path in sorted(Path("tests").glob("test_*.py")):
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+        total += sum(
+            1
+            for node in ast.walk(tree)
+            if isinstance(node, ast.FunctionDef) and node.name.startswith("test_")
+        )
+    return total
+
+
 def counters() -> str:
     """The numbers that say what the project is, counting up as you look at them."""
+    tests = test_count()
     figures = [
         ("19", "PERSOS JOUABLES", GOLD),
         ("3", "ARÈNES", JADE),
-        ("941", "TESTS", "#5a9ef0"),
+        (f"{tests}", "TESTS", "#5a9ef0"),
         ("94 %", "COUVERTURE", PURPLE),
         ("60", "IMAGES/SEC FIXES", BLOOD),
     ]
@@ -413,7 +448,7 @@ def profile_card() -> str:
         f'  <text x="40" y="140" font-family="{UI}" font-size="13" fill="{PALE}">'
         "Python 3.12 · pygame-ce · simulation deterministe a 60 Hz</text>\n"
         f'  <text x="40" y="162" font-family="{UI}" font-size="13" fill="{PALE}">'
-        "19 persos · 3 arenes · 942 tests · 94 % de couverture</text>\n"
+        f"19 persos · 3 arenes · {test_count()} tests · 94 % de couverture</text>\n"
     )
     # The line that says who writes it, with a Ripple running under it.
     out.append(
@@ -464,6 +499,179 @@ def faces(out_dir: Path) -> list[Path]:
     return written
 
 
+def frames() -> str:
+    """A frame meter, with the numbers read from the kit itself.
+
+    Startup, active frames and recovery of one real blow, and what it leaves on block -
+    what the training room shows, drawn the same way."""
+    from jojo_arena.characters import get_fighter
+    from jojo_arena.combat.framedata import frame_data, signed
+    from jojo_arena.combat.rules import load_rules
+
+    rules = load_rules()
+    kit = get_fighter("jotaro_p3").kit
+    move = kit.move("stand", "light") or kit.move(kit.base_stance_name, "light")
+    data = frame_data(move, rules)
+    bands = [
+        ("DÉMARRAGE", data.startup, "#5a9ef0"),
+        ("ACTIF", data.active, BLOOD),
+        ("RÉCUPÉRATION", data.recovery, PURPLE),
+    ]
+    total = sum(count for _, count, _ in bands)
+    width, height = 960, 186
+    out = [header(width, height, "Une frise de frames", "Le frame meter du mode entraînement.")]
+    out.append(f'  <rect width="{width}" height="{height}" fill="{NIGHT}"/>\n')
+    out.append(
+        f'  <text x="26" y="34" font-family="{UI}" font-weight="700" font-size="17"'
+        f' fill="{GOLD}">{move.label}</text>\n'
+        f'  <text x="26" y="54" font-family="{UI}" font-size="12" fill="{LILAC}">'
+        f"{total} images en tout, à 60 par seconde — lues dans characters/jotaro_p3.toml</text>\n"
+    )
+    left, right = 26, width - 26
+    span = right - left
+    cycle = total / 60
+    x = left
+    for label, count, color in bands:
+        run = span * count / total
+        out.append(
+            f'  <rect x="{x}" y="72" width="{run - 3}" height="34" rx="3" fill="{color}"'
+            f' opacity="0.9"/>\n'
+            f'  <text x="{x + run / 2}" y="94" text-anchor="middle" font-family="{UI}"'
+            f' font-weight="700" font-size="13" fill="{NIGHT}">{count}</text>\n'
+            f'  <text x="{x + run / 2}" y="126" text-anchor="middle" font-family="{UI}"'
+            f' font-size="11" fill="{LILAC}" letter-spacing="1">{label}</text>\n'
+        )
+        x += run
+    # The playhead runs the length of the move, at the speed the move really takes.
+    out.append(
+        f'  <rect x="{left}" y="66" width="3" height="46" fill="{PALE}">\n'
+        f'    <animate attributeName="x" values="{left};{right}" dur="{cycle:.2f}s"'
+        ' repeatCount="indefinite"/>\n'
+        "  </rect>\n"
+    )
+    readings = (
+        ("SUR TOUCHE", signed(data.on_hit), JADE),
+        ("SUR GARDE", signed(data.on_block), BLOOD if (data.on_block or 0) < 0 else JADE),
+    )
+    for i, (label, value, color) in enumerate(readings):
+        cx = left + 150 + i * 240
+        out.append(
+            f'  <text x="{cx}" y="160" font-family="{UI}" font-size="12"'
+            f' fill="{LILAC}">{label}</text>\n'
+            f'  <text x="{cx + 96}" y="162" font-family="{UI}" font-weight="700"'
+            f' font-size="18" fill="{color}">{value}</text>\n'
+        )
+    out.append(
+        f'  <text x="{right}" y="161" text-anchor="end" font-family="{UI}" font-size="11"'
+        f' fill="{LILAC}">mesuré par le jeu, pas recopié à la main</text>\n'
+    )
+    out.append("</svg>\n")
+    return "".join(out)
+
+
+def statuses() -> str:
+    """What a blow can leave behind: the three status effects, with the numbers that are
+    really in rules.toml."""
+    from jojo_arena.combat.rules import load_rules
+
+    rules = load_rules()
+    rows = [
+        ("burn", "FEU", "#f0901c", "sang bouillant, lance-flammes", "la plaie ne se referme plus"),
+        ("chill", "GEL", "#9ad8ff", "congélation par vaporisation", "ni onde respirée, ni sang bu"),
+        ("shock", "COURANT", "#f0d020", "l'onde conduite par une écharpe", "la garde se défait"),
+    ]
+    width, height = 960, 60 + 74 * len(rows)
+    out = [header(width, height, "Les altérations d'état", "Feu, gel, courant.")]
+    out.append(f'  <rect width="{width}" height="{height}" fill="{NIGHT}"/>\n')
+    out.append(
+        f'  <text x="26" y="36" font-family="{UI}" font-weight="700" font-size="17"'
+        f" fill=\"{GOLD}\">CE QU'UN COUP LAISSE DERRIÈRE LUI</text>\n"
+    )
+    for i, (key, name, color, who, effect) in enumerate(rows):
+        defn = rules.statuses[key]
+        y = 76 + i * 74
+        seconds = defn.max_f / 60
+        out.append(
+            f'  <rect x="26" y="{y - 22}" width="{width - 52}" height="56" rx="6"'
+            f' fill="{color}" opacity="0.07"/>\n'
+            f'  <circle cx="60" cy="{y + 6}" r="15" fill="{color}" opacity="0.25">\n'
+            f'    <animate attributeName="opacity" values="0.15;0.5;0.15" dur="1.4s"'
+            f' begin="{i * 0.35}s" repeatCount="indefinite"/>\n'
+            "  </circle>\n"
+            f'  <circle cx="60" cy="{y + 6}" r="7" fill="{color}">\n'
+            f'    <animate attributeName="r" values="6;9;6" dur="1.4s" begin="{i * 0.35}s"'
+            ' repeatCount="indefinite"/>\n'
+            "  </circle>\n"
+            f'  <text x="92" y="{y + 2}" font-family="{UI}" font-weight="700" font-size="16"'
+            f' fill="{color}">{name}</text>\n'
+            f'  <text x="92" y="{y + 22}" font-family="{UI}" font-size="12"'
+            f' fill="{LILAC}">{who}</text>\n'
+            f'  <text x="330" y="{y + 2}" font-family="{UI}" font-size="13"'
+            f' fill="{PALE}">{effect}</text>\n'
+            f'  <text x="330" y="{y + 22}" font-family="{UI}" font-size="11"'
+            f' fill="{LILAC}">{seconds:.1f} s au plus, relancé par un second coup,'
+            " jamais empilé</text>\n"
+        )
+        # A bar draining, the way the status itself drains away.
+        bar_x, bar_w = 700, 220
+        out.append(
+            f'  <rect x="{bar_x}" y="{y - 4}" width="{bar_w}" height="12" rx="3"'
+            f' fill="{PURPLE}" opacity="0.25"/>\n'
+            f'  <rect x="{bar_x}" y="{y - 4}" width="{bar_w}" height="12" rx="3"'
+            f' fill="{color}">\n'
+            f'    <animate attributeName="width" values="{bar_w};0" dur="{seconds:.1f}s"'
+            ' repeatCount="indefinite"/>\n'
+            "  </rect>\n"
+        )
+    out.append("</svg>\n")
+    return "".join(out)
+
+
+def camps() -> str:
+    """The two camps of the title screen, walking into each other."""
+    from jojo_arena.characters import load_roster
+
+    roster = [f for f in load_roster() if f.selectable]
+    sides = (
+        ([f.name for f in roster if f.side == "hero"], "#5ad0a0", -1, "AVEC LES JOESTAR"),
+        ([f.name for f in roster if f.side == "villain"], BLOOD, 1, "CONTRE EUX"),
+    )
+    width, height = 960, 160
+    out = [header(width, height, "Les deux camps", "Gentils et méchants, face à face.")]
+    out.append(f'  <rect width="{width}" height="{height}" fill="{NIGHT}"/>\n')
+    out.append(menace(30, 150, 0.2, 30))
+    out.append(menace(900, 50, 0.8, 30))
+    for names, color, way, title in sides:
+        anchor = width / 2 + way * 70
+        out.append(
+            f'  <text x="{anchor + way * 170}" y="40" text-anchor="middle"'
+            f' font-family="{UI}" font-weight="700" font-size="14" fill="{color}"'
+            f' letter-spacing="2">{title}</text>\n'
+        )
+        for i, name in enumerate(names):
+            row, column = divmod(i, 2)
+            x = anchor + way * (30 + column * 150)
+            y = 72 + row * 22
+            out.append(
+                f'  <text x="{x}" y="{y}" text-anchor="{"end" if way < 0 else "start"}"'
+                f' font-family="{UI}" font-size="12" fill="{PALE}" opacity="0">{name}\n'
+                f'    <animate attributeName="opacity" values="0;1;1;0.6" keyTimes='
+                f'"0;0.2;0.85;1" dur="5s" begin="{0.1 * i:.1f}s" repeatCount="indefinite"/>\n'
+                f'    <animate attributeName="x" values="{x + way * 24};{x}" dur="0.8s"'
+                f' begin="{0.1 * i:.1f}s" repeatCount="indefinite"/>\n'
+                "  </text>\n"
+            )
+    out.append(
+        f'  <text x="{width / 2}" y="100" text-anchor="middle" font-family="{UI}"'
+        f' font-weight="700" font-size="30" fill="{GOLD}">VS\n'
+        '    <animate attributeName="font-size" values="28;34;28" dur="1.6s"'
+        ' repeatCount="indefinite"/>\n'
+        "  </text>\n"
+    )
+    out.append("</svg>\n")
+    return "".join(out)
+
+
 DRAWINGS = {
     "chiffres": counters,
     "boucle": loop,
@@ -472,6 +680,9 @@ DRAWINGS = {
     "ascii": ascii_fight,
     "audit": audit_terminal,
     "carte": profile_card,
+    "frames": frames,
+    "etats": statuses,
+    "camps": camps,
 }
 
 

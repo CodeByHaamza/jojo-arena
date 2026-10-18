@@ -124,6 +124,39 @@ Certains éveils ne passent pas par la jauge mais par un objet à ramasser dans 
 
 **Love Train en détail.** Actif tant que Valentine porte les 3 parties : les projectiles et les dégâts visés sur lui ne lui font rien et sont redirigés ailleurs. Seuls Tusk Act 4, Gold Experience Requiem et Go Beyond passent ; un coup de l'un des trois lui fait lâcher une partie (Love Train coupe). Un knockdown fait aussi lâcher une partie à Johnny ou Gyro.
 
+## Altérations d'état (feu, gel, courant)
+
+Un coup peut laisser quelque chose derrière lui. Trois altérations existent ; le moteur n'en
+connaît pas d'autres tant que personne n'écrit leurs règles (`combat/status.py`, chiffres dans
+`[status]` de `combat/rules.toml`, description joueur dans l'onglet **Règles du combat** du
+glossaire).
+
+| Altération | Durée max | Ce qu'elle fait | Qui la pose aujourd'hui |
+| --- | --- | --- | --- |
+| **burn** (feu) | 2,6 s | 26 PV/s, et **aucune plaie ne se referme** tant que ça brûle (régénération des vampires et des Hommes du Pilier coupée) | Esidisi (sang à 500 °C, Mode de la Flamme), Stroheim (lance-flammes) |
+| **chill** (gel) | 2,2 s | marche à 60 %, **plus d'onde respirée ni de sang bu** | DIO, posture du gel vaporisant (après le gel net) |
+| **shock** (courant) | 1,8 s | 10 PV/s, marche à 85 %, **plus un point de Heart Heat gagné**, jauge de garde qui se défait (18/s) | Lisa Lisa (l'écharpe de Satiporoja conduit l'onde comme un paratonnerre) |
+
+**Règles communes.** Une altération ne prend que sur un coup qui touche vraiment : gardé, il ne
+reste rien. Un second coup la **relance** jusqu'à son plafond, il ne l'empile pas. Le temps
+arrêté suspend tout, y compris ce qui brûle. Un kit la pose avec `status` et `status_s`, sur un
+coup ou sur un projectile (voir `docs/KITS.md`).
+
+**Ce qui s'y branchera plus tard.** Les altérations ont été écrites génériques parce que la
+suite du roster en vit :
+
+| Perso | Stand | Altération attendue | Source |
+| --- | --- | --- | --- |
+| Avdol (partie 3) | Magician's Red | **burn** | JoJo Wiki : Stand de feu, manipule librement les flammes |
+| Pet Shop (partie 3) | Horus | **chill** | JoJo Wiki : Stand de glace, stalactites et murs de glace |
+| Akira Otoishi (partie 4) | Red Hot Chili Pepper | **shock** | JoJo Wiki : vit du courant électrique, circule dans les câbles |
+| Ghiaccio (partie 5) | White Album | **chill** | à confirmer en ligne avant d'écrire le kit |
+| Partie 8 | Speed King | chaud **et** froid | à confirmer en ligne avant d'écrire le kit |
+
+Echoes Act 2 (le son écrit qui devient réel) et In a Silent Way (l'étouffement) ne rentrent dans
+aucune des trois : ce sont des altérations à part, à décrire quand leur partie arrive, pas à
+forcer dans une case existante.
+
 ## Interactions spéciales (fidèles à l'œuvre)
 
 Ces règles passent avant les règles normales du combat. Elles se codent à part, dans un module « interactions », pour que chaque nouveau perso puisse s'y brancher.
