@@ -192,6 +192,8 @@ knockback = -300
 hitstop_f = 6
 cancel_on_hit = ["light", "special"]
 anim = "special"
+status = "shock"
+status_s = 1.8
 
 # With a direction: the Hamon makes the scarf stiff as a spear, and it pierces the guard.
 [stances.base.moves.heavy_alt]

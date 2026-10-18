@@ -4,6 +4,8 @@
 #   setting = where and when it takes place (setting_en: in English)
 #   colors  = two accent colors for the menus
 #   emblem  = its little symbol, an icon of assets/icons/ (drawings in tools/icons/)
+#   complete = true when every fighter planned for that part is in the game: the select
+#              screen then stops at the last one instead of showing empty "?" cells
 
 [[parts]]
 number = 1
@@ -12,6 +14,7 @@ title = "PHANTOM BLOOD"
 setting = "Angleterre, 1880-1889"
 setting_en = "England, 1880-1889"
 colors = ["#c8323c", "#e8c060"]
+complete = true
 
 [[parts]]
 number = 2
@@ -20,6 +23,7 @@ title = "BATTLE TENDENCY"
 setting = "New York, Mexique, Italie, Suisse, 1938-1939"
 setting_en = "New York, Mexico, Italy, Switzerland, 1938-1939"
 colors = ["#e88a2c", "#2ca8a0"]
+complete = true
 
 [[parts]]
 number = 3

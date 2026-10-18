@@ -6,6 +6,7 @@ import math
 from dataclasses import dataclass
 from pathlib import Path
 
+from jojo_arena.combat.status import StatusDef, load_statuses
 from jojo_arena.engine.data import load_toml, seconds_to_frames
 
 RULES_PATH = Path(__file__).with_name("rules.toml")
@@ -123,6 +124,8 @@ class Rules:
     sun_burn_ramp_f: int
     sun_burn_max_mult: float
     sun_burn_cool_per_f: int
+    statuses: dict[str, StatusDef]  # fire, cold, a current: what a blow leaves behind
+    status_tick_f: int
 
     @classmethod
     def from_data(cls, data: dict) -> Rules:
@@ -161,6 +164,8 @@ class Rules:
             sun_burn_ramp_f=seconds_to_frames(data["sun"]["burn_ramp_s"]),
             sun_burn_max_mult=data["sun"]["burn_max_mult"],
             sun_burn_cool_per_f=data["sun"]["burn_cool_per_f"],
+            statuses=load_statuses(data["status"]),
+            status_tick_f=data["status"]["tick_every_f"],
             round_timer_f=seconds_to_frames(rnd["timer_s"]),
             round_intro_f=seconds_to_frames(rnd["intro_s"]),
             round_outro_f=seconds_to_frames(rnd["outro_s"]),

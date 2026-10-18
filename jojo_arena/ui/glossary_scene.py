@@ -27,6 +27,7 @@ from jojo_arena.ui.portraits import FighterLook
 from jojo_arena.ui.widgets import DIM, FAINT, GOLD, WHITE, draw_box, draw_hints
 
 TABS_Y = 26
+RULES_COLORS = ((200, 160, 72), (106, 90, 160))  # the rules tab: gold on purple
 LIST = pygame.Rect(8, 70, 140, 178)
 DETAIL = pygame.Rect(154, 70, 318, 178)
 VISUAL = pygame.Rect(DETAIL.x + 6, DETAIL.y + 6, 58, 56)
@@ -41,13 +42,24 @@ class GlossaryScene(Scene):
         music.request("menu")
         self.ctx = ctx
         self.parts: dict[int, PartDef] = {p.number: p for p in load_parts()}
-        self.numbers = sorted(self.parts) or [0]
         self.glossary = load_glossary()
+        if self.glossary.get(0):
+            # Part 0 is not a part: it is how the fight works. Its own tab, up front.
+            self.parts[0] = PartDef(
+                number=0,
+                title=text.GLOSSARY_RULES,
+                setting="",
+                colors=(RULES_COLORS[0], RULES_COLORS[1]),
+                emblem="emblem_rules",
+                complete=True,
+            )
+        self.numbers = sorted(self.parts) or [0]
         self.fighters: dict[str, FighterDef] = {f.id: f for f in load_roster()}
         self._looks: dict[str, FighterLook] = {}
         self._sheets: dict[str, SheetSprites | None] = {}
         if part not in self.numbers:
-            part = next((n for n in self.numbers if self.count(n)), self.numbers[0])
+            # The saga first: the rules tab is there when it is asked for.
+            part = next((n for n in self.numbers if n and self.count(n)), self.numbers[0])
         self.part = part
         self.backdrop = MenuBackdrop(part=part)
         self.kind = self._first_kind()
@@ -115,7 +127,9 @@ class GlossaryScene(Scene):
         draw_part_tabs(surface, self.parts, self.numbers, self.part, filled, TABS_Y)
         part = self.parts.get(self.part)
         if part is not None:
-            label = f"{text.PART_N.format(n=part.number)} - {part.title}"
+            label = part.title
+            if part.number:
+                label = f"{text.PART_N.format(n=part.number)} - {label}"
             font.draw(surface, label, (width // 2, 43), shade(part.colors[0], 60), align="center")
         self._draw_sections(surface)
         draw_box(surface, LIST)

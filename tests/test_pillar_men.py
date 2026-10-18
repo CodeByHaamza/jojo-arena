@@ -317,3 +317,68 @@ def test_the_sun_stops_mattering_once_the_mask_is_on():
     match.arena.sun_spread_f = 1  # full daylight, straight away
     run(match, 120)
     assert kars.hp >= before - 1  # the light does nothing to him now
+
+
+def test_the_mask_does_not_come_off_between_rounds():
+    """Kars put the Stone Mask and the Red Stone on: the next round starts with the
+    Ultimate Life Form, not with a Pillar Man again."""
+    from jojo_arena.combat.arena import Arena
+    from jojo_arena.combat.rounds import Phase, Rounds
+    from jojo_arena.engine.actions import NEUTRAL
+
+    def arena():
+        return Arena(OPEN_BOUNDS, (Vec2(150, 100), Vec2(250, 100)))
+
+    rounds = Rounds((kit("kars"), kit("mannequin_blue")), RULES, arena, 2)
+    kars = rounds.match.fighters[0]
+    kars.hh = RULES.hh_max
+    kars.complete_awakening()
+    assert kars.awakened and kars.stance == "ultimate"
+
+    for _ in range(900):  # finish the round
+        if rounds.phase == Phase.FIGHT:
+            rounds.match.fighters[1].hurt(500)
+        rounds.step((NEUTRAL, NEUTRAL))
+        if rounds.round_number == 2 and rounds.phase == Phase.FIGHT:
+            break
+    assert rounds.round_number == 2
+    again = rounds.match.fighters[0]
+    assert again.awakened and again.stance == "ultimate"
+    assert again.sun_proof  # and the sun still means nothing to him
+
+
+def test_what_he_sends_off_as_an_animal_comes_back_fed():
+    """The hand he turns into a flesh-eating squirrel (jojowiki, Kars): it chases, it
+    bites, and what it eats goes back to him."""
+    match = make_duel("kars", "joseph_p2", p1=(150, 100), p2=(300, 100))
+    kars, joseph = match.fighters
+    kars.complete_awakening()
+    run(match, 4)
+    kars.hp = kars.max_hp - 150
+    hurt, fed = joseph.hp, kars.hp
+    run(match, 2, p1=press("heavy", move=(1.0, 0.0)))
+    run(match, 220)
+    assert joseph.hp < hurt  # it found him across the arena
+    assert kars.hp > fed  # and it brought him back a mouthful
+
+
+def test_the_wings_carry_him_further_than_he_can_walk():
+    """ "Bird-like wings that enable him to fly" (jojowiki, Kars)."""
+    match = make_duel("kars", "joseph_p2", p1=(150, 100), p2=(360, 100))
+    kars, joseph = match.fighters
+    kars.complete_awakening()
+    run(match, 4)
+    start = kars.pos.x
+    run(match, 60, p1=press("special", move=(1.0, 0.0)))
+    flown = kars.pos.x - start
+    assert flown > 150, flown  # further than a walk, in a third of a second
+    assert joseph.hp < joseph.max_hp  # and the landing is a blow
+
+
+def test_awakened_his_heart_heat_attack_is_not_the_blade_storm_any_more():
+    kit_ = kit("kars")
+    blades = kit_.move("light", "hha")
+    beasts = kit_.move("ultimate", "hha")
+    assert beasts is not blades
+    assert beasts.projectile is not None and beasts.projectile.origin == "ring"
+    assert beasts.projectile.count >= 5  # they close in from every side

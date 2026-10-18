@@ -1,0 +1,26 @@
+# Burning: a flame, the way a fire is drawn in the manga - a tongue leaning as it rises.
+
+pixels = [
+    "................",
+    "........oo......",
+    ".......oWo......",
+    "......oWYoo.....",
+    "......oWYYo.....",
+    ".....oWWYYOo....",
+    ".....oWYYYOo....",
+    "....oWYYYYOOo...",
+    "...oOYWWYYYOo...",
+    "...oOYWWWYYOo...",
+    "..oOYWWWWWYOOo..",
+    "..oOYWWWWWYOOo..",
+    "..oOOYWWWYOOo...",
+    "...oOOYYYOOo....",
+    "....oOOOOOo.....",
+    ".....ooooo......",
+]
+
+[palette]
+o = "#17121f"
+O = "#d8541c"
+Y = "#f0901c"
+W = "#ffe070"

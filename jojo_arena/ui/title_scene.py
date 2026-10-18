@@ -1,5 +1,6 @@
 """Title screen: the logo, the nine parts' emblems, and the cast of one part at a time
-lined up, taking turns, over the colors of that part."""
+over the colors of that part - the two camps facing each other across the middle, the
+way that part's fight actually went."""
 
 from __future__ import annotations
 
@@ -19,7 +20,8 @@ from jojo_arena.ui.portraits import FighterLook
 from jojo_arena.ui.widgets import DIM, GOLD, WHITE
 
 LINEUP_Y = 232
-LINEUP_SPACING = 92
+LINEUP_SPACING = 46
+MIDDLE_GAP = 30  # px either side of the center: the ground between the two camps
 GROUP_F = 300  # each part's cast stays on screen this long
 SLIDE_F = 16
 EMBLEMS_Y = 93
@@ -74,16 +76,36 @@ class TitleScene(Scene):
         font.draw(surface, f"V{__version__}", (width - 6, 258), DIM, align="right")
 
     def _draw_lineup(self, surface: pygame.Surface, looks: list[FighterLook]) -> None:
+        """The two camps, facing each other: whoever stood against the Joestars on the
+        right, everyone who stood with them on the left - Stroheim included, because in
+        Part 2 that is where he stood."""
         if not looks:
             return
         width = surface.get_width()
-        spacing = min(LINEUP_SPACING, (width - 80) // max(1, len(looks) - 1 or 1))
+        center = width // 2
         slide = max(0, SLIDE_F - self.tick % GROUP_F) * 12
-        first = width // 2 - (len(looks) - 1) * spacing // 2 + slide
-        for i, look in enumerate(looks):
-            # Each fighter turns towards the middle of the screen.
-            x = first + i * spacing
-            look.draw(surface, (x, LINEUP_Y), self.tick + i * 7, flip=x > width // 2)
+        camps = (
+            [look for look in looks if look.fdef.side != "villain"],
+            [look for look in looks if look.fdef.side == "villain"],
+        )
+        for camp, (way, group) in enumerate(zip((-1, 1), camps, strict=True)):
+            room = center - MIDDLE_GAP - 22
+            spacing = min(LINEUP_SPACING, room // max(1, len(group) - 1 or 1))
+            for i, look in enumerate(group):
+                # The nearest to the middle is the one the part was about.
+                x = center + way * (MIDDLE_GAP + i * spacing) + slide * (1 if camp else -1)
+                look.draw(surface, (x, LINEUP_Y), self.tick + i * 7, flip=x > center)
+        if all(camps):
+            self._draw_versus(surface, center)
+
+    def _draw_versus(self, surface: pygame.Surface, center: int) -> None:
+        """What is between the two camps: a word, and the spark of the two meeting."""
+        beat = (self.tick // 4) % 2
+        font.draw(surface, text.VS, (center, LINEUP_Y - 28), GOLD, scale=2, align="center")
+        for i in range(3):
+            y = LINEUP_Y - 10 + i * 7
+            length = 3 + (i + beat) % 3
+            surface.fill(shade(GOLD, -20), (center - length, y, length * 2, 1))
 
     def _draw_emblems(self, surface: pygame.Surface, current: int) -> None:
         """The nine parts in a row: the one on screen lit, those still to come dim."""

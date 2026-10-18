@@ -72,6 +72,10 @@ def draw_projectile(
         _draw_jet(surface, pos, d, aura)
     elif look == "wave":
         _draw_wave(surface, pos, d)
+    elif look == "ray":
+        _draw_ray(surface, pos, d)
+    elif look == "critter":
+        _draw_critter(surface, pos, d)
     else:
         _draw_orb(surface, pos, radius, aura)
 
@@ -199,6 +203,41 @@ def _draw_spark(surface, pos: Vec2, d: Vec2) -> None:
     points = [pos - d * 5, pos - d * 2 + side * 2, pos + d * 1 - side * 2, pos + d * 4]
     pygame.draw.lines(surface, (255, 236, 120), False, [_ints(p) for p in points], 1)
     surface.set_at(_ints(pos + d * 4), (255, 255, 255))
+
+
+def _draw_ray(surface, pos: Vec2, d: Vec2) -> None:
+    """Sunlight focused through a bubble: a long thin ray, white at the core, gold at
+    the edges, with the light it spills on the floor."""
+    blit_glow(surface, radial_glow(9, (96, 84, 20)), (pos.x, pos.y))
+    head, tail = pos + d * 7, pos - d * 9
+    pygame.draw.line(surface, (240, 208, 60), _ints(head), _ints(tail), 3)
+    pygame.draw.line(surface, (255, 255, 255), _ints(head), _ints(pos - d * 5), 1)
+    surface.set_at(_ints(head), (255, 255, 255))
+
+
+def _draw_critter(surface, pos: Vec2, d: Vec2) -> None:
+    """A small animal running at you: a body, two ears, and a tail curled over its back.
+
+    Kars turns a hand into a flesh-eating squirrel; this is what the squirrel looks like
+    from above, at six pixels."""
+    side = _side(d)
+    head = pos + d * 2.5
+    body = [pos - d * 2 + side * 2, head + side * 1.4, head - side * 1.4, pos - d * 2 - side * 2]
+    pygame.draw.polygon(surface, OUTLINE, [_ints(p + d * 0.6) for p in body])
+    pygame.draw.polygon(surface, (142, 86, 46), [_ints(p) for p in body])
+    for way in (1, -1):
+        ear = head + side * way * 1.6 + d * 0.6
+        surface.fill(OUTLINE, (round(ear.x), round(ear.y) - 1, 1, 1))
+    surface.set_at(_ints(head + d * 0.5), (240, 220, 160))  # the teeth
+    # The tail, curled back over the body.
+    tail = [
+        pos - d * 3,
+        pos - d * 5 + side * 1.5,
+        pos - d * 4.5 + side * 3.5,
+        pos - d * 2 + side * 4,
+    ]
+    pygame.draw.lines(surface, OUTLINE, False, [_ints(p) for p in tail], 3)
+    pygame.draw.lines(surface, (190, 134, 80), False, [_ints(p) for p in tail], 1)
 
 
 def _draw_jet(surface, pos: Vec2, d: Vec2, aura) -> None:
@@ -820,3 +859,75 @@ def draw_thread(surface: pygame.Surface, a: Vec2, b: Vec2, color, tick: int) -> 
     pygame.draw.line(surface, shade(color, -70), _ints(a), _ints(b), 1)
     t = ((tick * 0.03) + (a.x + b.y) * 0.01) % 1.0
     blit_glow(surface, radial_glow(3, shade(color, -20)), a + (b - a) * t)
+
+
+# Status effects: what a body looks like while something keeps working on it ------------
+
+FLAME = ((216, 84, 28), (240, 144, 28), (255, 224, 112))
+FROST = ((90, 154, 216), (154, 216, 255), (255, 255, 255))
+CURRENT = ((240, 208, 32), (255, 251, 200))
+
+
+def draw_burning(surface: pygame.Surface, center: Vec2, height: float, tick: int) -> None:
+    """Flames standing up off a body: three tongues, each on its own rhythm, leaning the
+    way a flame leans as it rises."""
+    dark, mid, pale = FLAME
+    # Along the body and at the feet, never over the face: the fighter has to stay
+    # readable while he burns.
+    for i, (side, level) in enumerate(((-1, 0.12), (1, 0.38), (-1, 0.62))):
+        phase = tick * 0.34 + i * 2.1
+        x = center.x + side * 5 + math.sin(phase) * 1.6
+        base = center.y - height * level
+        tall = 5 + round(2.5 * (1 + math.sin(phase * 1.7)))
+        lean = math.sin(phase * 0.8) * 1.8
+        tip = Vec2(x + lean, base - tall)
+        pygame.draw.line(surface, dark, (round(x), round(base)), _ints(tip), 3)
+        pygame.draw.line(surface, mid, (round(x), round(base)), _ints(tip), 1)
+        surface.fill(pale, (round(tip.x), round(tip.y), 1, 1))
+    glow = radial_glow(round(height * 0.5), (72, 24, 4))
+    blit_glow(surface, glow, center + Vec2(0, -height * 0.4))
+
+
+def draw_frozen(surface: pygame.Surface, center: Vec2, height: float, tick: int) -> None:
+    """Frost on a body: little crystals that catch the light one after another."""
+    cold, ice, white = FROST
+    for i in range(5):
+        angle = math.tau * i / 5 + tick * 0.02
+        spot = center + Vec2(math.cos(angle) * 7, -height * 0.5 + math.sin(angle) * 6)
+        lit = (tick // 6 + i) % 5 == 0
+        color = white if lit else (ice if i % 2 else cold)
+        x, y = _ints(spot)
+        surface.fill(color, (x - 1, y, 3, 1))
+        surface.fill(color, (x, y - 1, 1, 3))
+    blit_glow(
+        surface, radial_glow(round(height * 0.45), (12, 36, 64)), center + Vec2(0, -height * 0.45)
+    )
+
+
+def draw_current(surface: pygame.Surface, center: Vec2, height: float, tick: int) -> None:
+    """A current running over a body: short arcs that jump somewhere else every frame."""
+    gold, white = CURRENT
+    rng = random.Random(tick // 2)
+    for _ in range(3):
+        top = center + Vec2(rng.uniform(-6, 6), -height * rng.uniform(0.25, 0.85))
+        point = top
+        for step in range(3):
+            point = point + Vec2(rng.uniform(-4, 4), rng.uniform(2, 5))
+            color = white if step == 0 else gold
+            pygame.draw.line(surface, color, _ints(top), _ints(point), 1)
+            top = point
+    if (tick // 3) % 2 == 0:
+        blit_glow(
+            surface, radial_glow(round(height * 0.4), (56, 48, 8)), center + Vec2(0, -height * 0.4)
+        )
+
+
+STATUS_DRAWINGS = {"burn": draw_burning, "chill": draw_frozen, "shock": draw_current}
+
+
+def draw_statuses(surface: pygame.Surface, center: Vec2, height: float, names, tick: int) -> None:
+    """Whatever is burning, freezing or crackling on this body, drawn over it."""
+    for name in names:
+        drawing = STATUS_DRAWINGS.get(name)
+        if drawing is not None:
+            drawing(surface, center, height, tick)

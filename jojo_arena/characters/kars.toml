@@ -301,7 +301,8 @@ vulnerable_mult = 2.0
 break_hitstun_f = 20
 refund = 0.5
 cinematic = "ultimate_thing"
-cinematic_s = 4.6
+# 5,5 s : la pierre se pose, le masque se referme, la lumière sort, les ailes s'ouvrent.
+cinematic_s = 5.5
 sun_immune = true
 label = "SUPER AJA"
 label_en = "SUPER AJA"
@@ -363,7 +364,7 @@ anim = "heavy"
 shout = "CE N'EST PAS POSSIBLE !"
 shout_en = "THIS CANNOT BE!"
 label = "TENTACULE DE POULPE"
-label_en = "THIS CANNOT BE!"
+label_en = "OCTOPUS TENTACLE"
 info = "Un tentacule de poulpe balaie devant lui et ramène l'adversaire à portée de griffes"
 info_en = "An octopus tentacle sweeps and drags the opponent back into claw range"
 shape = "line"
@@ -375,6 +376,7 @@ hits = 3
 hit_every_f = 6
 pull = 260
 pull_range = 70
+drain = 0.2
 damage = 18
 last_damage = 40
 reach = 76
@@ -385,35 +387,33 @@ last_knockback = 120
 hitstop_f = 5
 anim = "special"
 
-# The genes of everything he has ever touched: feathers first, then the piranha that
-# follows you. ("The power of supreme genes!", ASBR.)
-drain = 0.2
+# A hand sent off on its own. JoJo Wiki: as the Ultimate Thing he can "split off body
+# parts into independent organisms, such as turning a hand into a flesh-eating squirrel".
+# Slow, relentless, and it feeds: a creature, not a bullet.
 [stances.ultimate.moves.heavy_alt]
-shout = "LE POUVOIR DES GÈNES SUPRÊMES !"
-shout_en = "THE POWER OF SUPREME GENES!"
-label = "GÈNES SUPRÊMES"
-label_en = "SUPREME GENES"
-info = "Avec une direction : une volée de plumes, puis un piranha qui te suit"
-info_en = "With a direction: a volley of feathers, then a piranha that follows you"
-startup_f = 14
+shout = "VA LE MANGER."
+shout_en = "GO AND EAT HIM."
+label = "ÉCUREUIL CARNIVORE"
+label_en = "FLESH-EATING SQUIRREL"
+info = "Avec une direction : sa main part en écureuil carnivore, qui poursuit et mord"
+info_en = "With a direction: his hand leaves as a flesh-eating squirrel that chases and bites"
+startup_f = 16
 active_f = 1
-recovery_f = 24
+recovery_f = 26
+cooldown_s = 3.5
 anim = "special"
 
 [stances.ultimate.moves.heavy_alt.projectile]
-look = "blade"
-speed = 300
+look = "critter"
+speed = 115
 radius = 5
-damage = 26
-lifetime_s = 1.4
-hitstun_f = 22
-knockback = 150
-hitstop_f = 5
-count = 3
-spread_deg = 26
-waves = 2
-wave_every_f = 10
-homing_deg_s = 90
+damage = 30
+drain = 0.3
+lifetime_s = 3.0
+hitstun_f = 24
+knockback = 110
+hitstop_f = 6
+homing_deg_s = 220
 
 [stances.ultimate.moves.special]
 shout = "MON ONDE !"
@@ -436,23 +436,68 @@ knockback = 220
 hitstop_f = 8
 anim = "special"
 
+# The wings. He does not walk any more when he does not want to: he crosses the arena
+# and comes down on the spot you aim at, and the landing is what hurts.
 [stances.ultimate.moves.special_alt]
-label = "PEAU DE PIERRE"
-label_en = "STONE SKIN"
-info = "Avec une direction : il se referme sur lui-même, blindé, et se régénère"
-info_en = "With a direction: he closes over himself, armored, and regenerates"
-startup_f = 10
-active_f = 20
-recovery_f = 16
-armor = 3
+shout = "TU NE PEUX PAS ME SUIVRE."
+shout_en = "YOU CANNOT FOLLOW ME."
+label = "AILES"
+label_en = "WINGS"
+info = "Avec une direction : il déploie ses ailes, traverse l'arène et retombe sur le point visé"
+info_en = "With a direction: he opens his wings, crosses the arena and lands on the aimed spot"
+startup_f = 11
+active_f = 5
+recovery_f = 18
+leap = 190
+leap_to = "cursor"
+leap_height = 44
+invincible_f = 14
 buff = "regrowth"
-cooldown_s = 10
-anim = "pose"
+damage = 46
+reach = 0
+radius = 16
+hitstun_f = 26
+knockback = 260
+hitstop_f = 8
+cooldown_s = 5
+anim = "leap"
 
+# Landing on his wings, he is already mending: the Ultimate Life Form heals as it moves.
 [buffs.regrowth]
-duration_s = 4
-damage_taken_mult = 0.55
-heal_per_s = 40
+duration_s = 3
+damage_taken_mult = 0.7
+heal_per_s = 26
+
+# Awakened, his Heart Heat Attack is not the blade storm any more. JoJo Wiki: he "turned
+# his feathers into armadillo-scale projectiles that became piranhas and octopus
+# tentacles" to bring down Joseph's plane. Here they close in from every side at once.
+[stances.ultimate.moves.hha]
+shout = "LE POUVOIR DES GÈNES SUPRÊMES !"
+shout_en = "THE POWER OF SUPREME GENES!"
+label = "GÈNES SUPRÊMES"
+label_en = "SUPREME GENES"
+info = "Ses plumes deviennent des bêtes et se referment sur l'adversaire de tous les côtés"
+info_en = "His feathers become beasts and close in on the opponent from every side"
+startup_f = 18
+active_f = 1
+recovery_f = 28
+invincible_f = 16
+anim = "special"
+
+[stances.ultimate.moves.hha.projectile]
+look = "critter"
+origin = "ring"
+ring_radius = 58
+speed = 170
+radius = 5
+damage = 22
+drain = 0.15
+lifetime_s = 1.2
+hitstun_f = 26
+knockback = 180
+hitstop_f = 6
+count = 6
+homing_deg_s = 120
 
 # Super moves -----------------------------------------------------------------------------
 
