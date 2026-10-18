@@ -28,7 +28,9 @@ jojo_arena = ["assets/**/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["tools"]
+# The repository root too: a few tests and tools import `tools.<module>`, and a
+# pip install -e only puts `jojo_arena` on the path.
+pythonpath = [".", "tools"]
 
 [tool.coverage.run]
 source = ["jojo_arena", "tools"]

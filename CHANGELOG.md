@@ -35,6 +35,27 @@ des corrections seules une patch.
 
 ### Ajouté (combat)
 
+- **Les altérations d'état.** Un coup peut laisser quelque chose derrière lui, et trois
+  choses existent : le **feu** (le sang à cinq cents degrés d'Esidisi, le lance-flammes
+  de Stroheim — ça continue de brûler, et une plaie qui brûle ne se referme plus, même
+  pour un vampire), le **gel** (le gel vaporisant de DIO — le corps dégelé reste raide,
+  et ni l'onde ni le sang ne passent plus), et le **courant** (l'écharpe de Lisa Lisa
+  conduit l'onde comme un paratonnerre — plus un point de Heart Heat, et la garde se
+  défait toute seule). Une altération ne prend que sur un coup qui touche vraiment, un
+  second coup la relance sans l'empiler, et le temps arrêté suspend ce qui brûle. Le
+  glossaire a un onglet **Règles du combat** qui les explique une par une.
+- **Les bulles-loupes de Caesar deviennent des balises.** Elles restent au sol, tirent
+  **trois rayons de lumière** sur qui s'approche, font **le double aux vampires et aux
+  Hommes du Pilier** — c'est du soleil focalisé — et **éclatent sans rien tirer** dès que
+  Caesar encaisse un coup.
+- **Kars en forme de vie ultime a son propre corps et ses propres coups** : mêmes cheveux
+  noirs, mais qui volent partout, torse nu, lames **courbes qui sortent des avant-bras**
+  (il ne tient plus d'épée). Il envoie une main en **écureuil carnivore** qui poursuit,
+  mord et le nourrit, déploie des **ailes** pour traverser l'arène d'un coup, et son HHA
+  devient ses plumes qui se changent en bêtes et se referment de tous les côtés.
+- **L'écran d'accueil oppose les deux camps** : les alliés des Joestar d'un côté, ceux
+  qui leur font face de l'autre, un VS au milieu.
+
 - **La touche Power Up sert enfin : l'éveil.** Kars pose le masque de pierre et la Super
   Aja pour deux barres et devient la **forme de vie ultime** : le soleil ne lui fait plus
   rien, son moveset entier change (griffes qui s'adaptent, main qui dévore, ailes, sa
