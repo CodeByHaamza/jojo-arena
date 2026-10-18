@@ -8,9 +8,11 @@ from pathlib import Path
 from jojo_arena.combat.arena import Arena, Obstacle
 from jojo_arena.combat.hazards import (
     DropDef,
+    ExitDef,
     Hazards,
     SurfaceDef,
     TrapZoneDef,
+    parse_exits,
     parse_hazards,
     parse_surfaces,
 )
@@ -70,6 +72,7 @@ class StageDef:
     drops: tuple[DropDef, ...] = ()  # events: what falls from above
     trap_zones: tuple[TrapZoneDef, ...] = ()  # events: what springs from the floor
     surfaces: tuple[SurfaceDef, ...] = ()  # the floor itself (always there)
+    exits: tuple[ExitDef, ...] = ()  # events: walls a body can be slammed through
     outdoors: bool = False  # no roof: the sun, once up, is everywhere
 
     @property
@@ -78,7 +81,7 @@ class StageDef:
 
     @property
     def has_events(self) -> bool:
-        return bool(self.drops or self.trap_zones)
+        return bool(self.drops or self.trap_zones or self.exits)
 
     def build_arena(self, options: StageOptions | None = None) -> Arena:
         options = options or StageOptions()
@@ -108,8 +111,17 @@ class StageDef:
                 self.drops if events else (),
                 self.trap_zones if events else (),
                 self.surfaces,
+                self.exits if events else (),
             ),
+            name=self.id,
+            elsewhere=lambda stage_id: _load(stage_id).build_arena(options),
         )
+
+
+def _load(stage_id: str) -> StageDef:
+    from jojo_arena.stages import load_stage  # the registry imports this module
+
+    return load_stage(stage_id)
 
 
 def load_stage_def(path: Path, stage_id: str) -> StageDef:
@@ -150,5 +162,6 @@ def load_stage_def(path: Path, stage_id: str) -> StageDef:
         drops=drops,
         trap_zones=trap_zones,
         surfaces=parse_surfaces(data),
+        exits=parse_exits(data),
         outdoors=data.get("outdoors", False),
     )

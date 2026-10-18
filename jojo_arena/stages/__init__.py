@@ -9,11 +9,13 @@ from jojo_arena.stages.base import StageDef, load_stage_def
 _DIR = Path(__file__).parent
 
 # Explicit list (no dynamic import) so PyInstaller bundles every stage.
-STAGE_IDS = ("joestar_mansion", "swiss_castle", "air_supplena", "st_moritz", "cairo_night")
+STAGE_IDS = ("joestar_mansion", "swiss_castle", "air_supplena", "cairo_night")
+# Arenas that are never picked, only reached: the courtyard the Swiss castle opens on.
+REACHED_IDS = ("st_moritz",)
 
 
 def load_stage(stage_id: str) -> StageDef:
-    if stage_id not in STAGE_IDS:
+    if stage_id not in STAGE_IDS + REACHED_IDS:
         raise KeyError(f"unknown stage '{stage_id}'")
     return load_stage_def(_DIR / f"{stage_id}.toml", stage_id)
 

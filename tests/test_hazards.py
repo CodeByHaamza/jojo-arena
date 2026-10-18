@@ -150,3 +150,37 @@ def test_a_stage_without_hazards_plays_exactly_as_before():
     start = jotaro.pos.copy()
     match.step((walk(1.0), NONE))
     assert jotaro.pos == start + Vec2(1.0, 0) * jotaro.walk_speed()
+
+
+# The Swiss castle: its event is the way out --------------------------------------------
+
+
+def slammed_north(options=None) -> tuple[Match, list]:
+    """Wamuu sent hard into the north wall of the hall, where the windows are."""
+    match = duel("swiss_castle", "joseph_p2", "wamuu", options, at=((300, 160), (300, 70)))
+    match.fighters[1].take_hit(0, 30, Vec2(0, -9), True)
+    events = []
+    for _ in range(20):
+        events += match.step((NONE, NONE))
+    return match, events
+
+
+def test_slammed_through_the_north_wall_the_fight_goes_on_outside():
+    match, events = slammed_north()
+    assert any(e.kind == "arena_exit" for e in events)
+    assert match.arena.name == "st_moritz"
+    joseph, wamuu = match.fighters
+    assert joseph.pos.y > wamuu.pos.y, "both keep their distance from the broken wall"
+    assert match.arena.hazards.surfaces, "and outside, the snow does not grip"
+
+
+def test_with_events_off_the_wall_holds():
+    match, events = slammed_north(StageOptions(events=False))
+    assert not any(e.kind == "arena_exit" for e in events)
+    assert match.arena.name == "swiss_castle"
+
+
+def test_st_moritz_is_reached_not_picked():
+    from jojo_arena.stages import REACHED_IDS, STAGE_IDS
+
+    assert "st_moritz" in REACHED_IDS and "st_moritz" not in STAGE_IDS
