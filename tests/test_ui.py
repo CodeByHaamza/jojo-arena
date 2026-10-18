@@ -205,12 +205,19 @@ def test_locked_cells_and_the_move_list_in_the_select_screen(ctx):
     assert select.move_list.page == 1
     keys(ctx, "Escape")
     assert select.move_list is None
-    keys(ctx, "Down")  # the last row of the tab, where the slots still to come are
-    for _ in range(4):
-        if select.cursor is None:
+    # Part 1 is finished: the cursor never lands on a cell with nobody in it.
+    for key in ("Down", "Right", "Right", "Right", "Down", "Left", "Up", "Left"):
+        keys(ctx, key)
+        assert select.cursor is not None, f"an empty cell after {key}"
+    keys(ctx, "E")  # part 2, finished too
+    for key in ("Up", "Right", "Right", "Right", "Right", "Down", "Down"):
+        keys(ctx, key)
+        assert select.cursor is not None, f"an empty cell after {key}"
+    for _ in range(4):  # part 4: nobody yet, every cell is a slot to come
+        keys(ctx, "E")
+        if select.tab == 4:
             break
-        keys(ctx, "Right")
-    assert select.cursor is None, "the tab has no empty slot left to try"
+    assert select.cursor is None
     keys(ctx, "Return")
     assert select.picks == [] and select.toast_f > 0
     keys(ctx, "Escape")
