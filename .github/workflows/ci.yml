@@ -18,6 +18,9 @@ env:
   SDL_VIDEODRIVER: dummy
   SDL_AUDIODRIVER: dummy
   PYGAME_HIDE_SUPPORT_PROMPT: "1"
+  # Coverage through sys.monitoring (Python 3.12): the classic tracer made the suite
+  # about three times slower, and the jobs ran out of time.
+  COVERAGE_CORE: sysmon
 
 jobs:
   # Lint first, on its own: it answers in under a minute and catches most mistakes.
@@ -43,7 +46,7 @@ jobs:
       matrix:
         os: [windows-latest, ubuntu-latest]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 25
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
 
