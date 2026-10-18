@@ -237,6 +237,9 @@ def draw_road_roller(surface: pygame.Surface, foot: Vec2, face_right: bool, crac
 
 class RoadRoller(CutscenePlayer):
     length = 330
+    AFTERSHOCKS = (298, 305, 314)
+    ROAD = (104, 98, 96)
+    WRECK = ((232, 184, 58), (172, 122, 30), (138, 140, 152), (84, 86, 100), (40, 38, 46))
 
     def camera(self, f):
         v = self.v
@@ -281,6 +284,11 @@ class RoadRoller(CutscenePlayer):
             words.add(sfx.DOGO, v + Vec2(0, -40), "impact", 3, 40, 0.3, 2)
             fx.dust(v, 16, 2.4, 5)
             fx.add(vfx.Ring(v + Vec2(0, -10), (255, 230, 170), 4.0, 18, 3))
+            # The road breaks under it: slabs of it thrown out (no fire yet).
+            for i in range(12):
+                push = Vec2.from_angle(6.283 * i / 12 + self.rng.uniform(-0.2, 0.2), 1.8)
+                rise = self.rng.uniform(1.5, 3.5)
+                fx.add(vfx.Debris(v, Vec2(push.x, push.y * 0.5), rise, 3, self.ROAD, 70))
             self.flash, self.shake = 6, 16
         if f == 180:
             self.words.add(sfx.DODODO, Vec2(360, 220), "menace", 2, 60, 0.2, 1)
@@ -294,13 +302,22 @@ class RoadRoller(CutscenePlayer):
         if f == 266:
             self.caption("... ET LE TEMPS REPREND SON COURS")
         if f == 292:
+            # Time moves again and the road roller blows up, in pieces of itself.
             center = v + Vec2(0, -14)
             for speed, life in ((3.0, 24), (5.0, 30), (7.5, 36)):
                 fx.add(vfx.Ring(center, (255, 200, 120), speed, life, 3))
-            fx.add(vfx.Flash(center, 60, (255, 210, 140), 16))
+            fx.explosion(center, 56, ground=v, debris=self.WRECK, pieces=22)
             fx.dust(v, 24, 3.2, 6, (120, 100, 90), 30)
             words.add(sfx.BAAN, center + Vec2(0, -20), "ko", 4, 40, 0.2, 2)
             self.flash, self.shake = 10, 24
+        if f in self.AFTERSHOCKS:
+            # The fuel tank, then the engine: smaller blasts around the first one.
+            spot = v + Vec2(self.rng.uniform(-26, 26), self.rng.uniform(-24, -4))
+            fx.explosion(spot, self.rng.uniform(20, 30), ground=v, debris=self.WRECK, pieces=6)
+            words.add(sfx.BOOM, spot + Vec2(0, -12), "impact", 2, 26, 0.4, 1)
+            self.shake = max(self.shake, 10)
+        if f > 292 and f % 3 == 0:
+            fx.smoke_column(v + Vec2(0, -10), 30)
 
     def roller_height(self, f: int) -> float:
         t = min(1.0, max(0.0, (f - 108) / 52))
@@ -1453,6 +1470,8 @@ class SelfDestruct(CutscenePlayer):
     BLOW = 110
     FIRE = (255, 180, 70)
     WHITE = (255, 246, 214)
+    CHAIN = (6, 13, 21, 30)  # frames after the blast when the next charges go off
+    PARTS = ((150, 156, 170), (96, 100, 116), (92, 88, 60), (60, 58, 40))  # steel, uniform
 
     def camera(self, f):
         if f < self.BLOW:
@@ -1469,13 +1488,22 @@ class SelfDestruct(CutscenePlayer):
         if f == self.BLOW:
             fx.add(vfx.Flash(chest, 90, self.WHITE, 18))
             fx.add(vfx.Ring(chest, self.FIRE, 6.0, 30, 4))
+            fx.explosion(chest, 64, ground=self.u, debris=self.PARTS, pieces=24)
             fx.focus(chest, heavy=True)
             self.world_words.add(sfx.DON, chest + Vec2(0, -14), "impact", 3, 50, 0.2, 2)
             self.flash, self.shake = 16, 22
-        if f > self.BLOW and f % 7 == 0:
-            fx.add(vfx.Ring(chest, self.FIRE, 3.4, 22, 2))
-            blast = Vec2(self.rng.uniform(-1.8, 1.8), self.rng.uniform(-1.4, 0.2))
-            fx.add(vfx.Dust(self.chest(self.scene.target, self.v), blast, 3, 20, self.FIRE))
+        if f - self.BLOW in self.CHAIN:
+            # The rest of the machinery going off, one charge after the other, out to
+            # whoever stood too close.
+            step = self.CHAIN.index(f - self.BLOW) + 1
+            toward = self.chest(self.scene.target, self.v) - chest
+            spot = chest + toward * (step / len(self.CHAIN))
+            spot = spot + Vec2(self.rng.uniform(-14, 14), self.rng.uniform(-10, 10))
+            fx.explosion(spot, self.rng.uniform(26, 38), ground=Vec2(spot.x, self.u.y + 2))
+            self.world_words.add(sfx.BOOM, spot + Vec2(0, -14), "impact", 2, 30, 0.4, 1)
+            self.shake = max(self.shake, 12)
+        if f > self.BLOW and f % 4 == 0:
+            fx.smoke_column(self.u + Vec2(0, -8), 36)
 
     def negative(self, f):
         return self.BLOW <= f < self.BLOW + 4
@@ -1492,9 +1520,11 @@ class SelfDestruct(CutscenePlayer):
             pygame.draw.rect(world, OUTLINE, plate.inflate(2, 2))
             pulse = 0.5 + 0.5 * math.sin(f * 0.4)
             pygame.draw.rect(world, tuple(round(c * pulse) for c in self.FIRE), plate)
-        if f >= self.BLOW:
-            grow = min(1.0, (f - self.BLOW) / 16)
-            pygame.draw.circle(world, self.FIRE, chest.as_ints(), round(10 + 70 * grow), 2)
+        if self.BLOW <= f < self.BLOW + 20:
+            # The blast front, sweeping out and fading.
+            grow = (f - self.BLOW) / 20
+            tone = tuple(round(c * (1 - grow)) for c in self.FIRE)
+            pygame.draw.circle(world, tone, chest.as_ints(), round(10 + 80 * grow), 2)
 
 
 # Kars: the deluge of light ----------------------------------------------------------------

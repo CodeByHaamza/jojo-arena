@@ -11,7 +11,7 @@ import random
 
 import pygame
 
-from jojo_arena.engine.effects import blit_glow, radial_glow
+from jojo_arena.engine.effects import blit_glow, blit_shadow, radial_glow
 from jojo_arena.engine.geometry import Vec2
 from jojo_arena.engine.sprites import shade
 
@@ -76,6 +76,8 @@ def draw_projectile(
         _draw_ray(surface, pos, d)
     elif look == "critter":
         _draw_critter(surface, pos, d)
+    elif look == "flesh":
+        _draw_flesh(surface, pos, d)
     else:
         _draw_orb(surface, pos, radius, aura)
 
@@ -238,6 +240,18 @@ def _draw_critter(surface, pos: Vec2, d: Vec2) -> None:
     ]
     pygame.draw.lines(surface, OUTLINE, False, [_ints(p) for p in tail], 3)
     pygame.draw.lines(surface, (190, 134, 80), False, [_ints(p) for p in tail], 1)
+
+
+def _draw_flesh(surface, pos: Vec2, d: Vec2) -> None:
+    """A lump of a Pillar Man's flesh thrown at you (Santana's Meat Invade): a raw blob
+    with a strand trailing behind it, back to the body it came from."""
+    tail = pos - d * 7
+    pygame.draw.line(surface, OUTLINE, _ints(pos), _ints(tail), 3)
+    pygame.draw.line(surface, (196, 92, 96), _ints(pos), _ints(tail), 1)
+    pygame.draw.circle(surface, OUTLINE, _ints(pos), 4)
+    pygame.draw.circle(surface, (214, 128, 120), _ints(pos), 3)
+    surface.set_at(_ints(pos - d + _side(d)), (150, 52, 62))
+    surface.set_at(_ints(pos + d - _side(d)), (246, 196, 180))
 
 
 def _draw_jet(surface, pos: Vec2, d: Vec2, aura) -> None:
@@ -531,6 +545,118 @@ class SpeedLines(Effect):
             pygame.draw.line(surface, color, _ints(start), _ints(end), 1)
 
 
+# Explosions: a fireball, its smoke, the pieces it throws and the sparks that rain back.
+
+FIRE_CORE = (255, 246, 214)
+FIRE_HOT = (255, 196, 80)
+FIRE_DEEP = (230, 92, 30)
+SMOKE = (58, 50, 54)
+
+
+class Fireball(Effect):
+    """The ball of fire itself: a few lumps of added light that swell, then cool from
+    white to orange to red as they fade."""
+
+    def __init__(self, center: Vec2, size: float, seed: int, life: int = 22) -> None:
+        super().__init__(life)
+        self.center, self.size = center, size
+        rng = random.Random(seed)
+        self.lumps = [
+            (Vec2.from_angle(rng.uniform(0, 6.283), rng.uniform(0.2, 0.6)), rng.uniform(0.5, 0.8))
+            for _ in range(5)
+        ]
+
+    def draw(self, surface: pygame.Surface) -> None:
+        t = self.age / self.life
+        grow = min(1.0, 0.35 + t * 2.2)
+        heat = 1 - t
+        for color, scale in ((FIRE_DEEP, 1.0), (FIRE_HOT, 0.7), (FIRE_CORE, 0.4)):
+            if scale < 1.0 and heat < 1.2 - scale:
+                continue  # the white core goes first, then the yellow
+            tone = tuple(round(c * min(1.0, heat * 1.6)) for c in color)
+            for offset, lump in self.lumps:
+                radius = max(2, round(self.size * grow * lump * scale))
+                at = self.center + offset * (self.size * grow) + Vec2(0, -self.age * 0.6)
+                blit_glow(surface, radial_glow(radius, tone, falloff=0.8), at)
+
+
+class Smoke(Effect):
+    """A puff of dark smoke that swells and drifts up out of a blast."""
+
+    def __init__(self, pos: Vec2, velocity: Vec2, size: float, life: int = 46) -> None:
+        super().__init__(life)
+        self.pos, self.velocity, self.size = pos, velocity, size
+
+    def update(self) -> None:
+        super().update()
+        self.pos = self.pos + self.velocity
+        self.velocity = Vec2(self.velocity.x * 0.92, self.velocity.y * 0.95 - 0.04)
+
+    def draw(self, surface: pygame.Surface) -> None:
+        radius = max(2, round(self.size * (0.5 + self.age / self.life)))
+        layer = pygame.Surface((radius * 2 + 2, radius * 2 + 2), pygame.SRCALPHA)
+        alpha = round(170 * min(1.0, self.fade * 1.5))
+        pygame.draw.circle(layer, (*SMOKE, alpha), (radius + 1, radius + 1), radius)
+        pygame.draw.circle(
+            layer, (96, 86, 88, alpha // 2), (radius, radius - radius // 3), max(1, radius // 2)
+        )
+        x, y = _ints(self.pos)
+        surface.blit(layer, (x - radius - 1, y - radius - 1))
+
+
+class Debris(Effect):
+    """A chunk thrown by a blast: it flies up, falls back with its shadow under it,
+    bounces once and lies there until it fades."""
+
+    def __init__(self, ground: Vec2, velocity: Vec2, rise: float, size: int, color, life=48):
+        super().__init__(life)
+        self.ground, self.velocity, self.size, self.color = ground, velocity, size, color
+        self.height, self.rise = 4.0, rise
+
+    def update(self) -> None:
+        super().update()
+        self.height += self.rise
+        self.rise -= 0.35
+        if self.height <= 0:
+            self.height = 0.0
+            self.rise = -self.rise * 0.35 if self.rise < -1.5 else 0.0
+            self.velocity = self.velocity * 0.5
+        self.ground = self.ground + self.velocity
+        self.velocity = self.velocity * 0.97
+
+    def draw(self, surface: pygame.Surface) -> None:
+        if self.fade < 0.15 and self.age % 2:
+            return  # blinks out
+        x, y = _ints(self.ground)
+        size = self.size
+        if self.height > 1:
+            blit_shadow(surface, (x, y), size + 2, max(2, size // 2))
+        top = y - round(self.height) - size
+        spin = (self.age // 3) % 2
+        w, h = (size, size - 1) if spin else (size - 1, size)
+        pygame.draw.rect(surface, OUTLINE, (x - w // 2 - 1, top - 1, w + 2, h + 2))
+        pygame.draw.rect(surface, self.color, (x - w // 2, top, w, h))
+        surface.fill(shade(self.color, 50), (x - w // 2, top, w, 1))
+
+
+class Ember(Effect):
+    """A spark thrown out of the fire, falling back and going out."""
+
+    def __init__(self, pos: Vec2, velocity: Vec2, life: int = 26) -> None:
+        super().__init__(life)
+        self.pos, self.velocity = pos, velocity
+
+    def update(self) -> None:
+        super().update()
+        self.pos = self.pos + self.velocity
+        self.velocity = Vec2(self.velocity.x * 0.96, self.velocity.y + 0.12)
+
+    def draw(self, surface: pygame.Surface) -> None:
+        tone = FIRE_CORE if self.age < self.life // 3 else FIRE_HOT
+        color = tuple(round(c * self.fade) for c in tone)
+        blit_glow(surface, radial_glow(2, color, falloff=1.0), self.pos)
+
+
 class EffectsLayer:
     def __init__(self) -> None:
         self.effects: list[Effect] = []
@@ -548,6 +674,50 @@ class EffectsLayer:
             direction = Vec2.from_angle(angle, spread)
             velocity = Vec2(direction.x, direction.y * 0.45)
             self.add(Dust(pos + velocity * 2, velocity, size, life, color or (176, 166, 150)))
+
+    def explosion(
+        self,
+        center: Vec2,
+        size: float,
+        ground: Vec2 | None = None,
+        debris=((120, 110, 104), (84, 76, 72)),
+        pieces: int = 10,
+    ) -> None:
+        """A whole explosion of `size` px at `center`: flash, fireball, shockwaves, smoke
+        rolling out and up, chunks of `debris` colors thrown around `ground` (the floor
+        under the blast), and embers raining back."""
+        self._seed += 1
+        rng = random.Random(self._seed * 7919)
+        ground = ground if ground is not None else center
+        self.add(Flash(center, round(size * 1.4), FIRE_CORE, 10))
+        self.add(Fireball(center, size, self._seed, life=round(16 + size * 0.25)))
+        self.add(Ring(center, FIRE_HOT, size / 7, 18, 3))
+        self.add(Ring(ground, (150, 130, 110), size / 11, 26, 2))
+        for i in range(max(4, round(size / 5))):
+            angle = 6.283 * i / max(4, round(size / 5)) + rng.uniform(-0.3, 0.3)
+            push = Vec2.from_angle(angle, rng.uniform(0.6, 1.4) * size / 24)
+            start = center + push * (size / 14)
+            velocity = Vec2(push.x, push.y * 0.5 - rng.uniform(0.2, 0.7))
+            self.add(Smoke(start, velocity, rng.uniform(0.18, 0.3) * size, rng.randint(36, 60)))
+        for _ in range(pieces):
+            angle = rng.uniform(0, 6.283)
+            velocity = Vec2.from_angle(angle, rng.uniform(0.8, 2.2) * size / 28)
+            velocity = Vec2(velocity.x, velocity.y * 0.5)
+            color = rng.choice(debris)
+            rise = rng.uniform(2.0, 4.5)
+            self.add(Debris(ground, velocity, rise, rng.randint(2, 4), color, rng.randint(40, 70)))
+        for _ in range(round(size / 2.5)):
+            angle = rng.uniform(3.4, 6.0)  # mostly upward
+            velocity = Vec2.from_angle(angle, rng.uniform(1.2, 3.2) * min(2.0, size / 30))
+            self.add(Ember(center, velocity, rng.randint(18, 34)))
+
+    def smoke_column(self, base: Vec2, size: float) -> None:
+        """One more puff for smoke still rising off something burning."""
+        self._seed += 1
+        rng = random.Random(self._seed * 104729)
+        drift = Vec2(rng.uniform(-0.3, 0.3), -rng.uniform(0.5, 1.0))
+        spot = base + Vec2(rng.uniform(-size, size) * 0.4, 0)
+        self.add(Smoke(spot, drift, rng.uniform(0.25, 0.4) * size, rng.randint(40, 60)))
 
     def focus(self, center: Vec2, heavy: bool) -> None:
         self._seed += 1
