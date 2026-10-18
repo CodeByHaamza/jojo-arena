@@ -58,8 +58,10 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e ".[dev]"
 
+      # Spread over every core of the runner: in series the suite no longer fits the
+      # Windows job's time limit.
       - name: Test
-        run: pytest -q --cov --cov-report=term-missing --cov-report=xml
+        run: pytest -q -n auto --cov --cov-report=term-missing --cov-report=xml
 
       - name: Coverage summary
         if: always()
