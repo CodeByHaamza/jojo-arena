@@ -103,10 +103,10 @@ demo: $(VENV_PY)
 # Check ----------------------------------------------------------------------------------
 
 test: $(VENV_PY)
-	$(PY) -m pytest -q
+	$(PY) -m pytest -q -n auto
 
 test-fast: $(VENV_PY)
-	$(PY) -m pytest -q --ignore=tests/test_app.py --ignore=tests/test_fuzz.py
+	$(PY) -m pytest -q -n auto --ignore=tests/test_app.py --ignore=tests/test_fuzz.py
 
 lint: $(VENV_PY)
 	$(PY) -m ruff check .

@@ -21,9 +21,9 @@ jobs:
       SDL_AUDIODRIVER: dummy
       PYGAME_HIDE_SUPPORT_PROMPT: "1"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
@@ -48,7 +48,7 @@ jobs:
         run: |
           ruff check .
           ruff format --check .
-          pytest -q
+          pytest -q -n auto
 
       - name: Build the .exe
         run: python tools/build_exe.py
@@ -58,11 +58,15 @@ jobs:
           $run = Start-Process -FilePath dist\JoJoArena.exe -ArgumentList '--demo', '--frames', '600' -Wait -PassThru
           if ($run.ExitCode -ne 0) { throw "JoJoArena.exe exited with code $($run.ExitCode)" }
 
+      # The notes are the CHANGELOG section of this version, under the usual header.
+      - name: Release notes
+        run: python tools/release_notes.py "${{ github.ref_name }}" release-notes.md
+
       - name: Publish the Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "${{ github.ref_name }}" dist/JoJoArena.exe `
             --title "JoJo Arena ${{ github.ref_name }}" `
-            --notes "Fan game non officiel, gratuit et sans but lucratif. Télécharge JoJoArena.exe et lance-le (Windows)." `
+            --notes-file release-notes.md `
             --verify-tag
