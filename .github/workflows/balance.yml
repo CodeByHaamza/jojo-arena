@@ -1,0 +1,68 @@
+name: Balance
+
+# The balance bot plays the roster against itself and writes the win rates in the run's
+# summary: once a week for everyone, and on a pull request that touches a kit, for the
+# fighters it touches against the whole roster. Never a failure - a table to read.
+on:
+  schedule:
+    - cron: "17 4 * * 1"
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "jojo_arena/characters/*.toml"
+      - "jojo_arena/combat/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: balance-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  SDL_VIDEODRIVER: dummy
+  SDL_AUDIODRIVER: dummy
+  PYGAME_HIDE_SUPPORT_PROMPT: "1"
+
+jobs:
+  win-rates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - run: python -m pip install -e ".[dev]"
+
+      - name: Which fighters
+        id: who
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          if [ -n "$BASE_REF" ]; then
+            changed=$(git diff --name-only "origin/$BASE_REF"...HEAD -- 'jojo_arena/characters/*.toml' \
+              | xargs -r -n1 basename | sed 's/\.toml$//' \
+              | grep -vE '^(roster|parts|mannequin)$' || true)
+            echo "fighters=$(echo $changed)" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Play
+        env:
+          FIGHTERS: ${{ steps.who.outputs.fighters }}
+        run: |
+          {
+            echo "### Taux de victoire du bot"
+            echo
+            echo '```'
+            python tools/balance.py --fights 2 $FIGHTERS
+            echo '```'
+            echo
+            echo "Le bot sous-évalue les zoneurs et ne joue pas l'arrêt du temps (voir le GDD)."
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -58,8 +58,9 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e ".[dev]"
 
+      # Spread over every core of the runner: the suite is long (900+ tests).
       - name: Test
-        run: pytest -q --cov --cov-report=term-missing --cov-report=xml
+        run: pytest -q -n auto --cov --cov-report=term-missing --cov-report=xml
 
       - name: Coverage summary
         if: always()
@@ -87,9 +88,10 @@ jobs:
           path: screenshots/tour
           retention-days: 14
 
-  # A test build of the .exe for every push to main, downloadable from the run's page.
+  # A test build of the .exe for every push to main and every pull request,
+  # downloadable from the run's page: try a change without tagging a release.
   test-exe:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
     needs: test
     runs-on: windows-latest
     timeout-minutes: 25
