@@ -16,7 +16,7 @@ from jojo_arena.combat.clash import Clash
 from jojo_arena.combat.cutscene import Cutscene
 from jojo_arena.combat.events import Event
 from jojo_arena.combat.fighter import Attack, Fighter, State
-from jojo_arena.combat.kit import Kit, MoveDef, ProjectileDef
+from jojo_arena.combat.kit import ATTACK_SLOTS, Kit, MoveDef, ProjectileDef
 from jojo_arena.combat.projectile import Projectile
 from jojo_arena.combat.rules import Rules, per_frame
 from jojo_arena.combat.traps import Trap, Web, web_layout
@@ -136,7 +136,10 @@ class Match:
         for fighter in self.fighters:
             if fighter.possessed_f > 0 and fighter.possessor is not None:
                 # The Stand is inside the possessed body and moves with it.
-                self.fighters[fighter.possessor].remote_pos = fighter.pos.copy()
+                possessor = self.fighters[fighter.possessor]
+                if possessor.remote:
+                    possessor.remote_pos = fighter.pos.copy()
+        events += self._update_infiltration()
         self._separate_bodies()
         self._release_attacks()
         self._apply_suction()
@@ -181,6 +184,8 @@ class Match:
         a, b = self.fighters
         if not (a.alive and b.alive) or State.DASH in (a.state, b.state):
             return  # dashes go through the opponent
+        if a.inside is not None or b.inside is not None:
+            return  # one body is inside the other
         r = self.rules.body_radius
         if not circles_overlap(a.pos, r, b.pos, r):
             return
@@ -539,6 +544,8 @@ class Match:
             clean = any(e.kind == "hit" and e.fighter == defender.index for e in strike_events)
             if clean and move.possess_f and defender.alive and attacker.remote:
                 events += self._possess(attacker, defender, move.possess_f)
+            if clean and move.infiltrate_f and defender.alive and attacker.inside is None:
+                events += self._infiltrate(attacker, defender, move)
             if clean and move.cage_f and defender.alive:
                 center = (attacker.pos + defender.pos) * 0.5
                 self.arena.cage = Cage(center, move.cage_radius, move.cage_f, attacker.index)
@@ -706,13 +713,90 @@ class Match:
             if victim.possessed_f <= 0 or victim.possessor is None:
                 continue
             user = self.fighters[victim.possessor]
-            if not user.remote:
+            if user.inside == victim.index:
+                # A whole body in there: the host fights it by mashing anything at all.
+                raw = inputs[victim.index]
+                mash = sum(raw.presses(a) for a in (*ATTACK_SLOTS, "dash", "guard", "stand"))
+                if mash:
+                    hamon = victim.kit.style == "hamon"
+                    cut = self.rules.struggle_f * (self.rules.hamon_struggle_mult if hamon else 1)
+                    user.inside_f -= round(mash * cut)
+                    user.expelled_by_hamon = hamon and user.inside_f <= 0
+                if inputs[user.index].presses("stand"):
+                    user.inside_f = 0  # the intruder lets go on its own
+            elif not user.remote:
                 victim.possessed_f, victim.possessor = 0, None
                 continue
             frames[victim.index] = InputFrame(move=inputs[user.index].move)
             presses = inputs[user.index].presses("stand")
             frames[user.index] = InputFrame(press_counts={"stand": presses} if presses else {})
         return frames[0], frames[1]
+
+    def _infiltrate(self, user: Fighter, victim: Fighter, move: MoveDef) -> list[Event]:
+        """The user's body goes into the victim's: hidden in it, steering it, eating it."""
+        events = self._possess(user, victim, move.infiltrate_f)
+        user.inside = victim.index
+        victim.host = True
+        user.inside_f = move.infiltrate_f
+        user.inside_move = move
+        user.expelled_by_hamon = False
+        user.velocity = Vec2()
+        user.pos = victim.pos.copy()
+        return events + [Event("infiltrate", victim.pos, user.index)]
+
+    def _update_infiltration(self) -> list[Event]:
+        """Whoever is inside someone: follow the host, take a bite now and then, and come
+        out when the time is up, the host has fought it out, or either one falls."""
+        events: list[Event] = []
+        for user in self.fighters:
+            if user.inside is None:
+                continue
+            host = self.fighters[user.inside]
+            user.pos = host.pos.copy()
+            if user.state != State.IDLE and user.alive:
+                user.set_state(State.IDLE)  # the grab is over: the body is in there now
+            user.inside_f -= 1
+            move = user.inside_move
+            tick = self.rules.inside_tick_f
+            if move is not None and tick and user.inside_f % tick == 0 and host.alive:
+                bite = round(move.inside_dps * tick / 60)
+                alive = host.alive
+                host.hurt(bite)
+                user.hp = min(user.max_hp, user.hp + round(bite * move.drain))
+                events.append(Event("drain", host.pos, host.index, bite))
+                if alive and not host.alive:
+                    events.append(Event("ko", host.pos, host.index))
+            if user.inside_f <= 0 or not host.alive or not user.alive:
+                events += self._expel(user, host)
+        return events
+
+    def _expel(self, user: Fighter, host: Fighter) -> list[Event]:
+        """The body tears back out, behind the host, which staggers."""
+        user.inside, user.inside_f, user.inside_move = None, 0, None
+        host.possessed_f, host.possessor, host.host = 0, None, False
+        out = host.pos - host.facing.normalized() * (self.rules.body_radius * 2)
+        user.pos, _, _ = self.arena.constrain(out, self.rules.body_radius)
+        user.facing = (host.pos - user.pos).normalized()
+        if user.state not in (State.KO,):
+            user.attack = None
+            user.set_state(State.IDLE)
+        events = [Event("infiltrate_end", user.pos, user.index)]
+        if user.expelled_by_hamon:
+            # Repelled by the Ripple: it burns on the way out, doubly so on the undead.
+            weak = user.kit.nature in self.rules.hamon_weak_natures
+            burn = round(
+                self.rules.hamon_expel_damage * (self.rules.hamon_vs_weak_mult if weak else 1)
+            )
+            alive = user.alive
+            user.hurt(burn)
+            events.append(Event("hamon", user.pos, user.index, 1 if weak else 0))
+            if alive and not user.alive:
+                events.append(Event("ko", user.pos, user.index))
+        user.expelled_by_hamon = False
+        if host.alive:
+            host.stun_f = self.rules.expel_stun_f
+            host.set_state(State.HITSTUN)
+        return events
 
     # Cutscenes ---------------------------------------------------------------------------
 

@@ -122,6 +122,26 @@ class CharacterSelectScene(Scene):
         three: an empty row at the bottom says nothing and eats the screen."""
         return max(1, min(GRID_ROWS, -(-len(self.grid()) // GRID_COLS)))
 
+    def cells(self) -> int:
+        """Cells the cursor may stand on. A finished part has no empty cell to land on:
+        its last row stops at its last fighter."""
+        part = self.parts.get(self.tab)
+        if part is not None and part.complete:
+            return max(1, len(self.grid()))
+        return GRID_COLS * self.rows()
+
+    def row_length(self, row: int) -> int:
+        return max(1, min(GRID_COLS, self.cells() - row * GRID_COLS))
+
+    def _move(self, dx: int, dy: int) -> None:
+        """Move the cursor, wrapping around the grid, never onto a missing cell."""
+        rows = self.rows()
+        col, row = self.cell % GRID_COLS, min(self.cell // GRID_COLS, rows - 1)
+        row = (row + dy) % rows
+        col = min(col, self.row_length(row) - 1)
+        col = (col + dx) % self.row_length(row)
+        self.cell = row * GRID_COLS + col
+
     @property
     def cursor(self) -> int | None:
         """Roster index under the cursor, or None on an empty cell."""
@@ -140,7 +160,7 @@ class CharacterSelectScene(Scene):
     def _open_tab(self, part: int) -> None:
         self.tab = part
         self.backdrop.part = part
-        self.cell = min(self.cell, GRID_COLS * self.rows() - 1)
+        self.cell = min(self.cell, self.cells() - 1)
 
     # Update -----------------------------------------------------------------------------
 
@@ -157,13 +177,13 @@ class CharacterSelectScene(Scene):
         if step:
             at = self.part_numbers.index(self.tab)
             self._open_tab(self.part_numbers[(at + step) % len(self.part_numbers)])
-        rows = self.rows()
-        col, row = self.cell % GRID_COLS, min(self.cell // GRID_COLS, rows - 1)
-        col = (col + frame.presses("right") - frame.presses("left")) % GRID_COLS
-        row = (row + frame.presses("down") - frame.presses("up")) % rows
-        if row * GRID_COLS + col != self.cell or step:
+        before = self.cell
+        self._move(
+            frame.presses("right") - frame.presses("left"),
+            frame.presses("down") - frame.presses("up"),
+        )
+        if self.cell != before or step:
             audio.play("menu_move")
-        self.cell = row * GRID_COLS + col
         if frame.was_pressed("confirm"):
             self._pick()
         elif frame.was_pressed("back"):

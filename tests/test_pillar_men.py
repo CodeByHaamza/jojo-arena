@@ -1,6 +1,6 @@
 """Part 2, second wave: the Pillar Men and the man who built himself a sun."""
 
-from helpers import NONE, OPEN_BOUNDS, make_duel, press, run
+from helpers import NONE, OPEN_BOUNDS, kinds, make_duel, press, run, run_held, run_until, walk
 
 from jojo_arena.characters import get_fighter, load_roster
 from jojo_arena.combat.arena import Arena
@@ -168,12 +168,75 @@ def test_kars_blades_reach_and_his_thrown_one_bounces():
     assert awakening.sun_immune and awakening.hh_cost > 0
 
 
-def test_santana_gets_inside_and_walks_you_about():
+def infiltrated(target: str = "jotaro_p3") -> Match:
+    """Santana's grab, landed: he is inside the opponent."""
+    match = make_duel("santana", target, p1=(150, 100), p2=(168, 100))
+    run_until(match, lambda m: m.fighters[0].inside is not None, 60, p1=press("special"))
+    return match
+
+
+def test_santana_gets_inside_walks_you_about_and_eats_you():
     grab = kit("santana").move("base", "special")
-    assert grab.possess_f > 0 and grab.unblockable and grab.drain > 0
-    match = make_duel("santana", "joseph_p2", p1=(150, 100), p2=(168, 100))
-    run(match, 40, p1=press("special"))
-    assert match.fighters[1].possessed_f > 0 or hits_on([], 1) == []
+    assert grab.infiltrate_f > 0 and grab.unblockable and grab.inside_dps > 0
+    match = infiltrated()
+    santana, host = match.fighters
+    assert host.possessed_f > 0 and host.possessor == 0
+    assert santana.invincible and santana.hurtboxes() == [], "nothing of him to hit"
+    hp, life = host.hp, santana.hp
+    start = host.pos.copy()
+    run_held(match, 30, p1=walk(0, 1))  # he steers the host's walk...
+    assert host.pos.y > start.y + 5
+    assert santana.pos == host.pos, "...and goes where it goes"
+    assert host.hp < hp and santana.hp >= life, "it eats while it is in there"
+    run_until(match, lambda m: m.fighters[0].inside is None, 200)
+    assert host.possessed_f == 0 and host.state == State.HITSTUN, "he tears back out"
+    assert santana.pos.distance_to(host.pos) > 10
+
+
+def test_mashing_pushes_santana_out_and_the_ripple_burns_him():
+    def stay(target: str, mash: bool) -> int:
+        match = infiltrated(target)
+        frames = 0
+        while match.fighters[0].inside is not None:
+            mashing = press("light") if mash and frames % 2 == 0 else NONE
+            match.step((NONE, mashing))
+            frames += 1
+        return frames
+
+    calm = stay("jotaro_p3", mash=False)
+    assert stay("jotaro_p3", mash=True) < calm * 0.8, "fighting back gets him out sooner"
+    assert stay("joseph_p2", mash=True) < stay("jotaro_p3", mash=True), "the Ripple repels him"
+    match = infiltrated("joseph_p2")
+    life = match.fighters[0].hp
+    events = []
+    while match.fighters[0].inside is not None:
+        events += match.step((NONE, press("light")))
+    assert match.fighters[0].hp < life and "hamon" in kinds(events), "and it burns him"
+
+
+def test_inside_someone_the_sun_cannot_reach_santana():
+    match = infiltrated()
+    assert match.fighters[0].sun_proof
+
+
+def test_santana_goes_under_the_floor_and_comes_up_under_you():
+    move = kit("santana").move("base", "heavy_alt")
+    assert move.burrow and move.leap > 0 and move.invincible_f >= move.startup_f
+    assert move.cooldown_f > 0 and not move.unblockable, "seen coming, it can be guarded"
+    match = make_duel("santana", "jotaro_p3", p1=(120, 100), p2=(250, 100))
+    events = run(match, 60, p1=press("heavy", move=(1.0, 0.0)))
+    assert hits_on(events, 1), "he travels the whole way under and strikes"
+
+
+def test_santana_takes_shots_in_and_answers_a_blow_with_bullets():
+    stance = kit("santana").move("base", "special_alt")
+    assert stance.reflect and stance.counter == "finger_bullets"
+    bullets = kit("santana").move("base", "finger_bullets").projectile
+    assert bullets is not None and bullets.look == "bullet" and bullets.count > 1
+    rib = kit("santana").move("base", "heavy")
+    assert rib.armor >= 1, "Diamond Records: the ribs answer a blow taken while out"
+    meat = kit("santana").move("base", "hha")
+    assert meat.projectile is not None and meat.projectile.drain > 0
 
 
 def test_stroheims_lamps_burn_the_undead_and_leave_the_living_alone():

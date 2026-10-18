@@ -10,9 +10,9 @@ case "$subject" in
 esac
 
 # Conventional and short: "feat: Lisa Lisa, elegant and acrobatic".
-if ! printf '%s' "$subject" | grep -Eq '^(feat|fix|refactor|docs|test|chore|perf|style|build|ci)(\([a-z0-9_/-]+\))?: .+'; then
+if ! printf '%s' "$subject" | grep -Eq '^(feat|fix|refactor|docs|test|chore|perf|style|build|ci|balance)(\([a-z0-9_/-]+\))?: .+'; then
     echo "commit-msg: the subject must start with feat:, fix:, refactor:, docs:, test:, chore:," >&2
-    echo "            perf:, style:, build: or ci:  -  e.g. 'feat: Wamuu, the wind of the Pillar Men'" >&2
+    echo "            perf:, style:, build:, ci: or balance:  -  e.g. 'feat: Wamuu, the wind of the Pillar Men'" >&2
     echo "            got: $subject" >&2
     exit 1
 fi

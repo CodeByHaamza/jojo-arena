@@ -168,6 +168,12 @@ class Fighter:
         # Possessed: someone else steers this fighter's walk for a while.
         self.possessed_f = 0
         self.possessor: int | None = None
+        self.host = False  # possessed by a whole body inside it, not by a Stand
+        # Infiltrated: this fighter's body is inside the other one's (index), for a while.
+        self.inside: int | None = None
+        self.inside_f = 0
+        self.inside_move: MoveDef | None = None
+        self.expelled_by_hamon = False
         # Combo scaling: moves landed in a row on this fighter, and the last one's id.
         self.combo_moves = 0
         self.combo_key: tuple | None = None
@@ -187,6 +193,8 @@ class Fighter:
 
     @property
     def invincible(self) -> bool:
+        if self.inside is not None:
+            return True  # nothing to hit: the body is inside the opponent's
         if self.state == State.DASH:
             return self.state_f < self.rules.dash_invincible_f
         if self.state == State.ATTACK and self.attack is not None:
@@ -236,6 +244,8 @@ class Fighter:
 
     def hurtboxes(self) -> list[tuple[Vec2, float]]:
         """Circles where this fighter can be hit: the body, and the Stand while it is out."""
+        if self.inside is not None:
+            return []
         boxes = [(self.pos, self.rules.hurt_radius)]
         stand = self.stand_pos()
         if stand is not None:
@@ -368,6 +378,8 @@ class Fighter:
         """Turn this step's input into actions. Only called while the fight is running."""
         self.walk_dir = Vec2()
         self.remote_dir = Vec2()
+        if self.inside is not None:
+            return []  # its input steers the host (see Match._possession_inputs)
         self.guard_held = frame.is_held("guard") and not self.remote
         self.cursor = Vec2(*frame.cursor) if frame.cursor is not None else None
         remote_stance = self.style.params.get("remote")
@@ -523,6 +535,8 @@ class Fighter:
     @property
     def sun_proof(self) -> bool:
         """Awakened into something the daylight no longer touches."""
+        if self.inside is not None:
+            return True  # hidden inside someone else's body, out of the light
         awakening = self.kit.awakening
         return self.awakened and awakening is not None and awakening.sun_immune
 
