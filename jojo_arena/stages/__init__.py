@@ -9,7 +9,7 @@ from jojo_arena.stages.base import StageDef, load_stage_def
 _DIR = Path(__file__).parent
 
 # Explicit list (no dynamic import) so PyInstaller bundles every stage.
-STAGE_IDS = ("joestar_mansion", "swiss_castle", "air_supplena", "cairo_night")
+STAGE_IDS = ("joestar_mansion", "swiss_castle", "air_supplena", "st_moritz", "cairo_night")
 
 
 def load_stage(stage_id: str) -> StageDef:
@@ -30,6 +30,7 @@ def stage_renderer(stage: StageDef):
     from jojo_arena.stages.air_supplena import AirSupplenaRenderer
     from jojo_arena.stages.cairo_night import CairoNightRenderer
     from jojo_arena.stages.joestar_mansion import JoestarMansionRenderer
+    from jojo_arena.stages.st_moritz import StMoritzRenderer
     from jojo_arena.stages.swiss_castle import SwissCastleRenderer
 
     renderers = {
@@ -37,5 +38,6 @@ def stage_renderer(stage: StageDef):
         "joestar_mansion": JoestarMansionRenderer,
         "swiss_castle": SwissCastleRenderer,
         "air_supplena": AirSupplenaRenderer,
+        "st_moritz": StMoritzRenderer,
     }
     return renderers[stage.id](stage)

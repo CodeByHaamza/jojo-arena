@@ -131,6 +131,18 @@ def test_oil_carries_you_on_unless_you_breathe_the_ripple():
     assert slide_after_walking("jotaro_p3", "cairo_night", (186, 110)) == 0
 
 
+def test_in_st_moritz_nobody_keeps_their_footing():
+    assert slide_after_walking("joseph_p2", "st_moritz", (100, 160)) > 10
+
+
+def test_a_body_starts_slowly_on_snow():
+    match = duel("st_moritz", "jotaro_p3", "mannequin_blue", at=((100, 160), (440, 240)))
+    start = match.fighters[0].pos.x
+    match.step((walk(1.0), NONE))
+    first_step = match.fighters[0].pos.x - start
+    assert 0 < first_step < match.fighters[0].walk_speed() * 0.5
+
+
 def test_a_stage_without_hazards_plays_exactly_as_before():
     """No surface: walking is the old one-to-one walk, to the bit."""
     match = duel("cairo_night", "jotaro_p3", "mannequin_blue")

@@ -1,0 +1,118 @@
+# St. Moritz (Part 2): outside Gessler's hotel, the Pillar Men's hideout in the Swiss
+# Alps - the fight in the snow, not in the hall (that is swiss_castle).
+# Sources (searched 18/10/2026; JoJo Wiki "Gessler's Hotel", "St. Moritz", Battle
+# Tendency chapter 44): the abandoned hotel in St. Moritz, once a 14th-century fortress
+# of Albrecht Gessler, is where Kars and Wamuu and their vampires wait out the day; Lisa
+# Lisa, Caesar and Messina find it and call Joseph over. Switzerland: snowy mountains.
+# Coordinates are internal pixels (screen is 480 x 270). Rects are [x, y, width, height].
+
+name = "St. Moritz, devant l'hôtel"
+name_en = "St. Moritz, outside the hotel"
+part = 2
+outdoors = true
+
+[bounds]
+rect = [16, 46, 448, 206]
+corner_radius = 20
+
+[spawns]
+p1 = [140, 156]
+p2 = [340, 156]
+
+# Out in the open, dawn over the mountains reaches every inch of the snow.
+[sun]
+after_s = 52
+spread_s = 24
+widen = 0.0
+
+[[sun.windows]]
+rect = [16, 46, 448, 12]
+
+# The packed snow of the courtyard: nothing grips. The path dug to the hotel door
+# (first, so it wins where they overlap) holds a little better.
+[[surfaces]]
+look = "path"
+rect = [212, 46, 56, 206]
+grip = 0.45
+slide = 0.7
+
+[[surfaces]]
+look = "snow"
+grip = 0.12
+slide = 0.45
+
+# Event (made for this game, not a scene of the manga): the snow on the hotel roof lets
+# go in slabs along the north wall, its shadow first. Off with the "events" option.
+[[drops]]
+look = "snow_slab"
+spots = [[90, 72], [180, 70], [300, 70], [390, 72]]
+first_s = 16
+every_s = 18
+warning_s = 1.4
+radius = 22
+damage = 70
+hitstun_f = 30
+knockback = 200
+wreck_s = 5
+
+[prop_kinds.tree]
+hp = 0
+
+[prop_kinds.snowman]
+hp = 30
+
+# Barrels by the door can be picked up (Pose key) and thrown; broken, they come back.
+[prop_kinds.barrel]
+hp = 36
+throwable = true
+throw_damage = 44
+respawn_s = 9
+
+[[props]]
+kind = "tree"
+rect = [60, 196, 14, 14]
+
+[[props]]
+kind = "tree"
+rect = [406, 196, 14, 14]
+
+[[props]]
+kind = "snowman"
+rect = [120, 214, 12, 12]
+
+[[props]]
+kind = "barrel"
+rect = [196, 64, 11, 11]
+
+[[props]]
+kind = "barrel"
+rect = [274, 64, 11, 11]
+
+# Lamps by the hotel door.
+[[lanterns]]
+pos = [214, 42]
+
+[[lanterns]]
+pos = [266, 42]
+
+[palette]
+sky = [24, 30, 58]
+mountain = [70, 80, 110]
+mountain_snow = [200, 210, 228]
+wall = [86, 78, 82]
+wall_light = [110, 100, 104]
+roof = [74, 46, 46]
+window_lit = [255, 196, 110]
+window_dark = [40, 44, 64]
+snow = [184, 192, 210]
+snow_light = [198, 206, 222]
+snow_shade = [160, 170, 194]
+path = [150, 140, 136]
+path_dark = [120, 112, 110]
+curb = [180, 188, 206]
+pine = [34, 70, 58]
+pine_dark = [22, 48, 42]
+wood = [110, 76, 50]
+wood_dark = [78, 52, 36]
+lantern = [255, 190, 120]
+sun = [255, 222, 170]
