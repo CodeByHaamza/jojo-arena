@@ -205,6 +205,7 @@ def test_locked_cells_and_the_move_list_in_the_select_screen(ctx):
     assert select.move_list.page == 1
     keys(ctx, "Escape")
     assert select.move_list is None
+    keys(ctx, "E", "E")  # part 3: its roster is not complete yet
     keys(ctx, "Down")  # the last row of the tab, where the slots still to come are
     for _ in range(4):
         if select.cursor is None:

@@ -4,10 +4,13 @@
 #   setting = where and when it takes place (setting_en: in English)
 #   colors  = two accent colors for the menus
 #   emblem  = its little symbol, an icon of assets/icons/ (drawings in tools/icons/)
+#   complete = true once every fighter the GDD plans for the part is in: the character
+#             select screen then shows no "?" slot still to come in its tab
 
 [[parts]]
 number = 1
 emblem = "emblem_p1"
+complete = true
 title = "PHANTOM BLOOD"
 setting = "Angleterre, 1880-1889"
 setting_en = "England, 1880-1889"
@@ -16,6 +19,7 @@ colors = ["#c8323c", "#e8c060"]
 [[parts]]
 number = 2
 emblem = "emblem_p2"
+complete = true
 title = "BATTLE TENDENCY"
 setting = "New York, Mexique, Italie, Suisse, 1938-1939"
 setting_en = "New York, Mexico, Italy, Switzerland, 1938-1939"

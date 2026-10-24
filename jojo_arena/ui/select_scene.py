@@ -122,6 +122,20 @@ class CharacterSelectScene(Scene):
         three: an empty row at the bottom says nothing and eats the screen."""
         return max(1, min(GRID_ROWS, -(-len(self.grid()) // GRID_COLS)))
 
+    def _complete(self) -> bool:
+        """A part whose whole roster is in: no "?" slot still to come in its tab."""
+        part = self.parts.get(self.tab)
+        return part is not None and part.complete and bool(self.grid())
+
+    def cells(self) -> int:
+        """Cells drawn in this tab: just its fighters once the part is complete, else
+        whole rows, the slots still to come shown as "?"."""
+        return len(self.grid()) if self._complete() else GRID_COLS * self.rows()
+
+    def _row_width(self, row: int) -> int:
+        """Cells in a row of the tab: a complete part's last row may be shorter."""
+        return max(1, min(GRID_COLS, self.cells() - row * GRID_COLS))
+
     @property
     def cursor(self) -> int | None:
         """Roster index under the cursor, or None on an empty cell."""
@@ -140,7 +154,7 @@ class CharacterSelectScene(Scene):
     def _open_tab(self, part: int) -> None:
         self.tab = part
         self.backdrop.part = part
-        self.cell = min(self.cell, GRID_COLS * self.rows() - 1)
+        self.cell = min(self.cell, self.cells() - 1)
 
     # Update -----------------------------------------------------------------------------
 
@@ -159,8 +173,9 @@ class CharacterSelectScene(Scene):
             self._open_tab(self.part_numbers[(at + step) % len(self.part_numbers)])
         rows = self.rows()
         col, row = self.cell % GRID_COLS, min(self.cell // GRID_COLS, rows - 1)
-        col = (col + frame.presses("right") - frame.presses("left")) % GRID_COLS
         row = (row + frame.presses("down") - frame.presses("up")) % rows
+        width = self._row_width(row)
+        col = (min(col, width - 1) + frame.presses("right") - frame.presses("left")) % width
         if row * GRID_COLS + col != self.cell or step:
             audio.play("menu_move")
         self.cell = row * GRID_COLS + col
@@ -245,7 +260,10 @@ class CharacterSelectScene(Scene):
 
     def _cell_rect(self, index: int) -> pygame.Rect:
         col, row = index % GRID_COLS, index // GRID_COLS
-        return pygame.Rect(GRID_X + col * (CELL + GAP), GRID_Y + row * (CELL + GAP), CELL, CELL)
+        # A short last row (complete part) sits in the middle, not against the left.
+        shift = (GRID_COLS - self._row_width(row)) * (CELL + GAP) // 2
+        x = GRID_X + shift + col * (CELL + GAP)
+        return pygame.Rect(x, GRID_Y + row * (CELL + GAP), CELL, CELL)
 
     def _draw_tabs(self, surface: pygame.Surface) -> None:
         """One tab per part, its emblem inside; parts with nobody yet stay dim."""
@@ -255,7 +273,7 @@ class CharacterSelectScene(Scene):
     def _draw_grid(self, surface: pygame.Surface) -> None:
         grid = self.grid()
         part = self.parts.get(self.tab)
-        for cell in range(GRID_COLS * self.rows()):
+        for cell in range(self.cells()):
             rect = self._cell_rect(cell)
             if cell < len(grid):
                 index = grid[cell]
