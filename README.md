@@ -6,7 +6,7 @@
 [![Licence MIT](https://img.shields.io/badge/licence-MIT-f0c23c?style=flat-square)](LICENSE)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-7a48c8?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![pygame-ce](https://img.shields.io/badge/pygame--ce-2.5-3d63c8?style=flat-square)](https://pyga.me/)
-[![19 persos](https://img.shields.io/badge/roster-19%20persos-c8403a?style=flat-square)](#le-roster)
+[![20 persos](https://img.shields.io/badge/roster-20%20persos-c8403a?style=flat-square)](#le-roster)
 [![3 arènes](https://img.shields.io/badge/ar%C3%A8nes-3-2ea24a?style=flat-square)](#les-arènes)
 
 ### ゴ ゴ ゴ ゴ ゴ
@@ -25,13 +25,13 @@ Gratuit, open source, non commercial.
 
 ## Le roster
 
-19 persos jouables sur trois parties (plus deux mannequins d'entraînement), chacun avec ses vraies techniques, ses répliques et son Stand.
+20 persos jouables sur trois parties (plus deux mannequins d'entraînement), chacun avec ses vraies techniques, ses répliques et son Stand.
 
 | Partie | Persos |
 | --- | --- |
 | **P1 · Phantom Blood** | Jonathan Joestar · Will A. Zeppeli · DIO Brando · Bruford · Tarkus · Speedwagon |
 | **P2 · Battle Tendency** ✅ *complète* | Joseph Joestar · Caesar Zeppeli · Lisa Lisa · Straizo · **Wamuu** · **Esidisi** · **Kars** · **Santana** · Stroheim |
-| **P3 · Stardust Crusaders** | Jotaro Kujo · Noriaki Kakyoin · DIO · Jean Pierre Polnareff |
+| **P3 · Stardust Crusaders** | Jotaro Kujo · Noriaki Kakyoin · DIO · Jean Pierre Polnareff · **Muhammad Avdol** |
 
 <table>
 <tr>
@@ -71,7 +71,7 @@ Dans le manoir et au château, **l'aube se lève** : les rais de soleil tombent 
 
 ## Ce qui rend chaque perso différent
 
-- **Stands** (Jotaro, DIO, Kakyoin, Polnareff) : touche Stand, le Stand apparaît et change tous les coups ; un coup sur le Stand blesse son manieur. Hierophant Green se **contrôle à distance** et possède sa cible.
+- **Stands** (Jotaro, DIO, Kakyoin, Polnareff, Avdol) : touche Stand, le Stand apparaît et change tous les coups ; un coup sur le Stand blesse son manieur. Hierophant Green se **contrôle à distance** et possède sa cible.
 - **Hamon** (Jonathan, Zeppeli, Joseph, Caesar, Lisa Lisa) : respiration qui charge la jauge, coups chargés qui brûlent les morts-vivants. Lisa Lisa a sa **Chaîne d'Onde** d'ASBR : un coup d'ouverture, **trois suites, trois fins** — personne d'autre ne l'a.
 - **Vampires et zombies** (DIO, Straizo, Bruford, Tarkus) : jauge de sang, gel, régénération — et le soleil qui les tue.
 - **Hommes du Pilier** (Wamuu, Esidisi, Kars, Santana) : un **Mode** (流法) par perso, qui change tout le moveset. Divine Sandstorm fait tourner les avant-bras de Wamuu puis sort **deux tornades** qui aspirent ; les veines d'Esidisi crachent du sang à 500 degrés ; Kars a la plus grande allonge du casting.

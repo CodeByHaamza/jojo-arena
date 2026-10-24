@@ -1,0 +1,108 @@
+# Muhammad Avdol (Part 3): look file for tools/make_sprites.py.
+# Change a color or a setting, then run:  python tools/make_sprites.py avdol
+#
+# Sources (JoJo Wiki, "Muhammad Avdol", Appearance and Color Schemes, read through
+# search results on 24/10/2026: https://jojowiki.com/Muhammad_Avdol):
+# - dark-skinned, above-average height, a medium-to-heavy build, thick eyebrows, a
+#   wide chin, two identical scars down his cheeks;
+# - a headband or headscarf round the forehead; hair in what looks like Bantu knots,
+#   with a long ponytail;
+# - earrings that are a long chain of medallions, like a necklace: the biggest one
+#   carries an ankh, and a big tassel hangs from it onto his chest;
+# - thick metal bracelets on both wrists;
+# - a long overcoat or robe over a jellabiya, and a scarf round his neck;
+# - colors: dark brown hair, auburn eyes, yellow clothes (the wiki's first color
+#   scheme). The anime line of the Color Schemes section was not in the results: to
+#   check on the page before the final sprite.
+
+name = "Muhammad Avdol"
+
+# Tall and broad: the biggest of the Crusaders after Jotaro, built heavier.
+# Signature pose (Pose key): the finger pointed straight at the opponent.
+pose = "point"
+
+[build]
+head_r = 5.8
+neck = 1.4
+torso = 14
+legs = 17
+arms = 15
+shoulders = 9.2
+hips = 3.6
+torso_r = 6.8
+arm_r = 2.5
+leg_r = 2.6
+hand_r = 2.3
+foot_r = 2.4
+
+[palette]
+skin = "#7a4e34"
+hair = "#3a2620"         # dark brown
+band = "#e8e0c8"         # pale headscarf
+robe = "#d9a838"         # the long yellow overcoat
+gown = "#efe2b8"         # the jellabiya under it
+scarf = "#c84a32"
+gold = "#e8c450"
+tassel = "#b8342c"
+scar = "#5a3624"
+shoes = "#4a3426"
+eyes = "#9a4a2c"         # auburn
+
+[body]
+head = "skin"
+torso = "gown"
+arms = "robe"
+hands = "skin"
+legs = "gown"
+feet = "shoes"
+
+[face]
+eyes = "eyes"
+eye_style = "wide"
+brows = true
+nose = true
+ear = true
+cheek_scars = "scar"
+
+# The knots over the crown, and the long ponytail down his back.
+[[parts]]
+type = "hair"
+material = "hair"
+style = "knots"
+volume = 6.6
+knot_size = 2.2
+ponytail = 15
+
+# The headscarf round his forehead.
+[[parts]]
+type = "headband"
+material = "band"
+
+# The long overcoat, open on the jellabiya, down to the ankles.
+[[parts]]
+type = "coat"
+material = "robe"
+length = 0.92
+open = true
+opening = 3
+collar = false
+flare = 1.5
+trail = 2
+
+[[parts]]
+type = "scarf"
+material = "scarf"
+tail = 2
+
+# The medallion earrings down to the chest, the ankh on the biggest one, the tassel.
+[[parts]]
+type = "medallions"
+material = "gold"
+ankh = "tassel"
+tassel = "tassel"
+
+[[parts]]
+type = "bracelets"
+material = "gold"
+width = 1.8
+count = 2

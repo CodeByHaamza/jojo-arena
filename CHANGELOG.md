@@ -35,6 +35,17 @@ des corrections seules une patch.
 
 ### Ajouté (combat)
 
+- **Muhammad Avdol et Magician's Red** (partie 3), zoneur de feu, d'après sa fiche et ses
+  coups d'All-Star Battle R : **Crossfire Hurricane** (un ankh de feu), la **Variation**
+  posée là où tu vises et qui jaillit sous les pieds, **Red Bind** (des cordes de feu
+  imparables), **Flaming Detector** (une flamme lente qui chasse l'adversaire), « HELL 2
+  U ! », le contre « Now's my chance ! », « I'll burn you to cinders ! » qui explose tout
+  autour, la HHA « Give me four wishes instead ! » et la GHA **Crossfire Hurricane
+  Special** en cinématique : l'anneau d'ankhs se referme.
+- **Le feu reste accroché** : ce que Magician's Red touche brûle encore quelques
+  secondes après le coup. Un dash en éteint une partie, et le feu ne prend jamais le
+  dernier point de vie : il faut un coup pour finir.
+
 - **La touche Power Up sert enfin : l'éveil.** Kars pose le masque de pierre et la Super
   Aja pour deux barres et devient la **forme de vie ultime** : le soleil ne lui fait plus
   rien, son moveset entier change (griffes qui s'adaptent, main qui dévore, ailes, sa

@@ -46,11 +46,13 @@ def _mirror(sk: Skeleton, pixels: set[Pixel]) -> set[Pixel]:
 
 def hair(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     """style: short | long | tower | spiky | swept (volume swept up and back) | crest
-    (a fin on top of a helmet; crest_color) | mane (wild curved tufts flaring up and out).
+    (a fin on top of a helmet; crest_color) | mane (wild curved tufts flaring up and out) |
+    knots (small round knots over the crown, Bantu knots; knot_size).
 
     Options (head units): volume, length (long), height (tower, crest), back_length (locks over
     the nape; a mane flows down behind the shoulders), flare (mane: how far its tufts reach),
-    fill (mane: 0 = separate spikes, 1 = one full mass);
+    fill (mane: 0 = separate spikes, 1 = one full mass), ponytail (length of one tail
+    hanging down the back);
     bangs = curl | fringe, bangs_side = left | right (seen from the front), bangs_length,
     bangs_width and bangs_spread (curl: distance from the face).
     """
@@ -154,6 +156,30 @@ def hair(sk: Skeleton, p: dict, look: Look) -> list[Part]:
         else:
             fin = polygon([at(-1.3, -5), at(1.3, -5), at(0.9, -11 - h), at(-0.9, -11 - h)])
         parts.append(Part(p.get("crest_color", mat), fin, z=55))
+    elif style == "knots":
+        # Each knot sits proud of the head's outline, with its own glint, so they read
+        # as separate knobs and not as one mass of hair.
+        if sk.view == "right":
+            spots = [(2.5, -8.2), (-1.5, -9.6), (-5.6, -8), (-8.2, -4)]
+        else:
+            spots = [(-6, -6.6), (-3, -9.2), (0.4, -10), (3.8, -9), (6.4, -6.4)]
+        size = p.get("knot_size", 2.0) * k
+        for x, y in spots:
+            knot = disc(*at(x, y), size)
+            parts.append(Part(mat, knot, z=55.2, highlight={min(knot)}))
+
+    ponytail = p.get("ponytail", 0)
+    if ponytail:
+        # One tail from the back of the head, down between the shoulder blades.
+        if sk.view == "down":
+            tail = capsule(*at(0, 1), *at(0.6, ponytail), 1.9 * k)
+            parts.append(Part(mat, tail, z=4))
+        elif sk.view == "up":
+            tail = capsule(*at(0, 0), *at(0, ponytail), 2.2 * k)
+            parts.append(Part(mat, tail, z=53))
+        else:
+            tail = capsule(*at(-5.5, -1), *at(-7.5, ponytail), 1.9 * k)
+            parts.append(Part(mat, tail, z=4))
 
     back_length = p.get("back_length", 0)
     if back_length and style == "mane":
@@ -1316,6 +1342,146 @@ def cheek_guards(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     return [Part(p["material"], guards, z=53)]
 
 
+ANKH = [".#.", "#.#", "###", ".#.", ".#."]
+
+
+def medallions(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """Long earrings: a chain of medallions from each ear down to the chest, where the
+    biggest one hangs, an ankh on it, and a tassel under it (Avdol).
+
+    Options: ankh (color of the cross on the big medallion), tassel (its color),
+    beads (color of the chain, by default the material)."""
+    if sk.view == "up":
+        return []
+    mat = p["material"]
+    beads_mat = p.get("beads", mat)
+    at = sk.at
+    tr = sk.torso[2]
+    if sk.view == "down":
+        ears = [at(-7, 2.5), at(6.5, 2.5)]
+        center = (sk.center_x, sk.torso[0][1] + 2.5)
+    else:
+        ears = [at(-1, 3.5)]
+        center = (sk.center_x + tr - 1.5, sk.torso[0][1] + 3)
+    beads: set[Pixel] = set()
+    for ear in ears:
+        steps = max(2, round(math.hypot(center[0] - ear[0], center[1] - ear[1]) / 2))
+        for i in range(1, steps):
+            beads |= points([_lerp(ear, center, i / steps)])
+    cx, cy = round(center[0]), round(center[1])
+    if sk.view == "down":
+        big = disc(cx - 0.5, cy + 1.5, 2.2)
+        cross = {
+            (cx - 1 + dx, cy - 1 + dy)
+            for dy, row in enumerate(ANKH)
+            for dx, cell in enumerate(row)
+            if cell == "#"
+        }
+        tassel = {(cx - 1 + dx, cy + 4 + dy) for dx in range(3) for dy in range(3) if dx != 1 or dy}
+    else:
+        big = disc(cx, cy + 1, 1.6)
+        cross = {(cx, cy), (cx, cy + 1), (cx, cy + 2)}
+        tassel = {(cx, cy + 3), (cx, cy + 4)}
+    parts = [
+        Part(beads_mat, beads, z=49.8, tone=2),
+        Part(mat, big, z=49.9, highlight={min(big)}),
+        Part(p.get("ankh", mat), cross & big if sk.view == "right" else cross, z=49.95, tone=0),
+    ]
+    if p.get("tassel"):
+        parts.append(Part(p["tassel"], tassel, z=49.85))
+    return parts
+
+
+def bracelets(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """Thick metal bands around both wrists. Option: width (px), count (bands per wrist)."""
+    mat = p["material"]
+    b = sk.build
+    width = p.get("width", 1.6)
+    count = p.get("count", 1)
+    if sk.view == "right":
+        arms = [(sk.shoulders[0], sk.hands[0], 5.6), (sk.shoulders[1], sk.hands[1], 60.6)]
+    else:
+        arms = [(sk.shoulders[i], sk.hands[i], 20.6) for i in (0, 1)]
+    parts = []
+    for shoulder, hand, z in arms:
+        for i in range(count):
+            start = _lerp(hand, shoulder, 0.16 + i * 0.13)
+            sleeve = capsule(*start, *hand, b.arm_r * 1.25)
+            parts.append(Part(mat, _band(sleeve, start, hand, width), z=z, tone=2))
+    return parts
+
+
+def beak(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """A bird's beak instead of a nose and mouth (Magician's Red). Option: size."""
+    if sk.view == "up":
+        return []
+    at = sk.at
+    size = p.get("size", 1.0)
+    if sk.view == "down":
+        # Seen from the front: a broad wedge between the eyes, hooking down past the chin.
+        shape = polygon(
+            [
+                at(-2.4 * size, 0.4),
+                at(2.4 * size, 0.4),
+                at(1.3 * size, 2.6 + 1.6 * size),
+                at(0, 4.2 + 2.2 * size),
+                at(-1.3 * size, 2.6 + 1.6 * size),
+            ]
+        )
+        ridge = points([at(0, 1.0), at(0, 2.2)])
+    else:
+        # Profile: out from the face and hooked down at the tip.
+        shape = polygon(
+            [at(4.5, -0.8), at(5.5 + 5 * size, 0.6), at(4.6 + 5 * size, 2.8), at(4.5, 2.6)]
+        )
+        ridge = points([at(5.5, 0.2), at(7, 0.6)])
+    return [
+        Part(p["material"], shape, z=53, highlight=ridge & shape),
+    ]
+
+
+def feathered_legs(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """Feathers sticking out along the outside of both legs, from hip to ankle
+    (Magician's Red). Option: size (px of the longest feather), count (per leg)."""
+    mat = p["material"]
+    size = p.get("size", 3.5)
+    count = p.get("count", 4)
+    if sk.view == "right":
+        legs = [(sk.hips[1], sk.feet[1], -1, 35.5)]
+    else:
+        legs = [(sk.hips[0], sk.feet[0], -1, 10.5), (sk.hips[1], sk.feet[1], 1, 10.5)]
+    if sk.view == "up":
+        legs = [(hip, foot, -side, z) for hip, foot, side, z in legs]
+    parts = []
+    r = sk.build.leg_r
+    for hip, foot, side, z in legs:
+        plumes: set[Pixel] = set()
+        for i in range(count):
+            t = 0.12 + 0.72 * i / max(1, count - 1)
+            x, y = _lerp(hip, foot, t)
+            length = size * (1.0 - 0.35 * i / max(1, count - 1))
+            base_a = (x + side * (r - 0.5), y - 1.6)
+            base_b = (x + side * (r - 0.5), y + 1.4)
+            tip = (x + side * (r + length), y + 1.8)
+            plumes |= polygon([base_a, tip, base_b])
+        parts.append(Part(mat, plumes, z=z))
+    return parts
+
+
+def claws(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """Three short talons at the end of each hand."""
+    if sk.view == "up":
+        return []
+    hands = [sk.hands[1]] if sk.view == "right" else list(sk.hands)
+    tips: set[Pixel] = set()
+    for x, y in hands:
+        if sk.view == "right":
+            tips |= points([(x + 2, y - 1), (x + 2.5, y + 0.5), (x + 2, y + 2)])
+        else:
+            tips |= points([(x - 1.2, y + 2.2), (x, y + 2.6), (x + 1.2, y + 2.2)])
+    return [Part(p["material"], tips, z=62, tone=2)]
+
+
 PART_TYPES: dict[str, Callable[[Skeleton, dict, Look], list[Part]]] = {
     "hair": hair,
     "cap": cap,
@@ -1343,4 +1509,9 @@ PART_TYPES: dict[str, Callable[[Skeleton, dict, Look], list[Part]]] = {
     "tanks": tanks,
     "cheek_guards": cheek_guards,
     "face_mark": face_mark,
+    "medallions": medallions,
+    "bracelets": bracelets,
+    "beak": beak,
+    "feathered_legs": feathered_legs,
+    "claws": claws,
 }

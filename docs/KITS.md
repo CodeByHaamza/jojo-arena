@@ -46,7 +46,7 @@ Les coups d'une posture : `[stances.<nom>.moves.<touche>]`, où la touche est `l
 | `anim` | Animation à jouer (par défaut, le nom de la touche). Une variante `famille_nom` (`special_splash`) se dessine dans la fiche de look ; une planche qui ne l'a pas (le Stand) joue la famille (`special`) |
 | `shout` | Cri écrit à l'écran quand le coup sort ; pour une rafale, à chaque coup (`ORA`, `MUDA`) |
 | `stand_flash` | Le Stand apparaît le temps de ce coup, même rangé |
-| `fx` | Dessin pendant la phase active : `limb` (doigt, bras), `tentacle`, `blade`, `hair` (mèches), `chain` (chaîne), `beam` (jets des yeux), `lens` (rayon à travers une bulle), `scarf` (écharpe ondulante) ou `scarf_spear` (écharpe rigide), `blade_hair` (la lame et les mèches ensemble), `vortex` (deux tornades devant lui, Divine Sandstorm), `wind_beam` (le rayon d'air qui sort de la corne), `cables` (des câbles lancés en éventail), `blood_jet` (du sang bouillant pompé dans une veine), `blade_fan` (une nappe de lames de lumière) ou `gun` (une mitraillette tenue à la hanche), jusqu'à `reach`. `vortex`, `cables` et `gun` sont dessinés pendant tout le coup, pas seulement quand il peut toucher. Avec `at_target` : `beam` (une colonne de lumière qui tombe sur place), `lenses` (des loupes qui se referment en cercle puis tirent), `bubbles` (un dôme de bulles qui gonfle et éclate), `tentacle`/`hair` (qui jaillissent du sol) ; sans `fx`, un objet lourd qui tombe du ciel |
+| `fx` | Dessin pendant la phase active : `limb` (doigt, bras), `tentacle`, `blade`, `hair` (mèches), `chain` (chaîne), `beam` (jets des yeux), `lens` (rayon à travers une bulle), `scarf` (écharpe ondulante) ou `scarf_spear` (écharpe rigide), `blade_hair` (la lame et les mèches ensemble), `vortex` (deux tornades devant lui, Divine Sandstorm), `wind_beam` (le rayon d'air qui sort de la corne), `cables` (des câbles lancés en éventail), `blood_jet` (du sang bouillant pompé dans une veine), `blade_fan` (une nappe de lames de lumière), `gun` (une mitraillette tenue à la hanche), `fire_rope` (deux cordes de feu tressées, Red Bind) ou `flame_burst` (des flammes qui jaillissent tout autour du coup), jusqu'à `reach`. `vortex`, `cables` et `gun` sont dessinés pendant tout le coup, pas seulement quand il peut toucher. Avec `at_target` : `beam` (une colonne de lumière qui tombe sur place), `lenses` (des loupes qui se referment en cercle puis tirent), `bubbles` (un dôme de bulles qui gonfle et éclate), `ankhs` (des ankhs de feu qui se referment en anneau), `tentacle`/`hair` (qui jaillissent du sol) ; sans `fx`, un objet lourd qui tombe du ciel |
 
 Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de même `label_en` pour une posture, et `role_en`, `blurb_en`, `name_en` dans le roster). Sans traduction, le texte français s'affiche.
 
@@ -97,6 +97,7 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `blood_cost` | Style vampire : le coup ne sort qu'avec assez de sang, et le dépense |
 | `hp_cost` | Le coup s'arrache à son auteur : il ne sort que s'il reste plus de vie que ça, et la prend au départ (Final Mode de Wamuu) |
 | `freeze_f` | Touché net, l'adversaire est gelé sur place ce nombre d'images (gel vaporisant) |
+| `ignite_s` | Touché net, l'adversaire prend feu ce nombre de secondes : il brûle encore après le coup. Du feu en plus s'ajoute à ce qui reste, jusqu'au plafond des règles ; un dash en éteint une partie, et le feu ne prend jamais le dernier point de vie (`[fire]` de `combat/rules.toml`) |
 | `finish_drain` | Part des dégâts du coup final d'une cinématique rendue en vie |
 | `detonate` | Au premier tir de son projectile, tous les pièges du perso explosent (avec ce même projectile) et ses grenades encore au sol sautent aussitôt (le plan caché de Joseph) |
 | `cage_s`, `cage_radius` | Touché net : un anneau de chaînes de ce rayon se ferme autour des deux combattants, ce nombre de secondes ; personne n'en sort (Tarkus) |
@@ -156,9 +157,10 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `returns` | Boomerang : à mi-course (ou contre un mur, ou après avoir touché) il revient dans la main de son lanceur |
 | `explode_radius` | Grenade : ne touche pas au contact, roule, s'arrête contre les murs et les objets, et explose en fin de vie ; l'adversaire à ce rayon (plus son corps) est touché |
 | `drag` | Part de sa vitesse gardée à chaque image (sous 1 : il ralentit jusqu'à s'arrêter) |
+| `ignite_s` | Ce qu'il touche net prend feu ce nombre de secondes (comme pour un coup) |
 | `wall_bounce` | Ce qu'il touche rebondit contre les murs |
 | `bounces` | Ricochet : le tir lui-même repart du mur, ce nombre de fois (lame lancée de Kars) |
-| `look` | Dessin : `orb`, `knife`, `gem`, `blade`, `wine`, `hat`, `clacker`, `grenade`, `bubble`, `bullet`, `spark`, `jet` |
+| `look` | Dessin : `orb`, `knife`, `gem`, `blade`, `wine`, `hat`, `clacker`, `grenade`, `bubble`, `bullet`, `spark`, `jet`, `ankh` (un ankh de feu), `flame` (une flamme), `eruption` (une colonne de feu qui sort du sol ; un piège qui tire une `eruption` se dessine comme un ankh gravé au sol) |
 
 ## Pièges
 
@@ -166,7 +168,8 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 
 | Champ | Effet |
 | --- | --- |
-| `distance` | Distance devant le perso |
+| `distance` | Distance devant le perso ; avec `at_cursor`, distance maximale |
+| `at_cursor` | Posé au point visé (souris, sinon stick droit, sinon direction tenue, sinon droit devant) |
 | `radius` | Rayon de détection |
 | `lifetime_s` | Durée de vie |
 | `max_count` | Nombre maximum ; le plus ancien disparaît |

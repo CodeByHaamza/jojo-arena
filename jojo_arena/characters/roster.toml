@@ -269,6 +269,21 @@ color = "#b8bcd0"
 aura = "#d8e4ff"
 
 [[fighters]]
+id = "avdol"
+part = 3
+name = "MUHAMMAD AVDOL"
+kit = "avdol"
+sprite = "avdol/avdol"
+stand_sprite = "magicians_red/magicians_red"
+stand_name = "MAGICIAN'S RED"
+role = "ZONER - FEU"
+role_en = "ZONER - FIRE"
+blurb = "Ankhs de feu, pièges qui jaillissent et cordes qui ligotent : tout ce qu'il touche brûle encore après le coup."
+blurb_en = "Fire ankhs, traps that erupt and ropes that bind: everything he touches keeps burning after the blow."
+color = "#d9a838"
+aura = "#ff6a2a"
+
+[[fighters]]
 id = "mannequin_red"
 name = "MANNEQUIN ROUGE"
 name_en = "RED DUMMY"

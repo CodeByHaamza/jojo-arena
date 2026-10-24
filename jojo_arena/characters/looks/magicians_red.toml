@@ -1,0 +1,84 @@
+# Magician's Red (Avdol's Stand, Part 3): look file for tools/make_sprites.py.
+#
+# Sources (JoJo Wiki, "Magician's Red", Appearance and Color Schemes, read through
+# search results on 24/10/2026: https://jojowiki.com/Magician's_Red; NamuWiki for the
+# anime colors):
+# - a humanoid with an avian head modeled after a phoenix: Araki gave it a bird's head
+#   so the heroes' silhouettes would not look alike side by side;
+# - a heavily muscular upper body, feathered legs sometimes wreathed in fire;
+# - arms ending in claws, dark bracelets on both wrists;
+# - colors (the series changes them between media): an orange to scarlet body,
+#   crimson feathers, a yellow beak, light yellow eyes. NamuWiki, after the anime: a
+#   yellow beak, scarlet skin, the lower body covered in feathers or flames.
+
+name = "Magician's Red"
+
+# Heavier on top than Avdol: a broad chest on narrower, feathered legs.
+# Signature pose (Pose key): arms spread, as when the flames come out.
+pose = "spread"
+
+[build]
+head_r = 6.2
+neck = 1.2
+torso = 15
+legs = 16.5
+arms = 15.5
+shoulders = 9.6
+hips = 3.2
+torso_r = 6.6
+arm_r = 2.6
+leg_r = 2.4
+hand_r = 2.4
+foot_r = 2.6
+
+[palette]
+body = "#e8582a"         # orange-scarlet
+feather = "#b4202e"      # crimson
+beak = "#f2c23a"
+bracelet = "#3a2630"
+claw = "#f6e6b0"
+eyes = "#fff08a"         # light yellow
+
+[body]
+head = "body"
+torso = "body"
+arms = "body"
+hands = "body"
+legs = "feather"
+feet = "beak"
+
+[face]
+eyes = "eyes"
+eye_style = "wide"
+brows = true
+
+# The phoenix head: the beak, and the crest of feathers swept back over the skull.
+[[parts]]
+type = "beak"
+material = "beak"
+size = 1.2
+
+[[parts]]
+type = "hair"
+material = "feather"
+style = "mane"
+volume = 6.6
+flare = 0.75
+fill = 0.0
+back_length = 9
+
+# Feathered legs, the plumes sticking out along the outside.
+[[parts]]
+type = "feathered_legs"
+material = "feather"
+size = 3.5
+count = 4
+
+[[parts]]
+type = "bracelets"
+material = "bracelet"
+width = 2.0
+
+[[parts]]
+type = "claws"
+material = "claw"

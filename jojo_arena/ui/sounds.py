@@ -307,6 +307,9 @@ FX_SOUNDS: dict[str, str] = {
     "hair": "whoosh",
     "limb": "whoosh",
     "chain": "chain",
+    "fire_rope": "sizzle",
+    "flame_burst": "boom",
+    "ankhs": "sizzle",
 }
 
 
@@ -325,6 +328,7 @@ EVENT_SOUNDS: dict[str, Callable[[Event], str]] = {
     "hamon": lambda e: "hamon",
     "freeze": lambda e: "freeze",
     "sunburn": lambda e: "sizzle",
+    "ignite": lambda e: "sizzle",
     "cage": lambda e: "chain",
     "cage_end": lambda e: "chain",
     "stylish": lambda e: "stylish",

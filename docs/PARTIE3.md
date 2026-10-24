@@ -16,7 +16,7 @@ Ce qui n'est pas sûr est marqué **à vérifier**. Une source manque, se contre
 
 ## Où on en est
 
-- **Jouables** : Jotaro, Kakyoin, Polnareff, DIO.
+- **Jouables** : Jotaro, Kakyoin, Polnareff, DIO, et **Avdol** (fait le 24/10/2026).
 - **Arène** : Le Caire, rue de nuit.
 - Le moteur **sait déjà** faire : Stand on/off, mode contrôle, temps arrêté, pièges, projectiles (`count`, `ring`), visée libre, saisies inbloquables, Hamon, vampire et soleil, `stance_cycle`, éveil, objets à lancer.
 - Il **ne sait pas encore** faire : brûlure, vol, invisibilité, états qui s'accumulent, décor effacé, et Stand + Hamon ensemble.
@@ -47,9 +47,16 @@ Les movesets suivent nos touches :
 
 Le nom officiel du coup est entre guillemets. La forme de la hitbox suit la règle du CLAUDE.md.
 
-### Muhammad Avdol (Magician's Red) : le premier à faire
+### Muhammad Avdol (Magician's Red) : fait
 
 **Rôle** : zoner de feu, mi-distance, contrôle de zone.
+
+**Fait le 24/10/2026** (`characters/avdol.toml`, `looks/avdol.toml`, `looks/magicians_red.toml`). Ce qui a été trouvé et tranché en le construisant :
+
+- Coiffure (relue sur la fiche) : un bandeau ou foulard sur le front, des cheveux en **nœuds bantous** et une **longue queue de cheval**. Ses boucles d'oreilles sont **une longue chaîne de médaillons**, le plus gros porte un ankh et un gland qui tombe sur la poitrine. Des bracelets de métal épais aux deux poignets. Couleurs : cheveux brun foncé, yeux auburn, vêtements jaunes (premier schéma de couleurs de la fiche ; la ligne anime reste **à vérifier**).
+- Skills Stand d'ASBR, relues : « I'll burn you to cinders! » est une gerbe de flammes sortie de tout le corps qui projette (un anti-air) ; « Flaming Detector » est une flamme lente qui chasse l'adversaire pendant qu'Avdol reste libre ; « HELL 2 U! » une rafale de trois coups ; « Now's my chance! » un contre ; la HHA « Give me four wishes instead! » un coup de pied de Magician's Red.
+- Statistiques de Magician's Red : B B C B C D (plusieurs wikis concordent ; la fiche JoJo Wiki n'a pas pu être ouverte).
+- Pas trouvé : l'origine du nom d'Avdol (une seule source de fans, non vérifiée) ; le glossaire n'en dit donc rien.
 
 **Design** (JoJo Wiki, « Apparence ») :
 
@@ -375,7 +382,7 @@ Chaque événement suit sa fiche JoJo Wiki **avant** d'être codé, comme un per
 
 ## 7. Ordre
 
-1. **Avdol** : brûlure et état qui s'accumule, ankh piégé. ← on commence ici
+1. ~~**Avdol**~~ : fait (feu qui reste accroché, ankh posé au point visé). L'état générique qui s'accumule reste à faire avec Mariah.
 2. **Joseph âgé** : Stand + Hamon.
 3. **Manoir de DIO**, avec Nukesaku et les rideaux.
 4. **Iggy** : le vol.
