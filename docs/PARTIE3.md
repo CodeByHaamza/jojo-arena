@@ -207,12 +207,12 @@ Le nom officiel du coup est entre guillemets. La forme de la hitbox suit la règ
 | Emplacement | Coup | Forme proposée |
 | --- | --- | --- |
 | Léger ×3 | Coups de crosse et de pied | `circle` |
-| Spécial | Tir d'Emperor, balle guidée à la visée libre | `projectile` guidé |
+| Spécial | Tir d'Emperor : la balle **se pilote pendant qu'elle vole**. Elle tourne en l'air et suit la visée libre (souris ou stick droit), comme le pouvoir d'Emperor dans la fiche. Hol Horse peut continuer à courir pendant ce temps (décidé le 24/10) | `projectile` piloté |
 | Spécial + direction | **« Gun beats sword »** : il fait tourner Emperor, et sa prochaine skill marquée ☆ fait plus de coups et de dégâts | buff |
 | Lourd | **« You lose, loser! »** | à fixer après lecture |
 | Lourd + direction | **« Even my bullets are part of my Stand! »** | à fixer après lecture |
 | Contre | **« Come get us! »** (**à vérifier** : est-ce un contre ?) | à fixer |
-| Assist | **« You're up, J. Geil! »** : posé dans une flaque d'eau, Hanged Man frappe depuis le reflet | piège sur une flaque |
+| Assist | **« You're up, J. Geil! »** : il **lance une bouteille d'eau n'importe où dans l'arène** (au curseur). Elle éclate en flaque, et la flaque devient un piège de J. Geil : Hanged Man frappe depuis le reflet quand l'adversaire passe dessus. Dans ASBR, la skill se pose aussi dans une flaque d'eau ; la bouteille vient de sa DHA d'EoH (décidé le 24/10) | bouteille lancée → piège-flaque |
 | Passif | **« Hol Horse loves the ladies! »** : passif contre les adversaires femmes (**à vérifier** : son effet exact) | règle de match |
 | **HHA** | **« Eat this! »** | rafale guidée |
 | **GHA** | **« Hol Horse is gonna kill ya! »**, avec la mise en scène de la DHA d'EoH : il lance une bouteille et la fait éclater d'une balle ; Hanged Man surgit dans les éclats, poignarde l'adversaire à l'épaule et l'immobilise ; Hol Horse tire la balle finale | `projectile`, cinématique |
