@@ -280,7 +280,7 @@ role = "ZONER - FEU"
 role_en = "ZONER - FIRE"
 blurb = "Ankhs de feu, pièges qui jaillissent et cordes qui ligotent : tout ce qu'il touche brûle encore après le coup."
 blurb_en = "Fire ankhs, traps that erupt and ropes that bind: everything he touches keeps burning after the blow."
-color = "#d9a838"
+color = "#c4462a"
 aura = "#ff6a2a"
 
 [[fighters]]

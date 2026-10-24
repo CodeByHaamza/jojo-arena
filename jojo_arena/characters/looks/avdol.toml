@@ -11,9 +11,13 @@
 #   carries an ankh, and a big tassel hangs from it onto his chest;
 # - thick metal bracelets on both wrists;
 # - a long overcoat or robe over a jellabiya, and a scarf round his neck;
-# - colors: dark brown hair, auburn eyes, yellow clothes (the wiki's first color
-#   scheme). The anime line of the Color Schemes section was not in the results: to
-#   check on the page before the final sprite.
+# - colors: dark brown hair, auburn eyes. The clothes are the anime's (fixed on
+#   24/10/2026 after the owner pointed at https://jjba.fandom.com/fr/wiki/Mohammed_Abdul):
+#   a long red-orange coat, red like the flames of Magician's Red (CBR, "10 Things You
+#   Didn't Know About Muhammad Avdol": his jellabiya is red, matching his Stand), a
+#   khaki layer under it and a white headband (Avdol costume guides: carboncostume.com,
+#   DeviantArt Outfits-Hub). The yellow of the wiki's first color scheme was the wrong
+#   one to pick.
 
 name = "Muhammad Avdol"
 
@@ -38,10 +42,10 @@ foot_r = 2.4
 [palette]
 skin = "#7a4e34"
 hair = "#3a2620"         # dark brown
-band = "#e8e0c8"         # pale headscarf
-robe = "#d9a838"         # the long yellow overcoat
-gown = "#efe2b8"         # the jellabiya under it
-scarf = "#c84a32"
+band = "#f2ece2"         # white headband
+robe = "#c4462a"         # the long red-orange coat
+gown = "#c8b48a"         # the khaki layer under it
+scarf = "#7e2420"         # darker than the coat, so the two read apart
 gold = "#e8c450"
 tassel = "#b8342c"
 scar = "#5a3624"
