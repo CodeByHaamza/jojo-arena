@@ -98,6 +98,7 @@ Ce que ça apporte au jeu, au-delà du roster : le Hamon et le soleil **servent 
 - [x] **Réglage des touches dans le jeu** : Options, « Changer les touches » (échange si la touche est déjà prise, retour aux touches par défaut).
 - [x] **Vibration et barre lumineuse** de la manette, par événement de combat ; couleur du perso sur DualShock 4 / DualSense ; réglage de 0 à 10 dans Options.
 - [x] **Power Up : l'éveil** — la touche sert enfin. Un kit déclare un `[awakening]` : une posture où il bascule pour de bon contre des barres de Heart Heat, avec l'option de ne plus craindre le soleil. Kars l'utilise (Super Aja, forme de vie ultime). Reste à l'ouvrir aux autres (Jotaro : +1 s de temps arrêté).
+- [ ] **Partie 3, deuxième vague** : Avdol, Joseph âgé, Iggy, Pet Shop, Vanilla Ice, Hol Horse, Mariah, N'Doul, le manoir de DIO et le désert. Notes, sources et ordre proposé dans [PARTIE3.md](PARTIE3.md).
 - [ ] **Flèche** et Chariot Requiem.
 - [ ] **Vague 2** (JoJolion), **Vague 3** (Hamon), **Vague 4** (icônes) : voir les priorités du GDD.
 - [ ] **Histoire**, puis **en ligne** (la simulation déterministe le prépare).
