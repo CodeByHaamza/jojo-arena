@@ -144,6 +144,8 @@ class Fighter:
         self._regen_left = 0.0
         self._sun_left = 0.0
         self.iced_f = 0  # frozen solid by Vaporization Freezing (for the view)
+        self.fire_f = 0  # on fire: burning this many more frames
+        self._fire_left = 0.0
         self._pose_heal_left = 0.0
         self.in_sun = False
         self.awakened = False  # the Power Up key was used: there is no going back
@@ -586,6 +588,7 @@ class Fighter:
             direction = -self.facing
         self.dash_dir = direction.normalized()
         self.evaded = False
+        self.fire_f = max(0, self.fire_f - self.rules.fire_dash_douse_f)  # rolls it out
         self.set_state(State.DASH)
         return True
 
@@ -614,6 +617,8 @@ class Fighter:
                 spot = self.pos + offset.normalized() * move.reach
         self.attack = Attack(move, aim, self._serial, target=spot, slot=slot, start=self.pos.copy())
         self.attack.dest = dest
+        if move.trap is not None and move.trap.at_cursor:
+            self.attack.dest = self.aimed_point(frame, move.trap.distance)
         self.attack.hamon = move.hamon
         self.blood = max(0.0, self.blood - move.blood_cost)
         if move.hp_cost:
@@ -667,6 +672,27 @@ class Fighter:
             return alive and not self.alive
         return False
 
+    def ignite(self, frames: int) -> None:
+        """Set on fire: more fire adds to what is still burning, up to the rules' cap."""
+        self.fire_f = min(self.rules.fire_max_f, self.fire_f + frames)
+
+    def _burn(self) -> None:
+        """One step on fire. Unless the rules say otherwise, the fire never takes the
+        last point of life: it softens, and a blow has to finish."""
+        self.fire_f -= 1
+        if not self.alive:
+            self.fire_f = 0
+            return
+        self._fire_left += self.rules.fire_damage_per_f
+        whole = int(self._fire_left)
+        if not whole:
+            return
+        self._fire_left -= whole
+        if not self.rules.fire_lethal:
+            whole = min(whole, self.hp - 1)
+        if whole > 0:
+            self.hurt(whole)
+
     def _vampire_step(self) -> None:
         """The freezing stance burns blood; untouched, the wounds close on blood."""
         rules = self.rules
@@ -706,22 +732,30 @@ class Fighter:
         self.remote_pos = None
         self.stance = self.style.params.get("on", self.stance)
 
+    def aimed_point(self, frame: InputFrame | None, distance: float) -> Vec2:
+        """The point the player aims at, at most `distance` away: the mouse, else the
+        right stick, else the held direction, else straight ahead."""
+        if frame is not None and frame.cursor is not None:
+            point = Vec2(*frame.cursor)
+        elif frame is not None and frame.stick is not None:
+            point = self.pos + Vec2(*frame.stick).normalized() * distance
+        elif frame is not None and frame.move != (0.0, 0.0):
+            point = self.pos + Vec2(*frame.move).normalized() * distance
+        else:
+            point = self.pos + self.facing * distance
+        delta = point - self.pos
+        if delta.length() > distance:
+            delta = delta.normalized() * distance
+        return self.pos + delta
+
     def _leap_destination(self, move: MoveDef, target: Vec2, frame: InputFrame | None) -> Vec2:
         """Where a leap lands: next to the opponent, or on the aimed point (mouse, right
         stick, else the held direction, else straight ahead), at most `leap` away."""
         if move.leap_to == "cursor":
-            if frame is not None and frame.cursor is not None:
-                point = Vec2(*frame.cursor)
-            elif frame is not None and frame.stick is not None:
-                point = self.pos + Vec2(*frame.stick).normalized() * move.leap
-            elif frame is not None and frame.move != (0.0, 0.0):
-                point = self.pos + Vec2(*frame.move).normalized() * move.leap
-            else:
-                point = self.pos + self.facing * move.leap
-        else:
-            offset = target - self.pos
-            gap = self.rules.body_radius * 2
-            point = target - offset.normalized() * gap if offset.length() > gap else self.pos
+            return self.aimed_point(frame, move.leap)
+        offset = target - self.pos
+        gap = self.rules.body_radius * 2
+        point = target - offset.normalized() * gap if offset.length() > gap else self.pos
         delta = point - self.pos
         if delta.length() > move.leap:
             delta = delta.normalized() * move.leap
@@ -913,6 +947,8 @@ class Fighter:
                 self.buff = None
         if self.iced_f > 0:
             self.iced_f -= 1
+        if self.fire_f > 0:
+            self._burn()
         if self.kit.style == "vampire" and self.alive:
             self._vampire_step()
 

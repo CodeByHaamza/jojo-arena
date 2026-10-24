@@ -1,0 +1,421 @@
+# Muhammad Avdol (Part 3) - Magician's Red. GDD: "Stand · Zoner feu": mid range, zone
+# control. Crossfire Hurricane, ropes of fire that bind; Great Heat Attack: Crossfire
+# Hurricane Special.
+#
+# Sources (read on 24/10/2026, through search results; jojowiki.com could not be
+# opened directly from where this was written):
+# - JoJo Wiki, "Magician's Red" (https://jojowiki.com/Magician's_Red): a close-range
+#   Stand that freely makes and shapes fire, hot enough to melt metal in the air; it can
+#   set off its flames from afar; a single kick from it broke Judgement's armor.
+# - JoJo Wiki, ASBR Avdol (https://jojowiki.com/All-Star_Battle_R/Muhammad_Avdol),
+#   Mizuumi and StrategyWiki ASBR move lists:
+#   * "Crossfire Hurricane": Magician's Red casts a fire ankh that flies forward.
+#   * "Crossfire Hurricane Variation": a delayed ankh trap; the button held sets how far
+#     away it erupts (30 for the ankh, 65 for the eruption in ASBR).
+#   * "Red Bind!": ropes of flame come out of his hand, then Magician's Red makes the
+#     opponent explode.
+#   * Stand skills: "I'll burn you to cinders!" (Magician's Red bursts flame from its
+#     body and knocks the opponent into the air: an anti-air), "Flaming Detector" (a
+#     slow flame that homes in on the opponent; Avdol can act while it flies), "HELL 2
+#     U!" (a Stand rush of up to three hits in R), "Now's my chance!" (a counter).
+#   * Heart Heat Attack "Give me four wishes instead!": Magician's Red kicks forward.
+#   * Great Heat Attack (Crossfire Hurricane Special): a ring of ankh-shaped flames,
+#     then a barrage.
+# Choices for a top-down arena:
+# - The Variation's distance is the aimed point (mouse or right stick) instead of
+#   three buttons: the same choice, made where it reads best from above.
+# - Red Bind becomes a rope thrown in a line: the binding is the move, so it is
+#   `shape = "line"` and unblockable, not a fist.
+# - The ASBR normals with a heavy button call Magician's Red: so do his third light
+#   blow and his heavy blow here, with the Stand called back.
+# - Everything Magician's Red touches catches fire (`ignite_s`): it keeps burning
+#   after the blow, which is what makes him a zoner and not a brawler.
+# Not in yet: the Flaming Detector also shows where an invisible opponent is (Vanilla
+# Ice); it will, once invisibility exists.
+#
+# Feel: a calm, proud fortune teller who never runs after anyone. Keep your distance
+# and you burn; come close and the bird is already there.
+
+name = "Muhammad Avdol"
+max_hp = 1020
+walk_speed = 100
+strength = 1.5  # Magician's Red: its kick broke Judgement's armor
+style = { type = "stance_toggle", off = "base", on = "stand", stand_body = true }
+
+# Avdol, Magician's Red called back ---------------------------------------------------
+
+[stances.base]
+label = "SANS STAND"
+label_en = "NO STAND"
+
+# Palm, elbow, then Magician's Red's claw: the same button three times.
+[stances.base.moves.light]
+label = "PAUME"
+label_en = "PALM"
+info = "Rapide. Encore la touche : coude, puis la griffe de Magician's Red"
+info_en = "Fast. Press again: elbow, then Magician's Red's claw"
+startup_f = 5
+active_f = 3
+recovery_f = 10
+damage = 26
+reach = 15
+radius = 10
+hitstun_f = 18
+knockback = 80
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.base.moves.light2]
+label = "COUP DE COUDE"
+label_en = "ELBOW"
+info = "S'enchaîne sur la paume"
+info_en = "Follows the palm"
+startup_f = 6
+active_f = 3
+recovery_f = 11
+damage = 28
+reach = 14
+radius = 11
+hitstun_f = 20
+knockback = 100
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "heavy"
+
+[stances.base.moves.light3]
+shout = "MAGICIAN'S RED !"
+label = "GRIFFE DE MAGICIAN'S RED"
+label_en = "MAGICIAN'S RED'S CLAW"
+info = "Le Stand surgit et griffe : l'adversaire prend feu"
+info_en = "The Stand appears and claws: the opponent catches fire"
+stand_flash = true
+startup_f = 8
+active_f = 4
+recovery_f = 18
+damage = 38
+reach = 22
+radius = 12
+hitstun_f = 26
+knockback = 260
+hitstop_f = 8
+ignite_s = 1.0
+cancel_on_hit = ["special"]
+anim = "heavy"
+
+[stances.base.moves.heavy]
+shout = "MAGICIAN'S RED !"
+label = "COUP DE MAGICIAN'S RED"
+label_en = "MAGICIAN'S RED'S BLOW"
+info = "Le Stand surgit le temps d'un coup lourd et enflammé"
+info_en = "The Stand appears for one heavy, burning blow"
+stand_flash = true
+startup_f = 14
+active_f = 4
+recovery_f = 20
+damage = 62
+reach = 23
+radius = 13
+hitstun_f = 30
+knockback = 300
+hitstop_f = 10
+wall_bounce = true
+ignite_s = 1.5
+anim = "heavy"
+
+# Red Bind: ropes of fire thrown in a line; caught, the opponent is tied, then blown up.
+[stances.base.moves.heavy_alt]
+shout = "RED BIND !"
+label = "RED BIND"
+info = "Avec une direction : des cordes de feu qui ligotent, puis explosent. Imparable"
+info_en = "With a direction: ropes of fire that bind, then explode. Unblockable"
+shape = "line"
+fx = "fire_rope"
+stand_flash = true
+unblockable = true
+startup_f = 16
+active_f = 6
+recovery_f = 30
+damage = 85
+reach = 64
+radius = 6
+hitstun_f = 44
+knockback = 300
+hitstop_f = 12
+ignite_s = 2.5
+cooldown_s = 3
+anim = "special"
+
+[stances.base.moves.special]
+shout = "CROSSFIRE HURRICANE !"
+label = "CROSSFIRE HURRICANE"
+info = "Un ankh de feu qui vole droit devant et enflamme"
+info_en = "A fire ankh that flies straight ahead and sets alight"
+stand_flash = true
+startup_f = 16
+active_f = 1
+recovery_f = 22
+anim = "special"
+
+[stances.base.moves.special.projectile]
+look = "ankh"
+speed = 230
+radius = 6
+damage = 48
+lifetime_s = 1.4
+hitstun_f = 26
+knockback = 220
+hitstop_f = 6
+ignite_s = 2.0
+
+# The Variation: an ankh laid where he aims (mouse or right stick), that erupts when the
+# opponent steps on it.
+[stances.base.moves.special_alt]
+shout = "CROSSFIRE HURRICANE VARIATION !"
+label = "CROSSFIRE HURRICANE VARIATION"
+info = "Avec une direction : un ankh posé là où tu vises (2 max). Il jaillit quand on marche dessus"
+info_en = "With a direction: an ankh laid where you aim (2 max). It erupts when stepped on"
+stand_flash = true
+startup_f = 14
+active_f = 1
+recovery_f = 18
+anim = "special"
+
+[stances.base.moves.special_alt.trap]
+at_cursor = true
+distance = 150
+radius = 13
+lifetime_s = 8
+max_count = 2
+
+# The eruption comes up right under whoever stepped on it (a ring of radius 0).
+[stances.base.moves.special_alt.trap.projectile]
+look = "eruption"
+origin = "ring"
+ring_radius = 0
+speed = 0
+radius = 18
+damage = 62
+lifetime_s = 0.3
+hitstun_f = 30
+knockback = 240
+hitstop_f = 8
+ignite_s = 1.5
+
+# Magician's Red out ---------------------------------------------------------------------
+
+[stances.stand]
+label = "AVEC MAGICIAN'S RED"
+label_en = "WITH MAGICIAN'S RED"
+walk_speed_mult = 0.92
+
+# Claw, backhand claw, kick: the same button three times.
+[stances.stand.moves.light]
+label = "GRIFFE"
+label_en = "CLAW"
+info = "Rapide. Encore la touche : griffe retournée, puis coup de pied"
+info_en = "Fast. Press again: backhand claw, then a kick"
+startup_f = 6
+active_f = 3
+recovery_f = 10
+damage = 30
+reach = 22
+radius = 11
+hitstun_f = 19
+knockback = 90
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.stand.moves.light2]
+label = "GRIFFE RETOURNÉE"
+label_en = "BACKHAND CLAW"
+info = "S'enchaîne sur la griffe"
+info_en = "Follows the claw"
+startup_f = 6
+active_f = 3
+recovery_f = 12
+damage = 32
+reach = 22
+radius = 12
+hitstun_f = 21
+knockback = 110
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "heavy"
+
+[stances.stand.moves.light3]
+label = "COUP DE PIED DE MAGICIAN'S RED"
+label_en = "MAGICIAN'S RED'S KICK"
+info = "Le coup de pied qui a brisé l'armure de Judgement : il enflamme"
+info_en = "The kick that broke Judgement's armor: it sets alight"
+startup_f = 9
+active_f = 4
+recovery_f = 18
+damage = 46
+reach = 24
+radius = 13
+hitstun_f = 28
+knockback = 300
+hitstop_f = 8
+wall_bounce = true
+ignite_s = 1.0
+cancel_on_hit = ["special"]
+anim = "kick"
+
+# HELL 2 U!: three blows, the last one throws (three hits in ASBR R).
+[stances.stand.moves.heavy]
+shout = "HELL 2 U !"
+label = "HELL 2 U !"
+info = "Trois coups de Magician's Red qui avancent ; le dernier enflamme et envoie au mur"
+info_en = "Three blows from Magician's Red, pushing in; the last one ignites and walls"
+startup_f = 12
+active_f = 18
+recovery_f = 20
+hits = 3
+hit_every_f = 6
+lunge = 60
+damage = 22
+last_damage = 58
+reach = 24
+radius = 14
+hitstun_f = 18
+knockback = 60
+last_knockback = 400
+last_wall_bounce = true
+hitstop_f = 3
+ignite_s = 1.0
+anim = "light"
+
+# Now's my chance!: a counter; a blow that lands on it is answered with fire.
+[stances.stand.moves.heavy_alt]
+label = "NOW'S MY CHANCE !"
+info = "Avec une direction : il attend. Un coup reçu est attrapé, et le feu répond"
+info_en = "With a direction: he waits. A blow is caught, and fire answers"
+startup_f = 4
+active_f = 24
+recovery_f = 18
+counter = "counter_flame"
+anim = "counter"
+
+[stances.stand.moves.counter_flame]
+shout = "NOW'S MY CHANCE !"
+label = "LE FEU RÉPOND (CONTRE)"
+label_en = "THE FIRE ANSWERS (COUNTER)"
+info = "La réponse du contre : une gerbe de flammes à bout portant"
+info_en = "The counter's answer: a burst of flame at point-blank range"
+startup_f = 2
+active_f = 5
+recovery_f = 16
+invincible_f = 12
+damage = 80
+reach = 18
+radius = 16
+hitstun_f = 34
+knockback = 380
+hitstop_f = 12
+wall_bounce = true
+ignite_s = 2.0
+clashable = false
+fx = "flame_burst"
+anim = "heavy"
+
+# Flaming Detector: a slow flame that hunts the opponent while Avdol keeps fighting.
+[stances.stand.moves.special]
+shout = "FLAMING DETECTOR !"
+label = "FLAMING DETECTOR"
+info = "Une flamme lente qui suit l'adversaire ; Avdol reste libre pendant ce temps"
+info_en = "A slow flame that hunts the opponent; Avdol stays free meanwhile"
+startup_f = 12
+active_f = 1
+recovery_f = 14
+cooldown_s = 2.5
+anim = "special"
+
+[stances.stand.moves.special.projectile]
+look = "flame"
+speed = 105
+radius = 5
+damage = 32
+lifetime_s = 3.2
+hitstun_f = 22
+knockback = 120
+hitstop_f = 4
+homing_deg_s = 140
+ignite_s = 2.5
+
+# I'll burn you to cinders!: flames burst from the Stand's whole body. An anti-air.
+[stances.stand.moves.special_alt]
+shout = "I'LL BURN YOU TO CINDERS !"
+label = "I'LL BURN YOU TO CINDERS !"
+info = "Avec une direction : le Stand explose en flammes tout autour de lui. Invincible au départ"
+info_en = "With a direction: the Stand bursts into flame all around. Invincible at the start"
+startup_f = 10
+active_f = 6
+recovery_f = 26
+invincible_f = 10
+damage = 58
+reach = 4
+radius = 26
+hitstun_f = 32
+knockback = 340
+hitstop_f = 10
+ignite_s = 1.5
+clashable = false
+fx = "flame_burst"
+anim = "pose"
+
+# Super moves (same with or without the Stand) ------------------------------------------
+
+# Heart Heat Attack (1 bar): the kick that broke Judgement's armor, at full power.
+[moves.hha]
+shout = "GIVE ME FOUR WISHES INSTEAD !"
+label = "GIVE ME FOUR WISHES INSTEAD !"
+info = "Magician's Red donne un coup de pied de toute sa force ; invincible au démarrage"
+info_en = "Magician's Red kicks with all its strength; invincible on startup"
+stand_flash = true
+startup_f = 16
+active_f = 5
+recovery_f = 26
+invincible_f = 16
+damage = 160
+reach = 26
+radius = 16
+hitstun_f = 40
+knockback = 480
+hitstop_f = 14
+wall_bounce = true
+ignite_s = 2.5
+clashable = false
+anim = "kick"
+
+# Great Heat Attack (2 bars): the ankhs gather in a ring around the opponent. If they
+# catch, the cutscene: the ring closes, then the barrage.
+[moves.gha]
+shout = "CROSSFIRE HURRICANE SPECIAL !"
+label = "CROSSFIRE HURRICANE SPECIAL"
+info = "Un anneau d'ankhs se forme autour de l'adversaire. S'il prend : l'anneau se referme et tout brûle"
+info_en = "A ring of ankhs forms round the opponent. If it catches: it closes and all burns"
+stand_flash = true
+startup_f = 18
+active_f = 5
+recovery_f = 28
+invincible_f = 12
+damage = 28
+reach = 120
+radius = 28
+hitstun_f = 40
+hitstop_f = 10
+clashable = false
+at_target = true
+fx = "ankhs"
+anim = "special"
+cinematic = "crossfire_special"
+cinematic_s = 4.2
+finish_damage = 270
+finish_hitstun_f = 50
+finish_knockback = 440
+finish_wall_bounce = true
+ignite_s = 3.0

@@ -72,6 +72,12 @@ def draw_projectile(
         _draw_jet(surface, pos, d, aura)
     elif look == "wave":
         _draw_wave(surface, pos, d)
+    elif look == "ankh":
+        _draw_ankh(surface, pos, d)
+    elif look == "flame":
+        _draw_flame(surface, pos, 1.0)
+    elif look == "eruption":
+        draw_eruption(surface, pos, radius)
     else:
         _draw_orb(surface, pos, radius, aura)
 
@@ -244,6 +250,142 @@ def _draw_wave(surface: pygame.Surface, pos: Vec2, d: Vec2) -> None:
     arc(pos - d * 3, 11.0, 4.0, (255, 140, 40), 2)
     arc(pos, 13.0, 5.0, HAMON_EDGE, 2)  # the crest itself
     blit_glow(surface, radial_glow(20, (130, 80, 16)), _ints(pos))
+
+
+# Fire (Magician's Red) ----------------------------------------------------------------
+
+FIRE_DARK = (176, 40, 22)
+FIRE = (240, 112, 32)
+FIRE_LIGHT = (255, 196, 72)
+FIRE_CORE = (255, 246, 206)
+ANKH_SHAPE = [
+    ".###.",
+    "##.##",
+    "#...#",
+    "##.##",
+    ".###.",
+    "#####",
+    "..#..",
+    "..#..",
+    "..#..",
+]
+
+
+def _flicker(pos: Vec2) -> int:
+    """A cheap, steady flicker from a position: flames in the same spot move the same."""
+    return (round(pos.x) * 7 + round(pos.y) * 13) % 3
+
+
+def draw_ankh_shape(surface: pygame.Surface, center: Vec2, color, scale: int = 1) -> None:
+    """An ankh, upright, outlined: the loop, the crossbar and the stem."""
+    width, height = len(ANKH_SHAPE[0]), len(ANKH_SHAPE)
+    left = round(center.x) - (width * scale) // 2
+    top = round(center.y) - (height * scale) // 2
+    cells = [
+        (x, y) for y, row in enumerate(ANKH_SHAPE) for x, cell in enumerate(row) if cell == "#"
+    ]
+    for x, y in cells:
+        surface.fill(OUTLINE, (left + x * scale - 1, top + y * scale - 1, scale + 2, scale + 2))
+    for x, y in cells:
+        surface.fill(color, (left + x * scale, top + y * scale, scale, scale))
+
+
+def _draw_ankh(surface, pos: Vec2, d: Vec2) -> None:
+    """Crossfire Hurricane: a burning ankh, upright, flames streaming out behind it."""
+    blit_glow(surface, radial_glow(16, (130, 50, 10)), (pos.x, pos.y))
+    for i in range(1, 4):
+        tail = pos - d * (4 + i * 4) + Vec2(0, (_flicker(pos) - 1) * i * 0.5)
+        _draw_flame(surface, tail, 1.0 - i * 0.22)
+    draw_ankh_shape(surface, pos, FIRE)
+    surface.fill(FIRE_LIGHT, (round(pos.x) - 1, round(pos.y) - 3, 3, 1))
+    surface.set_at((round(pos.x), round(pos.y) + 1), FIRE_CORE)
+
+
+def _draw_flame(surface, pos: Vec2, size: float) -> None:
+    """A tongue of flame, pointing up: dark red rim, orange body, a pale core."""
+    if size <= 0.1:
+        return
+    lean = _flicker(pos) - 1
+    height = 7 * size
+    width = 3.2 * size
+    base = pos + Vec2(0, height * 0.35)
+    tip = pos + Vec2(lean * size, -height * 0.65)
+    body = [base + Vec2(-width, 0), base + Vec2(width, 0), tip]
+    pygame.draw.polygon(surface, OUTLINE, [_ints(p) for p in body], 0)
+    pygame.draw.circle(surface, OUTLINE, _ints(base), round(width) + 1)
+    pygame.draw.circle(surface, FIRE_DARK, _ints(base), round(width))
+    inner = [base + Vec2(-width * 0.7, 0), base + Vec2(width * 0.7, 0), tip + Vec2(0, 2)]
+    pygame.draw.polygon(surface, FIRE, [_ints(p) for p in inner])
+    pygame.draw.circle(surface, FIRE_LIGHT, _ints(base + Vec2(0, -1)), max(1, round(width * 0.5)))
+    surface.set_at(_ints(base + Vec2(0, -1)), FIRE_CORE)
+
+
+def draw_eruption(surface: pygame.Surface, pos: Vec2, radius: float) -> None:
+    """The Variation going off: a pillar of fire out of the floor, flames all round it."""
+    foot = pos + Vec2(0, 8)
+    blit_glow(surface, radial_glow(round(radius * 1.6), (150, 60, 12)), (foot.x, foot.y - 8))
+    for i in range(6):
+        angle = math.tau * i / 6
+        spot = foot + Vec2(math.cos(angle) * radius * 0.7, math.sin(angle) * radius * 0.3)
+        _draw_flame(surface, spot, 1.1)
+    column = pygame.Rect(0, 0, max(6, round(radius * 0.7)), round(radius * 2.2))
+    column.midbottom = _ints(foot)
+    surface.fill(OUTLINE, column.inflate(2, 0))
+    surface.fill(FIRE, column)
+    surface.fill(FIRE_LIGHT, column.inflate(-column.w // 2, 0))
+    _draw_flame(surface, Vec2(column.centerx, column.top), 1.6)
+
+
+def draw_floor_ankh(surface: pygame.Surface, center: Vec2, tick: int, color) -> None:
+    """A Variation ankh waiting on the floor: drawn into the ground, smouldering."""
+    glow = 60 + round(30 * math.sin(tick * 0.15))
+    blit_glow(surface, radial_glow(9, (glow, glow // 3, 6)), (center.x, center.y))
+    draw_ankh_shape(surface, center, shade(color, -60))
+    if (tick // 8) % 3 == 0:
+        surface.set_at((round(center.x), round(center.y) - 2), FIRE_LIGHT)
+
+
+def draw_fire_rope(surface: pygame.Surface, start: Vec2, tip: Vec2, tick: int) -> None:
+    """Red Bind: two ropes of flame twisted round each other, out to `tip`."""
+    if (tip - start).length_sq() < 1:
+        return
+    d = (tip - start).normalized()
+    side = _side(d)
+    length = (tip - start).length()
+    steps = max(3, round(length / 3))
+    for strand in (0.0, math.pi):
+        line = []
+        for i in range(steps + 1):
+            t = i / steps
+            twist = math.sin(t * length / 5 + strand + tick * 0.4) * 2.2
+            line.append(_ints(start + (tip - start) * t + side * twist))
+        pygame.draw.lines(surface, OUTLINE, False, line, 4)
+        pygame.draw.lines(surface, FIRE, False, line, 2)
+        pygame.draw.lines(surface, FIRE_LIGHT, False, line[::2], 1)
+    blit_glow(surface, radial_glow(10, (150, 60, 12)), _ints(tip))
+    _draw_flame(surface, tip, 1.2)
+
+
+def draw_flame_burst(surface: pygame.Surface, center: Vec2, radius: float, tick: int) -> None:
+    """Flames bursting out of a body on every side (I'll burn you to cinders)."""
+    blit_glow(surface, radial_glow(round(radius * 1.4), (160, 70, 14)), _ints(center))
+    count = 10
+    for i in range(count):
+        angle = math.tau * i / count + tick * 0.08
+        spot = center + Vec2(math.cos(angle) * radius * 0.8, math.sin(angle) * radius * 0.55)
+        _draw_flame(surface, spot, 1.0 + 0.3 * ((i + tick // 3) % 2))
+
+
+def draw_burning(surface: pygame.Surface, foot: Vec2, height: float, tick: int, seed: int) -> None:
+    """Someone on fire: tongues of flame licking up the body, a few at a time."""
+    blit_glow(surface, radial_glow(14, (90, 34, 8)), (foot.x, foot.y - height * 0.45))
+    for i in range(4):
+        phase = (tick // 4 + i * 4 + seed) % 12
+        if phase > 9:
+            continue
+        x = ((i * 37 + seed * 11) % 11) - 5
+        y = height * (0.15 + 0.2 * i) + phase * 0.7
+        _draw_flame(surface, foot + Vec2(x, -y), 1.25 - phase * 0.07)
 
 
 def draw_stone_mask(surface: pygame.Surface, center: Vec2, scale: float, stone=None) -> None:

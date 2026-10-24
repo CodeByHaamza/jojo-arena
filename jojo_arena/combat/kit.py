@@ -39,6 +39,7 @@ class ProjectileDef:
     returns: bool = False  # a boomerang: it comes back to its owner's hand
     explode_radius: float = 0.0  # a grenade: no hit on contact, it blows up when it runs out
     drag: float = 1.0  # speed kept each frame (below 1: it rolls to a stop)
+    ignite_f: int = 0  # a clean hit sets the target on fire this long
 
     @classmethod
     def from_data(cls, data: dict) -> ProjectileDef:
@@ -64,6 +65,7 @@ class ProjectileDef:
             returns=data.get("returns", False),
             explode_radius=data.get("explode_radius", 0.0),
             drag=data.get("drag", 1.0),
+            ignite_f=seconds_to_frames(data.get("ignite_s", 0)),
         )
 
 
@@ -71,11 +73,12 @@ class ProjectileDef:
 class TrapDef:
     """Something laid on the ground that fires on its own when the opponent comes close."""
 
-    distance: float  # laid this far in front of the user
+    distance: float  # laid this far in front of the user (at_cursor: at most this far)
     radius: float  # trigger radius
     lifetime_f: int
     max_count: int  # the oldest disappears when one more is laid
     projectile: ProjectileDef  # what it fires at the opponent when triggered
+    at_cursor: bool = False  # laid on the aimed point (mouse, right stick, held direction)
 
     @classmethod
     def from_data(cls, data: dict) -> TrapDef:
@@ -85,6 +88,7 @@ class TrapDef:
             lifetime_f=seconds_to_frames(data["lifetime_s"]),
             max_count=data.get("max_count", 3),
             projectile=ProjectileDef.from_data(data["projectile"]),
+            at_cursor=data.get("at_cursor", False),
         )
 
 
@@ -204,6 +208,7 @@ class MoveDef:
     blood_cost: int = 0  # vampires: the move needs and spends this much blood
     hp_cost: int = 0  # the user tears itself up to do it: it needs, and pays, this much life
     freeze_f: int = 0  # the blow freezes the opponent solid this long (Vaporization Freezing)
+    ignite_f: int = 0  # a clean hit sets the opponent on fire this long
     cage_f: int = 0  # on a clean hit, a ring of chains closes around both this long
     cage_radius: float = 0.0
     detonate: bool = False  # sets off every trap and grenade the user has laid
@@ -290,6 +295,7 @@ class MoveDef:
             blood_cost=data.get("blood_cost", 0),
             hp_cost=data.get("hp_cost", 0),
             freeze_f=data.get("freeze_f", 0),
+            ignite_f=seconds_to_frames(data.get("ignite_s", 0)),
             cage_f=seconds_to_frames(data.get("cage_s", 0)),
             cage_radius=data.get("cage_radius", 0.0),
             detonate=data.get("detonate", False),

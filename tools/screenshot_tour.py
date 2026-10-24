@@ -121,11 +121,12 @@ def _play(tour: Tour, title) -> None:
     tour.keys("Return")  # player 1
     tour.keys("Right", wait=20)
     tour.shot("select_dummy")
+    tour.keys("E", "E", wait=5)  # part 3: its roster is not complete yet
     tour.keys("Down", "Return", wait=5)  # a slot still to come
     tour.shot("select_soon")
     tour.keys("E", wait=5)  # the next part's tab
     tour.shot("select_next_part")
-    tour.keys("Q", wait=5)
+    tour.keys("Q", "Q", "Q", wait=5)  # back to part 1
     tour.keys("Up", "Return", wait=20)
     tour.shot("stage_select")  # the arena, chosen after the fighters
     tour.keys("Right", wait=8)

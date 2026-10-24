@@ -1640,6 +1640,92 @@ class OverdriveBeat(CutscenePlayer):
                 pygame.draw.circle(world, (210, 60, 70), ball.as_ints(), 2)
 
 
+# Avdol: Crossfire Hurricane Special --------------------------------------------------------
+
+
+class CrossfireSpecial(CutscenePlayer):
+    """Magician's Red spreads its arms and the ankhs light up one by one in a ring round
+    the opponent; the ring turns, then every ankh comes in, one after the other, and
+    what is in the middle goes up in a single blaze."""
+
+    length = 252
+    ANKHS = 6
+    RING = 34
+    LIT = 92  # all of them are burning in the ring by now
+    VOLLEY = 140  # they start coming in
+    BLAZE = 196
+
+    def ankh(self, i: int, f: int) -> Vec2:
+        """Where ankh `i` is: lit in its place on the ring, turning, then flying in."""
+        hit = self.chest(self.scene.target, self.v)
+        angle = math.tau * i / self.ANKHS + f * 0.03
+        radius = self.RING
+        start = self.VOLLEY + i * 8
+        if f >= start:
+            radius *= max(0.0, 1.0 - (f - start) / 8)
+        return hit + Vec2.from_angle(angle, radius)
+
+    def stand_spot(self) -> Vec2:
+        return self.u + Vec2(-self.side * 10, -4)
+
+    def camera(self, f):
+        if f < 34:
+            return self.u + Vec2(0, -18), 3  # Avdol, and the bird rising behind him
+        return self.v + Vec2(0, -12), 2
+
+    def cue(self, f):
+        fx = self.fx
+        hit = self.chest(self.scene.target, self.v)
+        if f == 1:
+            self.shout(text.CROSSFIRE_SPECIAL_LINE, scale=2, life=60)
+        if 20 <= f < self.LIT and (f - 20) % 12 == 0:
+            i = (f - 20) // 12
+            if i < self.ANKHS:
+                spot = self.ankh(i, f)
+                fx.add(vfx.Ring(spot, vfx.FIRE, 1.6, 12, 2))
+                fx.add(vfx.Flash(spot, 10, vfx.FIRE_LIGHT, 6))
+        if f == self.LIT:
+            self.world_words.menace(self.head(self.scene.target, self.v), 1)
+        for i in range(self.ANKHS):
+            if f == self.VOLLEY + i * 8 + 8:
+                fx.add(vfx.Flash(hit, 22, vfx.FIRE, 8))
+                spit = Vec2(self.rng.uniform(-1.4, 1.4), self.rng.uniform(-1.6, -0.2))
+                fx.add(vfx.Dust(hit, spit, 3, 18, vfx.FIRE))
+                self.shake = max(self.shake, 6)
+        if f == self.BLAZE:
+            fx.add(vfx.Flash(hit, 70, vfx.FIRE_CORE, 18))
+            fx.add(vfx.Ring(hit, vfx.FIRE, 5.5, 30, 4))
+            fx.focus(hit, heavy=True)
+            self.world_words.add(sfx.FLARE, hit + Vec2(0, -18), sfx.FIRE, 3, 50, 0.2, 2)
+            self.flash, self.shake = 14, 20
+        if f > self.BLAZE and f % 5 == 0:
+            spit = Vec2(self.rng.uniform(-1.2, 1.2), self.rng.uniform(-1.8, -0.6))
+            fx.add(vfx.Dust(hit, spit, 2, 22, vfx.FIRE))
+
+    def negative(self, f):
+        return self.BLAZE <= f < self.BLAZE + 3
+
+    def scene_draw(self, world, f):
+        user, right = self.scene.user, self.side > 0
+        rise = min(1.0, f / 24)
+        self.body(world, user, self.stand_spot(), "pose", 2, right, lift=6 * rise, stand=True)
+        self.body(world, user, self.u, "special", 2, right)
+        self.victim(world, f)
+        hit = self.chest(self.scene.target, self.v)
+        for i in range(self.ANKHS):
+            lit_at = 20 + i * 12
+            gone_at = self.VOLLEY + i * 8 + 8
+            if f < lit_at or f >= gone_at:
+                continue
+            spot = self.ankh(i, f)
+            vfx.draw_projectile(world, "ankh", spot, hit - spot, 6, vfx.FIRE)
+        if f >= self.BLAZE:
+            grow = min(1.0, (f - self.BLAZE) / 18)
+            vfx.draw_flame_burst(world, hit, 8 + 22 * grow, f)
+        elif f >= self.VOLLEY + 8:
+            vfx.draw_burning(world, self.v, 40, f, 3)
+
+
 CUTSCENES = {
     "road_roller": RoadRoller,
     "star_finish": StarFinish,
@@ -1660,6 +1746,7 @@ CUTSCENES = {
     "burn_black": BurnBlack,
     "overdrive_beat": OverdriveBeat,
     "self_destruct": SelfDestruct,
+    "crossfire_special": CrossfireSpecial,
 }
 
 

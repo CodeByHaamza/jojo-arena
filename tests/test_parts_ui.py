@@ -102,3 +102,21 @@ def test_the_title_screen_shows_one_part_at_a_time(ctx):
         title.update()
     title.draw(ctx.display.surface)
     assert title.backdrop.part == title.group[0]
+
+
+def test_a_complete_part_shows_no_slot_still_to_come(ctx):
+    """Phantom Blood is all in: its tab shows its six fighters and nothing else, the
+    short last row centred, and the cursor never lands on an empty cell."""
+    select = CharacterSelectScene(ctx, "versus", cursor="jonathan")
+    ctx.scenes.switch(select)
+    ctx.scenes.apply_pending()
+    assert select.tab == 1 and select.cells() == len(select.grid())
+    for key in ("Down", "Right", "Right", "Right", "Up", "Left", "Down", "Down"):
+        press(ctx, key)
+        assert select.cursor is not None, key
+    last_row = [select._cell_rect(i) for i in range(4, len(select.grid()))]
+    first_row = [select._cell_rect(i) for i in range(4)]
+    middle = (first_row[0].left + first_row[-1].right) / 2
+    assert abs((last_row[0].left + last_row[-1].right) / 2 - middle) <= 1
+    press(ctx, "E", "E")  # part 3 still has fighters to come
+    assert select.cells() > len(select.grid())
