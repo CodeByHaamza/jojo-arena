@@ -44,6 +44,7 @@ class Strike:
     super_move: bool = False  # supers are built around stopped time: not softened in it
     hamon: bool = False  # Hamon burns vampires and Pillar Men
     freeze_f: int = 0  # frozen solid this long on a clean hit
+    ignite_f: int = 0  # set on fire this long on a clean hit
 
 
 class Match:
@@ -306,7 +307,10 @@ class Match:
     def _lay_trap(self, fighter: Fighter, attack: Attack) -> None:
         defn = attack.move.trap
         origin = fighter.strike_origin()
-        pos, _, _ = self.arena.constrain(origin + attack.aim * defn.distance, defn.radius)
+        spot = origin + attack.aim * defn.distance
+        if defn.at_cursor and attack.dest is not None:
+            spot = attack.dest  # laid on the aimed point
+        pos, _, _ = self.arena.constrain(spot, defn.radius)
         own = [t for t in self.traps if t.owner == fighter.index]
         if len(own) >= defn.max_count:
             self.traps.remove(own[0])  # the oldest gives way
@@ -352,6 +356,7 @@ class Match:
             where=target.pos,
             key=projectile.key,
             hamon=projectile.hamon,
+            ignite_f=defn.ignite_f,
         )
         _, events = self._strike(self.fighters[projectile.owner], target, strike)
         return events
@@ -439,6 +444,7 @@ class Match:
                 where=projectile.pos,
                 key=projectile.key,
                 hamon=projectile.hamon,
+                ignite_f=defn.ignite_f,
             )
             landed, strike_events = self._strike(self.fighters[projectile.owner], target, strike)
             events += strike_events
@@ -506,6 +512,7 @@ class Match:
                 hamon=attack.hamon,
                 guard_mult=move.guard_damage,
                 freeze_f=move.freeze_f,
+                ignite_f=move.ignite_f,
                 key=(attacker.index, attack.serial),
                 super_move=move.name in ("hha", "gha"),
             )
@@ -803,6 +810,7 @@ class Match:
                 key=(user.index, scene.serial),
                 super_move=True,
                 hamon=move.hamon,
+                ignite_f=move.ignite_f,
             )
             _, strike_events = self._strike(user, target, strike)
             events += strike_events
@@ -1022,6 +1030,9 @@ class Match:
             defender.stun_f = max(defender.stun_f, strike.freeze_f)
             defender.iced_f = strike.freeze_f
             events.append(Event("freeze", defender.pos, defender.index, strike.freeze_f))
+        if strike.ignite_f and defender.alive:
+            defender.ignite(strike.ignite_f)
+            events.append(Event("ignite", defender.pos, defender.index, defender.fire_f))
         if strike.drain:
             events.append(
                 Event("drain", attacker.pos, attacker.index, round(damage * strike.drain))

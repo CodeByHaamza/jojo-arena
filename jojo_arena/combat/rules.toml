@@ -135,6 +135,13 @@ regen_blood_per_hp = 0.5      # ...spending this much blood per point healed
 stance_min_blood = 10         # the freezing stance needs at least this much blood...
 stance_blood_per_s = 6        # ...and burns this much per second while it lasts
 
+[fire]
+# Fire that clings to a body after the blow (kits: `ignite_s` on a move or a projectile).
+damage_per_s = 12             # it burns this much per second...
+max_s = 4.0                   # ...for at most this long; more fire adds to what is left
+dash_douse_s = 1.5            # a dash beats this much of it out
+lethal = false                # it never takes the last point of life: a blow must finish
+
 [sun]
 # Sunlight (some arenas, late in the round): it burns the undead and fuels the Hamon.
 undead_natures = ["vampire", "zombie", "pillar_man"]
