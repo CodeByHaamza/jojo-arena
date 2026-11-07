@@ -14,7 +14,7 @@ requires-python = ">=3.12"
 dependencies = ["pygame-ce>=2.5.8"]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "pytest-cov>=5", "ruff>=0.6", "pyinstaller>=6.10"]
+dev = ["pytest>=8", "pytest-cov>=5", "pytest-xdist>=3.6", "ruff>=0.6", "pyinstaller>=6.10"]
 
 [project.gui-scripts]
 jojo-arena = "jojo_arena.app:main"
@@ -28,7 +28,9 @@ jojo_arena = ["assets/**/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["tools"]
+# The repository root too: a few tests and tools import `tools.<module>`, and a
+# pip install -e only puts `jojo_arena` on the path.
+pythonpath = [".", "tools"]
 
 [tool.coverage.run]
 source = ["jojo_arena", "tools"]
