@@ -1,0 +1,43 @@
+# Glossary, the rules tab: how the fight itself works. Not a part of the saga, so it
+# takes the number 0 and its own tab at the front of the glossary.
+#
+# Here: the status effects. The numbers below are the ones in combat/rules.toml - when
+# they change there, they change here too.
+# Sources (JoJo Wiki, jojowiki.com/Hamon): the Ripple shows itself as "electricity-like
+# sparks" and a Satiporoja scarf "acts like a lightning rod" by conducting it; DIO can
+# flash-freeze a Ripple user in seconds (Vaporization Freezing); Esidisi pumps his own
+# blood out at five hundred degrees; Stroheim's machine body carries a flamethrower.
+
+part = 0
+
+[[terms]]
+id = "status_effects"
+name = "ALTÉRATIONS D'ÉTAT"
+name_en = "STATUS EFFECTS"
+icon = "emblem_rules"
+text = "Certains coups laissent quelque chose derrière eux : le feu, le froid, un courant. Une altération ne s'applique que sur un coup qui touche vraiment - gardé, elle ne prend pas. Un deuxième coup la relance sans l'empiler, et chacune a son plafond : personne ne meurt cuit à distance en tenant un bouton. Le temps arrêté suspend tout, y compris ce qui brûle. Trois existent aujourd'hui : BRÛLURE, GEL et COURANT."
+text_en = "Some blows leave something behind: fire, cold, a current. A status only catches on a blow that really lands - blocked, it does not take. A second hit refreshes it without stacking, and each one has its own ceiling: nobody is cooked to death from across the arena by holding one button. Stopped time suspends everything, what is burning included. Three exist today: BURNING, FROZEN and CURRENT."
+
+[[terms]]
+id = "status_burn"
+name = "BRÛLURE"
+name_en = "BURNING"
+icon = "glossary_burn"
+text = "Le sang d'Esidisi sort de ses veines à cinq cents degrés ; le corps de machine de Stroheim a un lance-flammes à la place d'un bras. Ce qu'ils touchent continue de cuire : 26 points de vie par seconde pendant 2,6 secondes au plus, et surtout une plaie qui brûle ne se referme pas - un vampire ou un Homme du Pilier ne régénère plus tant que ça brûle."
+text_en = "Esidisi's blood leaves his veins at five hundred degrees; Stroheim's machine body has a flamethrower where an arm used to be. What they touch keeps cooking: 26 points of life per second for up to 2.6 seconds, and above all a burning wound does not close - a vampire or a Pillar Man heals nothing while it burns."
+
+[[terms]]
+id = "status_chill"
+name = "GEL"
+name_en = "FROZEN"
+icon = "glossary_freeze"
+text = "La congélation par vaporisation : un vampire pose la main et le sang épaissit. Le corps gelé net ne bouge plus du tout ; dégelé, il reste raide 2,2 secondes - 40 % de vitesse de marche en moins, et plus moyen de respirer l'onde ni de boire du sang. Contre un adversaire qui vit de sa jauge, c'est pire que des dégâts."
+text_en = "Vaporization Freezing: a vampire lays a hand on you and the blood thickens. A body frozen solid does not move at all; thawed, it stays stiff for 2.2 seconds - 40 % slower on foot, and no breathing the Ripple, no drinking blood. Against someone who lives off a gauge, that is worse than damage."
+
+[[terms]]
+id = "status_shock"
+name = "COURANT"
+name_en = "CURRENT"
+icon = "glossary_shock"
+text = "L'onde se montre comme des étincelles, et une écharpe de Satiporoja la conduit comme un paratonnerre : Lisa Lisa s'en sert pour faire passer le courant dans un corps. Les muscles répondent à autre chose qu'à leur propriétaire pendant 1,8 seconde : 10 points de vie par seconde, 15 % de vitesse en moins, plus un point de Heart Heat gagné, et la garde se défait toute seule."
+text_en = "The Ripple shows itself as sparks, and a Satiporoja scarf conducts it like a lightning rod: Lisa Lisa uses it to run a current through a body. For 1.8 seconds the muscles answer to something other than their owner: 10 points of life per second, 15 % slower, not one point of Heart Heat gained, and the guard shakes apart on its own."

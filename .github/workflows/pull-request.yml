@@ -1,0 +1,63 @@
+name: Pull request
+
+# What a pull request has to look like before it is merged. The checks here are cheap
+# and run on the pull request itself; the real tests live in ci.yml.
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  shape:
+    name: title and description
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: The title is conventional
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          echo "title: $TITLE"
+          if ! printf '%s' "$TITLE" | grep -Eq '^(feat|fix|refactor|docs|test|chore|perf|style|build|ci|balance)(\([a-z0-9_/-]+\))?: .+'; then
+            echo "::error::the title must start with feat:, fix:, refactor:, docs:, test:, chore:, perf:, style:, build:, ci: or balance:"
+            exit 1
+          fi
+          if [ "${#TITLE}" -gt 90 ]; then
+            echo "::error::the title is ${#TITLE} characters; keep it under 90"
+            exit 1
+          fi
+
+      - name: It says what it changes
+        env:
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          words=$(printf '%s' "$BODY" | wc -w)
+          echo "description: $words words"
+          if [ "$words" -lt 15 ]; then
+            echo "::error::say what the change does and why, in a few sentences (the template helps)"
+            exit 1
+          fi
+
+  size:
+    name: size of the change
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Count what moved
+        run: |
+          base="origin/${{ github.base_ref }}"
+          git fetch --no-tags --depth=1 origin "${{ github.base_ref }}"
+          files=$(git diff --name-only "$base"...HEAD -- . ':(exclude)*.png' ':(exclude)*.toml' | wc -l)
+          lines=$(git diff --numstat "$base"...HEAD -- '*.py' | awk '{ added += $1; removed += $2 } END { print added + removed }')
+          echo "code files: $files, python lines moved: ${lines:-0}"
+          # Not a failure: a note, so a very large change gets a second look.
+          if [ "${lines:-0}" -gt 1500 ]; then
+            echo "::warning::${lines} lines of Python in one pull request - consider splitting it"
+          fi

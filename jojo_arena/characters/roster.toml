@@ -9,12 +9,17 @@
 #   selectable   = false keeps a fighter out of the character select screen.
 #   part         = the JoJo part the character comes from (parts.toml): its tab in the
 #                  character select screen.
+#   side         = "hero" or "villain": which camp it stands in on the title screen.
+#                  Stroheim is an officer of the Reich and no kind of hero, but in
+#                  Part 2 he fights the Pillar Men on Joseph's side, so he lines up
+#                  with them.
 # Character sheets are generated from characters/looks/<id>.toml by tools/make_sprites.py.
 
 # Part 1: Phantom Blood ------------------------------------------------------------------
 
 [[fighters]]
 id = "jonathan"
+side = "hero"
 part = 1
 name = "JONATHAN JOESTAR"
 kit = "jonathan"
@@ -27,6 +32,7 @@ aura = "#ffd040"
 
 [[fighters]]
 id = "zeppeli"
+side = "hero"
 part = 1
 name = "WILL A. ZEPPELI"
 kit = "zeppeli"
@@ -40,6 +46,7 @@ aura = "#ffd040"
 
 [[fighters]]
 id = "dio_p1"
+side = "villain"
 part = 1
 name = "DIO BRANDO"
 kit = "dio_p1"
@@ -52,6 +59,7 @@ aura = "#ff4a6a"
 
 [[fighters]]
 id = "bruford"
+side = "villain"
 part = 1
 name = "BRUFORD"
 kit = "bruford"
@@ -65,6 +73,7 @@ aura = "#b080ff"
 
 [[fighters]]
 id = "tarkus"
+side = "villain"
 part = 1
 name = "TARKUS"
 kit = "tarkus"
@@ -77,6 +86,7 @@ aura = "#ff4a4a"
 
 [[fighters]]
 id = "speedwagon"
+side = "hero"
 part = 1
 name = "SPEEDWAGON"
 kit = "speedwagon"
@@ -94,6 +104,7 @@ aura = "#e86a9a"
 
 [[fighters]]
 id = "joseph_p2"
+side = "hero"
 part = 2
 name = "JOSEPH JOESTAR"
 kit = "joseph_p2"
@@ -106,6 +117,7 @@ aura = "#ffd040"
 
 [[fighters]]
 id = "caesar"
+side = "hero"
 part = 2
 name = "CAESAR ZEPPELI"
 kit = "caesar"
@@ -118,6 +130,7 @@ aura = "#ffd040"
 
 [[fighters]]
 id = "lisa_lisa"
+side = "hero"
 part = 2
 name = "LISA LISA"
 kit = "lisa_lisa"
@@ -131,6 +144,7 @@ aura = "#ffd040"
 
 [[fighters]]
 id = "straizo"
+side = "villain"
 part = 2
 name = "STRAIZO"
 kit = "straizo"
@@ -143,6 +157,7 @@ aura = "#e03030"
 
 [[fighters]]
 id = "wamuu"
+side = "villain"
 part = 2
 name = "WAMUU"
 kit = "wamuu"
@@ -156,6 +171,7 @@ aura = "#9ad8e8"
 
 [[fighters]]
 id = "esidisi"
+side = "villain"
 part = 2
 name = "ESIDISI"
 kit = "esidisi"
@@ -169,10 +185,13 @@ aura = "#ff8a3c"
 
 [[fighters]]
 id = "kars"
+side = "villain"
 part = 2
 name = "KARS"
 kit = "kars"
 sprite = "kars/kars"
+# The Ultimate Life Form is not the same body: wings, loose hair, white blades.
+body_sprites = { ultimate = "kars_ultimate/kars_ultimate" }
 role = "HOMME DU PILIER - LUMIERE"
 role_en = "PILLAR MAN - LIGHT"
 blurb = "Celui qui a fait les masques de pierre. Des lames lui sortent des bras et ricochent sur les murs."
@@ -182,6 +201,7 @@ aura = "#e0a0e8"
 
 [[fighters]]
 id = "santana"
+side = "villain"
 part = 2
 name = "SANTANA"
 kit = "santana"
@@ -195,6 +215,7 @@ aura = "#b4d49a"
 
 [[fighters]]
 id = "stroheim"
+side = "hero"
 part = 2
 name = "STROHEIM"
 kit = "stroheim"
@@ -210,6 +231,7 @@ aura = "#ff6a6a"
 
 [[fighters]]
 id = "jotaro_p3"
+side = "hero"
 part = 3
 name = "JOTARO KUJO"
 kit = "jotaro_p3"
@@ -225,6 +247,7 @@ aura = "#9b7bff"
 
 [[fighters]]
 id = "kakyoin"
+side = "hero"
 part = 3
 name = "NORIAKI KAKYOIN"
 kit = "kakyoin"
@@ -240,6 +263,7 @@ aura = "#59f08c"
 
 [[fighters]]
 id = "dio_p3"
+side = "villain"
 part = 3
 name = "DIO"
 kit = "dio_p3"
@@ -255,6 +279,7 @@ aura = "#ffd84a"
 
 [[fighters]]
 id = "polnareff"
+side = "hero"
 part = 3
 name = "JEAN PIERRE POLNAREFF"
 kit = "polnareff"

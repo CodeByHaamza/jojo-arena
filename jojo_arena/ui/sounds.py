@@ -325,6 +325,9 @@ EVENT_SOUNDS: dict[str, Callable[[Event], str]] = {
     "hamon": lambda e: "hamon",
     "freeze": lambda e: "freeze",
     "sunburn": lambda e: "sizzle",
+    "status_burn": lambda e: "sizzle",
+    "status_chill": lambda e: "freeze",
+    "status_shock": lambda e: "hamon",
     "cage": lambda e: "chain",
     "cage_end": lambda e: "chain",
     "stylish": lambda e: "stylish",
@@ -334,6 +337,7 @@ EVENT_SOUNDS: dict[str, Callable[[Event], str]] = {
     "prop_break": lambda e: "hit",
     "explosion": lambda e: "boom",
     "burst": lambda e: "pop",
+    "trap_popped": lambda e: "pop",
     "reflect": lambda e: "hamon",
     "foreseen": lambda e: "stylish",
 }

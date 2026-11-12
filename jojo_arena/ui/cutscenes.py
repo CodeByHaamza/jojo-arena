@@ -1330,54 +1330,115 @@ class EsidisiTears(CutscenePlayer):
 
 
 class UltimateThing(CutscenePlayer):
-    """The Red Stone goes into the mask, the mask goes on, and what stands up afterwards
-    is not a Pillar Man any more. The light comes out of him, not onto him."""
+    """The Red Stone goes into the mask, the mask goes on, the light comes out of him -
+    and what stands up afterwards is not a Pillar Man any more. The longest cutscene in
+    the game, because it changes the rest of the fight."""
 
-    length = 252
-    MASK = 60
-    BURST = 140
+    length = 330
+    STONE = 40  # the Red Stone of Aja settles into the mask
+    MASK = 96  # the mask closes, the spikes drive in
+    TEAR = 170  # the light tears its way out
+    BURST = 206  # it wins
+    WINGS = 250  # and he opens what he has become
     LIGHT = (255, 244, 200)
     HALO = (236, 160, 248)
+    STONE_RED = (226, 54, 62)
 
     def camera(self, f):
+        if f < self.MASK:
+            return self.head(self.scene.user, self.u) + Vec2(0, 2), 4  # on his face
         if f < self.BURST:
-            return self.u + Vec2(0, -22), 3
-        return (self.u + self.v) * 0.5, 2
+            return self.u + Vec2(0, -20), 3
+        return self.u + Vec2(0, -14), 2  # he fills the screen at the end
 
     def cue(self, f):
         fx, chest = self.fx, self.chest(self.scene.user, self.u)
+        head = self.head(self.scene.user, self.u)
         if f == 1:
-            self.shout(text.KARS_LINE, scale=2, life=50)
+            self.shout(text.KARS_LINE, scale=2, life=60)
+        if f == self.STONE:
+            # The stone drops into its setting: one hard note, and the mask lights up.
+            fx.add(vfx.Flash(head, 16, self.STONE_RED, 8))
+            self.world_words.add(sfx.BAKI, head + Vec2(0, -10), "impact", 2, 26, 0.3, 2)
+            self.shake = 4
+        if self.STONE < f < self.MASK and f % 8 == 0:
+            self.world_words.menace(head, 1)
         if f == self.MASK:
-            self.world_words.menace(self.head(self.scene.user, self.u), 1)
-            fx.add(vfx.Ring(chest, self.HALO, 2.0, 16, 2))
-            self.shake = 3
-        if self.MASK < f < self.BURST and f % 10 == 0:
+            # The spikes drive in. This is the part that kills anyone else.
+            fx.add(vfx.Flash(head, 28, self.STONE_RED, 10))
+            fx.add(vfx.Ring(head, self.HALO, 2.0, 18, 2))
+            fx.focus(head, heavy=True)
+            self.world_words.add(sfx.DOGO, head + Vec2(0, -12), "impact", 3, 36, 0.25, 2)
+            self.flash, self.shake = 8, 14
+        if self.MASK < f < self.TEAR and f % 9 == 0:
             fx.add(vfx.Ring(chest, self.HALO, 2.6, 20, 1))
+            spit = Vec2(self.rng.uniform(-1.4, 1.4), self.rng.uniform(-1.8, -0.4))
+            fx.add(vfx.Dust(chest, spit, 2, 22, self.HALO))
+        if f == self.TEAR:
+            self.shout(text.KARS_ULTIMATE_LINE, scale=2, life=56)
+            self.shake = 10
+        if self.TEAR <= f < self.BURST and f % 4 == 0:
+            # The light is coming out of him now, not onto him.
+            angle = self.rng.uniform(0, math.tau)
+            spot = chest + Vec2.from_angle(angle, self.rng.uniform(8, 30))
+            fx.add(vfx.Flash(spot, 10, self.LIGHT, 6))
         if f == self.BURST:
-            fx.add(vfx.Flash(chest, 70, self.LIGHT, 16))
+            fx.add(vfx.Flash(chest, 90, self.LIGHT, 20))
+            fx.add(vfx.Ring(chest, self.LIGHT, 5.0, 30, 3))
             fx.focus(chest, heavy=True)
-            self.flash, self.shake = 14, 16
-        if f > self.BURST and f % 12 == 0:
+            self.world_words.add(sfx.DODODO, chest + Vec2(0, -18), sfx.HAMON, 3, 54, 0.2, 2)
+            self.flash, self.shake = 18, 20
+        if f == self.WINGS:
+            fx.add(vfx.Ring(chest, self.LIGHT, 3.4, 26, 2))
+            self.world_words.menace(chest + Vec2(0, -20), 2)
+        if f > self.BURST and f % 14 == 0:
             fx.add(vfx.Ring(chest, self.LIGHT, 4.0, 26, 2))
 
     def negative(self, f):
-        return self.BURST <= f < self.BURST + 4
+        return self.BURST <= f < self.BURST + 5 or self.MASK <= f < self.MASK + 2
 
     def scene_draw(self, world, f):
         user, right = self.scene.user, self.side > 0
-        self.body(world, user, self.u, "pose", 2, right)
+        pose = "pose" if f < self.BURST else "special"
+        self.body(world, user, self.u, pose, 2, right)
         if f >= self.BURST:
             self.victim(world, f)
         chest = self.chest(user, self.u)
+        head = self.head(user, self.u)
+        if f < self.MASK:
+            # The mask, held before his face, with the Red Stone set into it.
+            grow = min(1.0, f / self.STONE)
+            vfx.draw_stone_mask(world, head + Vec2(0, -4), 0.5 + 0.5 * grow)
+            if f >= self.STONE:
+                pulse = 2 + (f % 10) // 5
+                pygame.draw.circle(world, self.STONE_RED, head.as_ints(), pulse)
+                blit_glow(world, radial_glow(10, (90, 20, 24)), head)
+        if self.MASK <= f < self.BURST:
+            # It is on him, and something underneath is pushing out.
+            vfx.draw_stone_mask(world, head, 1.0)
+            cracks = min(8, (f - self.MASK) // 8)
+            for i in range(cracks):
+                angle = math.tau * i / 8 + 0.3
+                start = head + Vec2.from_angle(angle, 4)
+                end = head + Vec2.from_angle(angle, 10 + (f - self.MASK) * 0.08)
+                pygame.draw.line(world, self.LIGHT, start.as_ints(), end.as_ints(), 1)
         if f >= self.MASK:
-            # Light coming out of him, in rays that get longer.
-            grow = min(1.0, (f - self.MASK) / 70)
-            for i in range(10):
-                angle = math.tau * i / 10 + f * 0.02
-                tip = chest + Vec2.from_angle(angle, 14 + 46 * grow)
-                color = self.LIGHT if f >= self.BURST else self.HALO
+            grow = min(1.0, (f - self.MASK) / 80)
+            for i in range(12):
+                angle = math.tau * i / 12 + f * 0.02
+                tip = chest + Vec2.from_angle(angle, 14 + 54 * grow)
+                color = self.LIGHT if f >= self.TEAR else self.HALO
                 pygame.draw.line(world, color, chest.as_ints(), tip.as_ints(), 1)
+        if f >= self.WINGS:
+            # The wings, opening wider every frame: the shape he chose for himself.
+            span = min(1.0, (f - self.WINGS) / 40)
+            for way in (1, -1):
+                root = chest + Vec2(way * 4, -2)
+                for feather in range(5):
+                    lift = -14 + feather * 6
+                    tip = root + Vec2(way * (10 + 26 * span), lift - 10 * span)
+                    pygame.draw.line(world, OUTLINE, root.as_ints(), tip.as_ints(), 3)
+                    pygame.draw.line(world, self.LIGHT, root.as_ints(), tip.as_ints(), 1)
 
 
 # Stroheim: the German spirit ------------------------------------------------------------

@@ -44,6 +44,8 @@ class Strike:
     super_move: bool = False  # supers are built around stopped time: not softened in it
     hamon: bool = False  # Hamon burns vampires and Pillar Men
     freeze_f: int = 0  # frozen solid this long on a clean hit
+    status: str = ""  # left burning, frozen stiff or crackling on a clean hit
+    status_f: int = 0
 
 
 class Match:
@@ -58,6 +60,8 @@ class Match:
         self.traps: list[Trap] = []
         self.webs: list[Web] = []
         self._last_prop_pos: dict[int, Vec2] = {}
+        # Training can stretch or shorten stopped time; a real fight leaves it at 1.
+        self.time_stop_mult = 1.0
         self.cutscene: Cutscene | None = None
         self.hitstop = 0
         self.slowmo = 0  # steps left at half speed (Stylish Evade)
@@ -142,6 +146,7 @@ class Match:
         events += self._resolve_melee()
         events += self._resolve_projectile_hits()
         events += self._apply_sunlight()
+        events += self._apply_statuses()
         events += self._update_awakenings()
         events += self._update_cage()
         for fighter in self.fighters:
@@ -166,7 +171,8 @@ class Match:
             move = attack.move
             if move.time_stop_f and (move.time_stop_at == "start" or attack.active):
                 attack.stopped_time = True
-                events += interactions.start_time_stop(self, fighter, move.time_stop_f)
+                frames = max(1, round(move.time_stop_f * self.time_stop_mult))
+                events += interactions.start_time_stop(self, fighter, frames)
         return events
 
     # Bodies -----------------------------------------------------------------------------
@@ -240,7 +246,7 @@ class Match:
                 volley = self._spawn(fighter.index, origin, aim, defn, target)
                 for projectile in volley:
                     projectile.key = (fighter.index, attack.serial)
-                    projectile.hamon = attack.hamon
+                    projectile.hamon = attack.hamon or defn.hamon
                     projectile.boost = attack.boost
                 self.projectiles += volley
                 if move.disarm_f:
@@ -316,17 +322,25 @@ class Match:
         events: list[Event] = []
         kept = []
         for trap in self.traps:
-            if self.fighters[trap.owner].frozen:
+            owner = self.fighters[trap.owner]
+            if owner.frozen:
                 kept.append(trap)
                 continue
             trap.life -= 1
             target = self.fighters[1 - trap.owner]
+            if trap.defn.fragile and owner.state in (State.HITSTUN, State.GUARD_BROKEN):
+                # A bubble is a bubble: one blow on Caesar and every lens pops, empty.
+                events.append(Event("trap_popped", trap.pos, trap.owner))
+                continue
             if target.alive and trap.touched_by(target.pos, self.rules.hurt_radius):
                 aim = trap.pos.copy()
                 direction = (target.pos - aim).normalized()
-                self.projectiles += self._spawn(
+                shots = self._spawn(
                     trap.owner, aim - direction * 6, direction, trap.defn.projectile, target.pos
                 )
+                for shot in shots:
+                    shot.hamon = trap.defn.projectile.hamon
+                self.projectiles += shots
                 events.append(Event("trap_triggered", trap.pos, trap.owner))
             elif trap.life > 0:
                 kept.append(trap)
@@ -352,6 +366,9 @@ class Match:
             where=target.pos,
             key=projectile.key,
             hamon=projectile.hamon,
+            status=defn.status,
+            status_f=defn.status_f,
+            drain=defn.drain,
         )
         _, events = self._strike(self.fighters[projectile.owner], target, strike)
         return events
@@ -439,6 +456,9 @@ class Match:
                 where=projectile.pos,
                 key=projectile.key,
                 hamon=projectile.hamon,
+                status=defn.status,
+                status_f=defn.status_f,
+                drain=defn.drain,
             )
             landed, strike_events = self._strike(self.fighters[projectile.owner], target, strike)
             events += strike_events
@@ -506,6 +526,8 @@ class Match:
                 hamon=attack.hamon,
                 guard_mult=move.guard_damage,
                 freeze_f=move.freeze_f,
+                status=move.status,
+                status_f=move.status_f,
                 key=(attacker.index, attack.serial),
                 super_move=move.name in ("hha", "gha"),
             )
@@ -735,6 +757,25 @@ class Match:
                 events.append(Event("ko", fighter.pos, fighter.index))
             if self.tick % 10 == 0:
                 events.append(Event("sunburn", fighter.pos, fighter.index, int(fighter.blood == 0)))
+        return events
+
+    def _apply_statuses(self) -> list[Event]:
+        """Fire, cold and a current keep working between blows: this is their step. The
+        life they take is announced now and then, not sixty times a second."""
+        events: list[Event] = []
+        for fighter in self.fighters:
+            if fighter.frozen or not fighter.alive or not fighter.statuses.active:
+                continue
+            hurt = fighter.statuses.damage_this_frame()
+            if hurt:
+                alive = fighter.alive
+                fighter.hurt(hurt)
+                if alive and not fighter.alive:
+                    events.append(Event("ko", fighter.pos, fighter.index))
+            if self.rules.status_tick_f and self.tick % self.rules.status_tick_f == 0:
+                # A beat for the view and the sound: what it is doing is read off the
+                # fighter, so one event is enough however many statuses are on him.
+                events.append(Event("status_tick", fighter.pos, fighter.index, hurt))
         return events
 
     def _update_awakenings(self) -> list[Event]:
@@ -1018,6 +1059,12 @@ class Match:
         events = [Event("hit", strike.where, defender.index, damage), *sparks]
         if armored:
             events.append(Event("armor", defender.pos, defender.index))
+        caught = strike.status and not armored and defender.alive
+        if caught and defender.statuses.apply(strike.status, strike.status_f):
+            # It took: the kind of status is the kind of the event, and the value is how
+            # long it will last.
+            frames = defender.statuses.frames(strike.status)
+            events.append(Event(f"status_{strike.status}", strike.where, defender.index, frames))
         if strike.freeze_f and not armored and defender.alive and not defender.frozen:
             defender.stun_f = max(defender.stun_f, strike.freeze_f)
             defender.iced_f = strike.freeze_f

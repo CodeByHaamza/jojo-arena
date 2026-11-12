@@ -10,6 +10,7 @@ from jojo_arena.combat.arena import Arena
 from jojo_arena.combat.events import Event
 from jojo_arena.combat.kit import ATTACK_SLOTS, BuffDef, Kit, MoveDef
 from jojo_arena.combat.rules import HZ, Rules
+from jojo_arena.combat.status import Statuses
 from jojo_arena.combat.styles import make_style
 from jojo_arena.engine.actions import InputFrame
 from jojo_arena.engine.geometry import Vec2
@@ -144,6 +145,7 @@ class Fighter:
         self._regen_left = 0.0
         self._sun_left = 0.0
         self.iced_f = 0  # frozen solid by Vaporization Freezing (for the view)
+        self.statuses = Statuses(rules.statuses)  # burning, frozen stiff, under a current
         self._pose_heal_left = 0.0
         self.in_sun = False
         self.awakened = False  # the Power Up key was used: there is no going back
@@ -253,6 +255,8 @@ class Fighter:
         return mult
 
     def gain_hh(self, amount: float) -> None:
+        if self.statuses.no_meter:
+            return  # a body under a current gains nothing: it is busy twitching
         self.hh = min(self.rules.hh_max, self.hh + amount)
 
     def in_stylish_window(self) -> bool:
@@ -277,7 +281,7 @@ class Fighter:
         speed = speed * (self.buff.speed_mult if self.buff else 1.0)
         if self.carrying is not None:
             speed *= self.rules.carry_speed_mult  # a prop over the head
-        return speed
+        return speed * self.statuses.walk_mult
 
     def aim_at(self, target: Vec2) -> Vec2:
         direction = (target - self.strike_origin()).normalized()
@@ -416,7 +420,7 @@ class Fighter:
             return []  # nothing to do but stand there and hope
         if self.state == State.BREATHE:
             if frame.is_held("stand"):
-                gain = self.rules.hamon_breath_per_f
+                gain = 0.0 if self.statuses.no_breath else self.rules.hamon_breath_per_f
                 if self.in_sun:
                     gain *= self.rules.sun_hamon_mult
                 self.hamon = min(self.rules.hamon_max, self.hamon + gain)
@@ -631,7 +635,7 @@ class Fighter:
 
     def feed(self, life_drained: int) -> None:
         """A vampire drinks: the life drained fills its blood gauge."""
-        if self.kit.style == "vampire":
+        if self.kit.style == "vampire" and not self.statuses.no_breath:
             self.blood = min(
                 self.rules.blood_max, self.blood + life_drained * self.rules.blood_per_drain
             )
@@ -678,6 +682,8 @@ class Fighter:
         if self.regen_wait > 0:
             self.regen_wait -= 1
             return
+        if self.statuses.blocks_regen:
+            return  # a wound that is still burning does not close
         if self.hp >= self.max_hp or self.state in (State.HITSTUN, State.GUARD_BROKEN):
             return
         self._regen_left = min(1.0, self._regen_left + rules.vampire_regen_per_f)
@@ -886,13 +892,17 @@ class Fighter:
                 self.wall_bounce_armed = False
                 blocking = self.state == State.BLOCKSTUN and self.guard_held
                 self.set_state(State.GUARD if blocking else State.IDLE)
-        if self.state not in GUARDING:
+        drain = self.statuses.guard_drain_per_f
+        if self.state not in GUARDING and not drain:
             if self.guard_regen_wait > 0:
                 self.guard_regen_wait -= 1
             else:
                 self.guard_gauge = min(
                     rules.guard_gauge_max, self.guard_gauge + rules.guard_regen_per_f
                 )
+        if drain:
+            # A gauge coming apart does not also mend itself: the current wins.
+            self.guard_gauge = max(0.0, self.guard_gauge - drain)
         for move in [m for m, left in self.cooldowns.items() if left > 0]:
             self.cooldowns[move] -= 1
         if self.possessed_f > 0:
@@ -913,6 +923,7 @@ class Fighter:
                 self.buff = None
         if self.iced_f > 0:
             self.iced_f -= 1
+        self.statuses.tick()
         if self.kit.style == "vampire" and self.alive:
             self._vampire_step()
 

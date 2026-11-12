@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 190" width="960" height="190" role="img" aria-label="La boucle d'un round">
+  <title>La boucle d'un round</title>
+  <desc>Les cinq temps d'un échange.</desc>
+  <rect width="960" height="190" fill="#140f1e"/>
+  <text x="26" y="170" font-family="'Noto Sans JP','Yu Gothic','Hiragino Kaku Gothic ProN','MS PGothic',sans-serif" font-weight="700" font-size="34" fill="#7a48c8" opacity="0.2">ゴ
+    <animate attributeName="opacity" values="0.08;0.6;0.08" dur="2.2s" begin="0.0s" repeatCount="indefinite"/>
+    <animateTransform attributeName="transform" type="translate" values="0 12;0 -8;0 12" dur="2.2s" begin="0.0s" repeatCount="indefinite"/>
+  </text>
+  <text x="900" y="54" font-family="'Noto Sans JP','Yu Gothic','Hiragino Kaku Gothic ProN','MS PGothic',sans-serif" font-weight="700" font-size="34" fill="#7a48c8" opacity="0.2">ゴ
+    <animate attributeName="opacity" values="0.08;0.6;0.08" dur="2.2s" begin="0.6s" repeatCount="indefinite"/>
+    <animateTransform attributeName="transform" type="translate" values="0 12;0 -8;0 12" dur="2.2s" begin="0.6s" repeatCount="indefinite"/>
+  </text>
+  <g>
+    <circle cx="60.0" cy="78" r="26" fill="none" stroke="#f0c23c" stroke-width="2" opacity="0.35"/>
+    <circle cx="60.0" cy="78" r="26" fill="none" stroke="#f0c23c" stroke-width="3" opacity="0">
+      <animate attributeName="opacity" values="0;1;0" dur="4.5s" begin="0.0s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="26;32;26" dur="4.5s" begin="0.0s" repeatCount="indefinite"/>
+    </circle>
+    <text x="60.0" y="86" text-anchor="middle" font-family="'Trebuchet MS',Verdana,sans-serif" font-weight="700" font-size="22" fill="#f0c23c">1</text>
+    <text x="60.0" y="128" text-anchor="middle" font-family="'Trebuchet MS',Verdana,sans-serif" font-weight="700" font-size="15" fill="#fff6d0">APPROCHE</text>
+    <text x="60.0" y="148" text-anchor="middle" font-family="'Trebuchet MS',Verdana,sans-serif" font-size="11" fill="#cdbbe8">garde, dash, esquive</text>
+  </g>
+  <line x1="90.0" y1="78" x2="240.0" y2="78" stroke="#7a48c8" stroke-width="2" opacity="0.4"/>
+  <circle cx="90.0" cy="78" r="3" fill="#fff6d0">
+    <animate attributeName="cx" values="90.0;240.0" dur="0.9s" begin="0.3s" repeatCount="indefinite"/>
+  </circle>
+  <g>
+    <circle cx="270.0" cy="78" r="26" fill="none" stroke="#c8403a" stroke-width="2" opacity="0.35"/>
+    <circle cx="270.0" cy="78" r="26" fill="none" stroke="#c8403a" stroke-width="3" opacity="0">
+      <animate attributeName="opacity" values="0;1;0" dur="4.5s" begin="0.9s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="26;32;26" dur="4.5s" begin="0.9s" repeatCount="indefinite"/>
+    </circle>
+    <text x="270.0" y="86" text-anchor="middle" font-family="'Trebuchet MS',Verdana,sans-serif" font-weight="700" font-size="22" fill="#c8403a">2</text>
+    <text x="270.0" y="128" text-anchor="middle" font-family="'Trebuchet MS',Verdana,sans-serif" font-weight="700" font-size="15" fill="#fff6d0">CLASH</text>
+    <text x="270.0" y="148" text-anchor="middle" font-family="'Trebuchet MS',Verdana,sans-serif" font-size="11" fill="#cdbbe8">deux coups se croisent</text>
+  </g>
+  <line x1="300.0" y1="78" x2="450.0" y2="78" stroke="#7a48c8" stroke-width="2" opacity="0.4"/>
+  <circle cx="300.0" cy="78" r="3" fill="#fff6d0">
+    <animate attributeName="cx" values="300.0;450.0" dur="0.9s" begin="1.2s" repeatCount="indefinite"/>
+  </circle>
+  <g>
+    <circle cx="480.0" cy="78" r="26" fill="none" stroke="#5a9ef0" stroke-width="2" opacity="0.35"/>
+    <circle cx="480.0" cy="78" r="26" fill="none" stroke="#5a9ef0" stroke-width="3" opacity="0">
+      <animate attributeName="opacity" values="0;1;0" dur="4.5s" begin="1.8s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="26;32;26" dur="4.5s" begin="1.8s" repeatCount="indefinite"/>
+    </circle>
+    <text x="480.0" y="86" text-anchor="middle" font-family="'Trebuchet MS',Verdana,sans-serif" font-weight="700" font-size="22" fill="#5a9ef0">3</text>
+    <text x="480.0" y="128" text-anchor="middle" font-family="'Trebuchet MS',Verdana,sans-serif" font-weight="700" font-size="15" fill="#fff6d0">COMBO</text>
+    <text x="480.0" y="148" text-anchor="middle" font-family="'Trebuchet MS',Verdana,sans-serif" font-size="11" fill="#cdbbe8">trois coups sur la même touche</text>
+  </g>
+  <line x1="510.0" y1="78" x2="660.0" y2="78" stroke="#7a48c8" stroke-width="2" opacity="0.4"/>
+  <circle cx="510.0" cy="78" r="3" fill="#fff6d0">
+    <animate attributeName="cx" values="510.0;660.0" dur="0.9s" begin="2.1s" repeatCount="indefinite"/>
+  </circle>
+  <g>
+    <circle cx="690.0" cy="78" r="26" fill="none" stroke="#7a48c8" stroke-width="2" opacity="0.35"/>
+    <circle cx="690.0" cy="78" r="26" fill="none" stroke="#7a48c8" stroke-width="3" opacity="0">
+      <animate attributeName="opacity" values="0;1;0" dur="4.5s" begin="2.7s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="26;32;26" dur="4.5s" begin="2.7s" repeatCount="indefinite"/>
+    </circle>
+    <text x="690.0" y="86" text-anchor="middle" font-family="'Trebuchet MS',Verdana,sans-serif" font-weight="700" font-size="22" fill="#7a48c8">4</text>
+    <text x="690.0" y="128" text-anchor="middle" font-family="'Trebuchet MS',Verdana,sans-serif" font-weight="700" font-size="15" fill="#fff6d0">HEART HEAT</text>
+    <text x="690.0" y="148" text-anchor="middle" font-family="'Trebuchet MS',Verdana,sans-serif" font-size="11" fill="#cdbbe8">une barre, un ultime</text>
+  </g>
+  <line x1="720.0" y1="78" x2="870.0" y2="78" stroke="#7a48c8" stroke-width="2" opacity="0.4"/>
+  <circle cx="720.0" cy="78" r="3" fill="#fff6d0">
+    <animate attributeName="cx" values="720.0;870.0" dur="0.9s" begin="3.0s" repeatCount="indefinite"/>
+  </circle>
+  <g>
+    <circle cx="900.0" cy="78" r="26" fill="none" stroke="#2ea24a" stroke-width="2" opacity="0.35"/>
+    <circle cx="900.0" cy="78" r="26" fill="none" stroke="#2ea24a" stroke-width="3" opacity="0">
+      <animate attributeName="opacity" values="0;1;0" dur="4.5s" begin="3.6s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="26;32;26" dur="4.5s" begin="3.6s" repeatCount="indefinite"/>
+    </circle>
+    <text x="900.0" y="86" text-anchor="middle" font-family="'Trebuchet MS',Verdana,sans-serif" font-weight="700" font-size="22" fill="#2ea24a">5</text>
+    <text x="900.0" y="128" text-anchor="middle" font-family="'Trebuchet MS',Verdana,sans-serif" font-weight="700" font-size="15" fill="#fff6d0">CINÉMATIQUE</text>
+    <text x="900.0" y="148" text-anchor="middle" font-family="'Trebuchet MS',Verdana,sans-serif" font-size="11" fill="#cdbbe8">si le premier coup touche</text>
+  </g>
+</svg>

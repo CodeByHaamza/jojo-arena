@@ -97,6 +97,7 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `blood_cost` | Style vampire : le coup ne sort qu'avec assez de sang, et le dépense |
 | `hp_cost` | Le coup s'arrache à son auteur : il ne sort que s'il reste plus de vie que ça, et la prend au départ (Final Mode de Wamuu) |
 | `freeze_f` | Touché net, l'adversaire est gelé sur place ce nombre d'images (gel vaporisant) |
+| `status`, `status_s` | Touché net (jamais gardé), le coup laisse une altération d'état pendant cette durée : `burn` (le feu : des dégâts par seconde et aucune régénération tant que ça brûle), `chill` (le froid : marche ralentie, plus de respiration du Hamon ni de sang bu) ou `shock` (le courant : dégâts, marche ralentie, plus de Heart Heat gagné, et la jauge de garde qui se défait). Les durées et les effets sont dans `[status]` de `combat/rules.toml`, et la page du glossaire les décrit au joueur. Un deuxième coup relance l'altération, il ne l'empile pas |
 | `finish_drain` | Part des dégâts du coup final d'une cinématique rendue en vie |
 | `detonate` | Au premier tir de son projectile, tous les pièges du perso explosent (avec ce même projectile) et ses grenades encore au sol sautent aussitôt (le plan caché de Joseph) |
 | `cage_s`, `cage_radius` | Touché net : un anneau de chaînes de ce rayon se ferme autour des deux combattants, ce nombre de secondes ; personne n'en sort (Tarkus) |
@@ -158,7 +159,10 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `drag` | Part de sa vitesse gardée à chaque image (sous 1 : il ralentit jusqu'à s'arrêter) |
 | `wall_bounce` | Ce qu'il touche rebondit contre les murs |
 | `bounces` | Ricochet : le tir lui-même repart du mur, ce nombre de fois (lame lancée de Kars) |
-| `look` | Dessin : `orb`, `knife`, `gem`, `blade`, `wine`, `hat`, `clacker`, `grenade`, `bubble`, `bullet`, `spark`, `jet` |
+| `look` | Dessin : `orb`, `knife`, `gem`, `blade`, `wine`, `hat`, `clacker`, `grenade`, `bubble`, `bullet`, `spark`, `jet`, `ray` (un rayon de lumière focalisée) |
+| `hamon` | Le projectile lui-même porte l'onde : il brûle double sur les vampires, zombies et Hommes du Pilier, même tiré par un piège (les lentilles de Caesar concentrent la lumière du soleil) |
+| `status`, `status_s` | Comme pour un coup : ce qu'il laisse sur qui il touche |
+| `drain` | Part des dégâts rendue en vie à son lanceur (l'écureuil carnivore de Kars mange ce qu'il mord) |
 
 ## Pièges
 
@@ -171,6 +175,7 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `lifetime_s` | Durée de vie |
 | `max_count` | Nombre maximum ; le plus ancien disparaît |
 | `projectile` | Ce qu'il tire (comme un projectile) |
+| `fragile` | Un coup encaissé par son poseur fait éclater le piège sur place, sans tirer (les bulles de Caesar : « a Lens will harmlessly pop if Caesar is staggered or takes damage ») |
 
 ## Toile
 

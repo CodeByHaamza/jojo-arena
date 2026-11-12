@@ -28,11 +28,15 @@ class FighterDef:
     stand_sprite: str = ""  # sheet of the Stand shown while it is out (if any)
     # Characters who call in more than one helper: a sheet per stance.
     stand_sprites: dict[str, str] = field(default_factory=dict)
+    # A stance that changes the body itself (Kars, once he is the Ultimate Life
+    # Form): his own sheet, used instead of `sprite` while he is in it.
+    body_sprites: dict[str, str] = field(default_factory=dict)
     stand_name: str = ""
     role: str = ""  # one line, for the character select screen
     blurb: str = ""  # a short presentation
     selectable: bool = True  # placeholders stay out of the character select screen
     part: int = 0  # the JoJo part the character comes from (0: none, like the dummies)
+    side: str = ""  # "hero" or "villain": which camp the title screen lines it up with
 
 
 @dataclass(frozen=True)
@@ -44,6 +48,7 @@ class PartDef:
     setting: str  # where and when it takes place
     colors: tuple[Color, Color]  # two accent colors
     emblem: str = ""  # icon name: a little symbol of the part
+    complete: bool = False  # every fighter planned for it is in: no empty cells
 
 
 def load_parts() -> list[PartDef]:
@@ -55,6 +60,7 @@ def load_parts() -> list[PartDef]:
             setting=localized(entry, "setting"),
             colors=(parse_color(entry["colors"][0]), parse_color(entry["colors"][1])),
             emblem=entry.get("emblem", ""),
+            complete=entry.get("complete", False),
         )
         for entry in sorted(data["parts"], key=lambda e: e["number"])
     ]
@@ -84,11 +90,13 @@ def load_roster() -> list[FighterDef]:
                 palette=palette,
                 stand_sprite=entry.get("stand_sprite", ""),
                 stand_sprites=dict(entry.get("stand_sprites", {})),
+                body_sprites=dict(entry.get("body_sprites", {})),
                 stand_name=entry.get("stand_name", ""),
                 role=localized(entry, "role"),
                 blurb=localized(entry, "blurb"),
                 selectable=entry.get("selectable", True),
                 part=entry.get("part", 0),
+                side=entry.get("side", ""),
             )
         )
     return roster
