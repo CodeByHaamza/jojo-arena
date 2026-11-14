@@ -74,3 +74,9 @@ def test_the_last_release_is_the_highest_tag_not_the_latest_written():
 def test_check_accepts_the_first_release_and_wants_its_section():
     assert check_release("0.1.0", None, "## Non publié\n\n## 0.1.0 - 2026-11-14\n\n- x\n") == []
     assert check_release("0.1.0", None, "## Non publié\n\n- x\n")  # no section of its own
+
+
+def test_check_refuses_a_malformed_version_even_without_a_tag():
+    # No release exists yet: a hand-edited "0.2" must not slip through and become the
+    # tag every later check compares against.
+    assert check_release("0.2", None, "## Non publié\n\n## 0.2 - 2026-11-15\n\n- x\n")

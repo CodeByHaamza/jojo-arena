@@ -64,11 +64,13 @@ Une PR ne tourne **qu'une fois par push** (plus de double déclenchement push + 
 nouveau push annule le run en cours.
 
 **Le runner maison** vit dans le dépôt `maison` (`jojo-runner/`) : un conteneur éphémère
-(un job, puis il repart propre), sans `sudo`, sans socket Docker, plafonné à 3 CPU et
-2 Go. Le jeton GitHub qui l'enregistre n'est lisible que par root dans le conteneur ; les
-jobs tournent sous un autre utilisateur, avec un environnement vide. Un script
-« job-started » du runner refuse tout job qui ne vient pas de ce dépôt : une PR de fork
-qui réécrirait `runs-on` ne s'exécute jamais sur le serveur.
+qui **repart d'un runner neuf à chaque job** (rien de ce qu'un job écrit ne survit, ni
+cache ni volume), sans `sudo`, sans socket Docker, plafonné à 3 CPU et 2 Go sans swap.
+Le jeton GitHub qui l'enregistre n'est lu qu'en root, et aucun processus qui dure ne le
+porte ; les jobs tournent sous un autre utilisateur, avec un environnement vide. Un
+script « job-started » du runner refuse tout job qui ne vient pas de ce dépôt : une PR
+de fork qui réécrirait `runs-on` ne s'exécute jamais sur le serveur. Le job Linux de la
+release ne reçoit qu'un jeton en lecture : seul le job Windows, chez GitHub, publie.
 
 **Si le serveur est éteint**, les jobs attendent dans la file de GitHub, et une PR vers
 `main` ne peut pas être fusionnée tant que `check` n'a pas tourné. L'admin peut passer

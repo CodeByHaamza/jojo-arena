@@ -109,9 +109,12 @@ Il vit dans le dépôt `maison` (ses conventions s'appliquent : inventaire, dép
 
 - Si le portable est éteint, les jobs attendent dans la file de GitHub et une PR ne peut
   pas être fusionnée tant qu'ils n'ont pas tourné. L'admin peut passer outre.
-- Le conteneur redémarré garde sa couche d'écriture : `_work` est vidé, pas le reste.
-  Avec la garde des forks, le risque restant est un job d'une branche du dépôt, donc
-  écrit par le propriétaire.
+- ~~Le conteneur redémarré garde sa couche d'écriture.~~ Corrigé à la relecture du
+  15/11 : une branche du dépôt n'est pas forcément écrite par le propriétaire (Dependabot,
+  dépendances non épinglées). L'entrée vide tout ce que `runner` peut écrire et recopie
+  le runner depuis un exemplaire à root ; plus aucun volume de cache (environ une minute
+  de téléchargement par job).
+- Le job Linux de la release n'a qu'un jeton en lecture ; seul le job Windows publie.
 
 ## Laissé au constructeur
 

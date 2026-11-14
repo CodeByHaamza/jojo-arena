@@ -73,8 +73,13 @@ def close_unreleased(changelog: str, version: str, date: str) -> str:
 
 def check_release(version: str, last_tag: str | None, changelog: str) -> list[str]:
     """What stops this version from being released (nothing: an empty list)."""
+    try:
+        parsed = parse_version(version)
+    except ValueError:
+        # Even with no release yet: it would become the tag every later check reads.
+        return [f"version {version!r} is not X.Y.Z"]
     problems = []
-    if last_tag is not None and parse_version(version) <= parse_version(last_tag):
+    if last_tag is not None and parsed <= parse_version(last_tag):
         problems.append(f"version {version} is not above the last release {last_tag}")
     if not re.search(rf"(?m)^## {re.escape(version)}(\s|$)", changelog):
         problems.append(f"the changelog has no '## {version} - <date>' section")
