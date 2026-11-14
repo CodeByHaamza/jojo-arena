@@ -102,3 +102,17 @@ def test_the_title_screen_shows_one_part_at_a_time(ctx):
         title.update()
     title.draw(ctx.display.surface)
     assert title.backdrop.part == title.group[0]
+
+
+def test_every_fighter_stands_in_one_camp_or_the_other():
+    """The title screen faces the two camps off; nobody may be missing from it."""
+    for fighter in load_roster():
+        if fighter.selectable:
+            assert fighter.side in ("hero", "villain"), fighter.id
+
+
+def test_each_part_brings_both_camps_to_the_title_screen():
+    """A part with only heroes on screen would not be that part's fight."""
+    for part in {f.part for f in load_roster() if f.selectable}:
+        cast = [f for f in load_roster() if f.selectable and f.part == part]
+        assert {f.side for f in cast} == {"hero", "villain"}, part

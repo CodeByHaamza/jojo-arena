@@ -31,6 +31,8 @@ from jojo_arena.ui.duel_view import DuelScreen
 from jojo_arena.ui.widgets import draw_cap
 
 OUTLINE = (23, 18, 31)
+FLESH, FLESH_LIGHT = (214, 128, 120), (246, 196, 180)  # a body moving where it should not
+MOUND = (112, 102, 98)  # the floor heaving over something under it
 AWAKEN_F = 70  # how long the mask hangs over whoever awakened
 STAND_ALPHA = 215  # Stands look a little spectral
 STAND_FLOAT = 6  # Stands hover this many pixels above the ground
@@ -87,6 +89,36 @@ def sun_amount(match: Match) -> float:
     return max(0.0, 0.3 * (now - (after - lead)) / lead)
 
 
+# A body under a status effect takes its colour (added to the sprite, so it reads at
+# any distance): fire warms it, cold drains it, a current flickers over it. Kept low:
+# added light saturates a pale sprite into one flat colour, and then nobody can tell
+# who is on fire.
+STATUS_TINTS = {
+    "burn": (48, 16, 0, 0),
+    "chill": (14, 38, 64, 0),
+    "shock": (26, 20, 0, 0),
+}
+
+
+def status_tint(fighter: Fighter) -> tuple[int, int, int, int] | None:
+    """The tint of the statuses on this body, pulsing with what is left of them."""
+    names = fighter.statuses.active
+    if not names:
+        return None
+    red = green = blue = 0
+    for name in names:
+        tint = STATUS_TINTS.get(name)
+        if tint is None:
+            continue
+        beat = 0.6 if name == "shock" and (fighter.statuses.frames(name) // 3) % 2 else 1.0
+        red, green, blue = (
+            min(255, red + round(tint[0] * beat)),
+            min(255, green + round(tint[1] * beat)),
+            min(255, blue + round(tint[2] * beat)),
+        )
+    return (red, green, blue, 0) if red or green or blue else None
+
+
 class FighterView:
     def __init__(self, fighter_def: FighterDef) -> None:
         self.fighter_def = fighter_def
@@ -103,6 +135,13 @@ class FighterView:
         self.shadow = (round(14 + self.height * 0.25), 7)
         self.stand: SheetSprites | None = None
         self.stands: dict[str, SheetSprites] = {}
+        # A stance that changes the body itself: its own sheet.
+        self.bodies: dict[str, SheetSprites] = {}
+        for stance, name in fighter_def.body_sprites.items():
+            base = SPRITES_DIR / name
+            self.bodies[stance] = SheetSprites.load(
+                base.with_suffix(".png"), base.with_suffix(".toml"), fighter_def.palette or None
+            )
         self.throw_f = 0  # frames left of the Stand's throw pose (view only)
         if fighter_def.stand_sprite:
             base = SPRITES_DIR / fighter_def.stand_sprite
@@ -128,9 +167,15 @@ class FighterView:
             name = "idle"  # an animation nobody planned for: never crash, stand still
         return name, sprites.spec(name) or AnimSpec(name, 1)
 
+    def body_sheet(self, fighter: Fighter):
+        """The sheet this body is drawn from: another one once he has become something
+        else (Kars in his Ultimate form)."""
+        return self.bodies.get(fighter.stance, self.sprites)
+
     def current_frame(self, fighter: Fighter, sprites=None) -> pygame.Surface:
         """The fighter's frame; with `sprites`, the same animation from another sheet."""
-        sprites = sprites or self.sprites
+        own = self.body_sheet(fighter)
+        sprites = sprites or own
         phase = None
         if fighter.state == State.ATTACK and fighter.attack is not None:
             anim = fighter.attack.move.anim
@@ -140,7 +185,7 @@ class FighterView:
             hands_free = fighter.kit.prop_hold == "hair"  # his hair holds it for him
             if (
                 fighter.carrying is not None
-                and sprites is self.sprites
+                and sprites is own
                 and self.stand is None
                 and not hands_free
             ):
@@ -165,8 +210,13 @@ class FighterView:
             if (fighter.iced_f // 6) % 2 == 0:
                 image.fill((30, 30, 30, 0), special_flags=pygame.BLEND_RGB_ADD)
         elif fighter.possessed_f > 0 and (fighter.possessed_f // 4) % 2 == 0:
+            # Steered from inside: the Stand's green, or the flush of a body in there.
             image = image.copy()
-            image.fill((0, 70, 30, 0), special_flags=pygame.BLEND_RGB_ADD)
+            flush = (70, 10, 0, 0) if fighter.host else (0, 70, 30, 0)
+            image.fill(flush, special_flags=pygame.BLEND_RGB_ADD)
+        elif tint := status_tint(fighter):
+            image = image.copy()
+            image.fill(tint, special_flags=pygame.BLEND_RGB_ADD)
         return image
 
     # The Stand ---------------------------------------------------------------------------
@@ -211,7 +261,11 @@ class FighterView:
         blit_glow(surface, radial_glow(26, aura), chest)
         if self.throw_f > 0:
             image = self._stand_pose(fighter, "heavy", 2).copy()  # the throw
-        elif fighter.carrying is not None and fighter.state != State.ATTACK:
+        elif (
+            fighter.carrying is not None
+            and fighter.state != State.ATTACK
+            and fighter.kit.prop_hold == "hands"
+        ):
             image = self._stand_pose(fighter, "carry", 0).copy()  # holding it up
         else:
             image = self.current_frame(fighter, self.stand).copy()
@@ -259,7 +313,7 @@ class FighterView:
     def draw(self, surface: pygame.Surface, fighter: Fighter, tick: int) -> None:
         self.draw_aura(surface, fighter, tick)
         image = self.current_frame(fighter)
-        ax, ay = self.sprites.anchor
+        ax, ay = self.body_sheet(fighter).anchor
         ay += round(self.lift(fighter))
         _, flip = sprite_direction(fighter.facing.x, fighter.facing.y)
         if flip:
@@ -285,6 +339,8 @@ class FighterView:
             # A faint second pass over the body so the aura also tints the sprite.
             tint = tuple(round(c * 0.18) for c in self.fighter_def.aura)
             blit_glow(surface, radial_glow(18, tint), fighter.pos + self.chest)
+        if fighter.statuses.active:
+            vfx.draw_statuses(surface, fighter.pos, self.height, fighter.statuses.active, tick)
         if fighter.state == State.GUARD_BROKEN:
             # Dizzy stars circling over the head.
             for i in range(3):
@@ -311,6 +367,19 @@ HELD_FX = ("gun", "vortex", "cables")
 FLURRY_FX = ("", "limb", "blade", "blade_hair")
 
 
+def hidden(fighter: Fighter) -> bool:
+    """Not drawn at all: inside the opponent's body, or travelling under the floor."""
+    if fighter.inside is not None:
+        return True
+    attack = fighter.attack
+    return (
+        fighter.state == State.ATTACK
+        and attack is not None
+        and attack.move.burrow
+        and attack.phase == 0
+    )
+
+
 class FightView:
     def __init__(self, stage: StageDef, fighter_defs: list[FighterDef]) -> None:
         from jojo_arena.stages import stage_renderer
@@ -320,6 +389,7 @@ class FightView:
         self.fighter_defs = fighter_defs
         self.sparks: list[Spark] = []
         self._fx_voiced: dict[int, tuple[int, int]] = {}  # a move's own sound, once
+        self._blown: dict[int, int] = {}  # attack serial whose explosion already went off
         self.shake = 0
         self.flash = 0  # white screen flash frames left
         self.waves: list[list] = []  # time stop shockwaves: [center, age]
@@ -398,6 +468,9 @@ class FightView:
             elif event.kind == "trap_triggered":
                 aura = self.fighter_defs[event.fighter].aura
                 self.sparks.append(Spark(event.pos + Vec2(0, -8), 12, 12, aura, 12, 6))
+            elif event.kind == "trap_popped":
+                # A lens going out without firing: a bubble, and nothing else.
+                self.sparks.append(Spark(event.pos + Vec2(0, -6), 9, 9, (200, 240, 255), 10, 5))
             elif event.kind == "drain":
                 self.sparks.append(Spark(pos, 16, 16, (230, 40, 60), 12, 6))
             elif event.kind == "hamon":
@@ -421,6 +494,28 @@ class FightView:
 
     def _head(self, fighter: Fighter) -> Vec2:
         return fighter.pos + Vec2(0, -self.fighter_views[fighter.index].height - 8)
+
+    def _status_event(self, kind: str, event: Event, match: Match, pos: Vec2) -> None:
+        """A status catching, and the beat of one that is already working. The word is
+        said once, when it takes; after that it is the body that shows it."""
+        fx, words = self.fx, self.words
+        if kind == "status_tick":
+            active = match.fighters[event.fighter].statuses.active
+            colors = {"burn": (120, 70, 40), "chill": (210, 236, 255), "shock": (240, 220, 120)}
+            for name in active:
+                fx.dust(event.pos + Vec2(0, -10), 3, 1.0, 1, colors.get(name, (150, 140, 160)), 20)
+            return
+        name = kind.removeprefix("status_")
+        if name == "burn":
+            fx.add(vfx.Flash(pos, 14, (255, 170, 60), 7))
+            fx.dust(event.pos, 6, 1.4, 2, (160, 90, 40), 22)
+            words.add(sfx.SIZZLE, pos + Vec2(0, -15), "impact", 2, 28, 0.4, 1)
+        elif name == "chill":
+            fx.add(vfx.Ring(pos, (190, 230, 255), 2.0, 12, 2))
+            words.add(sfx.FREEZE, pos + Vec2(0, -15), sfx.ICE, 2, 26, 0.4, 1)
+        elif name == "shock":
+            fx.add(vfx.Flash(pos, 14, (255, 244, 170), 6))
+            words.add(sfx.CRACKLE, pos + Vec2(0, -15), sfx.HAMON, 2, 26, 0.4, 1)
 
     def _comic(self, events: list[Event], match: Match) -> None:
         """Sound effects written on screen and impact effects, comic-book style."""
@@ -564,6 +659,34 @@ class FightView:
                 aura = self.fighter_defs[1 - event.fighter].aura
                 fx.add(vfx.Ring(pos, aura, 3.0, 18, 3))
                 words.add(sfx.MENACE * 4, self._head(victim), "menace", 2, 60, 0.25, 1)
+            elif kind == "arena_exit":
+                # Through the wall: the fight goes on in the arena behind it.
+                self.follow_arena(match)
+                self.impact(event.pos, frames=2, punch=6)
+                self.shake = max(self.shake, 16)
+                self.flash = max(self.flash, 8)
+                fx.dust(event.pos, 18, 2.8, 5, (150, 150, 168), 30)
+                words.add(sfx.BAAN, event.pos + Vec2(0, 30), "ko", 3, 50, 0.2, 2)
+            elif kind == "hazard_warn":
+                # Something overhead starts to give.
+                words.add(sfx.MENACE * 3, event.pos + Vec2(0, -30), "menace", 2, 40, 0.3, 1)
+            elif kind == "hazard_drop":
+                self.impact(event.pos, frames=1, punch=4)
+                self.shake = max(self.shake, 12)
+                fx.dust(event.pos, 14, 2.4, 4, (120, 110, 104), 26)
+                fx.add(vfx.Ring(event.pos, (255, 220, 160), (event.value or 20) / 6, 16, 2))
+                words.add(sfx.DOGO, event.pos + Vec2(0, -22), "impact", 3, 40, 0.3, 2)
+            elif kind == "hazard_spikes":
+                self.shake = max(self.shake, 8)
+                fx.focus(pos, heavy=True)
+                words.add(sfx.BAKI, pos + Vec2(0, -16), "impact", 2, 30, 0.4, 1)
+            elif kind in ("infiltrate", "infiltrate_end") and event.fighter is not None:
+                # A body going into another one, or tearing back out of it.
+                flesh = self.fighter_defs[event.fighter].color
+                fx.dust(event.pos, 8, 1.6, 3, shade(flesh, -20), 20)
+                fx.add(vfx.Ring(pos, shade(flesh, 40), 2.2, 14, 2))
+                if kind == "infiltrate_end":
+                    words.add(sfx.BAKI, pos + Vec2(0, -14), "impact", 2, 30, 0.4, 1)
             elif kind == "counter" and event.fighter is not None:
                 user = match.fighters[event.fighter]
                 self.impact(pos)
@@ -595,6 +718,8 @@ class FightView:
                 fx.add(vfx.Flash(pos, 16, (200, 236, 255), 8))
                 fx.dust(event.pos, 6, 1.2, 2, (220, 240, 255), 18)
                 words.add(sfx.FREEZE, pos + Vec2(0, -14), sfx.ICE, 2, 30, 0.4, 1)
+            elif kind.startswith("status_") and event.fighter is not None:
+                self._status_event(kind, event, match, pos)
             elif kind == "sunburn" and event.fighter is not None:
                 fx.dust(event.pos + Vec2(0, -10), 3, 0.8, 1, (120, 110, 110), 22)
                 if event.value:
@@ -602,9 +727,8 @@ class FightView:
             elif kind == "explosion":
                 blast = event.pos + Vec2(0, -6)
                 self.impact(blast, frames=1, punch=4)
-                fx.add(vfx.Ring(blast, (255, 200, 90), event.value / 8, 16, 3))
-                fx.add(vfx.Flash(blast, round(event.value), (255, 150, 50), 12))
-                fx.dust(event.pos, 12, 2.2, 4, (90, 80, 76), 26)
+                fx.explosion(blast, event.value, ground=event.pos)
+                fx.dust(event.pos, 10, 2.2, 4, (90, 80, 76), 26)
                 words.add(sfx.BOOM, blast + Vec2(0, -14), "impact", 3, 40, 0.4, 2)
             elif kind == "reflect" and event.fighter is not None:
                 aura = self.fighter_defs[event.fighter].aura
@@ -649,6 +773,20 @@ class FightView:
                     self.words.add(move.shout, self._head(fighter), self._shout_style(i), 2, 46)
                 elif move.hits > 1:
                     self.words.add(sfx.DODODO, self._head(fighter), "menace", 2, 30, 0.4, 1)
+            if (
+                attack is not None
+                and attack.move.fx == "explosion"
+                and attack.active
+                and self._blown.get(i) != attack.serial
+            ):
+                # The fighter is the bomb: it goes off around them, as wide as the move.
+                self._blown[i] = attack.serial
+                radius = max(20.0, attack.move.radius)
+                center = fighter.pos + self.chest(i)
+                self.fx.explosion(center, radius, ground=fighter.pos, pieces=14)
+                self.impact(center, frames=2, punch=6)
+                self.shake = max(self.shake, 16)
+                self.words.add(sfx.BOOM, center + Vec2(0, -22), "impact", 3, 44, 0.3, 2)
             if fighter.state == State.BREATHE and fighter.state_f % 14 == 0:
                 # Ripples of Hamon spreading from the breathing fighter.
                 self.fx.add(vfx.Ring(fighter.pos + self.chest(i), (255, 214, 80), 1.8, 18, 1))
@@ -684,7 +822,18 @@ class FightView:
             self._seen[i] = (fighter.state, serial)
             self._block_word_f[i] = max(0, self._block_word_f[i] - 1)
 
+    def follow_arena(self, match: Match) -> None:
+        """Draw the arena the fight is really in: another one after an exit, the first
+        one again when a new round starts in it."""
+        name = match.arena.name
+        if name and name != self.renderer.stage.id:
+            from jojo_arena.stages import load_stage, stage_renderer
+
+            self.renderer = stage_renderer(load_stage(name))
+
     def update(self, match: Match | None = None) -> None:
+        if match is not None:
+            self.follow_arena(match)
         for view in self.fighter_views:
             view.throw_f = max(0, view.throw_f - 1)
         self.impact_f = max(0, self.impact_f - 1)
@@ -737,6 +886,8 @@ class FightView:
         if draw_sun is not None and match.arena.sun_windows:
             draw_sun(surface, match.arena, sun_amount(match), match.arena.sun_spread(match.tick))
         for fighter in match.fighters:
+            if hidden(fighter):
+                continue
             shadow = self.fighter_views[fighter.index].shadow
             blit_shadow(surface, (fighter.pos.x, fighter.pos.y), *shadow)
         for projectile in match.projectiles:
@@ -749,13 +900,14 @@ class FightView:
             aura = self.fighter_defs[web.owner].aura
             for a, b in web.edges:
                 vfx.draw_thread(surface, web.nodes[a], web.nodes[b], aura, self.tick)
+        self._draw_hazards_under(surface, match)
         for fighter in match.fighters:
             self._draw_falling_strike(surface, fighter)
         drawables = [(o.rect.bottom, 0, o) for o in match.arena.obstacles if o.solid]
-        drawables += [(f.pos.y, 1, f) for f in match.fighters]
+        drawables += [(f.pos.y, 1, f) for f in match.fighters if not hidden(f)]
         for fighter in match.fighters:
             view = self.fighter_views[fighter.index]
-            if view.stand_presence(fighter) > 0:
+            if view.stand_presence(fighter) > 0 and not hidden(fighter):
                 drawables.append((fighter.stand_spot().y, 2, fighter))
         for _, kind, item in sorted(drawables, key=lambda d: (d[0], d[1])):
             if kind == 0:
@@ -764,7 +916,11 @@ class FightView:
                 self.fighter_views[item.index].draw(surface, item, self.tick)
             else:
                 self.fighter_views[item.index].draw_stand(surface, item, self.tick)
+        for drop in match.arena.hazards.drops:
+            if drop.spot is not None:
+                vfx.draw_falling(surface, drop.defn.look, drop.spot, drop.warning)
         for fighter in match.fighters:
+            self._draw_hidden(surface, fighter, match)
             self._voice_of_move(fighter)
             self._draw_reach(surface, fighter)
             self._draw_rush(surface, fighter)
@@ -801,7 +957,8 @@ class FightView:
             aura = self.fighter_defs[user.index].aura
             glow = radial_glow(40, tuple(c // 2 for c in aura))
             blit_glow(surface, glow, user.pos + self.chest(user.index))
-            self.fighter_views[user.index].draw(surface, user, self.tick)
+            if not hidden(user):
+                self.fighter_views[user.index].draw(surface, user, self.tick)
         for spark in self.sparks:
             self._draw_spark(surface, spark)
         for center, age in self.waves:
@@ -1015,6 +1172,53 @@ class FightView:
             root = target + Vec2(math.cos(angle) * move.radius * 0.6, math.sin(angle) * 4)
             tip = root + Vec2(math.cos(angle) * 3, -26 * rise)
             vfx.draw_reach(surface, root, tip, aura, move.fx, 2)
+
+    def _draw_hazards_under(self, surface: pygame.Surface, match: Match) -> None:
+        """On the floor, under everyone: the wreck of what fell, the shadow of what is
+        about to, and spikes that have sprung."""
+        hazards = match.arena.hazards
+        for i, drop in enumerate(hazards.drops):
+            if drop.wreck_left > 0 and drop.wreck_at is not None:
+                vfx.draw_wreck(surface, drop.defn.look, drop.wreck_at, i * 31 + drop.turn)
+            if drop.spot is not None:
+                vfx.draw_drop_shadow(surface, drop.spot, drop.defn.radius, drop.warning)
+        for zone in hazards.zones:
+            if zone.sprung_left > 0 and zone.defn.rearm_f > 0:
+                rect = pygame.Rect(
+                    *(round(v) for v in (zone.defn.rect.x, zone.defn.rect.y)),
+                    round(zone.defn.rect.w),
+                    round(zone.defn.rect.h),
+                )
+                vfx.draw_spikes(surface, rect, zone.sprung_left / zone.defn.rearm_f)
+
+    def _draw_hidden(self, surface: pygame.Surface, fighter: Fighter, match: Match) -> None:
+        """A body that is not on screen still shows where it is: a mound of flesh running
+        under the floor, or something moving under the skin of the one it got into."""
+        if fighter.inside is not None:
+            host = match.fighters[fighter.inside]
+            height = self.fighter_views[host.index].height
+            for i in range(3):
+                phase = self.tick * 0.35 + i * 2.1
+                spot = host.pos + Vec2(math.sin(phase) * 4, -height * (0.3 + 0.2 * i))
+                radius = 3 + round(1.5 * (1 + math.sin(phase * 1.7)))
+                pygame.draw.circle(surface, OUTLINE, spot.as_ints(), radius + 1)
+                pygame.draw.circle(surface, FLESH, spot.as_ints(), radius)
+                surface.set_at((round(spot.x) - 1, round(spot.y) - 1), FLESH_LIGHT)
+            return
+        if not hidden(fighter):
+            return
+        # Under the floor: the ground heaves over him, and cracks behind.
+        pos = fighter.pos
+        bulge = 3 + (self.tick // 3) % 2
+        pygame.draw.ellipse(surface, OUTLINE, (pos.x - 11, pos.y - 3 - bulge, 22, 7 + bulge))
+        pygame.draw.ellipse(surface, MOUND, (pos.x - 10, pos.y - 2 - bulge, 20, 5 + bulge))
+        pygame.draw.ellipse(surface, FLESH, (pos.x - 4, pos.y - 2 - bulge, 8, 3))
+        for i in range(3):  # the floor cracking open around it
+            angle = i * 2.1 + self.tick * 0.05
+            tip = pos + Vec2(math.cos(angle) * 14, math.sin(angle) * 5)
+            pygame.draw.line(surface, OUTLINE, pos.as_ints(), tip.as_ints(), 1)
+        if self.tick % 4 == 0:
+            self.fx.dust(pos, 3, 0.8, 2, (120, 108, 100), 14)
 
     def _draw_clash(self, surface: pygame.Surface, match: Match) -> None:
         clash = match.clash
@@ -1287,6 +1491,8 @@ class FightView:
                 14 + move.radius * 0.9,
             )
             return
+        if move.fx == "explosion":
+            return  # a burst of effects as it goes off (see _observe), nothing held
         if move.fx == "shock":
             # A blow into the floor: it travels out along the ground, not out of a fist.
             grow = min(1.0, (attack.active_offset + 1) / max(1, move.active_f))

@@ -1,6 +1,6 @@
 """Part 2, second wave: the Pillar Men and the man who built himself a sun."""
 
-from helpers import NONE, OPEN_BOUNDS, make_duel, press, run
+from helpers import NONE, OPEN_BOUNDS, kinds, make_duel, press, run, run_held, run_until, walk
 
 from jojo_arena.characters import get_fighter, load_roster
 from jojo_arena.combat.arena import Arena
@@ -168,12 +168,75 @@ def test_kars_blades_reach_and_his_thrown_one_bounces():
     assert awakening.sun_immune and awakening.hh_cost > 0
 
 
-def test_santana_gets_inside_and_walks_you_about():
+def infiltrated(target: str = "jotaro_p3") -> Match:
+    """Santana's grab, landed: he is inside the opponent."""
+    match = make_duel("santana", target, p1=(150, 100), p2=(168, 100))
+    run_until(match, lambda m: m.fighters[0].inside is not None, 60, p1=press("special"))
+    return match
+
+
+def test_santana_gets_inside_walks_you_about_and_eats_you():
     grab = kit("santana").move("base", "special")
-    assert grab.possess_f > 0 and grab.unblockable and grab.drain > 0
-    match = make_duel("santana", "joseph_p2", p1=(150, 100), p2=(168, 100))
-    run(match, 40, p1=press("special"))
-    assert match.fighters[1].possessed_f > 0 or hits_on([], 1) == []
+    assert grab.infiltrate_f > 0 and grab.unblockable and grab.inside_dps > 0
+    match = infiltrated()
+    santana, host = match.fighters
+    assert host.possessed_f > 0 and host.possessor == 0
+    assert santana.invincible and santana.hurtboxes() == [], "nothing of him to hit"
+    hp, life = host.hp, santana.hp
+    start = host.pos.copy()
+    run_held(match, 30, p1=walk(0, 1))  # he steers the host's walk...
+    assert host.pos.y > start.y + 5
+    assert santana.pos == host.pos, "...and goes where it goes"
+    assert host.hp < hp and santana.hp >= life, "it eats while it is in there"
+    run_until(match, lambda m: m.fighters[0].inside is None, 200)
+    assert host.possessed_f == 0 and host.state == State.HITSTUN, "he tears back out"
+    assert santana.pos.distance_to(host.pos) > 10
+
+
+def test_mashing_pushes_santana_out_and_the_ripple_burns_him():
+    def stay(target: str, mash: bool) -> int:
+        match = infiltrated(target)
+        frames = 0
+        while match.fighters[0].inside is not None:
+            mashing = press("light") if mash and frames % 2 == 0 else NONE
+            match.step((NONE, mashing))
+            frames += 1
+        return frames
+
+    calm = stay("jotaro_p3", mash=False)
+    assert stay("jotaro_p3", mash=True) < calm * 0.8, "fighting back gets him out sooner"
+    assert stay("joseph_p2", mash=True) < stay("jotaro_p3", mash=True), "the Ripple repels him"
+    match = infiltrated("joseph_p2")
+    life = match.fighters[0].hp
+    events = []
+    while match.fighters[0].inside is not None:
+        events += match.step((NONE, press("light")))
+    assert match.fighters[0].hp < life and "hamon" in kinds(events), "and it burns him"
+
+
+def test_inside_someone_the_sun_cannot_reach_santana():
+    match = infiltrated()
+    assert match.fighters[0].sun_proof
+
+
+def test_santana_goes_under_the_floor_and_comes_up_under_you():
+    move = kit("santana").move("base", "heavy_alt")
+    assert move.burrow and move.leap > 0 and move.invincible_f >= move.startup_f
+    assert move.cooldown_f > 0 and not move.unblockable, "seen coming, it can be guarded"
+    match = make_duel("santana", "jotaro_p3", p1=(120, 100), p2=(250, 100))
+    events = run(match, 60, p1=press("heavy", move=(1.0, 0.0)))
+    assert hits_on(events, 1), "he travels the whole way under and strikes"
+
+
+def test_santana_takes_shots_in_and_answers_a_blow_with_bullets():
+    stance = kit("santana").move("base", "special_alt")
+    assert stance.reflect and stance.counter == "finger_bullets"
+    bullets = kit("santana").move("base", "finger_bullets").projectile
+    assert bullets is not None and bullets.look == "bullet" and bullets.count > 1
+    rib = kit("santana").move("base", "heavy")
+    assert rib.armor >= 1, "Diamond Records: the ribs answer a blow taken while out"
+    meat = kit("santana").move("base", "hha")
+    assert meat.projectile is not None and meat.projectile.drain > 0
 
 
 def test_stroheims_lamps_burn_the_undead_and_leave_the_living_alone():
@@ -317,3 +380,68 @@ def test_the_sun_stops_mattering_once_the_mask_is_on():
     match.arena.sun_spread_f = 1  # full daylight, straight away
     run(match, 120)
     assert kars.hp >= before - 1  # the light does nothing to him now
+
+
+def test_the_mask_does_not_come_off_between_rounds():
+    """Kars put the Stone Mask and the Red Stone on: the next round starts with the
+    Ultimate Life Form, not with a Pillar Man again."""
+    from jojo_arena.combat.arena import Arena
+    from jojo_arena.combat.rounds import Phase, Rounds
+    from jojo_arena.engine.actions import NEUTRAL
+
+    def arena():
+        return Arena(OPEN_BOUNDS, (Vec2(150, 100), Vec2(250, 100)))
+
+    rounds = Rounds((kit("kars"), kit("mannequin_blue")), RULES, arena, 2)
+    kars = rounds.match.fighters[0]
+    kars.hh = RULES.hh_max
+    kars.complete_awakening()
+    assert kars.awakened and kars.stance == "ultimate"
+
+    for _ in range(900):  # finish the round
+        if rounds.phase == Phase.FIGHT:
+            rounds.match.fighters[1].hurt(500)
+        rounds.step((NEUTRAL, NEUTRAL))
+        if rounds.round_number == 2 and rounds.phase == Phase.FIGHT:
+            break
+    assert rounds.round_number == 2
+    again = rounds.match.fighters[0]
+    assert again.awakened and again.stance == "ultimate"
+    assert again.sun_proof  # and the sun still means nothing to him
+
+
+def test_what_he_sends_off_as_an_animal_comes_back_fed():
+    """The hand he turns into a flesh-eating squirrel (jojowiki, Kars): it chases, it
+    bites, and what it eats goes back to him."""
+    match = make_duel("kars", "joseph_p2", p1=(150, 100), p2=(300, 100))
+    kars, joseph = match.fighters
+    kars.complete_awakening()
+    run(match, 4)
+    kars.hp = kars.max_hp - 150
+    hurt, fed = joseph.hp, kars.hp
+    run(match, 2, p1=press("heavy", move=(1.0, 0.0)))
+    run(match, 220)
+    assert joseph.hp < hurt  # it found him across the arena
+    assert kars.hp > fed  # and it brought him back a mouthful
+
+
+def test_the_wings_carry_him_further_than_he_can_walk():
+    """ "Bird-like wings that enable him to fly" (jojowiki, Kars)."""
+    match = make_duel("kars", "joseph_p2", p1=(150, 100), p2=(360, 100))
+    kars, joseph = match.fighters
+    kars.complete_awakening()
+    run(match, 4)
+    start = kars.pos.x
+    run(match, 60, p1=press("special", move=(1.0, 0.0)))
+    flown = kars.pos.x - start
+    assert flown > 150, flown  # further than a walk, in a third of a second
+    assert joseph.hp < joseph.max_hp  # and the landing is a blow
+
+
+def test_awakened_his_heart_heat_attack_is_not_the_blade_storm_any_more():
+    kit_ = kit("kars")
+    blades = kit_.move("light", "hha")
+    beasts = kit_.move("ultimate", "hha")
+    assert beasts is not blades
+    assert beasts.projectile is not None and beasts.projectile.origin == "ring"
+    assert beasts.projectile.count >= 5  # they close in from every side

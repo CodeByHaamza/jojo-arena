@@ -31,7 +31,7 @@ def all_entries(glossary):
 
 def test_every_entry_is_complete_and_its_picture_exists():
     glossary = load_glossary()
-    assert set(glossary) <= set(range(1, 10))
+    assert set(glossary) <= set(range(0, 10))  # 0 is the rules tab, not a part
     roster = {f.id for f in load_roster()}
     for part, sections in glossary.items():
         ids = [e.id for kind in KINDS for e in sections[kind]]

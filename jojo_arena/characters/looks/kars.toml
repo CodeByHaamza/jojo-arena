@@ -87,9 +87,11 @@ type = "boots"
 material = "band"
 tall = true
 
-# A light blade already out of the forearm.
+# The Light Blades: they come out of his forearms, he does not hold them.
 [[parts]]
-type = "sword"
+type = "arm_blade"
 material = "blade"
-length = 13
-guard = "guard"
+length = 17
+width = 1.7
+curve = 6.5
+back = 8

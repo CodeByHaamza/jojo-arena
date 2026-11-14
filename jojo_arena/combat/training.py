@@ -37,6 +37,7 @@ class Training:
         self.round_number = 0
         self.infinite_life = True
         self.infinite_hh = True
+        self.time_stop_mult = 1.0  # how long ZA WARUDO lasts here
         # combos[i] = the combo fighter i is landing on the other one
         self.combos = [Combo(), Combo()]
         self.match: Match
@@ -54,6 +55,7 @@ class Training:
         self.apply_options()
 
     def apply_options(self) -> None:
+        self.match.time_stop_mult = self.time_stop_mult
         for fighter in self.match.fighters:
             fighter.min_hp = 1 if self.infinite_life else 0
             if self.infinite_hh:

@@ -11,7 +11,7 @@ import random
 
 import pygame
 
-from jojo_arena.engine.effects import blit_glow, radial_glow
+from jojo_arena.engine.effects import blit_glow, blit_shadow, radial_glow
 from jojo_arena.engine.geometry import Vec2
 from jojo_arena.engine.sprites import shade
 
@@ -72,6 +72,12 @@ def draw_projectile(
         _draw_jet(surface, pos, d, aura)
     elif look == "wave":
         _draw_wave(surface, pos, d)
+    elif look == "ray":
+        _draw_ray(surface, pos, d)
+    elif look == "critter":
+        _draw_critter(surface, pos, d)
+    elif look == "flesh":
+        _draw_flesh(surface, pos, d)
     else:
         _draw_orb(surface, pos, radius, aura)
 
@@ -199,6 +205,53 @@ def _draw_spark(surface, pos: Vec2, d: Vec2) -> None:
     points = [pos - d * 5, pos - d * 2 + side * 2, pos + d * 1 - side * 2, pos + d * 4]
     pygame.draw.lines(surface, (255, 236, 120), False, [_ints(p) for p in points], 1)
     surface.set_at(_ints(pos + d * 4), (255, 255, 255))
+
+
+def _draw_ray(surface, pos: Vec2, d: Vec2) -> None:
+    """Sunlight focused through a bubble: a long thin ray, white at the core, gold at
+    the edges, with the light it spills on the floor."""
+    blit_glow(surface, radial_glow(9, (96, 84, 20)), (pos.x, pos.y))
+    head, tail = pos + d * 7, pos - d * 9
+    pygame.draw.line(surface, (240, 208, 60), _ints(head), _ints(tail), 3)
+    pygame.draw.line(surface, (255, 255, 255), _ints(head), _ints(pos - d * 5), 1)
+    surface.set_at(_ints(head), (255, 255, 255))
+
+
+def _draw_critter(surface, pos: Vec2, d: Vec2) -> None:
+    """A small animal running at you: a body, two ears, and a tail curled over its back.
+
+    Kars turns a hand into a flesh-eating squirrel; this is what the squirrel looks like
+    from above, at six pixels."""
+    side = _side(d)
+    head = pos + d * 2.5
+    body = [pos - d * 2 + side * 2, head + side * 1.4, head - side * 1.4, pos - d * 2 - side * 2]
+    pygame.draw.polygon(surface, OUTLINE, [_ints(p + d * 0.6) for p in body])
+    pygame.draw.polygon(surface, (142, 86, 46), [_ints(p) for p in body])
+    for way in (1, -1):
+        ear = head + side * way * 1.6 + d * 0.6
+        surface.fill(OUTLINE, (round(ear.x), round(ear.y) - 1, 1, 1))
+    surface.set_at(_ints(head + d * 0.5), (240, 220, 160))  # the teeth
+    # The tail, curled back over the body.
+    tail = [
+        pos - d * 3,
+        pos - d * 5 + side * 1.5,
+        pos - d * 4.5 + side * 3.5,
+        pos - d * 2 + side * 4,
+    ]
+    pygame.draw.lines(surface, OUTLINE, False, [_ints(p) for p in tail], 3)
+    pygame.draw.lines(surface, (190, 134, 80), False, [_ints(p) for p in tail], 1)
+
+
+def _draw_flesh(surface, pos: Vec2, d: Vec2) -> None:
+    """A lump of a Pillar Man's flesh thrown at you (Santana's Meat Invade): a raw blob
+    with a strand trailing behind it, back to the body it came from."""
+    tail = pos - d * 7
+    pygame.draw.line(surface, OUTLINE, _ints(pos), _ints(tail), 3)
+    pygame.draw.line(surface, (196, 92, 96), _ints(pos), _ints(tail), 1)
+    pygame.draw.circle(surface, OUTLINE, _ints(pos), 4)
+    pygame.draw.circle(surface, (214, 128, 120), _ints(pos), 3)
+    surface.set_at(_ints(pos - d + _side(d)), (150, 52, 62))
+    surface.set_at(_ints(pos + d - _side(d)), (246, 196, 180))
 
 
 def _draw_jet(surface, pos: Vec2, d: Vec2, aura) -> None:
@@ -492,6 +545,118 @@ class SpeedLines(Effect):
             pygame.draw.line(surface, color, _ints(start), _ints(end), 1)
 
 
+# Explosions: a fireball, its smoke, the pieces it throws and the sparks that rain back.
+
+FIRE_CORE = (255, 246, 214)
+FIRE_HOT = (255, 196, 80)
+FIRE_DEEP = (230, 92, 30)
+SMOKE = (58, 50, 54)
+
+
+class Fireball(Effect):
+    """The ball of fire itself: a few lumps of added light that swell, then cool from
+    white to orange to red as they fade."""
+
+    def __init__(self, center: Vec2, size: float, seed: int, life: int = 22) -> None:
+        super().__init__(life)
+        self.center, self.size = center, size
+        rng = random.Random(seed)
+        self.lumps = [
+            (Vec2.from_angle(rng.uniform(0, 6.283), rng.uniform(0.2, 0.6)), rng.uniform(0.5, 0.8))
+            for _ in range(5)
+        ]
+
+    def draw(self, surface: pygame.Surface) -> None:
+        t = self.age / self.life
+        grow = min(1.0, 0.35 + t * 2.2)
+        heat = 1 - t
+        for color, scale in ((FIRE_DEEP, 1.0), (FIRE_HOT, 0.7), (FIRE_CORE, 0.4)):
+            if scale < 1.0 and heat < 1.2 - scale:
+                continue  # the white core goes first, then the yellow
+            tone = tuple(round(c * min(1.0, heat * 1.6)) for c in color)
+            for offset, lump in self.lumps:
+                radius = max(2, round(self.size * grow * lump * scale))
+                at = self.center + offset * (self.size * grow) + Vec2(0, -self.age * 0.6)
+                blit_glow(surface, radial_glow(radius, tone, falloff=0.8), at)
+
+
+class Smoke(Effect):
+    """A puff of dark smoke that swells and drifts up out of a blast."""
+
+    def __init__(self, pos: Vec2, velocity: Vec2, size: float, life: int = 46) -> None:
+        super().__init__(life)
+        self.pos, self.velocity, self.size = pos, velocity, size
+
+    def update(self) -> None:
+        super().update()
+        self.pos = self.pos + self.velocity
+        self.velocity = Vec2(self.velocity.x * 0.92, self.velocity.y * 0.95 - 0.04)
+
+    def draw(self, surface: pygame.Surface) -> None:
+        radius = max(2, round(self.size * (0.5 + self.age / self.life)))
+        layer = pygame.Surface((radius * 2 + 2, radius * 2 + 2), pygame.SRCALPHA)
+        alpha = round(170 * min(1.0, self.fade * 1.5))
+        pygame.draw.circle(layer, (*SMOKE, alpha), (radius + 1, radius + 1), radius)
+        pygame.draw.circle(
+            layer, (96, 86, 88, alpha // 2), (radius, radius - radius // 3), max(1, radius // 2)
+        )
+        x, y = _ints(self.pos)
+        surface.blit(layer, (x - radius - 1, y - radius - 1))
+
+
+class Debris(Effect):
+    """A chunk thrown by a blast: it flies up, falls back with its shadow under it,
+    bounces once and lies there until it fades."""
+
+    def __init__(self, ground: Vec2, velocity: Vec2, rise: float, size: int, color, life=48):
+        super().__init__(life)
+        self.ground, self.velocity, self.size, self.color = ground, velocity, size, color
+        self.height, self.rise = 4.0, rise
+
+    def update(self) -> None:
+        super().update()
+        self.height += self.rise
+        self.rise -= 0.35
+        if self.height <= 0:
+            self.height = 0.0
+            self.rise = -self.rise * 0.35 if self.rise < -1.5 else 0.0
+            self.velocity = self.velocity * 0.5
+        self.ground = self.ground + self.velocity
+        self.velocity = self.velocity * 0.97
+
+    def draw(self, surface: pygame.Surface) -> None:
+        if self.fade < 0.15 and self.age % 2:
+            return  # blinks out
+        x, y = _ints(self.ground)
+        size = self.size
+        if self.height > 1:
+            blit_shadow(surface, (x, y), size + 2, max(2, size // 2))
+        top = y - round(self.height) - size
+        spin = (self.age // 3) % 2
+        w, h = (size, size - 1) if spin else (size - 1, size)
+        pygame.draw.rect(surface, OUTLINE, (x - w // 2 - 1, top - 1, w + 2, h + 2))
+        pygame.draw.rect(surface, self.color, (x - w // 2, top, w, h))
+        surface.fill(shade(self.color, 50), (x - w // 2, top, w, 1))
+
+
+class Ember(Effect):
+    """A spark thrown out of the fire, falling back and going out."""
+
+    def __init__(self, pos: Vec2, velocity: Vec2, life: int = 26) -> None:
+        super().__init__(life)
+        self.pos, self.velocity = pos, velocity
+
+    def update(self) -> None:
+        super().update()
+        self.pos = self.pos + self.velocity
+        self.velocity = Vec2(self.velocity.x * 0.96, self.velocity.y + 0.12)
+
+    def draw(self, surface: pygame.Surface) -> None:
+        tone = FIRE_CORE if self.age < self.life // 3 else FIRE_HOT
+        color = tuple(round(c * self.fade) for c in tone)
+        blit_glow(surface, radial_glow(2, color, falloff=1.0), self.pos)
+
+
 class EffectsLayer:
     def __init__(self) -> None:
         self.effects: list[Effect] = []
@@ -509,6 +674,50 @@ class EffectsLayer:
             direction = Vec2.from_angle(angle, spread)
             velocity = Vec2(direction.x, direction.y * 0.45)
             self.add(Dust(pos + velocity * 2, velocity, size, life, color or (176, 166, 150)))
+
+    def explosion(
+        self,
+        center: Vec2,
+        size: float,
+        ground: Vec2 | None = None,
+        debris=((120, 110, 104), (84, 76, 72)),
+        pieces: int = 10,
+    ) -> None:
+        """A whole explosion of `size` px at `center`: flash, fireball, shockwaves, smoke
+        rolling out and up, chunks of `debris` colors thrown around `ground` (the floor
+        under the blast), and embers raining back."""
+        self._seed += 1
+        rng = random.Random(self._seed * 7919)
+        ground = ground if ground is not None else center
+        self.add(Flash(center, round(size * 1.4), FIRE_CORE, 10))
+        self.add(Fireball(center, size, self._seed, life=round(16 + size * 0.25)))
+        self.add(Ring(center, FIRE_HOT, size / 7, 18, 3))
+        self.add(Ring(ground, (150, 130, 110), size / 11, 26, 2))
+        for i in range(max(4, round(size / 5))):
+            angle = 6.283 * i / max(4, round(size / 5)) + rng.uniform(-0.3, 0.3)
+            push = Vec2.from_angle(angle, rng.uniform(0.6, 1.4) * size / 24)
+            start = center + push * (size / 14)
+            velocity = Vec2(push.x, push.y * 0.5 - rng.uniform(0.2, 0.7))
+            self.add(Smoke(start, velocity, rng.uniform(0.18, 0.3) * size, rng.randint(36, 60)))
+        for _ in range(pieces):
+            angle = rng.uniform(0, 6.283)
+            velocity = Vec2.from_angle(angle, rng.uniform(0.8, 2.2) * size / 28)
+            velocity = Vec2(velocity.x, velocity.y * 0.5)
+            color = rng.choice(debris)
+            rise = rng.uniform(2.0, 4.5)
+            self.add(Debris(ground, velocity, rise, rng.randint(2, 4), color, rng.randint(40, 70)))
+        for _ in range(round(size / 2.5)):
+            angle = rng.uniform(3.4, 6.0)  # mostly upward
+            velocity = Vec2.from_angle(angle, rng.uniform(1.2, 3.2) * min(2.0, size / 30))
+            self.add(Ember(center, velocity, rng.randint(18, 34)))
+
+    def smoke_column(self, base: Vec2, size: float) -> None:
+        """One more puff for smoke still rising off something burning."""
+        self._seed += 1
+        rng = random.Random(self._seed * 104729)
+        drift = Vec2(rng.uniform(-0.3, 0.3), -rng.uniform(0.5, 1.0))
+        spot = base + Vec2(rng.uniform(-size, size) * 0.4, 0)
+        self.add(Smoke(spot, drift, rng.uniform(0.25, 0.4) * size, rng.randint(40, 60)))
 
     def focus(self, center: Vec2, heavy: bool) -> None:
         self._seed += 1
@@ -820,3 +1029,176 @@ def draw_thread(surface: pygame.Surface, a: Vec2, b: Vec2, color, tick: int) -> 
     pygame.draw.line(surface, shade(color, -70), _ints(a), _ints(b), 1)
     t = ((tick * 0.03) + (a.x + b.y) * 0.01) % 1.0
     blit_glow(surface, radial_glow(3, shade(color, -20)), a + (b - a) * t)
+
+
+# Status effects: what a body looks like while something keeps working on it ------------
+
+FLAME = ((216, 84, 28), (240, 144, 28), (255, 224, 112))
+FROST = ((90, 154, 216), (154, 216, 255), (255, 255, 255))
+CURRENT = ((240, 208, 32), (255, 251, 200))
+
+
+def draw_burning(surface: pygame.Surface, center: Vec2, height: float, tick: int) -> None:
+    """Flames standing up off a body: three tongues, each on its own rhythm, leaning the
+    way a flame leans as it rises."""
+    dark, mid, pale = FLAME
+    # Along the body and at the feet, never over the face: the fighter has to stay
+    # readable while he burns.
+    for i, (side, level) in enumerate(((-1, 0.12), (1, 0.38), (-1, 0.62))):
+        phase = tick * 0.34 + i * 2.1
+        x = center.x + side * 5 + math.sin(phase) * 1.6
+        base = center.y - height * level
+        tall = 5 + round(2.5 * (1 + math.sin(phase * 1.7)))
+        lean = math.sin(phase * 0.8) * 1.8
+        tip = Vec2(x + lean, base - tall)
+        pygame.draw.line(surface, dark, (round(x), round(base)), _ints(tip), 3)
+        pygame.draw.line(surface, mid, (round(x), round(base)), _ints(tip), 1)
+        surface.fill(pale, (round(tip.x), round(tip.y), 1, 1))
+    glow = radial_glow(round(height * 0.5), (72, 24, 4))
+    blit_glow(surface, glow, center + Vec2(0, -height * 0.4))
+
+
+def draw_frozen(surface: pygame.Surface, center: Vec2, height: float, tick: int) -> None:
+    """Frost on a body: little crystals that catch the light one after another."""
+    cold, ice, white = FROST
+    for i in range(5):
+        angle = math.tau * i / 5 + tick * 0.02
+        spot = center + Vec2(math.cos(angle) * 7, -height * 0.5 + math.sin(angle) * 6)
+        lit = (tick // 6 + i) % 5 == 0
+        color = white if lit else (ice if i % 2 else cold)
+        x, y = _ints(spot)
+        surface.fill(color, (x - 1, y, 3, 1))
+        surface.fill(color, (x, y - 1, 1, 3))
+    blit_glow(
+        surface, radial_glow(round(height * 0.45), (12, 36, 64)), center + Vec2(0, -height * 0.45)
+    )
+
+
+def draw_current(surface: pygame.Surface, center: Vec2, height: float, tick: int) -> None:
+    """A current running over a body: short arcs that jump somewhere else every frame."""
+    gold, white = CURRENT
+    rng = random.Random(tick // 2)
+    for _ in range(3):
+        top = center + Vec2(rng.uniform(-6, 6), -height * rng.uniform(0.25, 0.85))
+        point = top
+        for step in range(3):
+            point = point + Vec2(rng.uniform(-4, 4), rng.uniform(2, 5))
+            color = white if step == 0 else gold
+            pygame.draw.line(surface, color, _ints(top), _ints(point), 1)
+            top = point
+    if (tick // 3) % 2 == 0:
+        blit_glow(
+            surface, radial_glow(round(height * 0.4), (56, 48, 8)), center + Vec2(0, -height * 0.4)
+        )
+
+
+STATUS_DRAWINGS = {"burn": draw_burning, "chill": draw_frozen, "shock": draw_current}
+
+
+def draw_statuses(surface: pygame.Surface, center: Vec2, height: float, names, tick: int) -> None:
+    """Whatever is burning, freezing or crackling on this body, drawn over it."""
+    for name in names:
+        drawing = STATUS_DRAWINGS.get(name)
+        if drawing is not None:
+            drawing(surface, center, height, tick)
+
+
+# Arena hazards: things that fall, spikes that spring --------------------------------
+
+BRASS, BRASS_DARK, BRASS_LIGHT = (196, 150, 64), (128, 92, 40), (250, 214, 120)
+CANDLE = (255, 236, 190)
+SNOW, SNOW_SHADE = (232, 238, 248), (176, 188, 212)
+SPIKE, SPIKE_LIGHT = (164, 160, 168), (226, 224, 230)
+
+
+def draw_drop_shadow(surface: pygame.Surface, spot: Vec2, radius: float, warning: float) -> None:
+    """The floor going dark where something is about to land: it grows as it falls."""
+    size = max(2, round(radius * (0.35 + 0.65 * warning)))
+    alpha = round(60 + 110 * warning)
+    shadow = pygame.Surface((size * 2, size), pygame.SRCALPHA)
+    pygame.draw.ellipse(shadow, (0, 0, 0, alpha), shadow.get_rect())
+    surface.blit(shadow, (round(spot.x) - size, round(spot.y) - size // 2))
+    if warning > 0.5:  # the last moment: a ring that says "move"
+        pygame.draw.ellipse(
+            surface,
+            (255, 90, 70),
+            (round(spot.x - radius), round(spot.y - radius / 2), round(radius * 2), round(radius)),
+            1,
+        )
+
+
+def draw_chandelier(surface: pygame.Surface, center: Vec2, scale: float = 1.0) -> None:
+    """A brass chandelier seen from above: a ring of arms, a candle on each."""
+    ring = max(4, round(12 * scale))
+    pygame.draw.circle(surface, OUTLINE, _ints(center), ring + 2)
+    pygame.draw.circle(surface, BRASS_DARK, _ints(center), ring + 1, 2)
+    pygame.draw.circle(surface, BRASS, _ints(center), ring, 1)
+    for i in range(8):
+        arm = center + Vec2.from_angle(math.tau * i / 8, ring)
+        pygame.draw.line(surface, BRASS_DARK, _ints(center), _ints(arm), 1)
+        surface.fill(CANDLE, (round(arm.x), round(arm.y) - 2, 1, 2))
+    pygame.draw.circle(surface, BRASS_LIGHT, _ints(center), max(2, ring // 3))
+
+
+def draw_chandelier_wreck(surface: pygame.Surface, spot: Vec2, seed: int) -> None:
+    """What is left on the floor: a bent ring, arms snapped off, glass everywhere."""
+    rng = random.Random(seed)
+    pygame.draw.ellipse(surface, OUTLINE, (spot.x - 13, spot.y - 6, 26, 12), 2)
+    pygame.draw.ellipse(surface, BRASS_DARK, (spot.x - 12, spot.y - 5, 24, 10), 1)
+    for _ in range(14):
+        piece = spot + Vec2(rng.uniform(-22, 22), rng.uniform(-9, 9))
+        color = rng.choice((BRASS, BRASS_DARK, (210, 230, 240)))
+        surface.fill(color, (round(piece.x), round(piece.y), rng.choice((1, 2)), 1))
+
+
+def draw_snow_slab(surface: pygame.Surface, center: Vec2, scale: float = 1.0) -> None:
+    w, h = max(4, round(22 * scale)), max(3, round(12 * scale))
+    rect = pygame.Rect(0, 0, w, h)
+    rect.center = _ints(center)
+    pygame.draw.rect(surface, OUTLINE, rect.inflate(2, 2), border_radius=3)
+    pygame.draw.rect(surface, SNOW, rect, border_radius=3)
+    surface.fill(SNOW_SHADE, (rect.x + 1, rect.bottom - 3, rect.w - 2, 2))
+
+
+def draw_snow_wreck(surface: pygame.Surface, spot: Vec2, seed: int) -> None:
+    rng = random.Random(seed)
+    for _ in range(9):
+        piece = spot + Vec2(rng.uniform(-18, 18), rng.uniform(-7, 7))
+        size = rng.randint(3, 6)
+        pygame.draw.ellipse(surface, SNOW_SHADE, (piece.x, piece.y + 1, size, size // 2 + 1))
+        pygame.draw.ellipse(surface, SNOW, (piece.x, piece.y, size, size // 2 + 1))
+
+
+DROP_LOOKS = {"chandelier": draw_chandelier, "snow_slab": draw_snow_slab}
+WRECK_LOOKS = {"chandelier": draw_chandelier_wreck, "snow_slab": draw_snow_wreck}
+DROP_FALL = 0.35  # the last share of the warning, the thing is visibly falling
+
+
+def draw_falling(surface: pygame.Surface, look: str, spot: Vec2, warning: float) -> None:
+    """The thing itself, dropping from the top of the screen onto its shadow."""
+    drawing = DROP_LOOKS.get(look)
+    if drawing is None or warning < 1 - DROP_FALL:
+        return
+    t = (warning - (1 - DROP_FALL)) / DROP_FALL
+    height = (1 - t * t) * (spot.y + 20)
+    drawing(surface, spot - Vec2(0, height), 0.8 + 0.2 * t)
+
+
+def draw_wreck(surface: pygame.Surface, look: str, spot: Vec2, seed: int) -> None:
+    drawing = WRECK_LOOKS.get(look)
+    if drawing is not None:
+        drawing(surface, spot, seed)
+
+
+def draw_spikes(surface: pygame.Surface, rect: pygame.Rect, up: float) -> None:
+    """Spikes standing up out of a pit: `up` 1 when they have just sprung."""
+    if up <= 0:
+        return
+    tall = max(1, round(9 * min(1.0, up * 2)))
+    for y in range(rect.top + 6, rect.bottom - 1, 8):
+        for x in range(rect.left + 4 + (y // 8 % 2) * 4, rect.right - 3, 8):
+            pygame.draw.polygon(
+                surface, OUTLINE, [(x - 2, y + 1), (x + 1, y - tall - 1), (x + 4, y + 1)]
+            )
+            pygame.draw.polygon(surface, SPIKE, [(x - 1, y), (x + 1, y - tall), (x + 3, y)])
+            surface.set_at((x + 1, y - tall), SPIKE_LIGHT)

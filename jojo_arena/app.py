@@ -197,14 +197,20 @@ def build_first_scene(ctx: GameContext, args: argparse.Namespace) -> Scene:
 def replay_scene(ctx: GameContext, path: Path) -> Scene:
     """The fight a replay was recorded in, fed with its recorded inputs."""
     from jojo_arena.combat.replay import load_replay
+    from jojo_arena.stages.base import StageOptions
 
     replay = load_replay(path)
     meta = replay.meta
     fighters = tuple(meta["fighters"])
+    # A replay from before arena events existed was played without them.
+    recorded = meta.get("stage_options")
+    options = StageOptions.from_data(recorded) if recorded else StageOptions(events=False)
     if meta.get("mode") == "training":
         from jojo_arena.ui.training_scene import TrainingScene
 
-        scene = TrainingScene(ctx, fighter_ids=fighters, stage_id=meta["stage"])
+        scene = TrainingScene(
+            ctx, fighter_ids=fighters, stage_id=meta["stage"], stage_options=options
+        )
     else:
         from jojo_arena.ui.fight_scene import FightScene
 
@@ -213,6 +219,7 @@ def replay_scene(ctx: GameContext, path: Path) -> Scene:
             rounds_to_win=meta.get("rounds_to_win", 3),
             fighter_ids=fighters,
             stage_id=meta["stage"],
+            stage_options=options,
         )
     scene.playback = replay
     return scene

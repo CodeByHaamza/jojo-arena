@@ -72,6 +72,7 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `shape` | `circle` (un cercle à `reach`) ou `line` (une ligne du corps jusqu'à `reach`, sans angle mort de près) |
 | `at_target` | La zone tombe là où se trouvait l'adversaire au début du coup ; `reach` sert alors de **distance maximale** de largage (0 = sans limite) |
 | `leap` | Bond pendant le démarrage, jusqu'à cette distance |
+| `burrow` | Avec `leap` : le perso file sous le sol pendant le démarrage (seule une bosse du sol est dessinée) ; à combiner avec `invincible_f` |
 | `leap_to` | Vers l'adversaire (`target`, s'arrête à côté de lui) ou vers le point visé (`cursor` : souris, sinon stick droit, sinon direction tenue) |
 | `leap_height` | Hauteur du saut à l'écran (0 = glisse au sol, comme un grappin) |
 | `pull` | Aspire l'adversaire vers le perso à chaque image active (vitesse) : tornade, veines autour de la cheville |
@@ -97,6 +98,7 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `blood_cost` | Style vampire : le coup ne sort qu'avec assez de sang, et le dépense |
 | `hp_cost` | Le coup s'arrache à son auteur : il ne sort que s'il reste plus de vie que ça, et la prend au départ (Final Mode de Wamuu) |
 | `freeze_f` | Touché net, l'adversaire est gelé sur place ce nombre d'images (gel vaporisant) |
+| `status`, `status_s` | Touché net (jamais gardé), le coup laisse une altération d'état pendant cette durée : `burn` (le feu : des dégâts par seconde et aucune régénération tant que ça brûle), `chill` (le froid : marche ralentie, plus de respiration du Hamon ni de sang bu) ou `shock` (le courant : dégâts, marche ralentie, plus de Heart Heat gagné, et la jauge de garde qui se défait). Les durées et les effets sont dans `[status]` de `combat/rules.toml`, et la page du glossaire les décrit au joueur. Un deuxième coup relance l'altération, il ne l'empile pas |
 | `finish_drain` | Part des dégâts du coup final d'une cinématique rendue en vie |
 | `detonate` | Au premier tir de son projectile, tous les pièges du perso explosent (avec ce même projectile) et ses grenades encore au sol sautent aussitôt (le plan caché de Joseph) |
 | `cage_s`, `cage_radius` | Touché net : un anneau de chaînes de ce rayon se ferme autour des deux combattants, ce nombre de secondes ; personne n'en sort (Tarkus) |
@@ -110,6 +112,8 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `counter` | Coup de contre : un coup au corps à corps reçu pendant la phase active est annulé, et ce coup-ci (le nom d'un autre coup) part aussitôt |
 | `reflect` | Tant que le coup est actif, un projectile qui atteint le perso repart en sens inverse et devient le sien (le Snake Muffler de Lisa Lisa) |
 | `possess_s` | Coup du Stand piloté : s'il touche, tu diriges la marche de l'adversaire pendant cette durée |
+| `infiltrate_s` | Le corps entier du perso entre dans celui de l'adversaire s'il touche (Santana) : il disparaît (plus de hitbox, le soleil ne l'atteint plus), dirige la marche de l'hôte pendant cette durée et le mange. L'hôte le chasse plus vite en martelant n'importe quel bouton ; l'Onde le chasse encore plus vite et le brûle (`[infiltration]` dans `rules.toml`) |
+| `inside_dps` | Avec `infiltrate_s` : dégâts par seconde infligés de l'intérieur ; `drain` en rend cette part au perso |
 | `armor` | Nombre de coups encaissés sans broncher pendant le démarrage et la phase active (on prend les dégâts) |
 
 ### Rafales
@@ -158,7 +162,10 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `drag` | Part de sa vitesse gardée à chaque image (sous 1 : il ralentit jusqu'à s'arrêter) |
 | `wall_bounce` | Ce qu'il touche rebondit contre les murs |
 | `bounces` | Ricochet : le tir lui-même repart du mur, ce nombre de fois (lame lancée de Kars) |
-| `look` | Dessin : `orb`, `knife`, `gem`, `blade`, `wine`, `hat`, `clacker`, `grenade`, `bubble`, `bullet`, `spark`, `jet` |
+| `look` | Dessin : `orb`, `knife`, `gem`, `blade`, `wine`, `hat`, `clacker`, `grenade`, `bubble`, `bullet`, `spark`, `jet`, `ray` (un rayon de lumière focalisée) |
+| `hamon` | Le projectile lui-même porte l'onde : il brûle double sur les vampires, zombies et Hommes du Pilier, même tiré par un piège (les lentilles de Caesar concentrent la lumière du soleil) |
+| `status`, `status_s` | Comme pour un coup : ce qu'il laisse sur qui il touche |
+| `drain` | Part des dégâts rendue en vie à son lanceur (l'écureuil carnivore de Kars mange ce qu'il mord) |
 
 ## Pièges
 
@@ -171,6 +178,7 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `lifetime_s` | Durée de vie |
 | `max_count` | Nombre maximum ; le plus ancien disparaît |
 | `projectile` | Ce qu'il tire (comme un projectile) |
+| `fragile` | Un coup encaissé par son poseur fait éclater le piège sur place, sans tirer (les bulles de Caesar : « a Lens will harmlessly pop if Caesar is staggered or takes damage ») |
 
 ## Toile
 

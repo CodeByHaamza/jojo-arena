@@ -215,6 +215,8 @@ knockback = 140
 hitstop_f = 5
 count = 3
 spread_deg = 20
+status = "burn"
+status_s = 2.0
 
 [stances.flame.moves.heavy_alt]
 label = "VEINES EN FAISCEAU"
@@ -241,6 +243,8 @@ count = 2
 spread_deg = 12
 waves = 2
 wave_every_f = 12
+status = "burn"
+status_s = 1.6
 
 [stances.flame.moves.special]
 label = "VEINES DÉCHAÎNÉES"
@@ -264,6 +268,8 @@ last_knockback = 400
 last_wall_bounce = true
 hitstop_f = 1
 anim = "light"
+status = "burn"
+status_s = 1.2
 
 [stances.flame.moves.special_alt]
 label = "SANG QUI COLLE"
@@ -290,6 +296,8 @@ lifetime_s = 0.7
 hitstun_f = 24
 knockback = 170
 hitstop_f = 6
+status = "burn"
+status_s = 2.0
 
 # Super moves -----------------------------------------------------------------------------
 
@@ -317,6 +325,8 @@ knockback = 260
 hitstop_f = 7
 count = 5
 spread_deg = 44
+status = "burn"
+status_s = 2.2
 
 # Great Heat Attack (2 bars): the tears. He weeps, and what falls is boiling.
 [moves.gha]

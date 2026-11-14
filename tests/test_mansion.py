@@ -14,7 +14,13 @@ from jojo_arena.engine.display import Display
 from jojo_arena.engine.geometry import Vec2
 from jojo_arena.engine.input import InputManager
 from jojo_arena.engine.scene import SceneManager
-from jojo_arena.stages import STAGE_IDS, load_stage, stage_for_part, stage_renderer
+from jojo_arena.stages import (
+    REACHED_IDS,
+    STAGE_IDS,
+    load_stage,
+    stage_for_part,
+    stage_renderer,
+)
 from jojo_arena.ui.fight_view import sun_amount
 from jojo_arena.ui.setup_scene import SetupScene
 from jojo_arena.ui.stage_scene import StageSelectScene
@@ -39,7 +45,7 @@ def test_each_part_plays_in_its_own_arena():
     assert stage_for_part(9) == STAGE_IDS[0]  # no arena of its own yet
 
 
-@pytest.mark.parametrize("stage_id", STAGE_IDS)
+@pytest.mark.parametrize("stage_id", STAGE_IDS + REACHED_IDS)
 def test_every_arena_draws_at_night_and_at_dawn(stage_id, monkeypatch):
     monkeypatch.setenv("SDL_VIDEODRIVER", "dummy")
     pygame.display.init()

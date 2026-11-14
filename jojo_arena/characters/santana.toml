@@ -1,11 +1,28 @@
 # Santana (Part 2) - the Pillar Man who never mastered a Mode. GDD: "Homme du Pilier -
-# Corps à corps brut": no technique, no ornament, no style key - only a body that opens
-# where it likes and gets inside yours. Frames (_f) are at 60 per second.
+# Infiltration. Rapide, insaisissable, fragile au soleil. Corps flexible : se glisse dans
+# les murs, le sol ou par de petits trous. Au contact, entre dans le corps de l'adversaire
+# et l'absorbe (dégâts sur la durée). Côtes qui jaillissent en lames de près."
+# Frames (_f) are at 60 per second.
 #
-# Nature "pillar_man": the Ripple burns him double, and the sun burns him outright.
-# He has no Mode, so the style key does nothing: everything he has is in reach of his
-# arms. In exchange he is the hardest of them to put down.
-# Feel: an animal that happens to be older than language.
+# Sources (searched 18/10/2026; jojowiki.com could not be opened from here, so the
+# details come from search results quoting it and the fandom wiki):
+#   - JoJo Wiki "Santana" / "Pillar Men": he reshapes his body at will, breaks his own
+#     bones to slip through the grate of an air vent, gets inside a soldier's body to
+#     steer it and eat it from the inside; the Ripple repels that digestion. Rib Sword:
+#     his ribs come out of his chest as blades, each one moving on its own (825 kg/cm²);
+#     Stroheim puts the pressure of his finger at 975 kg/cm². Meat Invade: he breaks his
+#     flesh into pieces that fasten onto Joseph. Shot by the soldiers, he takes the
+#     bullets in and fires them back out of his fingertips. To escape the sun he hides
+#     inside Stroheim's leg.
+#   - Games: Santana is NOT playable in All-Star Battle R nor in Eyes of Heaven, so there
+#     is no ASBR or EoH list to follow. The one fighting moveset is Diamond Records
+#     (JoJo Wiki "Diamond Records/Santana"): kick and hand-strike combos, the rib attack
+#     that counters a blow taken while it is out, a stretched index finger, Meat Invade
+#     going into the body for several hits while he heals, and fingertip bullets.
+#
+# Nature "pillar_man": the Ripple burns him double, and the sun burns him outright - but
+# not while he is inside someone. He has no Mode, so the style key does nothing.
+# Feel: an animal that happens to be older than language, and gets in where it likes.
 
 name = "Santana"
 max_hp = 1250
@@ -16,11 +33,12 @@ nature = "pillar_man"
 label = "SANS MODE"
 label_en = "NO MODE"
 
+# Diamond Records: hand strikes and kicks, ending on the finger.
 [stances.base.moves.light]
 label = "PAUME DU PILIER"
 label_en = "PILLAR PALM"
-info = "Court et lourd. Encore : revers, puis coup de tête"
-info_en = "Short and heavy. Again: backhand, then headbutt"
+info = "Court et lourd. Encore : coup de pied, puis le doigt"
+info_en = "Short and heavy. Again: a kick, then the finger"
 startup_f = 6
 active_f = 3
 recovery_f = 11
@@ -34,52 +52,58 @@ cancel_on_hit = ["light", "heavy", "special"]
 chain = "light2"
 
 [stances.base.moves.light2]
-label = "REVERS DE PIERRE"
-label_en = "STONE BACKHAND"
-info = "S'enchaîne sur le poing"
-info_en = "Follows the punch"
+label = "COUP DE PIED DU PILIER"
+label_en = "PILLAR KICK"
+info = "S'enchaîne sur la paume"
+info_en = "Follows the palm"
 startup_f = 6
 active_f = 3
 recovery_f = 13
 damage = 36
-reach = 15
+reach = 18
 radius = 12
 hitstun_f = 22
 knockback = 130
 hitstop_f = 6
 cancel_on_hit = ["light", "heavy", "special"]
 chain = "light3"
-anim = "heavy"
+anim = "kick"
 
+# Stroheim measured it: 975 kg/cm² behind one finger. A thin, long poke, not a fist.
 [stances.base.moves.light3]
-label = "COUP DE TÊTE DU PILIER"
-label_en = "PILLAR HEADBUTT"
-info = "Fin de l'enchaînement : envoie contre le mur"
-info_en = "Chain ender: sends into the wall"
-startup_f = 8
+label = "DOIGT DE 975 KG"
+label_en = "975 KG FINGER"
+info = "Fin de l'enchaînement : un index tendu qui perce et envoie au mur"
+info_en = "Chain ender: one stretched index finger that pierces and sends to the wall"
+shape = "line"
+fx = "limb"
+startup_f = 9
 active_f = 4
 recovery_f = 20
-damage = 52
-reach = 13
-radius = 12
+damage = 50
+reach = 30
+radius = 5
 hitstun_f = 32
 knockback = 370
 hitstop_f = 10
 wall_bounce = true
+guard_damage = 1.8
 cancel_on_hit = ["special"]
-anim = "headbutt"
+anim = "special"
 
-# The rib blades: they come out of the chest, and they go through a guard.
+# Rib Sword: the ribs come out of his chest. Diamond Records: struck while they are out,
+# they answer anyway - one blow taken does not stop them.
 [stances.base.moves.heavy]
-label = "LAMES DE CÔTES"
-label_en = "RIB BLADES"
-info = "Ses côtes sortent de sa poitrine et transpercent ; casse la garde"
-info_en = "His ribs come out of his chest and run you through; crushes guards"
+label = "ÉPÉE DE CÔTES"
+label_en = "RIB SWORD"
+info = "Ses côtes sortent en lames ; encaisse un coup sans broncher et casse la garde"
+info_en = "His ribs come out as blades; takes one blow without flinching, crushes guards"
 shape = "line"
 fx = "blade"
 startup_f = 15
 active_f = 4
 recovery_f = 22
+armor = 1
 damage = 68
 reach = 34
 radius = 7
@@ -90,37 +114,44 @@ wall_bounce = true
 guard_damage = 2.4
 anim = "special"
 
+# GDD: he slips into the floor. Under it nothing touches him; he comes up under you -
+# but the floor heaves where he is, so a guard that sees it coming holds, and coming
+# up leaves him open.
 [stances.base.moves.heavy_alt]
-label = "CORPS QUI COULE"
-label_en = "FLOWING BODY"
-info = "Avec une direction : son corps se déforme et le traverse, imparable"
-info_en = "With a direction: his body deforms and goes straight through, unblockable"
-startup_f = 13
-active_f = 10
-recovery_f = 22
-lunge = 240
-unblockable = true
-damage = 50
-reach = 13
-radius = 12
-hitstun_f = 26
-knockback = 220
-hitstop_f = 8
-anim = "dash"
+label = "SOUS LE SOL"
+label_en = "UNDER THE FLOOR"
+info = "Avec une direction : il coule dans le sol, file sous l'adversaire et ressort"
+info_en = "With a direction: he sinks into the floor, runs under the opponent, comes up"
+startup_f = 22
+active_f = 5
+recovery_f = 34
+leap = 150
+burrow = true
+invincible_f = 22
+cooldown_s = 4
+damage = 44
+reach = 0
+radius = 16
+hitstun_f = 30
+knockback = 260
+hitstop_f = 9
+anim = "uppercut"
 
-# What he did to a whole room of soldiers: he gets inside, and walks you about.
+# What he did to a soldier: he gets inside, and walks you about while he eats. Mash any
+# button to push him out; the Ripple pushes him out three times faster, and burns him.
 [stances.base.moves.special]
 label = "INFILTRATION"
 label_en = "GETTING INSIDE"
-info = "Saisie : il entre dans le corps de l'adversaire et le dirige 1,5 s en buvant"
-info_en = "A grab: he gets inside the opponent and walks them about for 1.5 s, drinking"
+info = "Saisie : il entre dans ton corps 2 s, te dirige et te mange. Martèle pour le chasser"
+info_en = "A grab: he gets inside you for 2 s, steers you and eats you. Mash to push him out"
 startup_f = 18
 active_f = 5
 recovery_f = 28
 unblockable = true
-damage = 44
-drain = 0.4
-possess_s = 1.5
+damage = 20
+infiltrate_s = 2.0
+inside_dps = 48
+drain = 0.6
 reach = 14
 radius = 12
 hitstun_f = 20
@@ -129,52 +160,77 @@ hitstop_f = 12
 cooldown_s = 9
 anim = "grab"
 
+# The soldiers' bullets: he takes them in, and gives them back out of his fingertips.
+# Shots that reach him fly back; a blow that reaches him gets the bullets point-blank.
 [stances.base.moves.special_alt]
-label = "BRAS ÉTIRÉ"
-label_en = "STRETCHED ARM"
-info = "Avec une direction : son bras s'allonge et le ramène à lui"
-info_en = "With a direction: his arm stretches out and drags them back to him"
-shape = "line"
-fx = "limb"
-startup_f = 14
-active_f = 5
-recovery_f = 22
-damage = 40
-drain = 0.25
-reach = 76
-radius = 6
-hitstun_f = 30
-knockback = -280
-hitstop_f = 7
+label = "BALLES RENDUES"
+label_en = "BULLETS RETURNED"
+info = "Avec une direction : il absorbe ; les tirs repartent, un coup reçoit les balles"
+info_en = "With a direction: he takes it in; shots fly back, a blow gets the bullets"
+startup_f = 5
+active_f = 26
+recovery_f = 16
+reflect = true
+counter = "finger_bullets"
+anim = "counter"
+
+[stances.base.moves.finger_bullets]
+shout = "..."
+label = "BALLES DES DOIGTS"
+label_en = "FINGERTIP BULLETS"
+info = "La réponse : les balles avalées ressortent du bout de ses doigts"
+info_en = "The answer: the bullets he swallowed come back out of his fingertips"
+startup_f = 3
+active_f = 2
+recovery_f = 18
+invincible_f = 8
 anim = "special"
+
+[stances.base.moves.finger_bullets.projectile]
+look = "bullet"
+speed = 460
+radius = 4
+damage = 18
+lifetime_s = 0.9
+hitstun_f = 18
+knockback = 120
+hitstop_f = 3
+count = 5
+spread_deg = 30
+waves = 2
+wave_every_f = 5
 
 # Super moves -----------------------------------------------------------------------------
 
+# Heart Heat Attack (1 bar): Meat Invade. His flesh breaks into pieces that fly at you,
+# fasten on and eat (Diamond Records: several hits while he heals).
 [moves.hha]
 shout = "..."
-label = "ÉTREINTE DU PILIER"
-label_en = "PILLAR'S EMBRACE"
-info = "Son corps coule et se referme sur toi ; imparable, et il boit en même temps"
-info_en = "His body flows and closes over you; unblockable, and he drinks as it goes"
-startup_f = 16
-active_f = 5
+label = "MEAT INVADE"
+info = "Sa chair se détache en morceaux qui te poursuivent, s'accrochent et le soignent"
+info_en = "His flesh breaks off in lumps that chase you, fasten on, and heal him"
+startup_f = 14
+active_f = 4
 recovery_f = 26
-invincible_f = 16
-unblockable = true
-damage = 150
-drain = 0.4
-reach = 30
-radius = 14
-hitstun_f = 36
-knockback = 400
-hitstop_f = 12
-wall_bounce = true
+invincible_f = 14
 clashable = false
-anim = "grab"
+anim = "special"
 
-# Great Heat Attack (2 bars): he takes the whole body in, the way he took the room.
-fx = "tentacle"
-shape = "line"
+[moves.hha.projectile]
+look = "flesh"
+speed = 250
+radius = 6
+damage = 30
+lifetime_s = 1.6
+hitstun_f = 24
+knockback = 60
+hitstop_f = 4
+count = 6
+spread_deg = 120
+homing_deg_s = 220
+drain = 0.5
+
+# Great Heat Attack (2 bars): he takes the whole body in, the way he took the soldier.
 [moves.gha]
 label = "ABSORPTION TOTALE"
 label_en = "TOTAL ABSORPTION"

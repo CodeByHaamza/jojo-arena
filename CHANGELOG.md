@@ -8,6 +8,25 @@ des corrections seules une patch.
 
 ### Ajouté
 
+- **Options d'arène.** Sur l'écran des arènes (Haut/Bas) : le soleil (aucun, à l'aube,
+  plein jour) et les événements de l'arène (oui/non). Les replays s'en souviennent.
+- **Événements d'arène.** Au manoir Joestar, le lustre tombe toutes les 30 s sur l'un
+  des deux combattants, son ombre au sol d'abord, et aucune garde ne tient.
+- **Nouvelle arène : l'île d'Air Supplena.** La flaque d'huile au pied du pilier de
+  l'Hell Climb fait glisser tout le monde, sauf ceux qui respirent l'Onde ; projeté dans
+  une des fosses, on se prend les pics (l'Onde protège, comme dans Eyes of Heaven).
+- **Le château suisse a son événement : sortir.** Projeté assez fort contre le mur
+  nord de la salle, on le traverse, et le combat continue dehors, dans la neige de
+  St. Moritz devant l'hôtel de Gessler : personne n'y tient debout (seul le chemin
+  dégagé vers la porte accroche un peu), et la neige du toit tombe par plaques.
+
+- **Santana refait.** Il entre vraiment dans ton corps : il te dirige et te mange, et
+  tu le chasses en martelant les boutons (l'Onde le chasse trois fois plus vite, et le
+  brûle). Il file sous le sol, rend les balles qu'on lui tire, encaisse un coup pendant
+  son Épée de côtes, et son HHA **Meat Invade** lance sa chair à tes trousses.
+- **Explosions.** Boule de feu, fumée, débris et braises : le Road Roller de DIO saute
+  en plusieurs fois, l'autodestruction de Stroheim part en chaîne jusqu'à sa cible, et
+  son GHA, même raté, explose aussi en combat.
 - **Entraînement avancé.** Le mannequin peut répéter **une action choisie dans son
   propre kit** (ORA ORA ORA, Star Finger, HHA, GHA, dash, pose…), avec le **délai de ton
   choix** entre chaque répétition, compté dès qu'il redevient libre d'agir — délai 0 =
@@ -34,6 +53,27 @@ des corrections seules une patch.
   tableau des touches.
 
 ### Ajouté (combat)
+
+- **Les altérations d'état.** Un coup peut laisser quelque chose derrière lui, et trois
+  choses existent : le **feu** (le sang à cinq cents degrés d'Esidisi, le lance-flammes
+  de Stroheim — ça continue de brûler, et une plaie qui brûle ne se referme plus, même
+  pour un vampire), le **gel** (le gel vaporisant de DIO — le corps dégelé reste raide,
+  et ni l'onde ni le sang ne passent plus), et le **courant** (l'écharpe de Lisa Lisa
+  conduit l'onde comme un paratonnerre — plus un point de Heart Heat, et la garde se
+  défait toute seule). Une altération ne prend que sur un coup qui touche vraiment, un
+  second coup la relance sans l'empiler, et le temps arrêté suspend ce qui brûle. Le
+  glossaire a un onglet **Règles du combat** qui les explique une par une.
+- **Les bulles-loupes de Caesar deviennent des balises.** Elles restent au sol, tirent
+  **trois rayons de lumière** sur qui s'approche, font **le double aux vampires et aux
+  Hommes du Pilier** — c'est du soleil focalisé — et **éclatent sans rien tirer** dès que
+  Caesar encaisse un coup.
+- **Kars en forme de vie ultime a son propre corps et ses propres coups** : mêmes cheveux
+  noirs, mais qui volent partout, torse nu, lames **courbes qui sortent des avant-bras**
+  (il ne tient plus d'épée). Il envoie une main en **écureuil carnivore** qui poursuit,
+  mord et le nourrit, déploie des **ailes** pour traverser l'arène d'un coup, et son HHA
+  devient ses plumes qui se changent en bêtes et se referment de tous les côtés.
+- **L'écran d'accueil oppose les deux camps** : les alliés des Joestar d'un côté, ceux
+  qui leur font face de l'autre, un VS au milieu.
 
 - **La touche Power Up sert enfin : l'éveil.** Kars pose le masque de pierre et la Super
   Aja pour deux barres et devient la **forme de vie ultime** : le soleil ne lui fait plus
@@ -116,6 +156,9 @@ des corrections seules une patch.
 - **Équilibrage.** Les longues lames de Kars récupèrent plus lentement : sa portée coûte
   quelque chose quand elle rate (−6 et −7 en garde). Les coups de Speedwagon, les plus
   faibles du jeu, tapent un peu plus fort et son marteau démarre plus vite.
+- **La forme de vie ultime ne retombe plus entre les rounds**, et sa naissance a la
+  cinématique qu'elle mérite : la pierre qui se pose, le masque qui se referme, la
+  lumière qui déchire le corps, les ailes qui s'ouvrent.
 - **Kars éveillé a enfin ses pouvoirs.** Le soleil ne lui fait plus rien, son Onde à lui
   porte à 120, il tire **une volée de plumes puis un piranha qui te suit**, et un
   **tentacule de poulpe** te ramène à portée de ses griffes.
@@ -140,6 +183,8 @@ des corrections seules une patch.
   de 26.
 ### Corrigé
 
+- Parties 1 et 2 : le curseur ne peut plus se poser sur une case vide (on pouvait
+  « choisir » un perso qui n'existe pas).
 - **Une tornade n'est pas une rafale de poings.** Un coup multi-hit qui a son propre
   effet (tornade, veines, câbles) affichait quand même une rafale de poings par-dessus.
 - **La Super Aja de Lisa Lisa** faisait tomber un bloc de béton : c'est maintenant une

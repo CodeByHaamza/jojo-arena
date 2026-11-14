@@ -10,6 +10,7 @@ from jojo_arena.combat.arena import Arena
 from jojo_arena.combat.events import Event
 from jojo_arena.combat.kit import ATTACK_SLOTS, BuffDef, Kit, MoveDef
 from jojo_arena.combat.rules import HZ, Rules
+from jojo_arena.combat.status import Statuses
 from jojo_arena.combat.styles import make_style
 from jojo_arena.engine.actions import InputFrame
 from jojo_arena.engine.geometry import Vec2
@@ -36,6 +37,7 @@ class State(StrEnum):
 
 
 ACTIONABLE = frozenset({State.IDLE, State.WALK})
+GLIDE_REST = 0.0004  # (px/frame)²: slower than this, a sliding body has stopped
 GUARDING = frozenset({State.GUARD, State.BLOCKSTUN})
 # "guard" is buffered only for Flash Cancel; holding it is read directly.
 BUFFERED_ACTIONS = (*ATTACK_SLOTS, "dash", "heart_heat", "stand", "guard", "power_up")
@@ -144,6 +146,7 @@ class Fighter:
         self._regen_left = 0.0
         self._sun_left = 0.0
         self.iced_f = 0  # frozen solid by Vaporization Freezing (for the view)
+        self.statuses = Statuses(rules.statuses)  # burning, frozen stiff, under a current
         self._pose_heal_left = 0.0
         self.in_sun = False
         self.awakened = False  # the Power Up key was used: there is no going back
@@ -166,6 +169,14 @@ class Fighter:
         # Possessed: someone else steers this fighter's walk for a while.
         self.possessed_f = 0
         self.possessor: int | None = None
+        # Walking on a floor that does not grip: the speed the body is still carrying.
+        self.glide = Vec2()
+        self.host = False  # possessed by a whole body inside it, not by a Stand
+        # Infiltrated: this fighter's body is inside the other one's (index), for a while.
+        self.inside: int | None = None
+        self.inside_f = 0
+        self.inside_move: MoveDef | None = None
+        self.expelled_by_hamon = False
         # Combo scaling: moves landed in a row on this fighter, and the last one's id.
         self.combo_moves = 0
         self.combo_key: tuple | None = None
@@ -185,6 +196,8 @@ class Fighter:
 
     @property
     def invincible(self) -> bool:
+        if self.inside is not None:
+            return True  # nothing to hit: the body is inside the opponent's
         if self.state == State.DASH:
             return self.state_f < self.rules.dash_invincible_f
         if self.state == State.ATTACK and self.attack is not None:
@@ -234,6 +247,8 @@ class Fighter:
 
     def hurtboxes(self) -> list[tuple[Vec2, float]]:
         """Circles where this fighter can be hit: the body, and the Stand while it is out."""
+        if self.inside is not None:
+            return []
         boxes = [(self.pos, self.rules.hurt_radius)]
         stand = self.stand_pos()
         if stand is not None:
@@ -253,6 +268,8 @@ class Fighter:
         return mult
 
     def gain_hh(self, amount: float) -> None:
+        if self.statuses.no_meter:
+            return  # a body under a current gains nothing: it is busy twitching
         self.hh = min(self.rules.hh_max, self.hh + amount)
 
     def in_stylish_window(self) -> bool:
@@ -277,7 +294,7 @@ class Fighter:
         speed = speed * (self.buff.speed_mult if self.buff else 1.0)
         if self.carrying is not None:
             speed *= self.rules.carry_speed_mult  # a prop over the head
-        return speed
+        return speed * self.statuses.walk_mult
 
     def aim_at(self, target: Vec2) -> Vec2:
         direction = (target - self.strike_origin()).normalized()
@@ -364,6 +381,8 @@ class Fighter:
         """Turn this step's input into actions. Only called while the fight is running."""
         self.walk_dir = Vec2()
         self.remote_dir = Vec2()
+        if self.inside is not None:
+            return []  # its input steers the host (see Match._possession_inputs)
         self.guard_held = frame.is_held("guard") and not self.remote
         self.cursor = Vec2(*frame.cursor) if frame.cursor is not None else None
         remote_stance = self.style.params.get("remote")
@@ -416,7 +435,7 @@ class Fighter:
             return []  # nothing to do but stand there and hope
         if self.state == State.BREATHE:
             if frame.is_held("stand"):
-                gain = self.rules.hamon_breath_per_f
+                gain = 0.0 if self.statuses.no_breath else self.rules.hamon_breath_per_f
                 if self.in_sun:
                     gain *= self.rules.sun_hamon_mult
                 self.hamon = min(self.rules.hamon_max, self.hamon + gain)
@@ -519,6 +538,8 @@ class Fighter:
     @property
     def sun_proof(self) -> bool:
         """Awakened into something the daylight no longer touches."""
+        if self.inside is not None:
+            return True  # hidden inside someone else's body, out of the light
         awakening = self.kit.awakening
         return self.awakened and awakening is not None and awakening.sun_immune
 
@@ -631,7 +652,7 @@ class Fighter:
 
     def feed(self, life_drained: int) -> None:
         """A vampire drinks: the life drained fills its blood gauge."""
-        if self.kit.style == "vampire":
+        if self.kit.style == "vampire" and not self.statuses.no_breath:
             self.blood = min(
                 self.rules.blood_max, self.blood + life_drained * self.rules.blood_per_drain
             )
@@ -678,6 +699,8 @@ class Fighter:
         if self.regen_wait > 0:
             self.regen_wait -= 1
             return
+        if self.statuses.blocks_regen:
+            return  # a wound that is still burning does not close
         if self.hp >= self.max_hp or self.state in (State.HITSTUN, State.GUARD_BROKEN):
             return
         self._regen_left = min(1.0, self._regen_left + rules.vampire_regen_per_f)
@@ -790,10 +813,15 @@ class Fighter:
                     # Slide along the surface: drop the part of the speed going into it.
                     self.velocity = self.velocity - normal * self.velocity.dot(normal)
             self.pos = pos
-            new_speed = max(0.0, self.velocity.length() - self.rules.knockback_friction)
+            _, slide = arena.hazards.grip_at(pos, self.kit.style)
+            friction = self.rules.knockback_friction * slide
+            new_speed = max(0.0, self.velocity.length() - friction)
             self.velocity = self.velocity.normalized() * new_speed
+            self.glide = Vec2()
         elif self.state == State.DASH and self.state_f < self.rules.dash_duration_f:
             step = self.dash_dir * self.rules.dash_speed
+            if arena.hazards.surfaces:
+                self.glide = step  # off a dash on ice, the body keeps going
             self.pos, _, _ = arena.constrain(self.pos + step, radius)
         elif self._leaping():
             attack = self.attack
@@ -801,11 +829,22 @@ class Fighter:
             self.pos, _, _ = arena.constrain(
                 attack.start + (attack.dest - attack.start) * t, radius
             )
+            self.glide = Vec2()
         elif self._lunging():
             step = self.attack.aim * self.attack.move.lunge
             self.pos, _, _ = arena.constrain(self.pos + step, radius)
-        elif self.walk_dir.length_sq():
-            self.pos, _, _ = arena.constrain(self.pos + self.walk_dir * self.walk_speed(), radius)
+            self.glide = Vec2()
+        elif self.walk_dir.length_sq() or self.glide.length_sq() > GLIDE_REST:
+            # On a normal floor the body goes where it is walked; on oil or ice it only
+            # leans that way, and keeps sliding the way it was going.
+            grip, _ = arena.hazards.grip_at(self.pos, self.kit.style)
+            wanted = self.walk_dir * self.walk_speed() if self.walk_dir.length_sq() else Vec2()
+            self.glide = wanted if grip >= 1 else self.glide + (wanted - self.glide) * grip
+            if self.glide.length_sq() <= GLIDE_REST:
+                self.glide = Vec2()
+            self.pos, normal, _ = arena.constrain(self.pos + self.glide, radius)
+            if normal is not None and self.glide.dot(normal) < 0:
+                self.glide = self.glide - normal * self.glide.dot(normal)  # along the wall
         if self.remote_pos is not None and self.remote_dir.length_sq():
             # The Stand flies where it is steered, within its range of its user.
             speed = self.style.params.get("remote_speed", 150) / HZ
@@ -886,13 +925,17 @@ class Fighter:
                 self.wall_bounce_armed = False
                 blocking = self.state == State.BLOCKSTUN and self.guard_held
                 self.set_state(State.GUARD if blocking else State.IDLE)
-        if self.state not in GUARDING:
+        drain = self.statuses.guard_drain_per_f
+        if self.state not in GUARDING and not drain:
             if self.guard_regen_wait > 0:
                 self.guard_regen_wait -= 1
             else:
                 self.guard_gauge = min(
                     rules.guard_gauge_max, self.guard_gauge + rules.guard_regen_per_f
                 )
+        if drain:
+            # A gauge coming apart does not also mend itself: the current wins.
+            self.guard_gauge = max(0.0, self.guard_gauge - drain)
         for move in [m for m, left in self.cooldowns.items() if left > 0]:
             self.cooldowns[move] -= 1
         if self.possessed_f > 0:
@@ -913,6 +956,7 @@ class Fighter:
                 self.buff = None
         if self.iced_f > 0:
             self.iced_f -= 1
+        self.statuses.tick()
         if self.kit.style == "vampire" and self.alive:
             self._vampire_step()
 

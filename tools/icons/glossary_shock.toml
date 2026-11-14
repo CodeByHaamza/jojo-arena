@@ -1,0 +1,25 @@
+# A current: the bolt the Ripple draws when it runs through metal or a scarf.
+
+pixels = [
+    "................",
+    "..........ooo...",
+    ".........oWYo...",
+    "........oWYYo...",
+    ".......oWYYo....",
+    "......oWYYo.....",
+    ".....oWYYo......",
+    "....oWYYoooo....",
+    "....oWYYYYYo....",
+    "....ooooWYYo....",
+    ".......oWYYo....",
+    "......oWYYo.....",
+    ".....oWYYo......",
+    "....oWYYo.......",
+    "....oYYo........",
+    ".....oo.........",
+]
+
+[palette]
+o = "#17121f"
+Y = "#f0d020"
+W = "#fffbc8"

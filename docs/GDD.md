@@ -124,6 +124,39 @@ Certains éveils ne passent pas par la jauge mais par un objet à ramasser dans 
 
 **Love Train en détail.** Actif tant que Valentine porte les 3 parties : les projectiles et les dégâts visés sur lui ne lui font rien et sont redirigés ailleurs. Seuls Tusk Act 4, Gold Experience Requiem et Go Beyond passent ; un coup de l'un des trois lui fait lâcher une partie (Love Train coupe). Un knockdown fait aussi lâcher une partie à Johnny ou Gyro.
 
+## Altérations d'état (feu, gel, courant)
+
+Un coup peut laisser quelque chose derrière lui. Trois altérations existent ; le moteur n'en
+connaît pas d'autres tant que personne n'écrit leurs règles (`combat/status.py`, chiffres dans
+`[status]` de `combat/rules.toml`, description joueur dans l'onglet **Règles du combat** du
+glossaire).
+
+| Altération | Durée max | Ce qu'elle fait | Qui la pose aujourd'hui |
+| --- | --- | --- | --- |
+| **burn** (feu) | 2,6 s | 26 PV/s, et **aucune plaie ne se referme** tant que ça brûle (régénération des vampires et des Hommes du Pilier coupée) | Esidisi (sang à 500 °C, Mode de la Flamme), Stroheim (lance-flammes) |
+| **chill** (gel) | 2,2 s | marche à 60 %, **plus d'onde respirée ni de sang bu** | DIO, posture du gel vaporisant (après le gel net) |
+| **shock** (courant) | 1,8 s | 10 PV/s, marche à 85 %, **plus un point de Heart Heat gagné**, jauge de garde qui se défait (18/s) | Lisa Lisa (l'écharpe de Satiporoja conduit l'onde comme un paratonnerre) |
+
+**Règles communes.** Une altération ne prend que sur un coup qui touche vraiment : gardé, il ne
+reste rien. Un second coup la **relance** jusqu'à son plafond, il ne l'empile pas. Le temps
+arrêté suspend tout, y compris ce qui brûle. Un kit la pose avec `status` et `status_s`, sur un
+coup ou sur un projectile (voir `docs/KITS.md`).
+
+**Ce qui s'y branchera plus tard.** Les altérations ont été écrites génériques parce que la
+suite du roster en vit :
+
+| Perso | Stand | Altération attendue | Source |
+| --- | --- | --- | --- |
+| Avdol (partie 3) | Magician's Red | **burn** | JoJo Wiki : Stand de feu, manipule librement les flammes |
+| Pet Shop (partie 3) | Horus | **chill** | JoJo Wiki : Stand de glace, stalactites et murs de glace |
+| Akira Otoishi (partie 4) | Red Hot Chili Pepper | **shock** | JoJo Wiki : vit du courant électrique, circule dans les câbles |
+| Ghiaccio (partie 5) | White Album | **chill** | à confirmer en ligne avant d'écrire le kit |
+| Partie 8 | Speed King | chaud **et** froid | à confirmer en ligne avant d'écrire le kit |
+
+Echoes Act 2 (le son écrit qui devient réel) et In a Silent Way (l'étouffement) ne rentrent dans
+aucune des trois : ce sont des altérations à part, à décrire quand leur partie arrive, pas à
+forcer dans une case existante.
+
 ## Interactions spéciales (fidèles à l'œuvre)
 
 Ces règles passent avant les règles normales du combat. Elles se codent à part, dans un module « interactions », pour que chaque nouveau perso puisse s'y brancher.
@@ -441,7 +474,9 @@ Un perso est « fini » quand il a : son kit codé et testé contre 3 autres per
 - Wamuu : Divine Sandstorm (deux tornades qui aspirent et broient, portée 92), canon à vent de sa corne, Armure de Vapeur (moitié des dégâts reçus 5 s), fils anti-onde du casque, et une **posture de contre** hors Mode — sa corne lit le vent. Final Mode : Rift Atmosphérique, 300 de dégâts pour 300 de sa propre vie.
 - Esidisi : zoneur qui **paie ses projectiles avec son sang**. Jets à 500 degrés, veines en faisceau, flaque bouillante posée au sol, tourbillon de veines. GHA : Les Larmes d'Esidisi, déclenché par un jet de sang bouillant à 140.
 - Kars : la plus grande portée du casting. Lames de lumière (`shape = "line"`), lame lancée qui **ricoche sur les murs** (nouveau champ `bounces`), masque de pierre posé en piège, éclat aveuglant. GHA : Ultimate Thing — ce n'est pas un coup mais un **éveil** de 12 s (+35 % de dégâts, −25 % reçus, 18 PV/s de régénération).
-- Santana : aucune technique, 1250 PV. Lames de côtes qui cassent la garde, corps qui coule (imparable), **infiltration** (il entre dans le corps et le dirige 1,5 s en buvant), bras étiré qui ramène.
+- Le château suisse sort dehors (18/10/2026, demande du propriétaire : « l'événement du château, c'est d'être à l'extérieur ») : un `[[exits]]` sur le mur nord de la salle ; un rebond contre ce mur le traverse, et le combat continue dans l'arène `st_moritz` (la cour enneigée de l'hôtel de Gessler, sol glissant, plaques de neige du toit). St. Moritz ne se choisit pas : elle s'atteint (`REACHED_IDS`). Chaque round recommence dans la salle.
+- Événements d'arène (18/10/2026) : nouveau module générique `combat/hazards.py`, décrit par les fichiers d'arène. `[[drops]]` : un objet qui tombe à intervalle régulier sur l'un des deux combattants, à tour de rôle (ombre au sol pendant `warning_s`, imparable) ; `[[trap_zones]]` : une zone qui se déclenche quand on y est projeté ; `[[surfaces]]` : un sol qui ne tient pas (`grip`, `slide`), avec `spare_style` pour épargner un style (l'Onde). L'écran des arènes règle le **soleil** (aucun, aube, plein jour) et les **événements** ; les replays enregistrent ces options. Le lustre du manoir Joestar n'est pas une scène du manoir dans le manga (le lustre qui tombe est au château de Dio, chapitre 39) : il est là à la demande du propriétaire. Nouvelle arène : **l'île d'Air Supplena** (huile au pied du pilier de l'Hell Climb, fosses à pics qui épargnent l'Onde comme dans Eyes of Heaven).
+- Santana (refait le 18/10/2026, d'après JoJo Wiki et la liste de Diamond Records — il n'est jouable ni dans ASBR ni dans EoH) : 1250 PV, aucun Mode. Paume, coup de pied, **doigt de 975 kg** (ligne, portée 30) ; **Épée de côtes** qui encaisse un coup sans broncher (`armor = 1`) ; **Sous le sol** (`burrow`) : il coule dans le sol, invulnérable, et ressort sous l'adversaire ; **Infiltration** : nouveau mécanisme générique `infiltrate_s` — il entre **entièrement** dans le corps de l'adversaire (plus de hitbox, le soleil ne l'atteint plus), le dirige et le mange (`inside_dps`, `drain`) ; l'hôte **martèle n'importe quel bouton** pour le chasser, l'Onde le chasse **trois fois plus vite** et le brûle à la sortie (`[infiltration]` dans `rules.toml`) ; **Balles rendues** : il absorbe, les tirs repartent (`reflect`) et un coup reçu est puni par les balles de ses doigts (`counter`). HHA **Meat Invade** : sa chair part en morceaux qui poursuivent, mordent et le soignent. GHA inchangé. Avant cette refonte, l'infiltration ne marchait jamais : la possession n'existait que pour un Stand en mode contrôle.
 - Stroheim : nature `human`, pas d'onde. Mitrailleuse, lance-flammes, et surtout ses **lampes à ultraviolets** : elles portent le marqueur `hamon`, qui dans ce jeu veut dire « lumière qui brûle les morts-vivants » — un Homme du Pilier y prend donc le double, exactement comme le dit le GDD. GHA : autodestruction, 290 de dégâts pour 280 de sa vie.
 
 ## Sources
@@ -457,5 +492,6 @@ Un perso est « fini » quand il a : son kit codé et testé contre 3 autres per
 - [JoJo Wiki — Big Mouth Strikes Again](https://jojowiki.com/Big_Mouth_Strikes_Again)
 - [JoJo Wiki — Eclipse Eight](https://jojowiki.com/Eclipse_Eight)
 - Ce que le bot d'équilibrage mesure mal (17/10/2026) : trois mesures de suite mettent **Kars en tête (81 %, 69 %, 78 %)** et **Speedwagon en dernier (24 %)**, et il faut savoir lire ces chiffres. Le bot ne sait pas : (1) **tenir la distance** — il sous-évalue tous les zoneurs (Caesar, Joseph, Esidisi, Straizo) ; (2) **jouer contre un arrêt du temps** — il surévalue DIO ; (3) **choisir une posture** — il fait défiler celles d'un `stance_cycle` au hasard environ une fois par seconde et demie, donc **toute l'identité de Speedwagon (appeler le bon compagnon) lui est invisible** ; (4) **attendre cinq secondes immobile** — l'éveil de Kars n'entre jamais dans ses chiffres, donc ses 78 % viennent de son **neutre**, pas de sa forme ultime. Conclusion appliquée : on corrige ce que la mesure montre vraiment (le neutre de Kars : ses longues lames récupèrent plus lentement, −6 et −7 en garde au lieu de presque rien), et on laisse ce qu'elle mesure mal au jugement du joueur.
+- L'éveil dure tout le combat (17/10/2026) : la forme de vie ultime **ne retombe pas entre les rounds**. Kars a posé le masque de pierre et la Pierre Rouge : le round suivant commence avec l'Être Ultime (`Rounds.awakened` suit l'état d'un round à l'autre, comme la jauge Heart Heat). Sa cinématique de naissance passe de 4,6 à 5,5 s et se joue en quatre temps : la pierre se pose dans le masque, le masque se referme et les pointes s'enfoncent, la lumière déchire son corps, et il ouvre ses ailes.
 - Forme de vie ultime (complétée 17/10/2026, d'après la liste ASBR) : éveillé, Kars n'est pas un Homme du Pilier avec de meilleurs chiffres. **Le soleil ne le touche plus** (`sun_immune`), il porte **sa propre Onde** (« Onde de Kars », 120 de portée, qui brûle les morts-vivants), il **tire ce qu'il a absorbé** (« Le pouvoir des gènes suprêmes » : une volée de plumes puis un piranha à tête chercheuse) et un **tentacule de poulpe** balaie devant lui et **ramène** l'adversaire à portée de griffes (`pull`). Tout ce qu'il touche le nourrit.
 - Correction (17/10/2026) : l'écharpe de Satiporoja avait été donnée à Straizo. C'est l'objet de **Lisa Lisa**, et il conduit l'Onde — or Straizo a bu au masque de pierre : l'Onde le **brûle**. La seule Onde qu'un vampire peut porter est celle qu'il accumule en lui pour exploser. Remplacée par ce que sa fiche lui donne vraiment, la régénération.

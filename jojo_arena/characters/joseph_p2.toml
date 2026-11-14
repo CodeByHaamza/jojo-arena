@@ -1,12 +1,13 @@
 # Joseph Joestar, young (Part 2). GDD: "Hamon · Trickster": unpredictable, traps
-# everywhere. Hamon clackers that come back, delayed grenades, Hamon threads stretched
-# over the ground that trip. Frames (_f) are at 60 per second; speeds and knockback in
+# everywhere. Hamon clackers that come back, a sledgehammer out of nowhere, Hamon threads
+# stretched over the ground that trip. Frames (_f) are at 60 per second; speeds and knockback in
 # px per second.
 #
 # Style key held: Hamon breathing (the gauge fills, he stands still).
 # Pose: "Your next line is...!" He calls the opponent's next move: the same button as
 # their last attack. Right, the blow is caught and answered for free; wrong, he is hit.
-# Great Heat Attack: the hidden plan, every thread and grenade he laid blows up at once.
+# Great Heat Attack: his tricks of the trade, cables thrown ahead; if they catch, the
+# Ripple Overdrive Beat.
 # Feel: a brawler who never fights fair, and who knows when to run.
 
 name = "Joseph Joestar"
@@ -157,7 +158,7 @@ hitstun_f = 22
 knockback = 110
 hitstop_f = 5
 
-# With a direction: a grenade rolled along the ground, pin pulled.
+# With a direction: Bring Down the Hammer, a sledgehammer out of nowhere.
 [stances.base.moves.special_alt]
 shout = "LE MARTEAU !"
 shout_en = "THE HAMMER!"
@@ -226,11 +227,9 @@ waves = 10
 wave_every_f = 4
 count = 1
 
-# Great Heat Attack (2 bars): the hidden plan. Every thread and grenade he laid blows up
-# at once, and one more grenade was waiting right under the opponent's feet all along.
-# Great Heat Attack (2 barres) : il tire une ficelle tendue d'avance. Si elle prend,
-# c'est l'enchaînement de clackers, le Ripple Overdrive Beat, et quatre clackers pour
-# finir. Si elle rate : "OH NOOON !"
+# Great Heat Attack (2 bars): he pulls a string laid in advance. If the cables catch,
+# it is the clacker chain, the Ripple Overdrive Beat, and four clackers to finish. If
+# they miss: "OH NOOO!"
 [moves.gha]
 shout = "MES P'TITS TRUCS DU MÉTIER !"
 shout_en = "MY TRICKS OF THE TRADE!"

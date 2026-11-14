@@ -6,6 +6,7 @@ import math
 from dataclasses import dataclass
 from pathlib import Path
 
+from jojo_arena.combat.status import StatusDef, load_statuses
 from jojo_arena.engine.data import load_toml, seconds_to_frames
 
 RULES_PATH = Path(__file__).with_name("rules.toml")
@@ -82,6 +83,11 @@ class Rules:
     counter_freeze_f: int
     remote_hold_f: int
     remote_break_stun_f: int
+    inside_tick_f: int  # a body inside another one eats it in bites this far apart
+    struggle_f: int  # each button the host mashes shortens the stay this much
+    hamon_struggle_mult: float  # the Ripple pushes the intruder out this much faster
+    hamon_expel_damage: int  # and burns it on the way out
+    expel_stun_f: int  # the host staggers when the body comes out of it
     throw_reach: float
     carry_speed_mult: float
     throw_speed: float  # px/frame
@@ -123,6 +129,8 @@ class Rules:
     sun_burn_ramp_f: int
     sun_burn_max_mult: float
     sun_burn_cool_per_f: int
+    statuses: dict[str, StatusDef]  # fire, cold, a current: what a blow leaves behind
+    status_tick_f: int
 
     @classmethod
     def from_data(cls, data: dict) -> Rules:
@@ -161,6 +169,8 @@ class Rules:
             sun_burn_ramp_f=seconds_to_frames(data["sun"]["burn_ramp_s"]),
             sun_burn_max_mult=data["sun"]["burn_max_mult"],
             sun_burn_cool_per_f=data["sun"]["burn_cool_per_f"],
+            statuses=load_statuses(data["status"]),
+            status_tick_f=data["status"]["tick_every_f"],
             round_timer_f=seconds_to_frames(rnd["timer_s"]),
             round_intro_f=seconds_to_frames(rnd["intro_s"]),
             round_outro_f=seconds_to_frames(rnd["outro_s"]),
@@ -184,6 +194,11 @@ class Rules:
             prop_swing=dict(data["prop_swing"]),
             strong_throw=data["throw"]["strong_throw"],
             remote_break_stun_f=seconds_to_frames(data["control"]["break_stun_s"]),
+            inside_tick_f=data["infiltration"]["tick_every_f"],
+            struggle_f=data["infiltration"]["struggle_f"],
+            hamon_struggle_mult=data["infiltration"]["hamon_struggle_mult"],
+            hamon_expel_damage=data["infiltration"]["hamon_expel_damage"],
+            expel_stun_f=data["infiltration"]["expel_stun_f"],
             time_stop_damage_mult=stop["damage_mult"],
             clash_window_f=clash["window_f"],
             clash_duration_f=seconds_to_frames(clash["duration_s"]),

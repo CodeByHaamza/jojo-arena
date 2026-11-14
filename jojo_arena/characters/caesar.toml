@@ -101,12 +101,17 @@ bounces = 1
 waves = 2
 wave_every_f = 7
 
-# With a direction: Bubble Lens, a bubble that focuses sunlight into a ray.
+# With a direction: Bubble Lenses. Sources (JoJo Wiki, All-Star Battle R and Eyes of
+# Heaven pages): Bubble Cutters that stay where they are put, refract sunlight, and fire
+# it as lasers at whoever comes close before popping; a Lens pops harmlessly if Caesar is
+# staggered or takes damage; six of them at most. Beacons, in other words - which is what
+# they are here: they hold a piece of the floor, and the light they send is real sunlight,
+# so it burns a vampire or a Pillar Man double.
 [stances.base.moves.heavy_alt]
 shout = "BUBBLE LENS !"
 label = "BUBBLE LENSES"
-info = "Avec une direction : il pose des bulles-loupes qui tirent un rayon au passage"
-info_en = "With a direction: he leaves lens bubbles that fire a beam when crossed"
+info = "Avec une direction : des bulles-loupes restent au sol et tirent des lasers de lumière sur qui approche (double sur les morts-vivants). Un coup encaissé les fait toutes éclater"
+info_en = "With a direction: lens bubbles stay on the floor and fire light at whoever comes close (double on the undead). One blow taken and they all pop"
 hamon_cost = 20
 startup_f = 14
 active_f = 2
@@ -115,19 +120,23 @@ anim = "special"
 
 [stances.base.moves.heavy_alt.trap]
 distance = 40
-radius = 24
+radius = 26
 lifetime_s = 10
-max_count = 3
+max_count = 4
+fragile = true          # a blow on Caesar and every lens pops, empty
 
 [stances.base.moves.heavy_alt.trap.projectile]
-look = "bubble"
-speed = 320
-radius = 5
-damage = 30
-lifetime_s = 0.6
-hitstun_f = 22
-knockback = 150
-hitstop_f = 5
+look = "ray"
+hamon = true            # it is sunlight, focused: the undead take it twice
+speed = 420
+radius = 4
+damage = 14
+lifetime_s = 0.45
+hitstun_f = 18
+knockback = 90
+hitstop_f = 4
+count = 3
+spread_deg = 24
 
 [stances.base.moves.special]
 label = "BUBBLE LAUNCHER"

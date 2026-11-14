@@ -1,0 +1,19 @@
+# The rules tab of the glossary: three states stacked - fire, cold, a current.
+
+pixels = [
+    ".........",
+    ".ooooooo.",
+    ".oRRRRRo.",
+    ".ooooooo.",
+    ".oIIIIIo.",
+    ".ooooooo.",
+    ".oYYYYYo.",
+    ".ooooooo.",
+    ".........",
+]
+
+[palette]
+o = "#17121f"
+R = "#f0901c"
+I = "#9ad8ff"
+Y = "#f0d020"

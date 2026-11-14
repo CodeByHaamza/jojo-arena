@@ -19,6 +19,7 @@ from jojo_arena.combat.training import Training
 from jojo_arena.context import GameContext
 from jojo_arena.engine import font
 from jojo_arena.engine.actions import InputFrame, merge_frames
+from jojo_arena.stages.base import StageOptions
 from jojo_arena.ui import text
 from jojo_arena.ui.fight_scene import FightScene
 from jojo_arena.ui.frame_meter import COLORS, FrameMeterPanel, draw_legend
@@ -52,6 +53,11 @@ def delay_name(frames: int) -> str:
     return text.DUMMY_DELAY_NOW if frames == 0 else text.DUMMY_DELAY_VALUE.format(n=frames)
 
 
+# How long stopped time lasts in the training room, as a share of the move's own
+# length. A real fight always uses 100 %.
+STOP_LENGTHS = (0.25, 0.5, 1.0, 1.5, 2.0)
+
+
 class TrainingScene(FightScene):
     mode = "training"
 
@@ -60,8 +66,15 @@ class TrainingScene(FightScene):
         ctx: GameContext,
         fighter_ids: tuple[str, str] = ("jotaro_p3", "dio_p3"),
         stage_id: str = "cairo_night",
+        stage_options: StageOptions | None = None,
     ) -> None:
-        super().__init__(ctx, rounds_to_win=0, fighter_ids=fighter_ids, stage_id=stage_id)
+        super().__init__(
+            ctx,
+            rounds_to_win=0,
+            fighter_ids=fighter_ids,
+            stage_id=stage_id,
+            stage_options=stage_options,
+        )
         player = ctx.controls.active_preset.players[0]
         self.pause_key = action_label(player, "pause", ctx.inputs)
         self.hint = text.TRAINING_HINT.format(key=self.pause_key)
@@ -122,7 +135,7 @@ class TrainingScene(FightScene):
 
     def _new_rounds(self) -> None:
         kits = (self.fighter_defs[0].kit, self.fighter_defs[1].kit)
-        self.rounds = Training(kits, self.rules, self.stage.build_arena)
+        self.rounds = Training(kits, self.rules, self.build_arena)
         self.pause_menu = None
         self.result_menu = None
         self.pause_page = "main"
@@ -197,6 +210,8 @@ class TrainingScene(FightScene):
         super()._go_to_menu()
 
     def apply_command(self, command: dict) -> None:
+        if "time_stop" in command:
+            self.training.time_stop_mult = command["time_stop"]
         if "life" in command:
             self.training.infinite_life = command["life"]
         if "hh" in command:
@@ -235,6 +250,14 @@ class TrainingScene(FightScene):
             MenuItem("dummy_setup", text.DUMMY_SETTINGS),
             MenuItem("life", text.LIFE, switch, 0 if self.training.infinite_life else 1),
             MenuItem("hh", text.HH_GAUGE, switch, 0 if self.training.infinite_hh else 1),
+            MenuItem(
+                "time_stop",
+                text.TIME_STOP_LENGTH,
+                [f"{int(m * 100)} %" for m in STOP_LENGTHS],
+                STOP_LENGTHS.index(self.training.time_stop_mult)
+                if self.training.time_stop_mult in STOP_LENGTHS
+                else STOP_LENGTHS.index(1.0),
+            ),
             MenuItem("inputs", text.INPUTS, show, 0 if self.inputs_shown else 1),
             MenuItem("frames", text.FRAMES, show, 0 if self.frames_shown else 1),
             MenuItem("reset", text.RESET_POSITIONS),
@@ -303,6 +326,10 @@ class TrainingScene(FightScene):
                 self.inputs_shown = index == 0
             elif key == "frames":
                 self.frames_shown = index == 0
+            elif key == "time_stop":
+                # How many frames ZA WARUDO gives you, for working a combo inside it.
+                self.training.time_stop_mult = STOP_LENGTHS[index]
+                self.replay.command({"time_stop": STOP_LENGTHS[index]})
             self.training.apply_options()
         elif (kind, key) == ("confirm", "dummy_setup"):
             self.pause_page = "dummy"

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 200" width="660" height="200" role="img" aria-label="Un echange en ASCII">
+  <title>Un echange en ASCII</title>
+  <desc>Les six temps d'un echange.</desc>
+  <rect width="660" height="200" rx="8" fill="#0f0b17"/>
+  <rect x="0" y="0" width="660" height="26" rx="8" fill="#241b33"/>
+  <circle cx="18" cy="13" r="5" fill="#c8403a"/>
+  <circle cx="36" cy="13" r="5" fill="#f0c23c"/>
+  <circle cx="54" cy="13" r="5" fill="#2ea24a"/>
+  <text x="80" y="18" font-family="monospace" font-size="12" fill="#cdbbe8">jojo-arena — un round</text>
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.06;0.94;1" dur="1.6s" begin="0.0s" repeatCount="indefinite" repeatDur="950.4000000000001s"/>
+    <text x="26" y="60" font-family="monospace" font-size="15" fill="#fff6d0" xml:space="preserve">   o                                        o   </text>
+    <text x="26" y="86" font-family="monospace" font-size="15" fill="#fff6d0" xml:space="preserve">  /|\        . . . . . . . . . . .        /|\  </text>
+    <text x="26" y="112" font-family="monospace" font-size="15" fill="#fff6d0" xml:space="preserve">  / \                                     / \  </text>
+    <text x="26" y="138" font-family="monospace" font-size="13" fill="#cdbbe8" xml:space="preserve">              approche, garde haute             </text>
+  </g>
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.06;0.94;1" dur="1.6s" begin="1.6s" repeatCount="indefinite" repeatDur="950.4000000000001s"/>
+    <text x="26" y="60" font-family="monospace" font-size="15" fill="#fff6d0" xml:space="preserve">       o                            o           </text>
+    <text x="26" y="86" font-family="monospace" font-size="15" fill="#fff6d0" xml:space="preserve">      /|\      &gt;&gt;&gt;        &lt;&lt;&lt;      /|\          </text>
+    <text x="26" y="112" font-family="monospace" font-size="15" fill="#fff6d0" xml:space="preserve">      / \                          / \          </text>
+    <text x="26" y="138" font-family="monospace" font-size="13" fill="#cdbbe8" xml:space="preserve">            les deux avancent                   </text>
+  </g>
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.06;0.94;1" dur="1.6s" begin="3.2s" repeatCount="indefinite" repeatDur="950.4000000000001s"/>
+    <text x="26" y="60" font-family="monospace" font-size="15" fill="#fff6d0" xml:space="preserve">          o                    o                </text>
+    <text x="26" y="86" font-family="monospace" font-size="15" fill="#fff6d0" xml:space="preserve">         /|X====  CLASH!  ====X|\               </text>
+    <text x="26" y="112" font-family="monospace" font-size="15" fill="#fff6d0" xml:space="preserve">         / \                  / \              </text>
+    <text x="26" y="138" font-family="monospace" font-size="13" fill="#cdbbe8" xml:space="preserve">        deux coups se croisent : on martele     </text>
+  </g>
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.06;0.94;1" dur="1.6s" begin="4.800000000000001s" repeatCount="indefinite" repeatDur="950.4000000000001s"/>
+    <text x="26" y="60" font-family="monospace" font-size="15" fill="#fff6d0" xml:space="preserve">          o                                     </text>
+    <text x="26" y="86" font-family="monospace" font-size="15" fill="#fff6d0" xml:space="preserve">         /|/  ORA ORA ORA ORA ORA  &gt;&gt;&gt;  o       </text>
+    <text x="26" y="112" font-family="monospace" font-size="15" fill="#fff6d0" xml:space="preserve">         / \                           /|\     </text>
+    <text x="26" y="138" font-family="monospace" font-size="13" fill="#cdbbe8" xml:space="preserve">        seize coups, six degats chacun          </text>
+  </g>
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.06;0.94;1" dur="1.6s" begin="6.4s" repeatCount="indefinite" repeatDur="950.4000000000001s"/>
+    <text x="26" y="60" font-family="monospace" font-size="15" fill="#fff6d0" xml:space="preserve">          o                                     </text>
+    <text x="26" y="86" font-family="monospace" font-size="15" fill="#fff6d0" xml:space="preserve">         /|\   ***  ZA WARUDO  ***      o       </text>
+    <text x="26" y="112" font-family="monospace" font-size="15" fill="#fff6d0" xml:space="preserve">         / \                           -+-      </text>
+    <text x="26" y="138" font-family="monospace" font-size="13" fill="#cdbbe8" xml:space="preserve">        le temps s'arrete : personne ne bouge   </text>
+  </g>
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.06;0.94;1" dur="1.6s" begin="8.0s" repeatCount="indefinite" repeatDur="950.4000000000001s"/>
+    <text x="26" y="60" font-family="monospace" font-size="15" fill="#fff6d0" xml:space="preserve">          o                                     </text>
+    <text x="26" y="86" font-family="monospace" font-size="15" fill="#fff6d0" xml:space="preserve">         /|\  ======  DORARARA  ======&gt;  x      </text>
+    <text x="26" y="112" font-family="monospace" font-size="15" fill="#fff6d0" xml:space="preserve">         / \                            /|\    </text>
+    <text x="26" y="138" font-family="monospace" font-size="13" fill="#cdbbe8" xml:space="preserve">        la cinematique part : K.O.              </text>
+  </g>
+</svg>

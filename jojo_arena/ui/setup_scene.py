@@ -11,6 +11,7 @@ from jojo_arena.engine import font, music
 from jojo_arena.engine.scene import Scene
 from jojo_arena.engine.sprites import shade
 from jojo_arena.stages import load_stage, stage_for_part
+from jojo_arena.stages.base import StageOptions
 from jojo_arena.ui import text
 from jojo_arena.ui.backdrop import MenuBackdrop
 from jojo_arena.ui.labels import menu_key, preset_label
@@ -33,6 +34,7 @@ class SetupScene(Scene):
         rounds_to_win: int = DEFAULT_ROUNDS_TO_WIN,
         cpu: bool = False,
         stage_id: str | None = None,
+        stage_options: StageOptions | None = None,
     ) -> None:
         super().__init__()
         music.request("menu")
@@ -48,6 +50,7 @@ class SetupScene(Scene):
         # The arena was picked on the screen before; this one only says which it is.
         self.stage_id = stage_id or stage_for_part(self.defs[0].part)
         self.stage = load_stage(self.stage_id)
+        self.stage_options = stage_options or StageOptions()
         self.menu = Menu(
             [
                 MenuItem("rounds", text.ROUNDS_TO_WIN, rounds, rounds.index(str(rounds_to_win))),
@@ -97,6 +100,7 @@ class SetupScene(Scene):
                     stage_id=self.stage_id,
                     bots=(False, self.cpu),
                     cpu_level=self.ctx.settings.cpu_level,
+                    stage_options=self.stage_options,
                 )
             )
         elif (kind == "confirm" and key == "back") or kind == "back":
@@ -105,7 +109,13 @@ class SetupScene(Scene):
 
             mode = "vs_cpu" if self.cpu else "versus"
             self.ctx.scenes.switch(
-                StageSelectScene(self.ctx, mode, self.fighter_ids, cursor=self.stage_id)
+                StageSelectScene(
+                    self.ctx,
+                    mode,
+                    self.fighter_ids,
+                    cursor=self.stage_id,
+                    options=self.stage_options,
+                )
             )
 
     def draw(self, surface: pygame.Surface) -> None:

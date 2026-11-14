@@ -1,0 +1,110 @@
+# Kars, the Ultimate Life Form (Part 2). Sources: JoJo Wiki (Kars - "more beautiful than
+# a Greek sculpture", the DNA of every organism that has lived on Earth) and the colour
+# art the owner picked as the reference: an enormous crimson mane of tendrils standing
+# out all round his head, a bare tanned torso, the purple scarf and loincloth with the
+# gold medallion at the belt, wide purple bracers and shin guards, and the horn on his
+# brow with its gold band.
+#
+# What changes against his Pillar Man look: the headband is gone under the mane, the
+# black wavy hair has become that crimson mass, the skin is darker and the blades out of
+# his forearms are longer and white.
+
+name = "Kars (forme ultime)"
+name_en = "Kars (Ultimate Life Form)"
+
+[build]
+head_r = 5.7
+neck = 1.5
+torso = 15
+legs = 18
+arms = 16.5
+shoulders = 11.4
+hips = 4.0
+torso_r = 7.6
+arm_r = 3.3
+leg_r = 3.1
+hand_r = 2.6
+foot_r = 2.7
+
+[palette]
+skin = "#e2b183"
+skin_dark = "#ad7c53"
+mane = "#1a1622"
+mane_light = "#3c3350"
+cloth = "#5a2a86"
+guard = "#9a7ac8"
+gold = "#e8c060"
+blade = "#f4fbff"
+eyes = "#f0e060"
+
+[body]
+head = "skin"
+torso = "skin"
+arms = "skin"
+hands = "skin"
+legs = "skin"
+feet = "cloth"
+
+[face]
+eyes = "eyes"
+eye_style = "tall"
+brows = true
+nose = true
+ear = true
+
+# The same black hair as always - it just flies everywhere now, a mass of tendrils
+# standing out all round his head instead of lying down his back.
+[[parts]]
+type = "hair"
+material = "mane"
+style = "mane"
+volume = 8.8
+flare = 1.35
+fill = 0.7
+back_length = 14
+
+# The horn on his brow, under a gold band.
+[[parts]]
+type = "horns"
+material = "mane"
+size = 0.6
+single = true
+tip = "gold"
+
+# The scarf around his neck, purple.
+[[parts]]
+type = "scarf"
+material = "cloth"
+tail = 4
+
+# The wide bracers.
+[[parts]]
+type = "gloves"
+material = "guard"
+long = true
+ringed = true
+
+[[parts]]
+type = "loincloth"
+material = "cloth"
+length = 0.6
+
+[[parts]]
+type = "belt"
+material = "cloth"
+buckle = "gold"
+
+# Shin guards rather than boots.
+[[parts]]
+type = "boots"
+material = "guard"
+tall = true
+
+# The Light Blades: longer, white, curving out of both forearms.
+[[parts]]
+type = "arm_blade"
+material = "blade"
+length = 17
+width = 1.7
+curve = 6.5
+back = 8

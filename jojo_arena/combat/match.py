@@ -16,7 +16,7 @@ from jojo_arena.combat.clash import Clash
 from jojo_arena.combat.cutscene import Cutscene
 from jojo_arena.combat.events import Event
 from jojo_arena.combat.fighter import Attack, Fighter, State
-from jojo_arena.combat.kit import Kit, MoveDef, ProjectileDef
+from jojo_arena.combat.kit import ATTACK_SLOTS, Kit, MoveDef, ProjectileDef
 from jojo_arena.combat.projectile import Projectile
 from jojo_arena.combat.rules import Rules, per_frame
 from jojo_arena.combat.traps import Trap, Web, web_layout
@@ -44,6 +44,8 @@ class Strike:
     super_move: bool = False  # supers are built around stopped time: not softened in it
     hamon: bool = False  # Hamon burns vampires and Pillar Men
     freeze_f: int = 0  # frozen solid this long on a clean hit
+    status: str = ""  # left burning, frozen stiff or crackling on a clean hit
+    status_f: int = 0
 
 
 class Match:
@@ -58,6 +60,8 @@ class Match:
         self.traps: list[Trap] = []
         self.webs: list[Web] = []
         self._last_prop_pos: dict[int, Vec2] = {}
+        # Training can stretch or shorten stopped time; a real fight leaves it at 1.
+        self.time_stop_mult = 1.0
         self.cutscene: Cutscene | None = None
         self.hitstop = 0
         self.slowmo = 0  # steps left at half speed (Stylish Evade)
@@ -126,13 +130,19 @@ class Match:
             if attack.move.cinematic:
                 events += self._start_cutscene(fighter, self.opponent(fighter), attack)
                 return events  # the whole fight holds from now on
+        moved: list[Event] = []
         for fighter in self.fighters:
             if not fighter.frozen:
-                events += fighter.integrate(self.arena)
+                moved += fighter.integrate(self.arena)
+        events += moved
+        events += self._take_exits(moved)
         for fighter in self.fighters:
             if fighter.possessed_f > 0 and fighter.possessor is not None:
                 # The Stand is inside the possessed body and moves with it.
-                self.fighters[fighter.possessor].remote_pos = fighter.pos.copy()
+                possessor = self.fighters[fighter.possessor]
+                if possessor.remote:
+                    possessor.remote_pos = fighter.pos.copy()
+        events += self._update_infiltration()
         self._separate_bodies()
         self._release_attacks()
         self._apply_suction()
@@ -142,6 +152,8 @@ class Match:
         events += self._resolve_melee()
         events += self._resolve_projectile_hits()
         events += self._apply_sunlight()
+        events += self._apply_statuses()
+        events += self._update_hazards()
         events += self._update_awakenings()
         events += self._update_cage()
         for fighter in self.fighters:
@@ -166,7 +178,8 @@ class Match:
             move = attack.move
             if move.time_stop_f and (move.time_stop_at == "start" or attack.active):
                 attack.stopped_time = True
-                events += interactions.start_time_stop(self, fighter, move.time_stop_f)
+                frames = max(1, round(move.time_stop_f * self.time_stop_mult))
+                events += interactions.start_time_stop(self, fighter, frames)
         return events
 
     # Bodies -----------------------------------------------------------------------------
@@ -175,6 +188,8 @@ class Match:
         a, b = self.fighters
         if not (a.alive and b.alive) or State.DASH in (a.state, b.state):
             return  # dashes go through the opponent
+        if a.inside is not None or b.inside is not None:
+            return  # one body is inside the other
         r = self.rules.body_radius
         if not circles_overlap(a.pos, r, b.pos, r):
             return
@@ -240,7 +255,7 @@ class Match:
                 volley = self._spawn(fighter.index, origin, aim, defn, target)
                 for projectile in volley:
                     projectile.key = (fighter.index, attack.serial)
-                    projectile.hamon = attack.hamon
+                    projectile.hamon = attack.hamon or defn.hamon
                     projectile.boost = attack.boost
                 self.projectiles += volley
                 if move.disarm_f:
@@ -316,17 +331,25 @@ class Match:
         events: list[Event] = []
         kept = []
         for trap in self.traps:
-            if self.fighters[trap.owner].frozen:
+            owner = self.fighters[trap.owner]
+            if owner.frozen:
                 kept.append(trap)
                 continue
             trap.life -= 1
             target = self.fighters[1 - trap.owner]
+            if trap.defn.fragile and owner.state in (State.HITSTUN, State.GUARD_BROKEN):
+                # A bubble is a bubble: one blow on Caesar and every lens pops, empty.
+                events.append(Event("trap_popped", trap.pos, trap.owner))
+                continue
             if target.alive and trap.touched_by(target.pos, self.rules.hurt_radius):
                 aim = trap.pos.copy()
                 direction = (target.pos - aim).normalized()
-                self.projectiles += self._spawn(
+                shots = self._spawn(
                     trap.owner, aim - direction * 6, direction, trap.defn.projectile, target.pos
                 )
+                for shot in shots:
+                    shot.hamon = trap.defn.projectile.hamon
+                self.projectiles += shots
                 events.append(Event("trap_triggered", trap.pos, trap.owner))
             elif trap.life > 0:
                 kept.append(trap)
@@ -352,6 +375,9 @@ class Match:
             where=target.pos,
             key=projectile.key,
             hamon=projectile.hamon,
+            status=defn.status,
+            status_f=defn.status_f,
+            drain=defn.drain,
         )
         _, events = self._strike(self.fighters[projectile.owner], target, strike)
         return events
@@ -439,6 +465,9 @@ class Match:
                 where=projectile.pos,
                 key=projectile.key,
                 hamon=projectile.hamon,
+                status=defn.status,
+                status_f=defn.status_f,
+                drain=defn.drain,
             )
             landed, strike_events = self._strike(self.fighters[projectile.owner], target, strike)
             events += strike_events
@@ -506,6 +535,8 @@ class Match:
                 hamon=attack.hamon,
                 guard_mult=move.guard_damage,
                 freeze_f=move.freeze_f,
+                status=move.status,
+                status_f=move.status_f,
                 key=(attacker.index, attack.serial),
                 super_move=move.name in ("hha", "gha"),
             )
@@ -517,6 +548,8 @@ class Match:
             clean = any(e.kind == "hit" and e.fighter == defender.index for e in strike_events)
             if clean and move.possess_f and defender.alive and attacker.remote:
                 events += self._possess(attacker, defender, move.possess_f)
+            if clean and move.infiltrate_f and defender.alive and attacker.inside is None:
+                events += self._infiltrate(attacker, defender, move)
             if clean and move.cage_f and defender.alive:
                 center = (attacker.pos + defender.pos) * 0.5
                 self.arena.cage = Cage(center, move.cage_radius, move.cage_f, attacker.index)
@@ -684,13 +717,90 @@ class Match:
             if victim.possessed_f <= 0 or victim.possessor is None:
                 continue
             user = self.fighters[victim.possessor]
-            if not user.remote:
+            if user.inside == victim.index:
+                # A whole body in there: the host fights it by mashing anything at all.
+                raw = inputs[victim.index]
+                mash = sum(raw.presses(a) for a in (*ATTACK_SLOTS, "dash", "guard", "stand"))
+                if mash:
+                    hamon = victim.kit.style == "hamon"
+                    cut = self.rules.struggle_f * (self.rules.hamon_struggle_mult if hamon else 1)
+                    user.inside_f -= round(mash * cut)
+                    user.expelled_by_hamon = hamon and user.inside_f <= 0
+                if inputs[user.index].presses("stand"):
+                    user.inside_f = 0  # the intruder lets go on its own
+            elif not user.remote:
                 victim.possessed_f, victim.possessor = 0, None
                 continue
             frames[victim.index] = InputFrame(move=inputs[user.index].move)
             presses = inputs[user.index].presses("stand")
             frames[user.index] = InputFrame(press_counts={"stand": presses} if presses else {})
         return frames[0], frames[1]
+
+    def _infiltrate(self, user: Fighter, victim: Fighter, move: MoveDef) -> list[Event]:
+        """The user's body goes into the victim's: hidden in it, steering it, eating it."""
+        events = self._possess(user, victim, move.infiltrate_f)
+        user.inside = victim.index
+        victim.host = True
+        user.inside_f = move.infiltrate_f
+        user.inside_move = move
+        user.expelled_by_hamon = False
+        user.velocity = Vec2()
+        user.pos = victim.pos.copy()
+        return events + [Event("infiltrate", victim.pos, user.index)]
+
+    def _update_infiltration(self) -> list[Event]:
+        """Whoever is inside someone: follow the host, take a bite now and then, and come
+        out when the time is up, the host has fought it out, or either one falls."""
+        events: list[Event] = []
+        for user in self.fighters:
+            if user.inside is None:
+                continue
+            host = self.fighters[user.inside]
+            user.pos = host.pos.copy()
+            if user.state != State.IDLE and user.alive:
+                user.set_state(State.IDLE)  # the grab is over: the body is in there now
+            user.inside_f -= 1
+            move = user.inside_move
+            tick = self.rules.inside_tick_f
+            if move is not None and tick and user.inside_f % tick == 0 and host.alive:
+                bite = round(move.inside_dps * tick / 60)
+                alive = host.alive
+                host.hurt(bite)
+                user.hp = min(user.max_hp, user.hp + round(bite * move.drain))
+                events.append(Event("drain", host.pos, host.index, bite))
+                if alive and not host.alive:
+                    events.append(Event("ko", host.pos, host.index))
+            if user.inside_f <= 0 or not host.alive or not user.alive:
+                events += self._expel(user, host)
+        return events
+
+    def _expel(self, user: Fighter, host: Fighter) -> list[Event]:
+        """The body tears back out, behind the host, which staggers."""
+        user.inside, user.inside_f, user.inside_move = None, 0, None
+        host.possessed_f, host.possessor, host.host = 0, None, False
+        out = host.pos - host.facing.normalized() * (self.rules.body_radius * 2)
+        user.pos, _, _ = self.arena.constrain(out, self.rules.body_radius)
+        user.facing = (host.pos - user.pos).normalized()
+        if user.state not in (State.KO,):
+            user.attack = None
+            user.set_state(State.IDLE)
+        events = [Event("infiltrate_end", user.pos, user.index)]
+        if user.expelled_by_hamon:
+            # Repelled by the Ripple: it burns on the way out, doubly so on the undead.
+            weak = user.kit.nature in self.rules.hamon_weak_natures
+            burn = round(
+                self.rules.hamon_expel_damage * (self.rules.hamon_vs_weak_mult if weak else 1)
+            )
+            alive = user.alive
+            user.hurt(burn)
+            events.append(Event("hamon", user.pos, user.index, 1 if weak else 0))
+            if alive and not user.alive:
+                events.append(Event("ko", user.pos, user.index))
+        user.expelled_by_hamon = False
+        if host.alive:
+            host.stun_f = self.rules.expel_stun_f
+            host.set_state(State.HITSTUN)
+        return events
 
     # Cutscenes ---------------------------------------------------------------------------
 
@@ -721,7 +831,8 @@ class Match:
         active = self.sun_active
         if active and not self.dawn_announced:
             self.dawn_announced = True
-            events.append(Event("dawn", None))
+            if self.arena.sun_after_f > 0:  # in broad daylight, there is no dawn to call
+                events.append(Event("dawn", None))
         spread = self.arena.sun_spread(self.tick)
         for fighter in self.fighters:
             fighter.in_sun = active and fighter.alive and self.arena.in_sun(fighter.pos, spread)
@@ -735,6 +846,131 @@ class Match:
                 events.append(Event("ko", fighter.pos, fighter.index))
             if self.tick % 10 == 0:
                 events.append(Event("sunburn", fighter.pos, fighter.index, int(fighter.blood == 0)))
+        return events
+
+    # The arena itself ---------------------------------------------------------------------
+
+    def _update_hazards(self) -> list[Event]:
+        """What falls from the ceiling and what springs from the floor. Stopped time
+        stops it too: nothing in the room moves but the one who stopped it."""
+        hazards = self.arena.hazards
+        if self.time_stop is not None:
+            return []
+        events: list[Event] = []
+        for drop in hazards.drops:
+            events += self._update_drop(drop)
+        for zone in hazards.zones:
+            events += self._update_trap_zone(zone)
+        return events
+
+    def _take_exits(self, moved: list[Event]) -> list[Event]:
+        """A body slammed through a wall that gives way: the fight goes on in the arena
+        behind it. Both fighters keep their place along the wall and their distance from
+        it; what was flying or laid in the old room stays there."""
+        hazards = self.arena.hazards
+        if not hazards.exits or self.arena.elsewhere is None:
+            return []
+        for event in moved:
+            if event.kind != "wall_bounce" or event.fighter is None:
+                continue
+            exit_ = next((e for e in hazards.exits if e.rect.contains(event.pos)), None)
+            if exit_ is None:
+                continue
+            old, new = self.arena, self.arena.elsewhere(exit_.to)
+            for fighter in self.fighters:
+                # Out through the wall: the same place along it, the same distance from
+                # it, now on the other side of it in the new arena.
+                share = (fighter.pos.x - old.bounds.rect.left) / max(1.0, old.bounds.rect.w)
+                depth = fighter.pos.y - old.bounds.rect.top
+                spot = Vec2(
+                    new.bounds.rect.left + share * new.bounds.rect.w,
+                    new.bounds.rect.top + depth,
+                )
+                fighter.pos, _, _ = new.constrain(spot, self.rules.body_radius)
+                fighter.glide = Vec2()
+                fighter.carrying = None  # props belong to their room: it stays behind
+            self.arena = new
+            self.projectiles, self.traps, self.webs = [], [], []
+            return [Event("arena_exit", event.pos, event.fighter)]
+        return []
+
+    def _update_drop(self, drop) -> list[Event]:
+        defn = drop.defn
+        if drop.wreck_left > 0:
+            drop.wreck_left -= 1
+        drop.countdown -= 1
+        if drop.countdown == defn.warning_f:
+            # It starts to give: over whoever's turn it is, its shadow on the floor.
+            aimed = self.fighters[drop.turn % 2].pos
+            drop.turn += 1
+            drop.spot = min(defn.spots, key=lambda spot: (spot - aimed).length_sq())
+            return [Event("hazard_warn", drop.spot.copy(), None, defn.radius)]
+        if drop.countdown > 0 or drop.spot is None:
+            if drop.countdown <= 0:
+                drop.countdown = defn.every_f  # nobody to aim at: try again later
+            return []
+        spot, drop.spot = drop.spot, None
+        drop.countdown = defn.every_f
+        drop.wreck_at, drop.wreck_left = spot, defn.wreck_f
+        events = [Event("hazard_drop", spot, None, defn.radius)]
+        reach = defn.radius + self.rules.hurt_radius
+        for fighter in self.fighters:
+            if not fighter.alive or fighter.invincible:
+                continue
+            away = fighter.pos - spot
+            if away.length_sq() > reach * reach:
+                continue
+            push = away.normalized() if away.length_sq() > 1e-6 else Vec2(1, 0)
+            events += self._hazard_hit(fighter, defn.damage, defn.hitstun_f, push * defn.knockback)
+        return events
+
+    def _update_trap_zone(self, zone) -> list[Event]:
+        defn = zone.defn
+        zone.sprung_left = max(0, zone.sprung_left - 1)
+        if zone.rearm_left > 0:
+            zone.rearm_left -= 1
+            return []
+        for fighter in self.fighters:
+            knocked = fighter.state == State.HITSTUN and fighter.velocity.length() >= defn.min_speed
+            if not knocked or not fighter.alive or not defn.rect.contains(fighter.pos):
+                continue
+            zone.rearm_left, zone.sprung_left = defn.rearm_f, defn.rearm_f
+            events = [Event("hazard_spikes", fighter.pos.copy(), fighter.index)]
+            if defn.spare_style and fighter.kit.style == defn.spare_style:
+                return events  # it springs, and does not bite this one
+            out = fighter.pos - defn.rect.center
+            push = out.normalized() if out.length_sq() > 1e-6 else Vec2(0, 1)
+            return events + self._hazard_hit(
+                fighter, defn.damage, defn.hitstun_f, push * defn.knockback
+            )
+        return []
+
+    def _hazard_hit(self, fighter: Fighter, damage: int, hitstun_f: int, knock: Vec2) -> list:
+        """The arena strikes: no guard holds against a falling chandelier."""
+        alive = fighter.alive
+        fighter.take_hit(damage, hitstun_f, knock, True)
+        events = [Event("hit", fighter.pos.copy(), fighter.index, damage)]
+        if alive and not fighter.alive:
+            events.append(Event("ko", fighter.pos.copy(), fighter.index))
+        return events
+
+    def _apply_statuses(self) -> list[Event]:
+        """Fire, cold and a current keep working between blows: this is their step. The
+        life they take is announced now and then, not sixty times a second."""
+        events: list[Event] = []
+        for fighter in self.fighters:
+            if fighter.frozen or not fighter.alive or not fighter.statuses.active:
+                continue
+            hurt = fighter.statuses.damage_this_frame()
+            if hurt:
+                alive = fighter.alive
+                fighter.hurt(hurt)
+                if alive and not fighter.alive:
+                    events.append(Event("ko", fighter.pos, fighter.index))
+            if self.rules.status_tick_f and self.tick % self.rules.status_tick_f == 0:
+                # A beat for the view and the sound: what it is doing is read off the
+                # fighter, so one event is enough however many statuses are on him.
+                events.append(Event("status_tick", fighter.pos, fighter.index, hurt))
         return events
 
     def _update_awakenings(self) -> list[Event]:
@@ -1018,6 +1254,12 @@ class Match:
         events = [Event("hit", strike.where, defender.index, damage), *sparks]
         if armored:
             events.append(Event("armor", defender.pos, defender.index))
+        caught = strike.status and not armored and defender.alive
+        if caught and defender.statuses.apply(strike.status, strike.status_f):
+            # It took: the kind of status is the kind of the event, and the value is how
+            # long it will last.
+            frames = defender.statuses.frames(strike.status)
+            events.append(Event(f"status_{strike.status}", strike.where, defender.index, frames))
         if strike.freeze_f and not armored and defender.alive and not defender.frozen:
             defender.stun_f = max(defender.stun_f, strike.freeze_f)
             defender.iced_f = strike.freeze_f

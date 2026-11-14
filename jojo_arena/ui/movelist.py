@@ -163,9 +163,22 @@ def build_pages(
 
     supers = []
     for slot, cost in (("hha", rules.hha_cost), ("gha", rules.gha_cost)):
-        move = kit.shared_moves.get(slot)
-        if move is not None:
+        # Shared with every stance, unless a stance brings its own (awakened Kars does
+        # not open with the blade storm any more): then both are listed, the stance's
+        # one marked with its tag.
+        variants = [(None, kit.shared_moves.get(slot))]
+        variants += [
+            (name, stance.moves[slot])
+            for name, stance in kit.stances.items()
+            if slot in stance.moves
+        ]
+        for stance_name, move in variants:
+            if move is None:
+                continue
             info = f"{_bars(cost / rules.hh_bar)} - {move.info}" if move.info else ""
+            tag = kit.stance_tags.get(stance_name or "", "")
+            if tag:
+                info = f"[{tag}] {info}" if info else f"[{tag}]"
             keys = (text.DIRECTION, key("heart_heat")) if slot == "gha" else (key("heart_heat"),)
             supers.append(MoveEntry(keys, move.label or slot.upper(), info))
             # An ultimate can be a counter too: its answer comes out when struck.
