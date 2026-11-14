@@ -129,5 +129,5 @@ Classées par ce qu'elles apportent pour ce qu'elles coûtent.
 ## Outillage
 
 - `make check` avant de pousser ; `make hooks` une fois pour que ça se fasse tout seul à chaque commit.
-- La CI de GitHub lance le lint, tous les tests (y compris les combats aléatoires) et la tournée de captures (artefact `screenshots`). Sur `main`, elle construit aussi un `.exe` de test (artefact `JoJoArena-test-exe`).
-- Une Release avec le `.exe` se crée en poussant un tag `v*` (voir le README).
+- Les pull requests vont sur `develop` : la CI y lance le lint, tous les tests (y compris les combats aléatoires) et la tournée de captures (artefact `screenshots`), sur le serveur maison. Un merge dans `main` est une release : tests Linux et Windows, `.exe`, tag et Release (voir [INFRA.md](INFRA.md)).
+- Une Release se prépare avec `make release-pr VERSION=x.y.z` (voir le README).

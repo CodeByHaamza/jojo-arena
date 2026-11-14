@@ -97,14 +97,21 @@ def current_version() -> str:
     return match.group(1)
 
 
+def highest_tag(tags: list[str]) -> str | None:
+    """The highest release among tag names (what is not `vX.Y.Z` is ignored)."""
+    releases = []
+    for tag in tags:
+        try:
+            releases.append((parse_version(tag), tag))
+        except ValueError:
+            continue
+    return max(releases)[1] if releases else None
+
+
 def last_tag() -> str | None:
-    found = subprocess.run(
-        ["git", "describe", "--tags", "--abbrev=0", "--match", "v*"],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-    )
-    return found.stdout.strip() if found.returncode == 0 else None
+    """The last release published. Not `git describe`: the tag sits on main's merge
+    commit, which develop never contains."""
+    return highest_tag(_git("tag", "--list", "v*").splitlines())
 
 
 def _check() -> int:

@@ -5,6 +5,7 @@ import pytest
 from release_pr import (
     check_release,
     close_unreleased,
+    highest_tag,
     parse_version,
     set_version_init,
     set_version_pyproject,
@@ -61,6 +62,13 @@ def test_check_refuses_a_version_not_above_the_tag():
     assert check_release("0.2.0", "v0.2.0", log)
     assert check_release("0.1.9", "v0.2.0", log)
     assert check_release("0.2.0", "v0.1.0", log) == []
+
+
+def test_the_last_release_is_the_highest_tag_not_the_latest_written():
+    # The tag sits on main's merge commit, which develop does not contain: the check
+    # cannot ask git for the tag "before" the commit it tests.
+    assert highest_tag(["v0.2.0", "v0.10.0", "v0.9.1", "not-a-release"]) == "v0.10.0"
+    assert highest_tag([]) is None
 
 
 def test_check_accepts_the_first_release_and_wants_its_section():

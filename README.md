@@ -397,14 +397,13 @@ Résultat : `dist\JoJoArena.exe`, un seul fichier qui embarque toutes les donné
 
 ### Publier une Release
 
-Change la version dans `pyproject.toml` et `jojo_arena/__init__.py`, commit, puis crée et pousse un tag qui commence par `v` :
+Les pull requests vont sur `develop` ; **un merge dans `main` est une release**. Depuis `develop` à jour :
 
 ```powershell
-git tag v0.1.0
-git push origin v0.1.0
+make release-pr VERSION=0.2.0
 ```
 
-GitHub Actions (`.github/workflows/release.yml`) lance les tests, construit le `.exe`, vérifie qu'il démarre, puis publie la Release avec le `.exe` en pièce jointe.
+La commande écrit la version (`pyproject.toml` et `jojo_arena/__init__.py`), transforme la section « Non publié » du CHANGELOG en `## 0.2.0 - <date>`, pousse `develop` et ouvre la pull request vers `main`. Au merge, GitHub Actions (`.github/workflows/release.yml`) lance les tests sous Linux et Windows, construit le `.exe`, vérifie qu'il démarre, puis crée le tag `v0.2.0` et la Release avec le `.exe` en pièce jointe.
 
 </details>
 

@@ -3,6 +3,7 @@ name: Balance
 # The balance bot plays the roster against itself and writes the win rates in the run's
 # summary: once a week for everyone, and on a pull request that touches a kit, for the
 # fighters it touches against the whole roster. Never a failure - a table to read.
+# It runs on the home server; a pull request from a fork gets no balance run.
 on:
   schedule:
     - cron: "17 4 * * 1"
@@ -26,7 +27,8 @@ env:
 
 jobs:
   win-rates:
-    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [self-hosted, maison]
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v7
