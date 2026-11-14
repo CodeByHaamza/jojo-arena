@@ -26,5 +26,10 @@ def test_a_version_not_written_yet_gets_the_unreleased_section():
     assert "Santana refait" in notes and "Premier combat" not in notes
 
 
+def test_a_dated_heading_is_found_by_its_version():
+    log = "## Non publié\n\n## 0.2.0 - 2026-11-14\n\n- Avdol.\n"
+    assert "- Avdol." in notes_for("v0.2.0", log)
+
+
 def test_with_nothing_to_say_it_is_still_a_valid_release():
     assert notes_for("v9.9.9", "# Journal\n") == HEADER
