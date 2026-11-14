@@ -64,6 +64,20 @@ def menace(x: float, y: float, delay: float, size: int = 40) -> str:
     )
 
 
+def fighter_count() -> int:
+    """Fighters on the select screen (the training dummies are not)."""
+    from jojo_arena.characters import load_roster
+
+    return sum(1 for fighter in load_roster() if fighter.selectable)
+
+
+def arena_count() -> int:
+    """Every arena a fight can happen in, the ones only reached through an event too."""
+    from jojo_arena.stages import REACHED_IDS, STAGE_IDS
+
+    return len(STAGE_IDS) + len(REACHED_IDS)
+
+
 def test_count() -> int:
     """How many tests the suite really has: asked of pytest, never typed by hand.
 
@@ -102,8 +116,8 @@ def counters() -> str:
     """The numbers that say what the project is, counting up as you look at them."""
     tests = test_count()
     figures = [
-        ("19", "PERSOS JOUABLES", GOLD),
-        ("3", "ARÈNES", JADE),
+        (f"{fighter_count()}", "PERSOS JOUABLES", GOLD),
+        (f"{arena_count()}", "ARÈNES", JADE),
         (f"{tests}", "TESTS", "#5a9ef0"),
         ("94 %", "COUVERTURE", PURPLE),
         ("60", "IMAGES/SEC FIXES", BLOOD),
@@ -448,7 +462,8 @@ def profile_card() -> str:
         f'  <text x="40" y="140" font-family="{UI}" font-size="13" fill="{PALE}">'
         "Python 3.12 · pygame-ce · simulation deterministe a 60 Hz</text>\n"
         f'  <text x="40" y="162" font-family="{UI}" font-size="13" fill="{PALE}">'
-        f"19 persos · 3 arenes · {test_count()} tests · 94 % de couverture</text>\n"
+        f"{fighter_count()} persos · {arena_count()} arenes · {test_count()} tests"
+        " · 94 % de couverture</text>\n"
     )
     # The line that says who writes it, with a Ripple running under it.
     out.append(

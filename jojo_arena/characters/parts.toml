@@ -10,20 +10,20 @@
 [[parts]]
 number = 1
 emblem = "emblem_p1"
+complete = true
 title = "PHANTOM BLOOD"
 setting = "Angleterre, 1880-1889"
 setting_en = "England, 1880-1889"
 colors = ["#c8323c", "#e8c060"]
-complete = true
 
 [[parts]]
 number = 2
 emblem = "emblem_p2"
+complete = true
 title = "BATTLE TENDENCY"
 setting = "New York, Mexique, Italie, Suisse, 1938-1939"
 setting_en = "New York, Mexico, Italy, Switzerland, 1938-1939"
 colors = ["#e88a2c", "#2ca8a0"]
-complete = true
 
 [[parts]]
 number = 3

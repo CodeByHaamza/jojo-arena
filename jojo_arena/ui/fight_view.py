@@ -1044,8 +1044,12 @@ class FightView:
         return self._overlays[key]
 
     def _draw_trap(self, surface: pygame.Surface, trap) -> None:
-        """Threads laid on the ground: faint lines in the owner's color, a slight shimmer."""
+        """Threads laid on the ground: faint lines in the owner's color, a slight shimmer.
+        A trap that erupts in fire is an ankh drawn into the floor instead."""
         aura = self.fighter_defs[trap.owner].aura
+        if trap.defn.projectile.look == "eruption":
+            vfx.draw_floor_ankh(surface, trap.pos, self.tick, aura)
+            return
         dim = tuple(c // 3 for c in aura)
         r = trap.defn.radius
         center = trap.pos
@@ -1074,6 +1078,9 @@ class FightView:
             return
         if attack.move.fx == "bubbles":
             self._draw_bubble_dome(surface, fighter)
+            return
+        if attack.move.fx == "ankhs":
+            self._draw_closing_ankhs(surface, fighter)
             return
         if attack.phase != 0:
             return
@@ -1131,6 +1138,24 @@ class FightView:
         if attack.phase > 0:
             blit_glow(surface, radial_glow(round(move.radius), (150, 120, 40)), target)
             pygame.draw.circle(surface, (255, 236, 170), target.as_ints(), 4)
+
+    def _draw_closing_ankhs(self, surface: pygame.Surface, fighter: Fighter) -> None:
+        """Burning ankhs gathering in a ring around a spot, then closing on it."""
+        attack, move = fighter.attack, fighter.attack.move
+        target = attack.target - Vec2(0, 12)  # around the chest, not the ankles
+        count = 6
+        progress = 1.0
+        if attack.phase == 0:
+            progress = attack.frame / max(1, move.startup_f)
+        radius = move.radius * (2.2 - 1.2 * progress)
+        if attack.phase > 0:
+            radius *= max(0.2, 1.0 - attack.active_offset / max(1, move.active_f))
+        for i in range(count):
+            angle = math.tau * i / count + self.tick * 0.06
+            spot = target + Vec2.from_angle(angle, radius)
+            vfx.draw_projectile(surface, "ankh", spot, target - spot, 6, (255, 120, 40))
+        if attack.phase > 0:
+            vfx.draw_flame_burst(surface, target, move.radius * 0.6, self.tick)
 
     def _draw_bubble_dome(self, surface: pygame.Surface, fighter: Fighter) -> None:
         """A dome of bubbles swelling around a spot, and then it bursts."""
@@ -1522,6 +1547,12 @@ class FightView:
             hip = fighter.pos + view.chest + Vec2(0, 3)
             vfx.draw_gun(surface, hip, attack.aim, self.tick)
             return
+        if move.fx == "flame_burst":
+            # Fire out of the whole body, all round where the blow is centred.
+            grow = min(1.0, (attack.active_offset + 1) / 3)
+            center = fighter.strike_origin() + attack.aim * move.reach + Vec2(0, -10)
+            vfx.draw_flame_burst(surface, center, move.radius * (0.5 + 0.5 * grow), self.tick)
+            return
         if move.fx == "beam":
             # From the eyes, straight ahead, at once.
             eyes = fighter.pos + Vec2(attack.aim.x * 2, -view.height + 9)
@@ -1535,6 +1566,9 @@ class FightView:
             start = fighter.pos + view.chest
         grow = min(1.0, (attack.active_offset + 1) / 3)
         tip = fighter.pos + attack.aim * (move.reach * grow) + view.chest
+        if move.fx == "fire_rope":
+            vfx.draw_fire_rope(surface, start, tip, self.tick)
+            return
         width = 3 if move.reach > 40 else 2
         vfx.draw_reach(surface, start, tip, aura, move.fx, width)
 

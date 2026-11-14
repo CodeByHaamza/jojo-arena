@@ -265,7 +265,10 @@ class CharacterSelectScene(Scene):
 
     def _cell_rect(self, index: int) -> pygame.Rect:
         col, row = index % GRID_COLS, index // GRID_COLS
-        return pygame.Rect(GRID_X + col * (CELL + GAP), GRID_Y + row * (CELL + GAP), CELL, CELL)
+        # A short last row (complete part) sits in the middle, not against the left.
+        shift = (GRID_COLS - self.row_length(row)) * (CELL + GAP) // 2
+        x = GRID_X + shift + col * (CELL + GAP)
+        return pygame.Rect(x, GRID_Y + row * (CELL + GAP), CELL, CELL)
 
     def _draw_tabs(self, surface: pygame.Surface) -> None:
         """One tab per part, its emblem inside; parts with nobody yet stay dim."""
@@ -275,7 +278,7 @@ class CharacterSelectScene(Scene):
     def _draw_grid(self, surface: pygame.Surface) -> None:
         grid = self.grid()
         part = self.parts.get(self.tab)
-        for cell in range(GRID_COLS * self.rows()):
+        for cell in range(self.cells()):
             rect = self._cell_rect(cell)
             if cell < len(grid):
                 index = grid[cell]

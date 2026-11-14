@@ -321,7 +321,10 @@ class Match:
     def _lay_trap(self, fighter: Fighter, attack: Attack) -> None:
         defn = attack.move.trap
         origin = fighter.strike_origin()
-        pos, _, _ = self.arena.constrain(origin + attack.aim * defn.distance, defn.radius)
+        spot = origin + attack.aim * defn.distance
+        if defn.at_cursor and attack.dest is not None:
+            spot = attack.dest  # laid on the aimed point
+        pos, _, _ = self.arena.constrain(spot, defn.radius)
         own = [t for t in self.traps if t.owner == fighter.index]
         if len(own) >= defn.max_count:
             self.traps.remove(own[0])  # the oldest gives way
@@ -1039,6 +1042,8 @@ class Match:
                 key=(user.index, scene.serial),
                 super_move=True,
                 hamon=move.hamon,
+                status=move.status,
+                status_f=move.status_f,
             )
             _, strike_events = self._strike(user, target, strike)
             events += strike_events

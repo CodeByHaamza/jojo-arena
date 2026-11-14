@@ -80,12 +80,13 @@ class ProjectileDef:
 class TrapDef:
     """Something laid on the ground that fires on its own when the opponent comes close."""
 
-    distance: float  # laid this far in front of the user
+    distance: float  # laid this far in front of the user (at_cursor: at most this far)
     radius: float  # trigger radius
     lifetime_f: int
     max_count: int  # the oldest disappears when one more is laid
     projectile: ProjectileDef  # what it fires at the opponent when triggered
     fragile: bool = False  # a blow landed on its owner pops it where it stands
+    at_cursor: bool = False  # laid on the aimed point (mouse, right stick, held direction)
 
     @classmethod
     def from_data(cls, data: dict) -> TrapDef:
@@ -96,6 +97,7 @@ class TrapDef:
             max_count=data.get("max_count", 3),
             projectile=ProjectileDef.from_data(data["projectile"]),
             fragile=data.get("fragile", False),
+            at_cursor=data.get("at_cursor", False),
         )
 
 

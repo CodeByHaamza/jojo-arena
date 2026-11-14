@@ -17,6 +17,7 @@ FISTS_AND_HANDS = {
     ("jotaro_p3", "gha"),  # Ora Ora Final: a barrage of them, as it should be
     ("jonathan", "gha"),  # Sunlight Yellow Overdrive: one Hamon punch, up close
     ("dio_p3", "hha"),  # The World's kick
+    ("avdol", "hha"),  # "Give me four wishes instead!": Magician's Red kicks forward (ASBR)
 }
 
 

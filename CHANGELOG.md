@@ -74,6 +74,16 @@ des corrections seules une patch.
   devient ses plumes qui se changent en bêtes et se referment de tous les côtés.
 - **L'écran d'accueil oppose les deux camps** : les alliés des Joestar d'un côté, ceux
   qui leur font face de l'autre, un VS au milieu.
+- **Muhammad Avdol et Magician's Red** (partie 3), zoneur de feu, d'après sa fiche et ses
+  coups d'All-Star Battle R : **Crossfire Hurricane** (un ankh de feu), la **Variation**
+  posée là où tu vises et qui jaillit sous les pieds, **Red Bind** (des cordes de feu
+  imparables), **Flaming Detector** (une flamme lente qui chasse l'adversaire), « HELL 2
+  U ! », le contre « Now's my chance ! », « I'll burn you to cinders ! » qui explose tout
+  autour, la HHA « Give me four wishes instead ! » et la GHA **Crossfire Hurricane
+  Special** en cinématique : l'anneau d'ankhs se referme.
+- **Le feu de Magician's Red reste accroché** : ce qu'il touche net brûle encore après
+  le coup. C'est l'altération **feu** du moteur, la même que le sang d'Esidisi : un
+  second coup la relance sans l'empiler.
 
 - **La touche Power Up sert enfin : l'éveil.** Kars pose le masque de pierre et la Super
   Aja pour deux barres et devient la **forme de vie ultime** : le soleil ne lui fait plus

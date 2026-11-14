@@ -5,10 +5,10 @@
 **Un arena fighter 1v1 en temps réel, en pixel art vu de dessus.**
 
 Fan game non officiel de JoJo's Bizarre Adventure — Python 3.12, pygame-ce
-**Parties 1 et 2 complètes** · 19 persos · 3 arènes · simulation déterministe à 60 images par seconde
+**Parties 1 et 2 complètes** · 20 persos · 5 arènes · simulation déterministe à 60 images par seconde
 
 [![CI](https://github.com/CodeByHaamza/jojo-arena/actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-959-2ea24a.svg)](tests/)
+[![Tests](https://img.shields.io/badge/tests-1038-2ea24a.svg)](tests/)
 [![Couverture](https://img.shields.io/badge/couverture-94%25-2ea24a.svg)](docs/INFRA.md#couverture)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-3776ab.svg)](https://www.python.org/)
 [![pygame-ce](https://img.shields.io/badge/pygame--ce-2.5-3d63c8.svg)](https://pyga.me/)
@@ -110,12 +110,12 @@ chacun de leur côté. C'est ce qui rend les replays exacts et le rollback possi
 > *Un jeu qui tourne n'est pas un jeu juste.*
 
 <div align="center">
-<img src="docs/media/chiffres.svg" alt="19 persos, 3 arènes, 959 tests, 94 % de couverture, 60 images par seconde" width="100%">
+<img src="docs/media/chiffres.svg" alt="20 persos, 5 arènes, 1038 tests, 94 % de couverture, 60 images par seconde" width="100%">
 </div>
 
 | Critère | Mesure | Comment |
 | --- | --- | --- |
-| **Déterminisme** | identique au bit près, **19/19 persos** | mêmes entrées rejouées deux fois : positions, jauges, projectiles et événements comparés ([test](tests/test_determinism.py)) |
+| **Déterminisme** | identique au bit près, **20/20 persos** | mêmes entrées rejouées deux fois : positions, jauges, projectiles et événements comparés ([test](tests/test_determinism.py)) |
 | **Données de frames** | **mesuré = annoncé** | la frise mesure l'avantage sur un vrai échange, `framedata` le calcule : les deux doivent tomber pareil ([test](tests/test_framemeter.py)) |
 | **Coups positifs en garde** | **0** | un coup léger qui laisse l'avantage en garde verrouille l'adversaire ; refusé pour tout le roster |
 | **Coups identiques entre deux persos** | **0** | mêmes images **et** mêmes dégâts = le même perso deux fois (`tools/audit_kits.py`) |
@@ -159,7 +159,7 @@ mais dans la partie 2 il se bat aux côtés de Joseph — il se range donc de ce
 | <img src="docs/media/faces/jonathan.png" width="54"><br><sub>Jonathan</sub> | <img src="docs/media/faces/zeppeli.png" width="54"><br><sub>Zeppeli</sub> | <img src="docs/media/faces/dio_p1.png" width="54"><br><sub>DIO</sub> | <img src="docs/media/faces/bruford.png" width="54"><br><sub>Bruford</sub> | <img src="docs/media/faces/tarkus.png" width="54"><br><sub>Tarkus</sub> | <img src="docs/media/faces/speedwagon.png" width="54"><br><sub>Speedwagon</sub> |
 | <img src="docs/media/faces/joseph_p2.png" width="54"><br><sub>Joseph</sub> | <img src="docs/media/faces/caesar.png" width="54"><br><sub>Caesar</sub> | <img src="docs/media/faces/lisa_lisa.png" width="54"><br><sub>Lisa Lisa</sub> | <img src="docs/media/faces/straizo.png" width="54"><br><sub>Straizo</sub> | <img src="docs/media/faces/stroheim.png" width="54"><br><sub>Stroheim</sub> | |
 | <img src="docs/media/faces/wamuu.png" width="54"><br><sub>Wamuu</sub> | <img src="docs/media/faces/esidisi.png" width="54"><br><sub>Esidisi</sub> | <img src="docs/media/faces/kars.png" width="54"><br><sub>Kars</sub> | <img src="docs/media/faces/santana.png" width="54"><br><sub>Santana</sub> | | |
-| <img src="docs/media/faces/jotaro_p3.png" width="54"><br><sub>Jotaro</sub> | <img src="docs/media/faces/kakyoin.png" width="54"><br><sub>Kakyoin</sub> | <img src="docs/media/faces/dio_p3.png" width="54"><br><sub>DIO</sub> | <img src="docs/media/faces/polnareff.png" width="54"><br><sub>Polnareff</sub> | | |
+| <img src="docs/media/faces/jotaro_p3.png" width="54"><br><sub>Jotaro</sub> | <img src="docs/media/faces/kakyoin.png" width="54"><br><sub>Kakyoin</sub> | <img src="docs/media/faces/dio_p3.png" width="54"><br><sub>DIO</sub> | <img src="docs/media/faces/polnareff.png" width="54"><br><sub>Polnareff</sub> | <img src="docs/media/faces/avdol.png" width="54"><br><sub>Avdol</sub> | |
 
 <sub>Partie 1 · Partie 2 (complète) · Partie 3 — les visages sortent du générateur de sprites du jeu.</sub>
 
@@ -211,7 +211,7 @@ python -m venv .venv
 **Dépendances** — Python ≥ 3.12 et **pygame-ce**, rien d'autre : les sprites, les sons, les
 icônes et les animations de ce README sont générés par le code du dépôt.
 
-**Temps d'exécution typique** — la suite complète : **≈ 5 min 30** (959 tests). Les tests sans
+**Temps d'exécution typique** — la suite complète : **≈ 5 min 30** sur un cœur, **≈ 45 s** en parallèle (`-n auto`, 1038 tests). Les tests sans
 écran (`make test-fast`) : **≈ 40 s**. Le lint : **≈ 3 s**.
 
 ---
@@ -226,9 +226,10 @@ icônes et les animations de ce README sont générés par le code du dépôt.
 | 3 | Partie 2 : Joseph, Caesar, Lisa Lisa, Straizo, les Hommes du Pilier, Stroheim | ✅ complète |
 | 4 | Éveil (Power Up), objets portés et lancés, bilan de fin de combat | ✅ |
 | 5 | Altérations d'état : feu, gel, courant | ✅ |
-| 6 | Partie 4 : Josuke, Okuyasu, Kira et leurs Stands | ⏳ |
-| 7 | Mode histoire, arène par partie | ⏳ |
-| 8 | En ligne en rollback — la simulation déterministe le prépare | ⏳ |
+| 6 | Partie 3 complète : Avdol ✅, Joseph âgé, Iggy, Pet Shop, Vanilla Ice, Hol Horse, Mariah, N'Doul ([plan](docs/PARTIE3.md)) | ⏳ |
+| 7 | Partie 4 : Josuke, Okuyasu, Kira et leurs Stands | ⏳ |
+| 8 | Mode histoire, arène par partie | ⏳ |
+| 9 | En ligne en rollback — la simulation déterministe le prépare | ⏳ |
 
 <img src="docs/media/separateur.svg" width="100%" alt="">
 

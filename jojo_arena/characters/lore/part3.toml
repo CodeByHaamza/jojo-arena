@@ -77,6 +77,16 @@ family_en = "French. His sister Sherry was killed by J. Geil, the man with two r
 name_origin = "Son nom vient du chanteur français Michel Polnareff, dont Araki adorait la musique quand il était enfant."
 name_origin_en = "His surname comes from the French singer Michel Polnareff, whose music Araki loved as a child."
 
+[[characters]]
+id = "avdol"
+name = "MUHAMMAD AVDOL"
+fighter = "avdol"
+stand = "MAGICIAN'S RED"
+text = "Diseur de bonne aventure au bazar de Khan el-Khalili, au Caire, et manieur de Stand depuis sa naissance. Il croise DIO ressuscité devant sa boutique et n'en réchappe que de justesse ; ami de Joseph, il part avec lui chercher Jotaro, puis jusqu'en Égypte. Laissé pour mort après les balles de Hol Horse, il revient plus tard ; il meurt au manoir de DIO en écartant Polnareff et Iggy de l'attaque de Vanilla Ice."
+text_en = "A fortune teller in the Khan el-Khalili bazaar in Cairo, and a Stand user since birth. He meets the newly risen DIO outside his shop and barely escapes; a friend of Joseph, he goes with him to fetch Jotaro, then all the way to Egypt. Left for dead after Hol Horse's bullets, he comes back later; he dies in DIO's mansion pushing Polnareff and Iggy out of Vanilla Ice's attack."
+family = "Égyptien, né dans les années 1960. Ami de Joseph Joestar, qui l'avait mis en garde contre DIO."
+family_en = "Egyptian, born in the 1960s. A friend of Joseph Joestar, who had warned him about DIO."
+
 [[stands]]
 id = "star_platinum"
 name = "STAR PLATINUM"
@@ -120,3 +130,14 @@ text = "Un chevalier en armure armé d'une rapière, d'une vitesse extrême : il
 text_en = "An armored knight wielding a rapier, of extreme speed: it parries bullets. Without its armor it gets so fast it leaves afterimages; it can also fire its blade, but must get it back afterwards. Pierced by the Arrow, it will become Chariot Requiem."
 name_origin = "D'après l'arcane VII du tarot, le Chariot, symbole de conquête et de victoire."
 name_origin_en = "After tarot card VII, The Chariot, a symbol of conquest and victory."
+
+[[stands]]
+id = "magicians_red"
+name = "MAGICIAN'S RED"
+user = "MUHAMMAD AVDOL"
+sprite = "magicians_red/magicians_red"
+stats = "BBCBCD"
+text = "Un Stand de combat rapproché à tête d'oiseau, faite d'après le phénix, qui crée et façonne le feu à volonté : des flammes assez chaudes pour faire fondre le métal en plein vol. Crossfire Hurricane lance des ankhs de feu, Red Bind ligote d'une corde de flammes, et ses flammes peuvent détecter la vie autour de lui. Un seul coup de pied a brisé l'armure de Judgement."
+text_en = "A close-range Stand with a bird's head, modeled on the phoenix, that makes and shapes fire at will: flames hot enough to melt metal in mid-air. Crossfire Hurricane throws fire ankhs, Red Bind ties with a rope of flame, and its flames can detect life around it. A single kick broke Judgement's armor."
+name_origin = "D'après l'arcane I du tarot, le Magicien, ou Bateleur. Araki lui a donné une tête d'oiseau pour que les silhouettes des héros, côte à côte, ne se ressemblent pas."
+name_origin_en = "After tarot card I, The Magician. Araki gave it a bird's head so that the heroes' silhouettes, side by side, would not look alike."

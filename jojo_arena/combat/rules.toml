@@ -161,7 +161,7 @@ hamon_breath_mult = 1.5       # Hamon breathing fills faster in the sun
 tick_every_f = 6              # the life lost is announced this often, not every frame
 
 [status.burn]
-# Fire: Esidisi's blood at five hundred degrees, Stroheim's flamethrower.
+# Fire: Esidisi's blood at five hundred degrees, Stroheim's flamethrower, Magician's Red.
 max_s = 2.6
 damage_per_s = 26
 blocks_regen = true           # a burning wound does not close, undead or not

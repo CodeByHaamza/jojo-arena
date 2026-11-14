@@ -42,6 +42,8 @@ SIZZLE = "ジュウ"  # burning in the sun
 RATTLE = "ジャラ"  # chains
 BOOM = "ドカーン"  # an explosion
 POP = "パン"  # a bubble bursting
+FLARE = "ゴォッ"  # something catching fire
+FIRE = ((255, 226, 120), (240, 90, 20), (60, 14, 6))  # word colors for fire
 ICE = ((236, 250, 255), (120, 190, 240), (20, 40, 70))
 BLOOD = ((255, 150, 160), (190, 20, 50), (50, 6, 16))
 

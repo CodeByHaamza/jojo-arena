@@ -635,6 +635,8 @@ class Fighter:
                 spot = self.pos + offset.normalized() * move.reach
         self.attack = Attack(move, aim, self._serial, target=spot, slot=slot, start=self.pos.copy())
         self.attack.dest = dest
+        if move.trap is not None and move.trap.at_cursor:
+            self.attack.dest = self.aimed_point(frame, move.trap.distance)
         self.attack.hamon = move.hamon
         self.blood = max(0.0, self.blood - move.blood_cost)
         if move.hp_cost:
@@ -729,22 +731,30 @@ class Fighter:
         self.remote_pos = None
         self.stance = self.style.params.get("on", self.stance)
 
+    def aimed_point(self, frame: InputFrame | None, distance: float) -> Vec2:
+        """The point the player aims at, at most `distance` away: the mouse, else the
+        right stick, else the held direction, else straight ahead."""
+        if frame is not None and frame.cursor is not None:
+            point = Vec2(*frame.cursor)
+        elif frame is not None and frame.stick is not None:
+            point = self.pos + Vec2(*frame.stick).normalized() * distance
+        elif frame is not None and frame.move != (0.0, 0.0):
+            point = self.pos + Vec2(*frame.move).normalized() * distance
+        else:
+            point = self.pos + self.facing * distance
+        delta = point - self.pos
+        if delta.length() > distance:
+            delta = delta.normalized() * distance
+        return self.pos + delta
+
     def _leap_destination(self, move: MoveDef, target: Vec2, frame: InputFrame | None) -> Vec2:
         """Where a leap lands: next to the opponent, or on the aimed point (mouse, right
         stick, else the held direction, else straight ahead), at most `leap` away."""
         if move.leap_to == "cursor":
-            if frame is not None and frame.cursor is not None:
-                point = Vec2(*frame.cursor)
-            elif frame is not None and frame.stick is not None:
-                point = self.pos + Vec2(*frame.stick).normalized() * move.leap
-            elif frame is not None and frame.move != (0.0, 0.0):
-                point = self.pos + Vec2(*frame.move).normalized() * move.leap
-            else:
-                point = self.pos + self.facing * move.leap
-        else:
-            offset = target - self.pos
-            gap = self.rules.body_radius * 2
-            point = target - offset.normalized() * gap if offset.length() > gap else self.pos
+            return self.aimed_point(frame, move.leap)
+        offset = target - self.pos
+        gap = self.rules.body_radius * 2
+        point = target - offset.normalized() * gap if offset.length() > gap else self.pos
         delta = point - self.pos
         if delta.length() > move.leap:
             delta = delta.normalized() * move.leap
