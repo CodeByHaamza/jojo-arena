@@ -59,3 +59,18 @@ tant que le propriétaire n'a pas décidé de les publier :
   (« Position Shuffle » : échanger la place de deux choses).
 - **Hell's Door Requiem**, le Stand de Rohan Kishibe devenu méconnaissable (« Soul
   Rewrite »).
+
+### Les obstacles à plusieurs solutions
+
+Les pouvoirs gagnés par les liens sont aussi des outils pour avancer, et un obstacle n'a
+**pas une seule bonne réponse**. Exemple du propriétaire, traverser un gouffre :
+
+- se balancer avec Hierophant Green, Stone Free ou Hermit Purple ;
+- faire pousser une vigne avec Gold Experience ;
+- dresser un pilier de sable qui propulse, puis planer, avec The Fool ;
+- coller une étiquette de Kiss sur un objet, le lancer de l'autre côté, puis s'y ramener.
+
+Principe proposé pour que ça reste faisable : penser les obstacles en **verbes** (s'accrocher,
+faire pousser, bâtir, revenir à un point, échanger de place…) plutôt qu'en Stands. Chaque
+pouvoir apporte un ou deux verbes, et chaque obstacle accepte un ensemble de verbes. Un
+nouveau Stand ajouté plus tard résout alors tout seul les obstacles déjà construits.
