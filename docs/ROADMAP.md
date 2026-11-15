@@ -32,6 +32,9 @@ faites et fusionnées dans `develop` ; **on reprend à l'étape 3**.
 6. [ ] **Optimisation mesurée** : un test de budget (1000 pas de simulation), puis le
    profilage d'un combat chargé.
 
+Idées pour plus tard (mode 2 contre 2 avec ultime commun, mode histoire avec persos
+originaux et Stand qui s'éveille par les liens) : [IDEES.md](IDEES.md).
+
 Questions ouvertes : le feu commun doit-il s'éteindre au dash ou ne jamais tuer, comme
 celui qu'Avdol avait à l'origine ? Une commande `/jojo` pour Yasuho et l'annonce des
 Releases sur Discord (dépôt `maison`) ? La première Release : `make release-pr
