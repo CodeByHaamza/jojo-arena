@@ -2,6 +2,47 @@
 
 Ce qui est fait, ce qui est en cours et ce qui vient ensuite. Le détail du game design est dans [GDD.md](GDD.md) ; ce fichier dit **dans quel ordre** on le construit. On coche au fur et à mesure.
 
+## Où on en est (15/11/2026)
+
+Plan décidé le 14/11/2026 avec le propriétaire, dans cet ordre. Les étapes 0 à 2 sont
+faites et fusionnées dans `develop` ; **on reprend à l'étape 3**.
+
+0. [x] **Ménage git** : `develop` créée ; PR #2 à #5 (événements d'arène, St. Moritz, Air
+   Supplena, Santana refait) et #7 (Avdol) fusionnées. Le feu d'Avdol passe sur
+   l'altération `burn` commune.
+1. [x] **CI** (PR #8) : les PR vont sur `develop`, un merge dans `main` publie la Release
+   (`make release-pr VERSION=x.y.z`). Les PR tournent sur le runner du serveur maison
+   (`maison-jojo-runner`, 3 CPU, 3 Go), le `.exe` sur Windows chez GitHub. Voir
+   [INFRA.md](INFRA.md).
+2. [x] **Poses** (PR #9) : 3 poses seules par perso, 3 avec le Stand pour ses manieurs,
+   choisies à l'écran de sélection ; coudes et genoux dans le générateur ; les planches
+   chargées une seule fois. Design : `docs/superpowers/specs/2026-11-15-poses-design.md`.
+3. [ ] **Costumes et couleurs** (comme ASBR et EoH : Jonathan torse nu, tenues blanches de
+   *JOESTAR The Inherited Soul*, le « père d'Avdol ? », tenues du manga qui ne sont dans
+   aucun jeu), plusieurs couleurs par costume, l'adversaire d'un match miroir dans une
+   autre couleur. Une ligne de plus dans le panneau de sélection des poses. Rien n'est
+   écrit pour l'instant : on commence par le design.
+4. [ ] **Partie 3**, dans l'ordre de [PARTIE3.md](PARTIE3.md) : Joseph âgé, le manoir de
+   DIO (Nukesaku, rideaux), Iggy, Pet Shop, Vanilla Ice, Hol Horse (et Calcutta, J. Geil),
+   Mariah, N'Doul (et le désert), puis les éveils de Jotaro et DIO. Chaque perso arrive
+   avec ses poses, ses costumes et ses sons.
+5. [ ] **Sons** : bruitages réels sous licence CC0 (Kenney, OpenGameArt) avec crédits, et
+   un pack de voix **local**, hors du dépôt et ignoré par git (jamais de voix de l'anime
+   ou des jeux dans le dépôt).
+6. [ ] **Optimisation mesurée** : un test de budget (1000 pas de simulation), puis le
+   profilage d'un combat chargé.
+
+Questions ouvertes : le feu commun doit-il s'éteindre au dash ou ne jamais tuer, comme
+celui qu'Avdol avait à l'origine ? Une commande `/jojo` pour Yasuho et l'annonce des
+Releases sur Discord (dépôt `maison`) ? La première Release : `make release-pr
+VERSION=0.2.0` (la section 0.1.0 du CHANGELOG existe déjà).
+
+Remarques mineures laissées de côté : celles de la relecture de la CI (`release-pr` à
+reprendre après un échec, espacement du CHANGELOG, concurrence des releases...) et de
+celle des poses (pose en duo pendant un portage, aides en bas d'écran pendant l'étape de
+pose, coutures et revers sur un membre plié, `Limb.end_direction` inutilisé, deux tests
+manquants).
+
 ## Fait
 
 - [x] **Vague 0, le moteur** : boucle à 60 Hz déterministe, arène du Caire, garde, esquive, Heart Heat, clash, rounds, mort subite.
