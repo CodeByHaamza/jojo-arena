@@ -154,3 +154,114 @@ def test_each_side_of_a_mirror_match_has_its_own_pose(tmp_path):
     run_held(match, 3, hold("pose"), hold("pose"))
     assert left.pose_anim(match.fighters[0]) == "pose_alone"
     assert right.pose_anim(match.fighters[1]) == "pose_alone_too"
+
+
+# The select screen ---------------------------------------------------------------------
+
+import pygame  # noqa: E402
+import pytest  # noqa: E402
+
+from jojo_arena import controls  # noqa: E402
+from jojo_arena.context import GameContext  # noqa: E402
+from jojo_arena.engine.display import Display  # noqa: E402
+from jojo_arena.engine.input import KEY_SCANCODES, InputManager  # noqa: E402
+from jojo_arena.engine.scene import SceneManager  # noqa: E402
+from jojo_arena.ui.select_scene import CharacterSelectScene  # noqa: E402
+
+
+@pytest.fixture
+def ctx(tmp_path, monkeypatch):
+    monkeypatch.setenv("SDL_VIDEODRIVER", "dummy")
+    pygame.display.init()
+    config, _ = controls.parse_controls(None)
+    context = GameContext(
+        Display("test", (480, 270)), InputManager(), SceneManager(), config, tmp_path / "c.json"
+    )
+    yield context
+    pygame.display.quit()
+
+
+def keys(ctx, *names: str):
+    for name in names:
+        code = KEY_SCANCODES[name]
+        ctx.inputs.handle_event(pygame.event.Event(pygame.KEYDOWN, scancode=code, key=0, mod=0))
+        ctx.inputs.handle_event(pygame.event.Event(pygame.KEYUP, scancode=code, key=0, mod=0))
+        ctx.inputs.begin_step()
+        ctx.scenes.current.update()
+        ctx.scenes.apply_pending()
+        ctx.scenes.current.draw(ctx.display.surface)
+
+
+def select_on(ctx, tmp_path, mode="versus", fighter="jotaro_p3"):
+    """The select screen, the cursor on a fighter whose sheets have the test poses."""
+    select = CharacterSelectScene(ctx, mode, cursor=fighter)
+    index = [f.id for f in select.roster].index(fighter)
+    select.looks[index].sprites = posed_sheet(tmp_path)
+    select.looks[index].stand = posed_sheet(tmp_path, "[[poses.together.down]]\nlean = -2\n")
+    ctx.scenes.switch(select)
+    ctx.scenes.apply_pending()
+    keys(ctx)  # one step, nothing pressed
+    return select
+
+
+def test_picking_a_fighter_with_poses_opens_the_pose_step(ctx, tmp_path):
+    select = select_on(ctx, tmp_path)
+    keys(ctx, "Return")
+    assert select.choosing == 0 and select.picks == []
+    assert select.loadout == Loadout("alone", "together")
+
+
+def test_left_right_change_the_pose_up_down_the_line_enter_confirms(ctx, tmp_path):
+    select = select_on(ctx, tmp_path)
+    keys(ctx, "Return", "Right")
+    assert select.loadout.pose == "alone_too"
+    keys(ctx, "Right")  # around again
+    assert select.loadout.pose == "alone"
+    keys(ctx, "Left", "Down", "Right")  # only one pose with the Stand: it stays
+    assert select.loadout == Loadout("alone_too", "together")
+    keys(ctx, "Return")
+    assert select.choosing is None and select.fighter_ids == ("jotaro_p3",)
+    assert ctx.loadouts[0] == Loadout("alone_too", "together")
+    assert ctx.settings.poses["jotaro_p3"] == ["alone_too", "together"]
+
+
+def test_back_leaves_the_pose_step_without_picking(ctx, tmp_path):
+    select = select_on(ctx, tmp_path)
+    keys(ctx, "Return", "Escape")
+    assert select.choosing is None and select.picks == []
+
+
+def test_the_last_choice_is_offered_first(ctx, tmp_path):
+    ctx.settings.poses = {"jotaro_p3": ["alone_too", "together"]}
+    select = select_on(ctx, tmp_path)
+    keys(ctx, "Return")
+    assert select.loadout == Loadout("alone_too", "together")
+
+
+def test_a_fighter_without_poses_is_picked_at_once(ctx, tmp_path):
+    select = select_on(ctx, tmp_path)
+    keys(ctx, "Right")  # the next fighter: real sheets, no poses in this test
+    hovered = select.roster[select.cursor]
+    if select.looks[select.cursor].sprites.poses:
+        pytest.skip(f"{hovered.id} has poses now")
+    keys(ctx, "Return")
+    assert select.choosing is None and select.fighter_ids == (hovered.id,)
+
+
+def test_the_computer_side_skips_the_pose_step(ctx, tmp_path):
+    select = select_on(ctx, tmp_path, mode="vs_cpu")
+    keys(ctx, "Return", "Return")  # player 1: pick, then confirm the poses
+    assert select.picking == 1
+    index = [f.id for f in select.roster].index("jotaro_p3")
+    select.cell = select.grid().index(index)  # the computer gets Jotaro too
+    keys(ctx, "Return")
+    assert select.choosing is None
+
+
+def test_the_settings_keep_the_poses(tmp_path):
+    from jojo_arena.settings import load_settings, parse_settings, save_settings
+
+    settings = parse_settings({"poses": {"jotaro_p3": ["a", "b"], "bad": "x", "worse": [1, 2]}})
+    assert settings.poses == {"jotaro_p3": ["a", "b"]}
+    save_settings(settings, tmp_path / "s.json")
+    assert load_settings(tmp_path / "s.json").poses == {"jotaro_p3": ["a", "b"]}
