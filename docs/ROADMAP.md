@@ -22,7 +22,8 @@ faites et fusionnées dans `develop` ; **on reprend à l'étape 3**.
    aucun jeu), plusieurs couleurs par costume, l'adversaire d'un match miroir dans une
    autre couleur. Une ligne de plus dans le panneau de sélection des poses. Rien n'est
    écrit pour l'instant : on commence par le design.
-4. [ ] **Partie 3**, dans l'ordre de [PARTIE3.md](PARTIE3.md) : Joseph âgé, le manoir de
+4. [ ] **Partie 3**, dans l'ordre de [PARTIE3.md](PARTIE3.md) : ~~Joseph âgé~~ (fait le
+   15/11/2026, avant les costumes, à la demande du propriétaire), le manoir de
    DIO (Nukesaku, rideaux), Iggy, Pet Shop, Vanilla Ice, Hol Horse (et Calcutta, J. Geil),
    Mariah, N'Doul (et le désert), puis les éveils de Jotaro et DIO. Chaque perso arrive
    avec ses poses, ses costumes et ses sons.

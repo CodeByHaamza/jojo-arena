@@ -13,6 +13,15 @@ des corrections seules une patch.
   de 3 ; Stand sorti, les **estocs de tentacule** au bout de sa chaîne, et **« Didn't you
   notice ? »** : des tentacules qui filent au ras du sol, très loin, et qu'aucune garde
   n'arrête. Lent à partir, lent à revenir : raté, c'est lui qu'on attrape.
+- **Joseph Joestar âgé et Hermit Purple** (partie 3), d'après sa fiche et ses coups
+  d'All-Star Battle R et d'Eyes of Heaven. Le premier perso qui a **un Stand et le Hamon** :
+  un appui bref sur la touche Stand sort Hermit Purple, un appui long le fait respirer.
+  Des ronces qui frappent à mi-distance et **ramènent l'adversaire à lui**, une saisie en
+  éventail, **Solar Energy Ripple** (le Hamon court le long des ronces), **Coal Tar** (un
+  bidon de goudron et la flaque qui reste), **Cunning Tactician** (un contre), « Panic
+  isn't in my vocabulary » qui le tire où tu vises ; HHA **Years of Experience** (un
+  contre) et GHA **Hermit Purple and Ripple!** en cinématique. Trois poses : la main au
+  chapeau, le doigt pointé des Croisés, « OH MY GOD ! ».
 - **Les vraies poses JoJo.** Chaque perso a ses poses, tirées du manga, des couvertures,
   d'All-Star Battle R et d'Eyes of Heaven, avec leur source : le doigt pointé de Jotaro,
   Kakyoin contre Tower of Gray, DIO de dos, le « Tch, tch... YES I AM! » d'Avdol, la

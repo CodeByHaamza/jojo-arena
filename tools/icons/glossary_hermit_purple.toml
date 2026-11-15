@@ -1,0 +1,28 @@
+# Hermit Purple: a thorny purple vine winding up out of a gloved fist. The Stand has no
+# body, so its glossary page shows this instead of a sprite (JoJo Wiki, "Hermit Purple":
+# "several purple, thorn-covered vines that grow from Joseph's hands").
+
+pixels = [
+    ".........oo..o..",
+    ".......ooPPooLo.",
+    "......oLooPPLo..",
+    ".......oLoPPo...",
+    "..o....ooPPo....",
+    ".oLo.ooPPPo.....",
+    "..oLoPPPoo......",
+    "...oPPooLo......",
+    "...oPPoLo....o..",
+    "....oPPPoo..oLo.",
+    "...oLooPPPooLo..",
+    "..oLo..ooPPoo...",
+    "...o....ooPPo...",
+    ".......oWWWWWo..",
+    ".......oWWWWWo..",
+    "........ooooo...",
+]
+
+[palette]
+o = "#17121f"
+P = "#9254c4"
+L = "#d09cf0"
+W = "#ececf2"

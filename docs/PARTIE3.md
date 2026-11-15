@@ -16,7 +16,7 @@ Ce qui n'est pas sûr est marqué **à vérifier**. Une source manque, se contre
 
 ## Où on en est
 
-- **Jouables** : Jotaro, Kakyoin, Polnareff, DIO, et **Avdol** (fait le 24/10/2026).
+- **Jouables** : Jotaro, Kakyoin, Polnareff, DIO, **Avdol** (fait le 24/10/2026) et **Joseph âgé** (fait le 15/11/2026).
 - **Arène** : Le Caire, rue de nuit.
 - Le moteur **sait déjà** faire : Stand on/off, mode contrôle, temps arrêté, pièges, projectiles (`count`, `ring`), visée libre, saisies inbloquables, Hamon, vampire et soleil, `stance_cycle`, éveil, objets à lancer.
 - Il **ne sait pas encore** faire : brûlure, vol, invisibilité, états qui s'accumulent, décor effacé, et Stand + Hamon ensemble.
@@ -92,9 +92,18 @@ Le nom officiel du coup est entre guillemets. La forme de la hitbox suit la règ
 - **Mécanique nouvelle** : la **brûlure**, des dégâts sur la durée. Elle s'accumule (voir « Mécaniques »).
 - **À vérifier** : le nom de la GHA. Une page ASBR l'appelle *Special*, une autre range le coup à 3 boutons sous *Variation*.
 
-### Joseph Joestar âgé (Hermit Purple + Hamon)
+### Joseph Joestar âgé (Hermit Purple + Hamon) : fait
 
 **Rôle** : grappler longue portée, trickster.
+
+**Fait le 15/11/2026** (`characters/joseph_p3.toml`, `looks/joseph_p3.toml`). Les pages ASBR et EoH s'ouvrent maintenant, et elles tranchent ce qui était « à vérifier » plus bas :
+
+- Noms : la HHA est **« Years of Experience »** (un contre), la GHA **« Hermit Purple and Ripple! »**, et **« Coal Tar »** est bien le nom de la skill. 950 PV.
+- Tenue : celle du voyage (de Calcutta à la fin), pas le pull col V de la maison des Kujo que notait le tableau : chemise kaki à manches courtes, pantalon marron, fedora marron, gants blancs et bracelets noirs, cheveux gris courts, barbe taillée, yeux verts (ligne anime de « Color Schemes »).
+- Stand sorti, ses trois coups légers sont ceux d'EoH (ronce, ronce qui ramène, tranchant de Hamon) : vus de dessus, ils disent « Hermit Purple » mieux que les poings entourés de ronces d'ASBR. « Panic isn't in my vocabulary » est aussi celui d'EoH (tiré vers le point visé).
+- Écarts dits au propriétaire : « Now I gotcha! » (anti-air) attend le vol ; « Cunning Tactician » attrape le coup au lieu de l'encaisser ; la flaque de goudron ne fait tomber que l'adversaire.
+- **Mesure au bot (15/11/2026)** : 25 % de victoires contre les cinq autres persos de la partie 3 (20 combats par affiche et par côté). Ce que l'ordinateur en fait : presque que la ronce au ras du sol (280 fois sur 20 combats contre Jotaro, bloquée deux fois sur trois), jamais la suite qu'elle ouvre. C'est un grappler à distance, et le bot ne sait pas en jouer : à juger manette en main avant de toucher aux chiffres. Au passage, l'ordinateur a appris trois choses, pour tout le monde : garder un ultime qui est un contre pour un coup qui arrive ; ne plus attaquer avec un grappin qui ne frappe pas ; juger un coup qui laisse un piège à la portée du coup.
+- Hermit Purple n'a pas de corps : pas de planche de Stand, pas de pose en duo. Les ronces autour de son bras quand le Stand est sorti viendront avec les costumes (une fiche qui hérite d'une autre).
 
 **Design** :
 

@@ -962,6 +962,30 @@ def gloves(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     return parts
 
 
+def sleeves(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """Short sleeves over the upper arms, from the shoulder down: the rest of the arm keeps
+    its [body] color. Options: length (share of the arm covered, from the shoulder), cuff
+    (color of a band at the hem)."""
+    mat = p["material"]
+    length = p.get("length", 0.4)
+    b = sk.build
+    if sk.view == "right":
+        arms = [
+            (sk.arms[0], sk.shoulders[0], sk.hands[0], 5.4, b.arm_r * 0.95),
+            (sk.arms[1], sk.shoulders[1], sk.hands[1], 60.4, b.arm_r * 1.05),
+        ]
+    else:
+        arms = [(sk.arms[i], sk.shoulders[i], sk.hands[i], 20.4, b.arm_r) for i in (0, 1)]
+    parts = []
+    for arm, shoulder, hand, z, r in arms:
+        end = _on_limb(arm, length, _lerp(shoulder, hand, length))
+        sleeve = _limb_shape(arm, r * 1.2, 0, length, capsule(*shoulder, *end, r * 1.2))
+        parts.append(Part(mat, sleeve, z=z))
+        if p.get("cuff"):
+            parts.append(Part(p["cuff"], _band(sleeve, end, shoulder, 1.2), z=z + 0.02))
+    return parts
+
+
 def loincloth(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     """Cloth flaps hanging from the waist, front and back. Option: length (share of legs)."""
     mat = p["material"]
@@ -1359,15 +1383,29 @@ def face_mark(sk: Skeleton, p: dict, look: Look) -> list[Part]:
 def top_hat(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     """A tall top hat with a wide brim. Options: height (crown, head units), band (color of
     a band around the crown), checker (second color: harlequin diamonds on the band),
-    bowler (true: a low, rounded crown, a bowler hat)."""
+    bowler (true: a low, rounded crown, a bowler hat), fedora (true: a low crown, narrower
+    at the top and pinched in the middle, a fedora)."""
     mat = p["material"]
     at = sk.at
-    h = p.get("height", 9.0)
+    fedora = p.get("fedora", False)
+    h = p.get("height", 4.8 if fedora else 9.0)
     shift = -0.6 if sk.view == "right" else 0.0
     base = -4.4
     if p.get("bowler"):
         dome = disc(*at(shift, base), 6.2 * sk.k)
         crown = {q for q in dome if _rel(sk, q)[1] < base}
+    elif fedora:
+        crown = polygon(
+            [
+                at(-5.6 + shift, base),
+                at(5.6 + shift, base),
+                at(4.3 + shift, base - h),
+                at(-4.3 + shift, base - h),
+            ]
+        )
+        # The pinch: a dent in the middle of the top.
+        top = min(q[1] for q in crown)
+        crown -= {q for q in crown if q[1] == top and abs(_rel(sk, q)[0] - shift) < 1.3}
     else:
         crown = polygon(
             [
@@ -1382,7 +1420,7 @@ def top_hat(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     parts = [Part(mat, crown, z=56, highlight=shine), Part(mat, brim, z=57)]
     band = p.get("band")
     if band:
-        top_of_band = base - (2.2 if p.get("bowler") else 4.2)
+        top_of_band = base - (2.2 if p.get("bowler") else (2.6 if fedora else 4.2))
         rows = {q for q in crown if top_of_band <= _rel(sk, q)[1] < base - 0.6}
         parts.append(Part(band, rows, z=56.4))
         checker = p.get("checker")
@@ -1657,6 +1695,7 @@ PART_TYPES: dict[str, Callable[[Skeleton, dict, Look], list[Part]]] = {
     "scarf": scarf,
     "pauldrons": pauldrons,
     "gloves": gloves,
+    "sleeves": sleeves,
     "loincloth": loincloth,
     "body_lines": body_lines,
     "veins": veins,

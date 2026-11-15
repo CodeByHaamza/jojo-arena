@@ -66,11 +66,11 @@ label = "DIRECT"
 label_en = "JAB"
 info = "Rapide. Encore la touche : coup de pied glissé, puis uppercut"
 info_en = "Fast. Press again: sliding kick, then uppercut"
-startup_f = 5
+startup_f = 4  # his jab is the fastest thing he has, and the weakest (10 in ASBR)
 active_f = 3
 recovery_f = 10
-damage = 26
-reach = 15
+damage = 24
+reach = 16
 radius = 10
 hitstun_f = 18
 knockback = 80
@@ -98,8 +98,8 @@ chain = "light3"
 anim = "kick"
 
 [stances.base.moves.light3]
-label = "UPPERCUT"
-label_en = "UPPERCUT"
+label = "UPPERCUT EN AVANÇANT"
+label_en = "STEP-IN UPPERCUT"
 info = "Un pas en avant et un uppercut qui soulève"
 info_en = "A step in and an uppercut that lifts"
 startup_f = 9

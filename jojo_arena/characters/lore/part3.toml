@@ -87,6 +87,19 @@ text_en = "A fortune teller in the Khan el-Khalili bazaar in Cairo, and a Stand 
 family = "Égyptien, né dans les années 1960. Ami de Joseph Joestar, qui l'avait mis en garde contre DIO."
 family_en = "Egyptian, born in the 1960s. A friend of Joseph Joestar, who had warned him about DIO."
 
+[[characters]]
+id = "joseph_p3"
+name = "JOSEPH JOESTAR ÂGÉ"
+name_en = "OLD JOSEPH JOESTAR"
+fighter = "joseph_p3"
+stand = "HERMIT PURPLE"
+power = "ONDE (HAMON)"
+power_en = "RIPPLE (HAMON)"
+text = "Le héros de la partie 2, cinquante ans plus tard : cheveux gris, barbe taillée, un fedora, et sous son gant blanc la main mécanique qui remplace celle que Kars lui a tranchée. Quand DIO se réveille, un Stand lui vient comme à toute sa lignée, et sa fille Holly en tombe malade : il vient chercher Jotaro et mène le voyage jusqu'en Égypte. Il se bat encore par la ruse, avec ses ronces et l'onde qu'il y fait courir. DIO lui prend son sang ; Jotaro le lui rend."
+text_en = "The hero of Part 2, fifty years on: gray hair, a trimmed beard, a fedora, and under his white glove the mechanical hand that replaces the one Kars cut off. When DIO wakes, a Stand comes to him as to his whole bloodline, and his daughter Holly falls ill from it: he comes for Jotaro and leads the journey all the way to Egypt. He still fights by cunning, with his vines and the Ripple he sends down them. DIO takes his blood; Jotaro gives it back."
+family = "Petit-fils de Jonathan Joestar. Père de Holly Kujo, grand-père de Jotaro."
+family_en = "Grandson of Jonathan Joestar. Father of Holly Kujo, grandfather of Jotaro."
+
 [[stands]]
 id = "star_platinum"
 name = "STAR PLATINUM"
@@ -141,3 +154,14 @@ text = "Un Stand de combat rapproché à tête d'oiseau, faite d'après le phén
 text_en = "A close-range Stand with a bird's head, modeled on the phoenix, that makes and shapes fire at will: flames hot enough to melt metal in mid-air. Crossfire Hurricane throws fire ankhs, Red Bind ties with a rope of flame, and its flames can detect life around it. A single kick broke Judgement's armor."
 name_origin = "D'après l'arcane I du tarot, le Magicien, ou Bateleur. Araki lui a donné une tête d'oiseau pour que les silhouettes des héros, côte à côte, ne se ressemblent pas."
 name_origin_en = "After tarot card I, The Magician. Araki gave it a bird's head so that the heroes' silhouettes, side by side, would not look alike."
+
+[[stands]]
+id = "hermit_purple"
+name = "HERMIT PURPLE"
+user = "JOSEPH JOESTAR"
+icon = "glossary_hermit_purple"  # no body: vines out of a hand
+stats = "DCDADE"
+text = "Des ronces violettes couvertes d'épines qui sortent des mains de Joseph : pas de corps, pas de visage. Elles sont assez solides pour porter son poids et assez longues pour ligoter quelqu'un : il s'y balance d'un endroit à l'autre, il attache, et il y fait courir l'onde comme dans un prolongement de son bras. Son vrai pouvoir est la divination : une photo qui montre ce qu'il cherche en fracassant un appareil, des pensées sur un écran de télévision, une carte tracée dans la poussière."
+text_en = "Purple vines covered in thorns that grow from Joseph's hands: no body, no face. They are strong enough to bear his weight and long enough to bind someone: he swings on them from place to place, ties people up, and sends the Ripple down them as down an extension of his arm. Its true power is divination: a photograph that shows what he is looking for when he smashes a camera, thoughts on a television screen, a map drawn in the dust."
+name_origin = "D'après l'arcane IX du tarot, l'Ermite : l'introspection et la contemplation, comme son pouvoir de divination. Violet dans le manga comme dans l'anime."
+name_origin_en = "After tarot card IX, The Hermit: introspection and contemplation, like its power of divination. Purple in the manga and the anime alike."

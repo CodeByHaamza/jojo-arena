@@ -43,7 +43,12 @@ def test_every_entry_is_complete_and_its_picture_exists():
         elif entry.kind == "characters":
             assert entry.fighter in roster and entry.subtitle is not None, entry.id
         else:
-            assert (SPRITES_DIR / f"{entry.sprite}.png").exists(), entry.sprite
+            # A Stand shows its sprite; one that has no body shows an icon instead.
+            assert entry.sprite or entry.icon, entry.id
+            if entry.sprite:
+                assert (SPRITES_DIR / f"{entry.sprite}.png").exists(), entry.sprite
+            else:
+                assert (ICONS_DIR / f"{entry.icon}.png").exists(), entry.icon
             assert len(entry.stats) == 6 and set(entry.stats) <= set("ABCDE"), entry.id
 
 

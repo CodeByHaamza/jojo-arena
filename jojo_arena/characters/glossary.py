@@ -23,7 +23,7 @@ class Entry:
     id: str
     name: str
     text: str
-    icon: str = ""  # icon shown for a term
+    icon: str = ""  # icon shown for a term, or for a Stand that has no body to show
     fighter: str = ""  # fighter whose sprite shows, for a character
     sprite: str = ""  # sprite sheet shown, for a Stand
     subtitle: str = ""  # a character's Stand or power, or a Stand's user
