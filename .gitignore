@@ -19,6 +19,14 @@ dist/
 # Local screenshots and debug output
 screenshots/
 
+# Private: the story mode's scenario and the owner's original characters
+notes/
+
+# Secrets that must never be committed (tokens dropped in the folder by hand)
+.tken*
+*.token
+.env
+
 # OS / editors
 .DS_Store
 Thumbs.db

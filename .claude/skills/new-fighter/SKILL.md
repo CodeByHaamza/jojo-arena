@@ -46,6 +46,13 @@ costume parts (the README lists them all). Then:
 and look at `build/sprite_previews/<id>.png` and `<id>_sheet.png`. If the silhouette is
 not instantly recognisable, fix the build before anything else.
 
+Then the poses (`[poses.<id>]`, see CONTRIBUTING, "Les poses JoJo"): three alone and, for
+a Stand user, three with the Stand, the Stand's look giving the pose of the same id. Look
+at the reference images themselves (JoJo Wiki covers, Eyes of Heaven renders, ASBR
+taunts): the pages name poses but never describe the body. Elbows, knees and `sway` make
+a pose read at 48 px. Cite the source in `source`; a pose invented where nothing is found
+says so (owner's rule of 15/11/2026).
+
 ## 4. The roster - `jojo_arena/characters/roster.toml`
 
 Name, kit, sprites, colour, aura, Stand and its sprite sheet, role and blurb, both

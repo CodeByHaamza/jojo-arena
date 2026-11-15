@@ -19,11 +19,17 @@ Fan game gratuit, open source et non commercial : un **arena fighter 1v1 en temp
 - **N'ajoute jamais de ligne `Co-Authored-By`**, ni aucune mention de Claude ou d'un outil d'IA, dans les messages de commit, les descriptions de PR ou les fichiers du repo.
 - Messages de commit courts au format conventionnel : `feat: ...`, `fix: ...`, `refactor: ...`, `docs: ...`, `chore: ...`.
 - Un commit par étape logique. Ne push que quand on te le demande.
+- **Les pull requests visent `develop`** (branche par défaut). `main` ne reçoit que les
+  releases : chaque merge dans `main` publie une version. Une release se prépare avec
+  `make release-pr VERSION=x.y.z` (skill `cut-release`). Détails dans `docs/INFRA.md`.
 
 ## Stack technique
 
 - Python 3.12, **pygame-ce**. Pas d'autre moteur.
-- Distribution : `.exe` Windows via **PyInstaller**, construit par GitHub Actions quand on pousse un tag `v*`, et attaché à une Release.
+- Distribution : `.exe` Windows via **PyInstaller**, construit par GitHub Actions à chaque merge dans `main`, et attaché à la Release (tag `vX.Y.Z` créé tout seul).
+- CI : les PR sont testées sur le runner du serveur maison du propriétaire (conteneur
+  `maison-jojo-runner`, dépôt `maison`) ; un job « crashed » sans erreur, c'est souvent la
+  mémoire : regarder `journalctl -k` sur le serveur.
 - Tests : `pytest` pour toute la logique qui ne dépend pas de l'affichage. Lint : `ruff`.
 - Pas de dépendance lourde sans demander.
 
@@ -61,6 +67,11 @@ docs/GDD.md
 
 - Ton travail côté visuel : des **placeholders génériques** (formes simples, bonne taille, couleur propre à chaque perso), des **mannequins de base** génériques en 48 px, style A (corps neutre avec idle, marche, coups, dash, dégâts, KO), qui servent de base à habiller, et la **conversion des images fournies par le propriétaire** (dessins ou images générées) au format du jeu.
 - Le moteur charge les sprite sheets depuis `assets/` ; si un sprite manque, il affiche le placeholder. Remplacer un placeholder ne doit demander aucun changement de code.
+- **Sons : jamais de voix ni de son extrait de l'anime ou des jeux dans le dépôt** (il est
+  public, et une plainte DMCA retire tout le dépôt). Bruitages sous licence CC0 avec
+  crédits ; les voix vont dans un pack local, hors du dépôt, que le jeu lit s'il existe.
+- **`notes/` est privé** (ignoré par git) : le scénario du mode histoire et les persos et
+  Stands originaux du propriétaire. Rien n'en sort dans le dépôt sans son accord.
 
 ## Fidélité à l'œuvre — recherche en ligne OBLIGATOIRE
 
@@ -93,6 +104,9 @@ ligne**, et cite-la dans le commentaire du fichier concerné.
   d'Esidisi aussi), jamais un gabarit par défaut.
 - Si une source manque ou se contredit, dis-le au propriétaire au lieu de combler le
   trou.
+- Exception accordée par le propriétaire (15/11/2026) pour les **poses** : quand la
+  recherche ne trouve vraiment rien, une pose peut être inventée dans l'esprit bizarre du
+  perso (Bruford assis sur ses propres cheveux), et son `source` dit qu'elle est inventée.
 
 ### Imaginer un perso : la liste à suivre
 
@@ -116,6 +130,9 @@ ce qu'on a trouvé dans le commentaire en tête de son kit :
    lieu d'inventer autre chose en silence.
 6. **La forme avant les chiffres** : hitbox, portée et effet suivent la technique (voir
    la règle ci-dessus), puis `jojo-balance` mesure.
+7. **Ses poses** : 3 poses seules et, s'il a un Stand, 3 poses en duo (le Stand a la pose
+   du même nom dans sa fiche), en `[poses.*]` dans `looks/<id>.toml`, chacune avec sa
+   source (couvertures, rendus d'EoH, provocations d'ASBR). `tests/test_poses.py` vérifie.
 
 ## Licence et mentions
 
