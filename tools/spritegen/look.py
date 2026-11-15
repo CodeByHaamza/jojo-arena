@@ -1,4 +1,7 @@
-"""A look: body shape, palette, body materials, face and costume parts, from a TOML file."""
+"""A look: body shape, palette, body materials, face and costume parts, from a TOML file.
+
+A look may be a costume of another (`base = "<id>"`: it says only what changes) and may
+carry colours (`[colors.<id>]`: other palettes the game repaints its sheet with)."""
 
 from __future__ import annotations
 
@@ -58,6 +61,26 @@ class PoseDef:
     stand_offset: tuple[float, float] = DEFAULT_STAND_OFFSET
 
 
+@dataclass(frozen=True)
+class CostumeDef:
+    """What the select screen says of this outfit, and where it comes from."""
+
+    label: str
+    label_en: str
+    source: str
+
+
+@dataclass(frozen=True)
+class ColorDef:
+    """A colour of the look: its name, its source, and the materials it paints anew."""
+
+    label: str
+    label_en: str
+    source: str
+    stand: str = ""  # the colour of its Stand's look that goes with it
+    palette: dict[str, list[Color]] = field(default_factory=dict)  # empty: the look itself
+
+
 @dataclass
 class Look:
     id: str
@@ -72,6 +95,9 @@ class Look:
     pose: str = "raise"  # signature pose (see skeleton.POSE_NAMES)
     anims: dict[str, KeyAnim] = field(default_factory=dict)  # key-pose animations
     poses: dict[str, PoseDef] = field(default_factory=dict)  # JoJo poses, in order
+    base: str = ""  # the look this one is a costume of
+    costume: CostumeDef | None = None
+    colors: dict[str, ColorDef] = field(default_factory=dict)  # in order; the first is itself
 
 
 def parse_pose(data: dict, where: str) -> Pose:
@@ -164,15 +190,66 @@ def parse_poses(data: dict, where: str) -> dict[str, PoseDef]:
     return poses
 
 
-def load_look(path: Path) -> Look:
+MERGED = ("palette", "body", "build", "face")  # a costume's entries go over its base's
+NAMED = ("label", "label_en", "source")
+
+
+def read_look(path: Path) -> dict:
+    """The data of a look file, a costume's laid over its base's."""
     with path.open("rb") as handle:
         data = tomllib.load(handle)
-    palette: dict[str, list[Color]] = {}
-    for name, value in data["palette"].items():
-        if isinstance(value, str) or (value and isinstance(value[0], int)):
-            palette[name] = ramp(parse_color(value))
-        else:
-            palette[name] = [parse_color(v) for v in value]
+    base_id = data.get("base")
+    if not base_id:
+        return data
+    base_path = path.parent / f"{base_id}.toml"
+    if not base_path.exists():
+        raise ValueError(f"{path.name}: its base '{base_id}' is not there ({base_path.name})")
+    if "anims" in data or "poses" in data:
+        raise ValueError(
+            f"{path.name}: a costume moves as its base does: no [anims] or [poses] of its own"
+        )
+    base = read_look(base_path)
+    merged = {key: value for key, value in base.items() if key not in ("colors", "costume")}
+    for key, value in data.items():
+        merged[key] = {**base.get(key, {}), **value} if key in MERGED else value
+    return merged
+
+
+def _tones(value) -> list[Color]:
+    """One color (its four tones are computed), or the tones given one by one."""
+    if isinstance(value, str) or (value and isinstance(value[0], int)):
+        return ramp(parse_color(value))
+    return [parse_color(v) for v in value]
+
+
+def parse_colors(data: dict, palette: dict, where: str) -> dict[str, ColorDef]:
+    """[colors.<id>]: the first is the look as it is drawn; the others repaint materials."""
+    colors = {}
+    for color_id, spec in data.items():
+        place = f"{where}: colors.{color_id}"
+        if not all(spec.get(key) for key in NAMED):
+            raise ValueError(f"{place} needs label, label_en and source")
+        painted = spec.get("palette", {})
+        if not colors and painted:
+            raise ValueError(f"{place}: the first colour is the look itself, it takes no palette")
+        if colors and not painted:
+            raise ValueError(f"{place} needs a palette: what it paints anew")
+        for slot in painted:
+            if slot not in palette:
+                raise ValueError(f"{place} uses unknown color '{slot}'")
+        colors[color_id] = ColorDef(
+            label=str(spec["label"]),
+            label_en=str(spec["label_en"]),
+            source=str(spec["source"]),
+            stand=str(spec.get("stand", "")),
+            palette={slot: _tones(value) for slot, value in painted.items()},
+        )
+    return colors
+
+
+def load_look(path: Path) -> Look:
+    data = read_look(path)
+    palette = {name: _tones(value) for name, value in data["palette"].items()}
     body = data.get("body", {})
     missing = [slot for slot in BODY_SLOTS if slot not in body]
     if missing:
@@ -189,6 +266,9 @@ def load_look(path: Path) -> Look:
     pose = data.get("pose", "raise")
     if pose not in POSE_NAMES:
         raise ValueError(f"{path.name}: unknown pose '{pose}' (one of {', '.join(POSE_NAMES)})")
+    outfit = data.get("costume")
+    if outfit is not None and not all(outfit.get(key) for key in NAMED):
+        raise ValueError(f"{path.name}: [costume] needs label, label_en and source")
     return Look(
         id=path.stem,
         name=data.get("name", path.stem),
@@ -202,4 +282,7 @@ def load_look(path: Path) -> Look:
         pose=pose,
         anims=parse_anims(data.get("anims", {}), path.name),
         poses=parse_poses(data.get("poses", {}), path.name),
+        base=str(data.get("base", "")),
+        costume=CostumeDef(*(str(outfit[key]) for key in NAMED)) if outfit else None,
+        colors=parse_colors(data.get("colors", {}), palette, path.name),
     )

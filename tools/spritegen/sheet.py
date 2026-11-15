@@ -8,9 +8,9 @@ from pathlib import Path
 import pygame
 
 from .body import body_parts
-from .look import Look
+from .look import NAMED, Look
 from .parts import PART_TYPES
-from .raster import render
+from .raster import OUTLINE, render
 from .skeleton import (
     DIRECTIONS,
     LYING,
@@ -72,8 +72,39 @@ def body_heights(look: Look) -> tuple[int, int]:
     return round(chest), round(top)
 
 
+def recolor_slots(look: Look) -> list[str]:
+    """The materials the game may repaint: those the look names, and every one a colour of
+    the look changes. In the order of the palette."""
+    painted = {slot for color in look.colors.values() for slot in color.palette}
+    return [slot for slot in look.palette if slot in look.recolor or slot in painted]
+
+
+def check_recolor_keys(look: Look) -> None:
+    """The game finds a material by its tones: one to repaint cannot share a tone with
+    another material, or with the outline, or both would be repainted together."""
+    for slot in recolor_slots(look):
+        mine = set(look.palette[slot])
+        if OUTLINE in mine:
+            raise ValueError(f"{look.id}: '{slot}' has the tone of the outline")
+        for other, tones in look.palette.items():
+            shared = sorted(mine & set(tones)) if other != slot else []
+            if shared:
+                tone = "#{:02x}{:02x}{:02x}".format(*shared[0])
+                raise ValueError(
+                    f"{look.id}: '{slot}' and '{other}' share the tone {tone}: "
+                    "a colour could not tell them apart"
+                )
+
+
+def _text(value: str) -> str:
+    """A string as a TOML basic string (JSON's: accents and quotes included)."""
+    return json.dumps(value, ensure_ascii=False)
+
+
 def build_sheet(look: Look) -> tuple[pygame.Surface, str]:
     """The sheet image and its TOML description, in the format the game loads."""
+    if look.colors:
+        check_recolor_keys(look)
     cell = look.cell
     tables = {view: look_animations(look, view) for view in DIRECTIONS}
     names = list(tables["down"])
@@ -92,9 +123,13 @@ def build_sheet(look: Look) -> tuple[pygame.Surface, str]:
         f"height = {height}",
         'directions = ["down", "up", "right"]',
     ]
-    if look.recolor:
+    if look.costume is not None:
+        lines += ["", "[costume]"]
+        lines += [f"{key} = {_text(getattr(look.costume, key))}" for key in NAMED]
+    slots = recolor_slots(look)
+    if slots:
         lines += ["", "[recolor]"]
-        lines += [f"{slot} = {[list(c) for c in look.palette[slot]]}" for slot in look.recolor]
+        lines += [f"{slot} = {[list(c) for c in look.palette[slot]]}" for slot in slots]
     for anim_index, name in enumerate(names):
         fps, loop, phases, frames = tables["down"][name]
         row = anim_index * len(DIRECTIONS)
@@ -113,6 +148,14 @@ def build_sheet(look: Look) -> tuple[pygame.Surface, str]:
             lines.append(f"{key} = {json.dumps(getattr(pose, key), ensure_ascii=False)}")
         lines.append(f"stand = {'true' if pose.stand else 'false'}")
         lines.append(f"stand_offset = {list(pose.stand_offset)}")
+    for color_id, color in look.colors.items():
+        lines += ["", f"[colors.{color_id}]"]
+        lines += [f"{key} = {_text(getattr(color, key))}" for key in (*NAMED, "stand")]
+        if color.palette:
+            lines += ["", f"[colors.{color_id}.palette]"]
+            lines += [
+                f"{slot} = {[list(c) for c in tones]}" for slot, tones in color.palette.items()
+            ]
     return sheet, "\n".join(lines) + "\n"
 
 
