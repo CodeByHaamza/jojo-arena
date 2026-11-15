@@ -136,3 +136,68 @@ row = 57
 frames = 2
 fps = 10
 loop = true
+
+[anims.pose_pose_anime]
+row = 60
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_profil_144]
+row = 63
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_wsj_36]
+row = 66
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_deux_rapieres]
+row = 69
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_sans_armure]
+row = 72
+frames = 2
+fps = 4
+loop = true
+
+[poses.pose_anime]
+label = "La fente de l'anime"
+label_en = "The anime lunge"
+source = "Galerie de Polnareff sur JoJo Wiki (« Polnareff's iconic pose », anime)"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.profil_144]
+label = "Le profil du chapitre 144"
+label_en = "The chapter 144 profile"
+source = "Page de titre du ch. 144 (« Polnareff's profile »)"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.wsj_36]
+label = "La couverture du Jump n°36"
+label_en = "The Jump n°36 cover"
+source = "Couverture du Weekly Shonen Jump 1989 n°36"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.deux_rapieres]
+label = "Deux rapières croisées"
+label_en = "Two crossed rapiers"
+source = "Planche de l'anime, galerie de Polnareff sur JoJo Wiki (« dual wielding two rapiers »)"
+stand = true
+stand_offset = [-6.0, -7.0]
+
+[poses.sans_armure]
+label = "Silver Chariot sans armure"
+label_en = "Silver Chariot without armour"
+source = "Ch. 126 (ASBR, pose d'esquive stylée 4) ; galerie de Polnareff sur JoJo Wiki"
+stand = true
+stand_offset = [-5.0, 10.0]

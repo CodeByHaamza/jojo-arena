@@ -344,3 +344,9 @@ def test_sheets_without_poses_have_none():
         SPRITES_DIR / "mannequin" / "mannequin.png", SPRITES_DIR / "mannequin" / "mannequin.toml"
     )
     assert sprites.poses == {}
+
+
+def test_a_pose_of_one_key_per_view_breathes(tmp_path):
+    look = look_with(tmp_path, "[[poses.x.down]]\nlean = 1\n[[poses.x.right]]\nlean = 2\n")
+    frames = look.poses["x"].anim.views
+    assert [p.bob for p in frames["down"]] == [0, 1] and [p.lean for p in frames["right"]] == [2, 2]

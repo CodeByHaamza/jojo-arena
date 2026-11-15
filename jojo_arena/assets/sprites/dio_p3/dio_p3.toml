@@ -143,3 +143,68 @@ frames = 9
 fps = 12
 loop = false
 phases = [4, 2, 3]
+
+[anims.pose_de_dos]
+row = 63
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_tome_27]
+row = 66
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_ombre_118]
+row = 69
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_za_warudo]
+row = 72
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_the_world_eoh]
+row = 75
+frames = 2
+fps = 4
+loop = true
+
+[poses.de_dos]
+label = "De dos, la main dans les cheveux"
+label_en = "From behind, hand in his hair"
+source = "Photographie spirite d'Hermit Purple (galerie « JoJo Poses » de JoJo Wiki)"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.tome_27]
+label = "La couverture du tome 27"
+label_en = "The cover of volume 27"
+source = "Couverture du tome 27 ; ASBR, pose de victoire A"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.ombre_118]
+label = "Dans l'ombre"
+label_en = "In the shadows"
+source = "Ch. 118, page de couverture B ; ASBR (référence de son coup moyen debout)"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.za_warudo]
+label = "« Za Warudo ! »"
+label_en = "\"The World!\""
+source = "L'arrêt du temps (manga), galerie de The World sur JoJo Wiki (« TheWorldTimeStop »)"
+stand = true
+stand_offset = [9.0, 6.0]
+
+[poses.the_world_eoh]
+label = "The World, prêt à frapper"
+label_en = "The World, coiled"
+source = "Eyes of Heaven, rendu de The World (galerie de The World sur JoJo Wiki)"
+stand = true
+stand_offset = [-9.0, -7.0]

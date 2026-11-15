@@ -194,6 +194,15 @@ def _play(tour: Tour, title) -> None:
     tour.keys("Right", wait=5)
     tour.shot("glossary_stand")
 
+    # The poses: Jotaro picked, his pose alone, then his pose with Star Platinum.
+    from jojo_arena.ui.select_scene import CharacterSelectScene
+
+    tour.start(CharacterSelectScene(tour.ctx, "versus", cursor="jotaro_p3"))
+    tour.keys("Return", wait=10)
+    tour.shot("select_pose")
+    tour.keys("Down", wait=10)
+    tour.shot("select_pose_stand")
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])

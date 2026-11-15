@@ -464,26 +464,25 @@ class CharacterSelectScene(Scene):
     def _draw_pose_lines(
         self, surface: pygame.Surface, box: pygame.Rect, y: int, index: int
     ) -> None:
-        """POSE and POSE STAND, the active one with its arrows, then where it comes from."""
+        """The lines (POSE 1/4, POSE STAND 2/3), the chosen pose's full name with its
+        arrows, then where it comes from."""
         poses = self.looks[index].sprites.poses
         english = i18n.language() == "en"
-        source = ""
+        x = box.x + 5
         for row, stand in enumerate(self.pose_rows()):
+            ids = self._poses(stand)
             pose_id = self.loadout.stand_pose if stand else self.loadout.pose
-            info = poses.get(pose_id)
-            name = (info.label_en if english else info.label) if info else ""
+            at = ids.index(pose_id) + 1 if pose_id in ids else 0
             title = text.POSE_STAND_ROW if stand else text.POSE_ROW
-            active = row == self.row
-            font.draw(surface, title, (box.x + 5, y), WHITE if active else DIM)
-            value = f"< {name} >" if active else name
-            value_x = box.x + 8 + font.text_width(text.POSE_STAND_ROW)
-            width = SIDE_W - (value_x - box.x) - 4
-            if font.text_width(value) > width:
-                value = font.wrap(value, width)[0]
-            font.draw(surface, value, (value_x, y), GOLD if active else DIM)
-            if active and info is not None:
-                source = info.source
-            y += 11
-        if source:
-            lines = font.wrap(source, SIDE_W - 10)[: max(0, (box.bottom - y) // 10)]
-            draw_wrapped(surface, " ".join(lines), (box.x + 5, y), SIDE_W - 10, DIM)
+            label = f"{title} {at}/{len(ids)}"
+            font.draw(surface, label, (x, y), WHITE if row == self.row else DIM)
+            x += font.text_width(label) + 10
+        y += 11
+        stand = self.pose_rows()[self.row]
+        info = poses.get(self.loadout.stand_pose if stand else self.loadout.pose)
+        if info is None:
+            return
+        name = info.label_en if english else info.label
+        y = draw_wrapped(surface, f"< {name} >", (box.x + 5, y), SIDE_W - 10, GOLD)
+        lines = font.wrap(info.source, SIDE_W - 10)[: max(0, (box.bottom - y) // 10)]
+        draw_wrapped(surface, " ".join(lines), (box.x + 5, y), SIDE_W - 10, DIM)

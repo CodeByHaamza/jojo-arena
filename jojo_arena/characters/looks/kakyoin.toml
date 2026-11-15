@@ -186,3 +186,115 @@ foot_r = [3, 0]
 [[anims.special_splash.up]]
 hand_r = [-2, -4]
 hand_l = [2, -4]
+
+# JoJo poses ---------------------------------------------------------------------------
+# Picked on the select screen; the Pose key plays the one picked. Each was drawn from the
+# reference image named in `source`, looked at on JoJo Wiki (pages "JoJo Poses", the
+# character galleries, the Jump Comics covers, the All-Star Battle R and Eyes of Heaven
+# pages) on 15/11/2026. A pose with `stand = true` is struck with the Stand out: the Stand
+# strikes the pose of the same name in its own look file, `stand_offset` [ahead, aside]
+# away. One key per view: it breathes on its own.
+
+# Against Tower of Gray: one hand up by the shoulder, fingers spread; the other across the
+# waist, fingers pointing away; the body twisted, the head tilted.
+[poses.tower_of_gray]
+label = "Contre Tower of Gray"
+label_en = "Against Tower of Gray"
+source = "Weekly Shonen Jump 1989 n°25 (ch. 123) ; ASBR, pose d'esquive stylée 1"
+
+[[poses.tower_of_gray.down]]
+lean = 1
+sway = 1
+head = [1, 1]
+hand_r = [1, -16]
+elbow_r = [3, 1]
+hand_l = [4, -6]
+elbow_l = [-4, 0]
+
+[[poses.tower_of_gray.right]]
+lean = -0.5
+head = [0, 1]
+hand_r = [2, -17]
+elbow_r = [-1, 1]
+hand_l = [5, -6]
+
+# Two fingers raised to the temple, the elbow out.
+[poses.tempe]
+label = "Les doigts à la tempe"
+label_en = "Fingers to the temple"
+source = "Couverture du Weekly Shonen Jump 1989 n°36 ; ASBR, pose d'esquive stylée 2"
+
+[[poses.tempe.down]]
+head = [0, 1]
+hand_r = [-3, -19]
+elbow_r = [5, -1]
+hand_l = [0, 0]
+
+[[poses.tempe.right]]
+head = [0, 1]
+hand_r = [3, -19]
+elbow_r = [3, 0]
+hand_l = [-1, 0]
+
+# His entrance: he takes his sunglasses off, the other hand on the hip.
+[poses.lunettes]
+label = "Il ôte ses lunettes"
+label_en = "Glasses off"
+source = "ASBR, entrée en scène (ch. 252)"
+
+[[poses.lunettes.down]]
+hand_r = [-1, -18]
+elbow_r = [3, 0]
+hand_l = [2, -5]
+elbow_l = [-4, 0]
+foot_l = [-1, 0]
+
+[[poses.lunettes.right]]
+hand_r = [4, -18]
+elbow_r = [2, 1]
+hand_l = [1, -5]
+elbow_l = [-3, 0]
+
+# Hierophant Green behind him: one hand forward at the waist (the little figure he
+# dangles), the other on the hip; the Stand standing upright behind.
+[poses.hierophant_derriere]
+label = "Hierophant Green derrière lui"
+label_en = "Hierophant Green behind him"
+source = "Galerie de Kakyoin sur JoJo Wiki (« Hierophant Green behind Kakyoin »)"
+stand = true
+stand_offset = [-8, 9]
+
+[[poses.hierophant_derriere.down]]
+head = [0, 1]
+hand_r = [-3, -7]
+elbow_r = [2, 1]
+hand_l = [2, -5]
+elbow_l = [-4, 0]
+
+[[poses.hierophant_derriere.right]]
+hand_r = [6, -7]
+hand_l = [1, -5]
+elbow_l = [-3, 0]
+
+# Emerald Splash: Kakyoin points at his target, Hierophant Green's hands meet before it.
+[poses.emerald_splash]
+label = "Emerald Splash !"
+label_en = "Emerald Splash!"
+source = "Ch. 143 (Emerald Splash contre Polnareff) ; ASBR, pose d'esquive stylée 5"
+stand = true
+stand_offset = [-4, -10]
+
+[[poses.emerald_splash.down]]
+lean = 0.5
+hand_r = [-5, -10]
+elbow_r = [2, 0]
+big_hand_r = true
+hand_l = [2, -5]
+elbow_l = [-4, 0]
+
+[[poses.emerald_splash.right]]
+hand_r = [12, -11]
+hand_l = [1, -5]
+elbow_l = [-3, 0]
+foot_l = [-3, 0]
+foot_r = [2, 0]

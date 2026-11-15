@@ -240,10 +240,9 @@ def test_the_last_choice_is_offered_first(ctx, tmp_path):
 
 def test_a_fighter_without_poses_is_picked_at_once(ctx, tmp_path):
     select = select_on(ctx, tmp_path)
-    keys(ctx, "Right")  # the next fighter: real sheets, no poses in this test
+    keys(ctx, "Right")  # the next fighter, given a sheet with no poses at all
     hovered = select.roster[select.cursor]
-    if select.looks[select.cursor].sprites.poses:
-        pytest.skip(f"{hovered.id} has poses now")
+    select.looks[select.cursor].sprites = posed_sheet(tmp_path, "")
     keys(ctx, "Return")
     assert select.choosing is None and select.fighter_ids == (hovered.id,)
 
@@ -265,3 +264,37 @@ def test_the_settings_keep_the_poses(tmp_path):
     assert settings.poses == {"jotaro_p3": ["a", "b"]}
     save_settings(settings, tmp_path / "s.json")
     assert load_settings(tmp_path / "s.json").poses == {"jotaro_p3": ["a", "b"]}
+
+
+# The poses of the roster ---------------------------------------------------------------
+
+from jojo_arena.characters import load_roster  # noqa: E402
+from jojo_arena.paths import SPRITES_DIR  # noqa: E402
+
+# The parts whose fighters all strike their real poses (the others keep the generic one
+# until their turn comes).
+POSED_PARTS = {3}
+
+
+def _sheet(name: str) -> SheetSprites:
+    base = SPRITES_DIR / name
+    return SheetSprites.load(base.with_suffix(".png"), base.with_suffix(".toml"))
+
+
+@pytest.mark.parametrize(
+    "fighter",
+    [f for f in load_roster() if f.selectable and f.part in POSED_PARTS],
+    ids=lambda f: f.id,
+)
+def test_every_fighter_of_a_posed_part_has_its_poses(fighter):
+    poses = _sheet(fighter.sprite).poses
+    alone = [p for p in poses.values() if not p.stand]
+    assert len(alone) >= 3, f"{fighter.id}: {len(alone)} poses alone"
+    for pose in poses.values():
+        assert pose.label and pose.label_en and pose.source, f"{fighter.id}: {pose.id}"
+    if fighter.stand_sprite:
+        together = [p for p in poses.values() if p.stand]
+        assert len(together) >= 2, f"{fighter.id}: {len(together)} poses with the Stand"
+        stand = _sheet(fighter.stand_sprite)
+        for pose in together:
+            assert f"pose_{pose.id}" in stand.specs, f"{fighter.stand_sprite} lacks {pose.id}"

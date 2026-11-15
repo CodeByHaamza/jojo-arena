@@ -110,3 +110,110 @@ type = "bracelets"
 material = "gold"
 width = 1.8
 count = 2
+
+# JoJo poses ---------------------------------------------------------------------------
+# Picked on the select screen; the Pose key plays the one picked. Each was drawn from the
+# reference image named in `source`, looked at on JoJo Wiki (pages "JoJo Poses", the
+# character galleries, the Jump Comics covers, the All-Star Battle R and Eyes of Heaven
+# pages) on 15/11/2026. A pose with `stand = true` is struck with the Stand out: the Stand
+# strikes the pose of the same name in its own look file, `stand_offset` [ahead, aside]
+# away. One key per view: it breathes on its own.
+
+# Tch, tch, tch... YES I AM! The index finger raised beside the head, wagging.
+[poses.tsk_tsk]
+label = "« Tch, tch... YES I AM! »"
+label_en = "\"Tsk, tsk... YES I AM!\""
+source = "Ch. 177 (« Tsk tsk ») ; ASBR, provocation A ; Last Survivor, pose « YES I AM! »"
+
+[[poses.tsk_tsk.down]]
+hand_r = [1, -17]
+elbow_r = [5, 0]
+hand_l = [-1, 0]
+foot_l = [-2, 0]
+foot_r = [2, 0]
+
+[[poses.tsk_tsk.right]]
+hand_r = [3, -17]
+elbow_r = [3, 1]
+hand_l = [-1, 0]
+foot_l = [-3, 0]
+foot_r = [3, 0]
+
+# A flame on the tip of his raised finger, before the shoulder.
+[poses.flamme_doigt]
+label = "La flamme au bout du doigt"
+label_en = "A flame on his finger"
+source = "Ch. 178 (« Avdol with a flame on his finger »)"
+
+[[poses.flamme_doigt.down]]
+hand_l = [2, -14]
+elbow_l = [-4, 1]
+hand_r = [-1, -3]
+elbow_r = [2, 0]
+
+[[poses.flamme_doigt.right]]
+hand_r = [6, -14]
+elbow_r = [1, 2]
+hand_l = [-1, -3]
+
+# Give me four wishes instead: he wags his finger before his face, then turns away.
+[poses.quatre_voeux]
+label = "« Donne-moi plutôt quatre vœux ! »"
+label_en = "\"Give me four wishes instead!\""
+source = "ASBR, fin de la HHA : il agite le doigt, puis tourne le dos"
+
+[[poses.quatre_voeux.down]]
+lean = -0.5
+head = [-1, 0]
+hand_r = [-3, -15]
+elbow_r = [3, 1]
+hand_l = [1, -4]
+elbow_l = [-3, 0]
+
+[[poses.quatre_voeux.right]]
+lean = -0.5
+hand_r = [5, -15]
+elbow_r = [1, 2]
+hand_l = [-2, -4]
+elbow_l = [-2, 0]
+
+# Red Bind! Both arms thrown up, crossed at the wrists; Magician's Red spreads its own.
+[poses.red_bind]
+label = "« Red Bind ! »"
+label_en = "\"Red Bind!\""
+source = "Ch. 116 et ch. 177 (« Avdol yelling Red Bind ») ; ASBR, pose de victoire B"
+stand = true
+stand_offset = [-8, 8]
+
+[[poses.red_bind.down]]
+head = [0, -1]
+hand_l = [3, -24]
+elbow_l = [-5, -4]
+hand_r = [-3, -24]
+elbow_r = [5, -4]
+
+[[poses.red_bind.right]]
+head = [0, -1]
+hand_r = [3, -24]
+elbow_r = [3, -4]
+hand_l = [1, -23]
+
+# Magician's Red with its arms crossed, as Eyes of Heaven renders it; Avdol wags his finger.
+[poses.bras_croises]
+label = "Magician's Red, bras croisés"
+label_en = "Magician's Red, arms crossed"
+source = "Eyes of Heaven, rendu d'Avdol et Magician's Red (ch. 125)"
+stand = true
+stand_offset = [-8, -8]
+
+[[poses.bras_croises.down]]
+hand_r = [1, -17]
+elbow_r = [5, 0]
+hand_l = [-1, 0]
+foot_l = [-2, 0]
+foot_r = [2, 0]
+
+[[poses.bras_croises.right]]
+hand_r = [3, -17]
+elbow_r = [3, 1]
+hand_l = [-1, 0]

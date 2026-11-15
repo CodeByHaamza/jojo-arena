@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import colorsys
 import tomllib
-from dataclasses import dataclass, field, fields
+from dataclasses import dataclass, field, fields, replace
 from pathlib import Path
 
 from .raster import Color
@@ -145,8 +145,16 @@ def parse_poses(data: dict, where: str) -> dict[str, PoseDef]:
         frames = {key: value for key, value in spec.items() if key not in POSE_SETTINGS}
         frames.setdefault("fps", 4)
         frames.setdefault("loop", True)
+        anim = parse_anims({pose_id: frames}, f"{where}: poses")[pose_id]
+        if all(len(keys) == 1 for keys in anim.views.values()):
+            # One key per view: it breathes, the chest rising and falling a pixel.
+            views = {
+                v: (keys[0], replace(keys[0], bob=keys[0].bob + 1))
+                for v, keys in anim.views.items()
+            }
+            anim = KeyAnim(views, anim.fps, anim.loop, anim.phases, anim.tween)
         poses[pose_id] = PoseDef(
-            anim=parse_anims({pose_id: frames}, f"{where}: poses")[pose_id],
+            anim=anim,
             label=str(spec.get("label", "")),
             label_en=str(spec.get("label_en", "")),
             source=str(spec.get("source", "")),

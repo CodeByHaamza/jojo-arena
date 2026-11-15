@@ -143,3 +143,68 @@ frames = 9
 fps = 12
 loop = false
 phases = [4, 2, 3]
+
+[anims.pose_tower_of_gray]
+row = 63
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_tempe]
+row = 66
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_lunettes]
+row = 69
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_hierophant_derriere]
+row = 72
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_emerald_splash]
+row = 75
+frames = 2
+fps = 4
+loop = true
+
+[poses.tower_of_gray]
+label = "Contre Tower of Gray"
+label_en = "Against Tower of Gray"
+source = "Weekly Shonen Jump 1989 n°25 (ch. 123) ; ASBR, pose d'esquive stylée 1"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.tempe]
+label = "Les doigts à la tempe"
+label_en = "Fingers to the temple"
+source = "Couverture du Weekly Shonen Jump 1989 n°36 ; ASBR, pose d'esquive stylée 2"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.lunettes]
+label = "Il ôte ses lunettes"
+label_en = "Glasses off"
+source = "ASBR, entrée en scène (ch. 252)"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.hierophant_derriere]
+label = "Hierophant Green derrière lui"
+label_en = "Hierophant Green behind him"
+source = "Galerie de Kakyoin sur JoJo Wiki (« Hierophant Green behind Kakyoin »)"
+stand = true
+stand_offset = [-8.0, 9.0]
+
+[poses.emerald_splash]
+label = "Emerald Splash !"
+label_en = "Emerald Splash!"
+source = "Ch. 143 (Emerald Splash contre Polnareff) ; ASBR, pose d'esquive stylée 5"
+stand = true
+stand_offset = [-4.0, -10.0]

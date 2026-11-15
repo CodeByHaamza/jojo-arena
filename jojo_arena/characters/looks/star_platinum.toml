@@ -114,3 +114,50 @@ type = "emblem"
 material = "cloth"
 shape = "ball"
 on = "knees"
+
+# Poses with Jotaro (the ids of jotaro_p3.toml's duo poses; sources there) ---------------
+
+# The cover of Jump 1989 n°23: both hands open, one raised high, one before the chest.
+[[poses.couverture_13.down]]
+lean = -1
+hand_r = [4, -22]
+elbow_r = [4, -1]
+hand_l = [3, -10]
+elbow_l = [-3, 1]
+
+[[poses.couverture_13.right]]
+lean = -0.5
+hand_r = [6, -21]
+hand_l = [7, -10]
+
+# The cover of volume 21: the fist thrust at the reader.
+[[poses.poing_21.down]]
+lean = 1
+hand_r = [-5, -10]
+big_hand_r = true
+elbow_r = [3, 0]
+hand_l = [3, -6]
+elbow_l = [-4, 1]
+foot_l = [-2, 0]
+
+[[poses.poing_21.right]]
+lean = 2
+hand_r = [14, -9]
+hand_l = [-2, -6]
+elbow_l = [-3, 1]
+foot_l = [-4, 0]
+foot_r = [4, 0]
+
+# First appearance: the open, clawed hand reaching forward past Jotaro.
+[[poses.premiere_fois.down]]
+lean = 1
+hand_r = [-5, -12]
+big_hand_r = true
+hand_l = [4, -8]
+elbow_l = [-3, 1]
+
+[[poses.premiere_fois.right]]
+lean = 2
+hand_r = [15, -11]
+hand_l = [4, -6]
+elbow_l = [-2, 2]

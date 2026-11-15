@@ -81,3 +81,29 @@ type = "tendrils"
 material = "body"
 count = 2
 length = 7
+
+# Poses with Kakyoin (the ids of kakyoin.toml's duo poses; sources there) ----
+
+# Behind Kakyoin, upright, the arms hanging a little away from the body.
+[[poses.hierophant_derriere.down]]
+hand_l = [-2, -1]
+elbow_l = [-1, 0]
+hand_r = [2, -1]
+elbow_r = [1, 0]
+
+[[poses.hierophant_derriere.right]]
+hand_r = [1, -1]
+hand_l = [-1, -1]
+
+# The two hands meeting before the chest, where the emeralds gather.
+[[poses.emerald_splash.down]]
+hand_l = [5, -11]
+elbow_l = [-4, 0]
+hand_r = [-5, -11]
+elbow_r = [4, 0]
+
+[[poses.emerald_splash.right]]
+lean = 1
+hand_r = [10, -11]
+hand_l = [9, -10]
+elbow_l = [-2, 1]
