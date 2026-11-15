@@ -136,3 +136,42 @@ row = 57
 frames = 2
 fps = 10
 loop = true
+
+[anims.pose_pose_jonathan]
+row = 60
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_bulles]
+row = 63
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_tome_7]
+row = 66
+frames = 2
+fps = 4
+loop = true
+
+[poses.pose_jonathan]
+label = "La pose de Jonathan"
+label_en = "Jonathan's pose"
+source = "« Caesar doing Jonathan's pose » (« JoJo Poses », JoJo Wiki)"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.bulles]
+label = "Parmi ses bulles"
+label_en = "Among his bubbles"
+source = "Eyes of Heaven, rendu de Caesar (galerie de JoJo Wiki)"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.tome_7]
+label = "Le bras tendu du tome 7"
+label_en = "The volume 7 reach"
+source = "Couverture du tome 7"
+stand = false
+stand_offset = [-14.0, -8.0]

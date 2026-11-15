@@ -11,6 +11,7 @@ from jojo_arena.engine.display import Display
 from jojo_arena.engine.input import GamepadSource, InputManager, KeyboardSource
 from jojo_arena.engine.scene import SceneManager
 from jojo_arena.settings import Settings, save_settings, settings_path
+from jojo_arena.ui.loadout import Loadout
 
 
 @dataclass
@@ -21,6 +22,8 @@ class GameContext:
     controls: ControlsConfig
     controls_path: Path
     settings: Settings = field(default_factory=Settings)
+    # What each player picked besides the fighter (poses), on the select screen.
+    loadouts: list[Loadout] = field(default_factory=lambda: [Loadout(), Loadout()])
     _menu_sources: list[KeyboardSource | GamepadSource] = field(default_factory=menu_sources)
 
     def read_menu(self) -> InputFrame:

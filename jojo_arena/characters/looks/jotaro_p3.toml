@@ -177,3 +177,170 @@ hand_l = [2, -4]
 [[anims.counter_yare.up]]
 hand_r = [-1, -5]
 hand_l = [0, -2]
+
+# JoJo poses ---------------------------------------------------------------------------
+# Picked on the select screen; the Pose key plays the one picked. Each was drawn from the
+# reference image named in `source`, looked at on JoJo Wiki (pages "JoJo Poses", the
+# galleries of Jotaro and Star Platinum, the covers of Jump Comics volumes 13 to 25) on
+# 15/11/2026. A pose with `stand = true` is struck with Star Platinum out: the Stand
+# strikes the pose of the same name in star_platinum.toml, `stand_offset` [ahead, aside]
+# away from Jotaro.
+
+# The pointing finger, straight at the reader: the arm thrust out, the other hand down.
+[poses.doigt_pointe]
+label = "Le doigt pointé"
+label_en = "The pointing finger"
+source = "Weekly Shonen Jump 1989 n°36 (ch. 134) ; couvertures des tomes 14 et 25"
+
+[[poses.doigt_pointe.down]]
+lean = 0.5
+hand_r = [-5, -10]
+elbow_r = [2, 0]
+big_hand_r = true
+hand_l = [1, 1]
+foot_l = [-1, 0]
+
+[[poses.doigt_pointe.right]]
+lean = -0.5
+hand_r = [12, -11]
+hand_l = [-2, 0]
+foot_l = [-3, 0]
+foot_r = [3, 0]
+
+# JoJo's Venture: in profile, leaning back, the arm straight out at the shoulder, the
+# front knee deep, the back leg stretched behind.
+[poses.venture]
+label = "Le doigt de JoJo's Venture"
+label_en = "JoJo's Venture point"
+source = "JoJo's Venture (Capcom, 1998), pose de provocation"
+
+[[poses.venture.right]]
+lean = -3
+sway = -1.5
+hand_r = [14, -12]
+hand_l = [-4, -2]
+elbow_l = [-1, 1]
+foot_r = [5, 0]
+knee_r = [3, -1]
+foot_l = [-5, 0]
+
+[[poses.venture.down]]
+lean = -1
+hand_r = [12, -11]
+hand_l = [-1, -1]
+foot_r = [3, 0]
+knee_r = [2, -1]
+
+# Yare yare daze: the brim of the cap pulled down, the other hand in the pocket.
+[poses.yare_yare]
+label = "Yare yare daze"
+label_en = "Yare yare daze"
+source = "Couverture du tome 24 ; Eyes of Heaven, Dual Heat avec Kakyoin (le doigt le long de la visière)"
+
+[[poses.yare_yare.down]]
+head = [0, 1]
+hand_l = [3, -20]
+elbow_l = [-4, -1]
+hand_r = [-2, -4]
+elbow_r = [3, 0]
+foot_l = [-1, 0]
+
+[[poses.yare_yare.right]]
+lean = -1
+head = [0, 1]
+hand_l = [1, -20]
+elbow_l = [2, -2]
+hand_r = [1, -4]
+elbow_r = [-2, 0]
+foot_l = [-2, 0]
+
+# Hands in the pockets, the long coat open, the chain down the front.
+[poses.poches]
+label = "Les mains dans les poches"
+label_en = "Hands in pockets"
+source = "Couverture du tome 22"
+
+[[poses.poches.down]]
+head = [0, 1]
+hand_l = [2, -4]
+elbow_l = [-3, 0]
+hand_r = [-2, -4]
+elbow_r = [3, 0]
+foot_l = [-1, 0]
+foot_r = [1, 0]
+
+[[poses.poches.right]]
+lean = 0.5
+hand_r = [1, -4]
+elbow_r = [-2, 0]
+hand_l = [1, -4]
+elbow_l = [-2, 0]
+
+# With Star Platinum: the cover of Jump 1989 n°23. One open hand up beside the head, the
+# other open across the hips; Star Platinum behind and above, its hands open too.
+[poses.couverture_13]
+label = "Star Platinum dans son dos"
+label_en = "Star Platinum at his back"
+source = "Weekly Shonen Jump 1989 n°23 (ch. 121), repris sur la couverture du tome 13"
+stand = true
+stand_offset = [-9, -6]
+
+[[poses.couverture_13.down]]
+lean = 1
+head = [1, 0]
+hand_l = [-3, -19]
+elbow_l = [-4, -1]
+hand_r = [-6, -4]
+elbow_r = [2, 1]
+
+[[poses.couverture_13.right]]
+lean = -1
+hand_l = [2, -19]
+elbow_l = [-2, -1]
+hand_r = [4, -5]
+
+# Star Platinum's fist coming at the reader; Jotaro behind it, calm.
+[poses.poing_21]
+label = "Le poing de Star Platinum"
+label_en = "Star Platinum's fist"
+source = "Couverture du tome 21"
+stand = true
+stand_offset = [8, -8]
+
+[[poses.poing_21.down]]
+head = [0, 1]
+hand_l = [2, -4]
+elbow_l = [-3, 0]
+hand_r = [-2, -4]
+elbow_r = [3, 0]
+
+[[poses.poing_21.right]]
+lean = 0.5
+hand_r = [1, -4]
+elbow_r = [-2, 0]
+hand_l = [1, -4]
+elbow_l = [-2, 0]
+
+# The first time Star Platinum comes out: Jotaro reaches forward, the Stand reaches past
+# him with the same hand.
+[poses.premiere_fois]
+label = "Star Platinum surgit"
+label_en = "Star Platinum emerges"
+source = "Première apparition de Star Platinum (manga), galerie Star Platinum de JoJo Wiki"
+stand = true
+stand_offset = [-6, -9]
+
+[[poses.premiere_fois.down]]
+lean = 1
+hand_r = [-4, -11]
+elbow_r = [2, 1]
+big_hand_r = true
+hand_l = [2, -2]
+
+[[poses.premiere_fois.right]]
+lean = 1
+hand_r = [12, -10]
+hand_l = [-3, -2]
+foot_l = [-3, 0]
+foot_r = [3, 0]
+knee_r = [1, -1]

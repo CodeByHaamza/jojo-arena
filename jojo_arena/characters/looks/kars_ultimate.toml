@@ -108,3 +108,51 @@ length = 17
 width = 1.7
 curve = 6.5
 back = 8
+
+# JoJo poses ---------------------------------------------------------------------------
+# The poses Kars picked on the select screen, struck by the Ultimate body once he has
+# awakened: the same gestures (kars.toml has their names and sources), frames only.
+
+[[poses.au_sommet.down]]
+hand_r = [1, -24]
+elbow_r = [4, -3]
+hand_l = [2, -5]
+elbow_l = [-4, 0]
+
+[[poses.au_sommet.right]]
+hand_r = [4, -24]
+elbow_r = [3, -3]
+hand_l = [1, -5]
+elbow_l = [-3, 0]
+
+[[poses.nonchalant.down]]
+sway = 1.5
+hand_l = [2, -5]
+elbow_l = [-4, 0]
+hand_r = [-3, -4]
+elbow_r = [2, 1]
+foot_r = [2, 0]
+
+[[poses.nonchalant.right]]
+sway = 1
+hand_r = [5, -4]
+hand_l = [1, -5]
+elbow_l = [-3, 0]
+
+[[poses.en_garde.down]]
+bob = 2
+hand_l = [5, -12]
+elbow_l = [-4, 1]
+hand_r = [-5, -12]
+elbow_r = [4, 1]
+knee_l = [-3, -1]
+knee_r = [3, -1]
+
+[[poses.en_garde.right]]
+bob = 2
+lean = 1
+hand_r = [6, -12]
+hand_l = [5, -11]
+knee_r = [3, -1]
+foot_r = [3, 0]
+foot_l = [-3, 0]

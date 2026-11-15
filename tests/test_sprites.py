@@ -91,3 +91,17 @@ def test_glow_is_brightest_in_the_middle_and_black_at_the_edge(radius):
     center = glow.get_at((radius, radius))
     assert center.r > 100
     assert tuple(glow.get_at((0, 0)))[:3] == (0, 0, 0)
+
+
+def test_a_sheet_is_decoded_once_and_shared():
+    # Every menu and fight view asks for the same sheets: decoding each again made a
+    # select screen hold every sheet twice over (the CI's workers ran out of memory).
+    base = SPRITES_DIR / "jotaro_p3" / "jotaro_p3"
+    png, toml = base.with_suffix(".png"), base.with_suffix(".toml")
+    assert SheetSprites.load(png, toml) is SheetSprites.load(png, toml)
+    mannequin = SPRITES_DIR / "mannequin" / "mannequin"
+    red = {"body": [(200, 40, 40)] * 4}
+    blue = {"body": [(40, 40, 200)] * 4}
+    a = SheetSprites.load(mannequin.with_suffix(".png"), mannequin.with_suffix(".toml"), red)
+    b = SheetSprites.load(mannequin.with_suffix(".png"), mannequin.with_suffix(".toml"), blue)
+    assert a is not b  # a recolouring is its own sheet

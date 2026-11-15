@@ -136,3 +136,42 @@ row = 57
 frames = 2
 fps = 10
 loop = true
+
+[anims.pose_contorsion]
+row = 60
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_a_l_affut]
+row = 63
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_curieux]
+row = 66
+frames = 2
+fps = 4
+loop = true
+
+[poses.contorsion]
+label = "Le corps qui se plie"
+label_en = "The bending body"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : son corps qui se tord et s'ouvre où il veut"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.a_l_affut]
+label = "À l'affût"
+label_en = "On the prowl"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : le prédateur qui se glisse au ras du sol"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.curieux]
+label = "Curieux"
+label_en = "Curious"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : le Pilier qui découvre le monde des hommes et l'imite"
+stand = false
+stand_offset = [-14.0, -8.0]

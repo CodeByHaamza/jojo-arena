@@ -69,10 +69,29 @@ def sprite_direction(fx: float, fy: float) -> tuple[str, bool]:
     return "right", fx < 0
 
 
+@dataclass(frozen=True)
+class PoseInfo:
+    """A named pose a sheet can play (animation `pose_<id>`), and where it comes from."""
+
+    id: str
+    label: str
+    label_en: str
+    source: str
+    stand: bool  # struck with the Stand out, the Stand posing too
+    stand_offset: tuple[float, float]  # where the Stand stands then: ahead, aside (px)
+
+
+NO_POSES: dict[str, PoseInfo] = {}
+
+# Sheets already decoded (see SheetSprites.load).
+_LOADED: dict[tuple, SheetSprites] = {}
+
+
 class SpriteSet:
     anchor: tuple[int, int] = (24, 44)
     chest: int = 16  # pixels above the feet where hits and effects should appear
     height: int = 38  # pixels above the feet to the top of the head
+    poses: dict[str, PoseInfo] = NO_POSES  # in the order of the look file; read only
 
     def spec(self, anim: str) -> AnimSpec | None:
         raise NotImplementedError
@@ -88,6 +107,19 @@ class SheetSprites(SpriteSet):
         self.chest = spec_data.get("chest", SpriteSet.chest)
         self.height = spec_data.get("height", SpriteSet.height)
         self.directions = list(spec_data["directions"])
+        self.poses = {
+            pose_id: PoseInfo(
+                pose_id,
+                info.get("label", ""),
+                info.get("label_en", ""),
+                info.get("source", ""),
+                bool(info.get("stand", False)),
+                (float(info["stand_offset"][0]), float(info["stand_offset"][1]))
+                if "stand_offset" in info
+                else (-14.0, -8.0),
+            )
+            for pose_id, info in spec_data.get("poses", {}).items()
+        }
         self.specs: dict[str, AnimSpec] = {}
         self._frames: dict[tuple[str, str], list[pygame.Surface]] = {}
         self._flipped: dict[tuple[str, str, int], pygame.Surface] = {}
@@ -108,16 +140,36 @@ class SheetSprites(SpriteSet):
     def load(
         cls, png_path: Path, spec_path: Path, palette: dict[str, list[Color]] | None = None
     ) -> SheetSprites | None:
-        """Load a sheet, recolored with `palette`. Returns None when the files are missing."""
+        """Load a sheet, recolored with `palette`. Returns None when the files are missing.
+
+        A sheet is decoded once and shared: every menu and every fight asks for the same
+        ones, and a sheet is only ever read once built. A file changed on disk, another
+        palette, or a display opened since, is another sheet."""
         if not png_path.exists() or not spec_path.exists():
             return None
+        converting = pygame.display.get_init() and pygame.display.get_surface() is not None
+        key = (
+            str(png_path),
+            str(spec_path),
+            png_path.stat().st_mtime_ns,
+            spec_path.stat().st_mtime_ns,
+            tuple(
+                sorted((slot, tuple(map(tuple, tones))) for slot, tones in (palette or {}).items())
+            ),
+            converting,
+        )
+        cached = _LOADED.get(key)
+        if cached is not None:
+            return cached
         spec_data = load_toml(spec_path)
         sheet = pygame.image.load(str(png_path))
         if palette:
             sheet = recolor(sheet, spec_data.get("recolor", {}), palette)
-        if pygame.display.get_init() and pygame.display.get_surface() is not None:
+        if converting:
             sheet = sheet.convert_alpha()
-        return cls(sheet, spec_data)
+        loaded = cls(sheet, spec_data)
+        _LOADED[key] = loaded
+        return loaded
 
     def spec(self, anim: str) -> AnimSpec | None:
         return self.specs.get(anim)

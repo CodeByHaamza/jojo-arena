@@ -22,7 +22,7 @@ from collections.abc import Callable
 
 from .look import Look
 from .raster import OUTLINE, Part, Pixel, Point, capsule, disc, points, polygon, rect
-from .skeleton import Skeleton
+from .skeleton import Limb, Skeleton
 
 
 def _center(q: Pixel) -> Point:
@@ -557,7 +557,8 @@ def coat(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     cuffs = p.get("cuffs")
     if cuffs and sk.view != "right":  # in profile the dot reads as a sparkle on the hand
         dots = set()
-        for (hx2, hy2), (sx, sy) in zip(sk.hands, sk.shoulders, strict=True):
+        for (hx2, hy2), shoulder, arm in zip(sk.hands, sk.shoulders, sk.arms, strict=True):
+            sx, sy = _forearm_root(arm, shoulder)
             dx, dy = sx - hx2, sy - hy2
             norm = max(1e-6, (dx * dx + dy * dy) ** 0.5)
             reach = sk.build.hand_r + 1.2
@@ -655,12 +656,12 @@ def emblem(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     limbs = [1] if side else [0, 1]
     if where == "knees" and sk.view != "up":
         for i in limbs:
-            (px, py), (fx, fy) = sk.hips[i], sk.feet[i]
-            spots.append(((px + fx) / 2, (py + fy) / 2, 36.7 if side else 11.7))
+            x, y = sk.legs[i].joint
+            spots.append((x, y, 36.7 if side else 11.7))
     elif where == "elbows":
         for i in limbs:
-            (sx, sy), (hx, hy) = sk.shoulders[i], sk.hands[i]
-            spots.append(((sx + hx) / 2, (sy + hy) / 2, 60.7 if side else 20.7))
+            x, y = sk.arms[i].joint
+            spots.append((x, y, 60.7 if side else 20.7))
     elif where == "chest" and sk.view == "down":
         spots.append((sk.center_x, sk.torso[0][1] + 1, 34))
     elif where == "belt" and sk.view != "up":
@@ -727,6 +728,40 @@ def seam(sk: Skeleton, p: dict, look: Look) -> list[Part]:
 
 def _lerp(a: Point, b: Point, t: float) -> Point:
     return a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t
+
+
+# Following a limb that may bend (poses). Each helper takes the straight computation the
+# part always made and returns it untouched when the limb is straight: every sheet drawn
+# before elbows and knees existed stays the same, pixel for pixel.
+
+
+def _on_limb(limb: Limb, t: float, straight: Point) -> Point:
+    """The point `t` of the way along the limb, from its root."""
+    return limb.point(t) if limb.bent else straight
+
+
+def _limb_shape(limb: Limb, r: float, t0: float, t1: float, straight: set[Pixel]) -> set[Pixel]:
+    """The part of the limb from `t0` to `t1`, `r` thick."""
+    return limb.pixels(r, t0, t1) if limb.bent else straight
+
+
+def _limb_line(
+    limb: Limb, t0: float, t1: float, line, straight: set[Pixel], shift: Point = (0.0, 0.0)
+) -> set[Pixel]:
+    """A line drawn along the limb from `t0` to `t1` (a seam, a vein), bending with it."""
+    if not limb.bent:
+        return straight
+    corners = [(x + shift[0], y + shift[1]) for x, y in limb.path(t0, t1)]
+    found: set[Pixel] = set()
+    for a, b in zip(corners, corners[1:], strict=False):
+        found |= line(a, b)
+    return found
+
+
+def _forearm_root(limb: Limb, root: Point) -> Point:
+    """Where the last segment starts (elbow or knee when bent): what a hand or a foot
+    points away from."""
+    return limb.joint if limb.bent else root
 
 
 def _wavy(a: Point, b: Point, amp: float = 0.8, period: float = 4.0) -> set[Pixel]:
@@ -899,15 +934,15 @@ def gloves(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     b = sk.build
     if sk.view == "right":
         arms = [
-            (sk.shoulders[0], sk.hands[0], 5.5, b.arm_r * 0.95),
-            (sk.shoulders[1], sk.hands[1], 60.5, b.arm_r * 1.05),
+            (sk.arms[0], sk.shoulders[0], sk.hands[0], 5.5, b.arm_r * 0.95),
+            (sk.arms[1], sk.shoulders[1], sk.hands[1], 60.5, b.arm_r * 1.05),
         ]
     else:
-        arms = [(sk.shoulders[i], sk.hands[i], 20.5, b.arm_r) for i in (0, 1)]
+        arms = [(sk.arms[i], sk.shoulders[i], sk.hands[i], 20.5, b.arm_r) for i in (0, 1)]
     parts = []
-    for shoulder, hand, z, r in arms:
-        start = _lerp(hand, shoulder, length)
-        sleeve = capsule(*start, *hand, r * 1.15)
+    for arm, shoulder, hand, z, r in arms:
+        start = _on_limb(arm, 1 - length, _lerp(hand, shoulder, length))
+        sleeve = _limb_shape(arm, r * 1.15, 1 - length, 1, capsule(*start, *hand, r * 1.15))
         parts.append(Part(mat, sleeve, z=z))
         if p.get("ribbed"):
             parts.append(Part(mat, _rings(sleeve, start, hand), z=z + 0.01, tone=0))
@@ -973,9 +1008,11 @@ def body_lines(sk: Skeleton, p: dict, look: Look) -> list[Part]:
         near_hip, near_foot = sk.hips[1], sk.feet[1]
         torso_line = line((ta[0] + tr - 1.5, shoulder + 2), (tb[0] + tr - 1.5, hip - 1))
         leg_line = line((near_hip[0] + 1, near_hip[1] + 1), (near_foot[0] + 1, near_foot[1] - 2))
+        leg_line = _limb_line(sk.legs[1], 0, 1, line, leg_line, shift=(1.0, 0.0))
+        arm_line = line(near_sh, _lerp(near_sh, near_hand, 0.6))
         return [
             Part(mat, torso_line, z=30.3, tone=2),
-            Part(mat, line(near_sh, _lerp(near_sh, near_hand, 0.6)), z=60.3, tone=2),
+            Part(mat, _limb_line(sk.arms[1], 0, 0.6, line, arm_line), z=60.3, tone=2),
             Part(mat, leg_line, z=35.3, tone=2),
         ]
     parts = []
@@ -986,9 +1023,11 @@ def body_lines(sk: Skeleton, p: dict, look: Look) -> list[Part]:
             torso_line = line((sh[0] - sign * 3.5, shoulder + 1), chest)
             torso_line |= line(chest, (cx + sign * 1.5, hip - 2))
             parts.append(Part(mat, torso_line, z=30.3, tone=2))
-        parts.append(Part(mat, line(sh, _lerp(sh, hand, 0.6)), z=20.3, tone=2))
+        arm_line = _limb_line(sk.arms[i], 0, 0.6, line, line(sh, _lerp(sh, hand, 0.6)))
+        parts.append(Part(mat, arm_line, z=20.3, tone=2))
         leg_top, foot = sk.hips[i], sk.feet[i]
         leg_line = line((leg_top[0] + sign, leg_top[1] + 1), (foot[0] + sign, foot[1] - 2))
+        leg_line = _limb_line(sk.legs[i], 0, 1, line, leg_line, shift=(float(sign), 0.0))
         parts.append(Part(mat, leg_line, z=10.3, tone=2))
     return parts
 
@@ -1012,18 +1051,19 @@ def veins(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     parts = [Part(mat, lines & torso, z=30.2, tone=0)]
     arms = [1] if sk.view == "right" else [0, 1]
     for i in arms:
-        sh, hand = sk.shoulders[i], sk.hands[i]
-        arm = capsule(*sh, *hand, sk.build.arm_r)
+        sh, hand, limb = sk.shoulders[i], sk.hands[i], sk.arms[i]
+        arm = _limb_shape(limb, sk.build.arm_r, 0, 1, capsule(*sh, *hand, sk.build.arm_r))
         z = 60.2 if sk.view == "right" else 20.2
-        parts.append(
-            Part(mat, _wavy(sh, _lerp(sh, hand, 0.8), amp=0.6, period=3) & arm, z=z, tone=0)
-        )
+        wave = _wavy(sh, _lerp(sh, hand, 0.8), amp=0.6, period=3)
+        wave = _limb_line(limb, 0, 0.8, lambda a, b: _wavy(a, b, amp=0.6, period=3), wave)
+        parts.append(Part(mat, wave & arm, z=z, tone=0))
     if p.get("legs"):
         for i in arms:
-            hip, foot = sk.hips[i], sk.feet[i]
-            leg = capsule(*hip, *foot, sk.build.leg_r)
+            hip, foot, limb = sk.hips[i], sk.feet[i], sk.legs[i]
+            leg = _limb_shape(limb, sk.build.leg_r, 0, 1, capsule(*hip, *foot, sk.build.leg_r))
             z = 35.2 if sk.view == "right" else 10.2
             wave = _wavy(hip, _lerp(hip, foot, 0.85), amp=0.6, period=3)
+            wave = _limb_line(limb, 0, 0.85, lambda a, b: _wavy(a, b, amp=0.6, period=3), wave)
             parts.append(Part(mat, wave & leg, z=z, tone=0))
     return parts
 
@@ -1038,7 +1078,7 @@ def tendrils(sk: Skeleton, p: dict, look: Look) -> list[Part]:
         hip, foot = sk.hips[i], sk.feet[i]
         outward = -1 if (sk.view == "right" or i == 0) else 1
         for j in range(count):
-            start = _lerp(hip, foot, 0.55 + 0.2 * j)
+            start = _on_limb(sk.legs[i], 0.55 + 0.2 * j, _lerp(hip, foot, 0.55 + 0.2 * j))
             end = (start[0] + outward * (length - j * 1.5), start[1] + 2 + j * 1.5)
             strands |= _wavy(start, end, amp=0.8, period=3)
     return [Part(p["material"], strands, z=34 if sk.view == "right" else 9.5, tone=1)]
@@ -1112,7 +1152,7 @@ def arm_blade(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     parts: list[Part] = []
     arms = [0, 1] if (sk.view != "right" or p.get("both", True)) else [1]
     for arm in arms:
-        shoulder, hand = sk.shoulders[arm], sk.hands[arm]
+        shoulder, hand = _forearm_root(sk.arms[arm], sk.shoulders[arm]), sk.hands[arm]
         dx, dy = hand[0] - shoulder[0], hand[1] - shoulder[1]
         norm = math.hypot(dx, dy) or 1e-6
         ux, uy = dx / norm, dy / norm
@@ -1142,7 +1182,7 @@ def sword(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     Options: length (px), guard (color of the hand guard). The tip is kept inside the
     sprite cell, so the blade looks shorter when the arm is stretched far out.
     """
-    shoulder, hand = sk.shoulders[1], sk.hands[1]
+    shoulder, hand = _forearm_root(sk.arms[1], sk.shoulders[1]), sk.hands[1]
     dx, dy = hand[0] - shoulder[0], hand[1] - shoulder[1]
     norm = max(1e-6, math.hypot(dx, dy))
     ux, uy = dx / norm, dy / norm
@@ -1204,18 +1244,17 @@ def boots(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     b = sk.build
     if sk.view == "right":
         legs = [
-            (sk.hips[0], sk.feet[0], 8.5, b.leg_r * 0.96),
-            (sk.hips[1], sk.feet[1], 36.5, b.leg_r),
+            (sk.legs[0], sk.hips[0], sk.feet[0], 8.5, b.leg_r * 0.96),
+            (sk.legs[1], sk.hips[1], sk.feet[1], 36.5, b.leg_r),
         ]
     else:
-        legs = [(sk.hips[i], sk.feet[i], 11.5, b.leg_r) for i in (0, 1)]
+        legs = [(sk.legs[i], sk.hips[i], sk.feet[i], 11.5, b.leg_r) for i in (0, 1)]
     parts = []
-    for hip, foot, z, r in legs:
-        start = _lerp(foot, hip, length)
+    for limb, hip, foot, z, r in legs:
+        start = _on_limb(limb, 1 - length, _lerp(foot, hip, length))
         offset = 1 if sk.view == "right" else 0
-        cover = capsule(*start, *foot, r * 1.12) | disc(
-            foot[0] + offset, foot[1] + 1, b.foot_r * 1.08
-        )
+        shin = _limb_shape(limb, r * 1.12, 1 - length, 1, capsule(*start, *foot, r * 1.12))
+        cover = shin | disc(foot[0] + offset, foot[1] + 1, b.foot_r * 1.08)
         if p.get("pointed") and sk.view == "right":
             fx, fy = foot[0] + offset, foot[1] + 1
             cover |= polygon([(fx, fy - 1.5), (fx + b.foot_r + 4.5, fy + 1.5), (fx, fy + 2)])
@@ -1512,14 +1551,20 @@ def bracelets(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     width = p.get("width", 1.6)
     count = p.get("count", 1)
     if sk.view == "right":
-        arms = [(sk.shoulders[0], sk.hands[0], 5.6), (sk.shoulders[1], sk.hands[1], 60.6)]
+        arms = [
+            (sk.arms[0], sk.shoulders[0], sk.hands[0], 5.6),
+            (sk.arms[1], sk.shoulders[1], sk.hands[1], 60.6),
+        ]
     else:
-        arms = [(sk.shoulders[i], sk.hands[i], 20.6) for i in (0, 1)]
+        arms = [(sk.arms[i], sk.shoulders[i], sk.hands[i], 20.6) for i in (0, 1)]
     parts = []
-    for shoulder, hand, z in arms:
+    for limb, shoulder, hand, z in arms:
         for i in range(count):
-            start = _lerp(hand, shoulder, 0.16 + i * 0.13)
-            sleeve = capsule(*start, *hand, b.arm_r * 1.25)
+            share = 0.16 + i * 0.13
+            start = _on_limb(limb, 1 - share, _lerp(hand, shoulder, share))
+            sleeve = _limb_shape(
+                limb, b.arm_r * 1.25, 1 - share, 1, capsule(*start, *hand, b.arm_r * 1.25)
+            )
             parts.append(Part(mat, _band(sleeve, start, hand, width), z=z, tone=2))
     return parts
 
@@ -1560,18 +1605,21 @@ def feathered_legs(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     size = p.get("size", 3.5)
     count = p.get("count", 4)
     if sk.view == "right":
-        legs = [(sk.hips[1], sk.feet[1], -1, 35.5)]
+        legs = [(sk.legs[1], sk.hips[1], sk.feet[1], -1, 35.5)]
     else:
-        legs = [(sk.hips[0], sk.feet[0], -1, 10.5), (sk.hips[1], sk.feet[1], 1, 10.5)]
+        legs = [
+            (sk.legs[0], sk.hips[0], sk.feet[0], -1, 10.5),
+            (sk.legs[1], sk.hips[1], sk.feet[1], 1, 10.5),
+        ]
     if sk.view == "up":
-        legs = [(hip, foot, -side, z) for hip, foot, side, z in legs]
+        legs = [(limb, hip, foot, -side, z) for limb, hip, foot, side, z in legs]
     parts = []
     r = sk.build.leg_r
-    for hip, foot, side, z in legs:
+    for limb, hip, foot, side, z in legs:
         plumes: set[Pixel] = set()
         for i in range(count):
             t = 0.12 + 0.72 * i / max(1, count - 1)
-            x, y = _lerp(hip, foot, t)
+            x, y = _on_limb(limb, t, _lerp(hip, foot, t))
             length = size * (1.0 - 0.35 * i / max(1, count - 1))
             base_a = (x + side * (r - 0.5), y - 1.6)
             base_b = (x + side * (r - 0.5), y + 1.4)

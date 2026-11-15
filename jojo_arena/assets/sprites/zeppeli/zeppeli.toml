@@ -136,3 +136,42 @@ row = 57
 frames = 2
 fps = 10
 loop = true
+
+[anims.pose_doigt_ciel]
+row = 60
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_haut_de_forme]
+row = 63
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_verre_de_vin]
+row = 66
+frames = 2
+fps = 4
+loop = true
+
+[poses.doigt_ciel]
+label = "Le doigt vers le ciel"
+label_en = "Finger to the sky"
+source = "Eyes of Heaven, rendu de Zeppeli (ch. 20, « Jack l'Éventreur et l'étrange Zeppeli »)"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.haut_de_forme]
+label = "Il soulève son haut-de-forme"
+label_en = "Raising his top hat"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : le gentleman au haut-de-forme"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.verre_de_vin]
+label = "Le verre de vin"
+label_en = "The wine glass"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : le vin chargé de Hamon du Hamon Cutter"
+stand = false
+stand_offset = [-14.0, -8.0]

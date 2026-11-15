@@ -78,3 +78,142 @@ style = "heart"
 type = "gloves"
 material = "top"
 length = 0.15
+
+# JoJo poses ---------------------------------------------------------------------------
+# Picked on the select screen; the Pose key plays the one picked. Each was drawn from the
+# reference image named in `source`, looked at on JoJo Wiki (pages "JoJo Poses", the
+# character galleries, the Jump Comics covers, the All-Star Battle R and Eyes of Heaven
+# pages) on 15/11/2026. A pose with `stand = true` is struck with the Stand out: the Stand
+# strikes the pose of the same name in its own look file, `stand_offset` [ahead, aside]
+# away. One key per view: it breathes on its own.
+
+# His pose in the anime: a low lunge, one hand down to the ground, the other back.
+[poses.pose_anime]
+label = "La fente de l'anime"
+label_en = "The anime lunge"
+source = "Galerie de Polnareff sur JoJo Wiki (« Polnareff's iconic pose », anime)"
+
+[[poses.pose_anime.down]]
+bob = 4
+lean = 1
+hand_r = [-1, 7]
+elbow_r = [2, 0]
+hand_l = [-4, -2]
+elbow_l = [-2, 1]
+knee_l = [-4, -2]
+knee_r = [4, -2]
+foot_l = [-3, 0]
+foot_r = [3, 0]
+
+[[poses.pose_anime.right]]
+bob = 4
+lean = 2.5
+hand_r = [6, 7]
+hand_l = [-6, -3]
+foot_r = [5, 0]
+knee_r = [4, -2]
+foot_l = [-6, 0]
+
+# The title page of chapter 144: the arms bent before the chest, the grin.
+[poses.profil_144]
+label = "Le profil du chapitre 144"
+label_en = "The chapter 144 profile"
+source = "Page de titre du ch. 144 (« Polnareff's profile »)"
+
+[[poses.profil_144.down]]
+hand_l = [4, -11]
+elbow_l = [-4, 0]
+hand_r = [-4, -11]
+elbow_r = [4, 0]
+
+[[poses.profil_144.right]]
+lean = 0.5
+hand_r = [6, -11]
+elbow_r = [1, 2]
+hand_l = [5, -10]
+elbow_l = [-1, 2]
+
+# The cover of Jump 1989 n°36: both arms raised and bent, the elbows out.
+[poses.wsj_36]
+label = "La couverture du Jump n°36"
+label_en = "The Jump n°36 cover"
+source = "Couverture du Weekly Shonen Jump 1989 n°36"
+
+[[poses.wsj_36.down]]
+hand_l = [-6, -18]
+elbow_l = [-8, -6]
+hand_r = [6, -18]
+elbow_r = [8, -6]
+foot_l = [-1, 0]
+foot_r = [1, 0]
+
+[[poses.wsj_36.right]]
+hand_r = [4, -18]
+elbow_r = [5, -6]
+hand_l = [-2, -18]
+elbow_l = [-4, -6]
+
+# Silver Chariot with a rapier in each hand, crossed above its head; Polnareff before it.
+[poses.deux_rapieres]
+label = "Deux rapières croisées"
+label_en = "Two crossed rapiers"
+source = "Planche de l'anime, galerie de Polnareff sur JoJo Wiki (« dual wielding two rapiers »)"
+stand = true
+stand_offset = [-6, -7]
+
+[[poses.deux_rapieres.down]]
+head = [0, 1]
+hand_l = [-1, 0]
+hand_r = [1, 0]
+
+[[poses.deux_rapieres.right]]
+head = [0, 1]
+hand_r = [1, 0]
+hand_l = [-1, 0]
+
+# Silver Chariot without its armour: Polnareff shows it off, hands behind his head.
+[poses.sans_armure]
+label = "Silver Chariot sans armure"
+label_en = "Silver Chariot without armour"
+source = "Ch. 126 (ASBR, pose d'esquive stylée 4) ; galerie de Polnareff sur JoJo Wiki"
+stand = true
+stand_offset = [-5, 10]
+
+[[poses.sans_armure.down]]
+head = [0, -1]
+hand_l = [2, -21]
+elbow_l = [-7, -4]
+hand_r = [-2, -21]
+elbow_r = [7, -4]
+
+[[poses.sans_armure.right]]
+hand_r = [-1, -21]
+elbow_r = [4, -4]
+hand_l = [-3, -21]
+elbow_l = [-2, -4]
+
+
+# More poses, where the sources ran out: invented in the fighter's spirit at the owner's
+# request (15/11/2026), from his moments in the manga; each says so in `source`.
+
+[poses.en_garde]
+label = "En garde !"
+label_en = "En garde!"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : le duelliste qui défie son adversaire, Silver Chariot à ses côtés"
+stand = true
+stand_offset = [2, 9]
+
+[[poses.en_garde.down]]
+lean = 0.5
+hand_r = [-5, -10]
+elbow_r = [2, 0]
+big_hand_r = true
+hand_l = [2, -5]
+elbow_l = [-4, 0]
+
+[[poses.en_garde.right]]
+hand_r = [12, -11]
+hand_l = [1, -5]
+elbow_l = [-3, 0]
+foot_l = [-3, 0]
+foot_r = [2, 0]

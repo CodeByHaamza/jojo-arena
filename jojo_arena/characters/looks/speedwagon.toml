@@ -79,3 +79,67 @@ type = "emblem"
 material = "tie"
 shape = "tie"
 on = "chest"
+
+# JoJo poses ---------------------------------------------------------------------------
+# Picked on the select screen; the Pose key plays the one picked. Each was drawn from the
+# image named in `source`, looked at on JoJo Wiki (pages "JoJo Poses", the Jump Comics
+# covers, the Eyes of Heaven renders, the All-Star Battle R pages) on 15/11/2026. One key
+# per view: it breathes on its own.
+
+# Eyes of Heaven, after chapter 36: a hand at the brim of the hat, the other in a pocket.
+[poses.chapeau]
+label = "La main au chapeau"
+label_en = "Hand on the hat"
+source = "Eyes of Heaven, rendu de Speedwagon (ch. 36, p. 2)"
+
+[[poses.chapeau.down]]
+hand_l = [2, -19]
+elbow_l = [-4, -1]
+hand_r = [-2, -4]
+elbow_r = [3, 0]
+
+[[poses.chapeau.right]]
+hand_r = [2, -19]
+elbow_r = [3, -1]
+hand_l = [1, -4]
+elbow_l = [-2, 0]
+
+# He rubs the back of his head (his Heart Heat Attack, missed).
+[poses.gene]
+label = "Il se gratte la tête"
+label_en = "Scratching his head"
+source = "ASBR, HHA ratée : « rubs the back of his head »"
+
+[[poses.gene.down]]
+head = [1, 1]
+hand_r = [-1, -21]
+elbow_r = [6, -3]
+hand_l = [0, 0]
+
+[[poses.gene.right]]
+head = [0, 1]
+hand_r = [-2, -21]
+elbow_r = [4, -3]
+hand_l = [-1, 0]
+
+
+# More poses, where the sources ran out: invented in the fighter's spirit at the owner's
+# request (15/11/2026), from his moments in the manga; each says so in `source`.
+
+[poses.se_retire]
+label = "Speedwagon se retire avec style"
+label_en = "Speedwagon withdraws in style"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : son ultime d'ASBR, « Speedwagon se retire avec style » : il salue avant de partir"
+
+[[poses.se_retire.down]]
+lean = 1
+head = [0, 1]
+hand_r = [-2, -12]
+elbow_r = [3, 1]
+hand_l = [-9, -8]
+
+[[poses.se_retire.right]]
+lean = 2.5
+head = [1, 1]
+hand_r = [5, -11]
+hand_l = [-8, -8]

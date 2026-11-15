@@ -143,3 +143,42 @@ frames = 7
 fps = 12
 loop = false
 phases = [4, 2, 1]
+
+[anims.pose_space_ripper]
+row = 63
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_ancien_maitre]
+row = 66
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_bras_ouverts]
+row = 69
+frames = 2
+fps = 4
+loop = true
+
+[poses.space_ripper]
+label = "Space Ripper Stingy Eyes"
+label_en = "Space Ripper Stingy Eyes"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : Space Ripper Stingy Eyes, les jets des yeux"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.ancien_maitre]
+label = "L'ancien maître"
+label_en = "The former master"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : l'ancien maître du Hamon devenu vampire, distant"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.bras_ouverts]
+label = "Les bras ouverts"
+label_en = "Arms wide open"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : le vampire qui accueille sa jeunesse retrouvée"
+stand = false
+stand_offset = [-14.0, -8.0]

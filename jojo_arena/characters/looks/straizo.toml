@@ -127,3 +127,64 @@ hand_l = [-2, 0]
 [[anims.special_eyes.down]]
 hand_r = [1, -1]
 hand_l = [-1, -1]
+
+
+# JoJo poses ---------------------------------------------------------------------------
+# No source shows a pose of this fighter (no JoJo Wiki gallery, absent from All-Star
+# Battle R and Eyes of Heaven, searched 15/11/2026). The owner asked for poses invented in
+# the fighter's bizarre spirit, from his moments in the manga; each says so in `source`.
+# One key per view: it breathes on its own.
+
+[poses.space_ripper]
+label = "Space Ripper Stingy Eyes"
+label_en = "Space Ripper Stingy Eyes"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : Space Ripper Stingy Eyes, les jets des yeux"
+
+[[poses.space_ripper.down]]
+head = [1, 0]
+hand_r = [-2, -19]
+elbow_r = [5, 0]
+hand_l = [1, -3]
+elbow_l = [-3, 1]
+
+[[poses.space_ripper.right]]
+hand_r = [4, -19]
+elbow_r = [2, 1]
+hand_l = [-2, -3]
+
+[poses.ancien_maitre]
+label = "L'ancien maître"
+label_en = "The former master"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : l'ancien maître du Hamon devenu vampire, distant"
+
+[[poses.ancien_maitre.down]]
+head = [0, -1]
+hand_l = [1, -4]
+elbow_l = [-4, 1]
+hand_r = [-1, -4]
+elbow_r = [4, 1]
+
+[[poses.ancien_maitre.right]]
+head = [0, -1]
+hand_r = [-2, -4]
+elbow_r = [-3, 1]
+hand_l = [-3, -4]
+
+[poses.bras_ouverts]
+label = "Les bras ouverts"
+label_en = "Arms wide open"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : le vampire qui accueille sa jeunesse retrouvée"
+
+[[poses.bras_ouverts.down]]
+lean = -1
+head = [0, -1]
+hand_l = [-9, -17]
+elbow_l = [-3, -2]
+hand_r = [9, -17]
+elbow_r = [3, -2]
+
+[[poses.bras_ouverts.right]]
+lean = -1.5
+head = [0, -1]
+hand_r = [7, -17]
+hand_l = [-6, -17]

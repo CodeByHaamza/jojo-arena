@@ -143,3 +143,42 @@ frames = 7
 fps = 12
 loop = false
 phases = [4, 2, 1]
+
+[anims.pose_wryyy]
+row = 63
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_hautain]
+row = 66
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_griffe]
+row = 69
+frames = 2
+fps = 4
+loop = true
+
+[poses.wryyy]
+label = "« WRYYYYYY ! »"
+label_en = "\"WRYYYYYY!\""
+source = "« DIO's battle cry » (« JoJo Poses », JoJo Wiki)"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.hautain]
+label = "Hautain"
+label_en = "Haughty"
+source = "Eyes of Heaven, rendu de Dio Brando (galerie de JoJo Wiki)"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.griffe]
+label = "La main griffue"
+label_en = "Clawed hand"
+source = "Couverture du tome 3"
+stand = false
+stand_offset = [-14.0, -8.0]

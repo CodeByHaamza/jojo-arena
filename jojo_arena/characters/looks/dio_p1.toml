@@ -135,3 +135,71 @@ hand_l = [-2, 0]
 [[anims.special_eyes.down]]
 hand_r = [1, -1]
 hand_l = [-1, -1]
+
+# JoJo poses ---------------------------------------------------------------------------
+# Picked on the select screen; the Pose key plays the one picked. Each was drawn from the
+# image named in `source`, looked at on JoJo Wiki (pages "JoJo Poses", the Jump Comics
+# covers, the Eyes of Heaven renders, the All-Star Battle R pages) on 15/11/2026. One key
+# per view: it breathes on its own.
+
+# WRYYYYYY! Thrown back, the arms flung wide.
+[poses.wryyy]
+label = "« WRYYYYYY ! »"
+label_en = "\"WRYYYYYY!\""
+source = "« DIO's battle cry » (« JoJo Poses », JoJo Wiki)"
+
+[[poses.wryyy.down]]
+lean = -2
+head = [0, -1]
+hand_l = [-9, -12]
+elbow_l = [-3, -2]
+hand_r = [9, -12]
+elbow_r = [3, -2]
+foot_l = [-2, 0]
+foot_r = [2, 0]
+
+[[poses.wryyy.right]]
+lean = -3
+head = [-1, -1]
+hand_r = [6, -13]
+hand_l = [-6, -12]
+
+# Eyes of Heaven: a hand raised to the chest, haughty, the chin up.
+[poses.hautain]
+label = "Hautain"
+label_en = "Haughty"
+source = "Eyes of Heaven, rendu de Dio Brando (galerie de JoJo Wiki)"
+
+[[poses.hautain.down]]
+head = [0, -1]
+hand_r = [-2, -15]
+elbow_r = [4, 0]
+hand_l = [-2, 0]
+foot_l = [-1, 0]
+foot_r = [2, 0]
+
+[[poses.hautain.right]]
+head = [0, -1]
+hand_r = [5, -15]
+elbow_r = [1, 2]
+hand_l = [-2, 0]
+
+# The cover of volume 3: the clawed hand raised, the other on the hip.
+[poses.griffe]
+label = "La main griffue"
+label_en = "Clawed hand"
+source = "Couverture du tome 3"
+
+[[poses.griffe.down]]
+lean = 1
+hand_r = [-1, -20]
+elbow_r = [5, -2]
+hand_l = [2, -5]
+elbow_l = [-4, 0]
+
+[[poses.griffe.right]]
+lean = 1
+hand_r = [6, -20]
+elbow_r = [3, -1]
+hand_l = [1, -5]
+elbow_l = [-3, 0]

@@ -70,6 +70,27 @@ lean = -1
 hand_r = [3, -9]                 # décalages en pixels depuis la position de repos
 ```
 
-- Les réglages d'une pose sont ceux de `Pose` dans `tools/spritegen/skeleton.py` : `bob`, `lean`, `head`, `hand_l`, `hand_r`, `foot_l`, `foot_r`, `big_hand_r`.
+- Les réglages d'une pose sont ceux de `Pose` dans `tools/spritegen/skeleton.py` : `bob`, `lean`, `head`, `hand_l`, `hand_r`, `foot_l`, `foot_r`, `big_hand_r`, et pour plier un membre `elbow_l`, `elbow_r`, `knee_l`, `knee_r` (le coude ou le genou, depuis le milieu du membre) et `sway` (le déhanché). À zéro, le membre reste droit.
 - Une vue absente copie une autre (`up` copie `down`, et inversement ; `right` copie `down`).
 - Le coup choisit l'animation dans son kit : `anim = "special_splash"`.
+
+### Les poses JoJo
+
+Les poses que le joueur choisit à l'écran de sélection (et que joue la touche Pose) sont des `[poses.<id>]` dans la fiche de look, avec les mêmes poses clés :
+
+```toml
+[poses.doigt_pointe]
+label = "Le doigt pointé"
+label_en = "The pointing finger"
+source = "Weekly Shonen Jump 1989 n°36 (ch. 134)"   # obligatoire : rien ne s'invente
+stand = true              # pose prise Stand sorti (défaut : false)
+stand_offset = [-9, -6]   # où se tient le Stand pendant la pose : devant (+) / derrière (-), côté
+
+[[poses.doigt_pointe.down]]
+hand_r = [-5, -10]
+elbow_r = [2, 0]
+```
+
+- Une seule pose clé par vue suffit : elle respire toute seule.
+- Une pose `stand = true` : la fiche du Stand a une pose du même `id` (ses images seulement). Sans elle, le Stand garde sa pose générique.
+- `tests/test_poses.py` vérifie que chaque perso a ses poses, leur nom dans les deux langues et leur source.

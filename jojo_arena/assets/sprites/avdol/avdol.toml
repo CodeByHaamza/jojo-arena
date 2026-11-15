@@ -136,3 +136,81 @@ row = 57
 frames = 2
 fps = 10
 loop = true
+
+[anims.pose_tsk_tsk]
+row = 60
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_flamme_doigt]
+row = 63
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_quatre_voeux]
+row = 66
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_red_bind]
+row = 69
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_bras_croises]
+row = 72
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_crossfire]
+row = 75
+frames = 2
+fps = 4
+loop = true
+
+[poses.tsk_tsk]
+label = "« Tch, tch... YES I AM! »"
+label_en = "\"Tsk, tsk... YES I AM!\""
+source = "Ch. 177 (« Tsk tsk ») ; ASBR, provocation A ; Last Survivor, pose « YES I AM! »"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.flamme_doigt]
+label = "La flamme au bout du doigt"
+label_en = "A flame on his finger"
+source = "Ch. 178 (« Avdol with a flame on his finger »)"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.quatre_voeux]
+label = "« Donne-moi plutôt quatre vœux ! »"
+label_en = "\"Give me four wishes instead!\""
+source = "ASBR, fin de la HHA : il agite le doigt, puis tourne le dos"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.red_bind]
+label = "« Red Bind ! »"
+label_en = "\"Red Bind!\""
+source = "Ch. 116 et ch. 177 (« Avdol yelling Red Bind ») ; ASBR, pose de victoire B"
+stand = true
+stand_offset = [-8.0, 8.0]
+
+[poses.bras_croises]
+label = "Magician's Red, bras croisés"
+label_en = "Magician's Red, arms crossed"
+source = "Eyes of Heaven, rendu d'Avdol et Magician's Red (ch. 125)"
+stand = true
+stand_offset = [-8.0, -8.0]
+
+[poses.crossfire]
+label = "« Crossfire Hurricane ! »"
+label_en = "\"Crossfire Hurricane!\""
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : Crossfire Hurricane, l'ankh de feu que Magician's Red lance"
+stand = true
+stand_offset = [-7.0, -8.0]

@@ -102,3 +102,52 @@ type = "sword"
 material = "blade"
 length = 17
 cup = "armor"
+
+# Poses with Polnareff (the ids of polnareff.toml's duo poses; sources there) --
+
+# A rapier in each hand, the blades crossed above the head.
+[[poses.deux_rapieres.down]]
+hand_l = [3, -24]
+elbow_l = [-5, -4]
+hand_r = [-3, -24]
+elbow_r = [5, -4]
+
+[[poses.deux_rapieres.right]]
+hand_r = [3, -24]
+elbow_r = [3, -4]
+hand_l = [1, -23]
+
+# En garde without its armour, the rapier straight out.
+[[poses.sans_armure.down]]
+lean = 1
+hand_r = [-4, -10]
+big_hand_r = true
+hand_l = [-2, -3]
+foot_l = [-2, 0]
+foot_r = [2, 0]
+
+[[poses.sans_armure.right]]
+lean = 1.5
+hand_r = [13, -10]
+hand_l = [-3, -6]
+elbow_l = [-3, 1]
+foot_r = [4, 0]
+knee_r = [2, -1]
+foot_l = [-4, 0]
+
+
+# En garde (invented, polnareff.toml): the rapier straight at the opponent.
+
+[[poses.en_garde.down]]
+lean = 1
+hand_r = [-4, -10]
+big_hand_r = true
+hand_l = [-2, -3]
+
+[[poses.en_garde.right]]
+lean = 1.5
+hand_r = [13, -10]
+hand_l = [-3, -6]
+elbow_l = [-3, 1]
+foot_r = [4, 0]
+foot_l = [-4, 0]

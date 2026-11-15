@@ -11,13 +11,14 @@ import pygame
 from jojo_arena.characters import FighterDef, PartDef, load_parts, load_roster
 from jojo_arena.combat.rules import load_rules
 from jojo_arena.context import GameContext
-from jojo_arena.engine import audio, font, music
+from jojo_arena.engine import audio, font, i18n, music
 from jojo_arena.engine.scene import Scene
 from jojo_arena.engine.sprites import shade
 from jojo_arena.ui import text
 from jojo_arena.ui.backdrop import MenuBackdrop
 from jojo_arena.ui.icons import draw_icon, draw_part_tabs
 from jojo_arena.ui.labels import menu_key
+from jojo_arena.ui.loadout import Loadout, resolve_loadout
 from jojo_arena.ui.movelist import MoveListPanel
 from jojo_arena.ui.portraits import FighterLook
 from jojo_arena.ui.widgets import (
@@ -75,6 +76,10 @@ class CharacterSelectScene(Scene):
         if self.roster:
             self._show(first)
         self.move_list: MoveListPanel | None = None
+        # The pose step: the side choosing its poses for the fighter it just picked.
+        self.choosing: int | None = None
+        self.loadout = Loadout()
+        self.row = 0  # index in self.pose_rows()
         self.toast_f = 0
         self.flash_f = [0, 0]
         self.tick = 0
@@ -173,6 +178,9 @@ class CharacterSelectScene(Scene):
             if not self.move_list.handle(frame):
                 self.move_list = None
             return
+        if self.choosing is not None:
+            self._update_poses(frame)
+            return
         step = frame.presses("next") - frame.presses("prev")
         if step:
             at = self.part_numbers.index(self.tab)
@@ -205,13 +213,77 @@ class CharacterSelectScene(Scene):
                 self.ctx.inputs,
             )
 
+    # The pose step ----------------------------------------------------------------------
+
+    def _poses(self, stand: bool) -> list[str]:
+        sprites = self.looks[self.cursor].sprites if self.cursor is not None else None
+        if sprites is None:
+            return []
+        return [i for i, info in sprites.poses.items() if info.stand == stand]
+
+    def pose_rows(self) -> list[bool]:
+        """The lines of the pose step: False for the pose alone, True with the Stand."""
+        return [stand for stand in (False, True) if self._poses(stand)]
+
+    def _wants_poses(self, side: int) -> bool:
+        """A person picks for this side (not the computer, not the training dummy), and
+        the hovered fighter has poses to choose from."""
+        human = side == 0 or (side == 1 and self.mode == "versus")
+        return human and bool(self.pose_rows())
+
+    def _open_poses(self, side: int) -> None:
+        fighter_id = self.roster[self.cursor].id
+        saved = self.ctx.settings.poses.get(fighter_id, ["", ""])
+        sprites = self.looks[self.cursor].sprites
+        self.loadout = resolve_loadout(sprites, Loadout(saved[0], saved[1]))
+        self.choosing = side
+        self.row = 0
+
+    def _update_poses(self, frame) -> None:
+        rows = self.pose_rows()
+        down = frame.presses("down") - frame.presses("up")
+        if down and len(rows) > 1:
+            self.row = (self.row + down) % len(rows)
+            audio.play("menu_move")
+        turn = frame.presses("right") - frame.presses("left")
+        if turn:
+            stand = rows[self.row]
+            ids = self._poses(stand)
+            current = self.loadout.stand_pose if stand else self.loadout.pose
+            at = ids.index(current) if current in ids else 0
+            chosen = ids[(at + turn) % len(ids)]
+            if stand:
+                self.loadout = Loadout(self.loadout.pose, chosen)
+            else:
+                self.loadout = Loadout(chosen, self.loadout.stand_pose)
+            audio.play("menu_move")
+        if frame.was_pressed("confirm"):
+            side, fighter_id = self.choosing, self.roster[self.cursor].id
+            self.ctx.settings.poses[fighter_id] = [self.loadout.pose, self.loadout.stand_pose]
+            self.ctx.save_settings()
+            self.choosing = None
+            self._commit(side, self.loadout)
+        elif frame.was_pressed("back"):
+            audio.play("menu_back")
+            self.choosing = None
+
     def _pick(self) -> None:
         if self._hovered() is None:
             self.toast_f = TOAST_F
             audio.play("menu_locked")
             return
+        side = self.picking
+        if self._wants_poses(side):
+            audio.play("menu_ok")
+            self._open_poses(side)
+            return
+        self._commit(side, Loadout())
+
+    def _commit(self, side: int, loadout: Loadout) -> None:
+        """The fighter under the cursor is this side's, with these poses."""
         audio.play("menu_ok")
-        self.flash_f[self.picking] = PICK_FLASH_F
+        self.ctx.loadouts[side] = loadout
+        self.flash_f[side] = PICK_FLASH_F
         self.picks.append(self.cursor)  # not None: a fighter is hovered
         if len(self.picks) < self.picks_needed:
             return
@@ -328,7 +400,23 @@ class CharacterSelectScene(Scene):
         if index is not None:
             # The fighter faces the middle; its Stand looms behind, towards the edge.
             feet_x = center + 12 if side == 0 else center - 12
-            self.looks[index].draw(surface, (feet_x, FEET_Y), self.tick, scale=2, flip=side == 1)
+            anim, with_stand, offset = "idle", True, None
+            if side == self.choosing:
+                with_stand = self.pose_rows()[self.row]
+                pose_id = self.loadout.stand_pose if with_stand else self.loadout.pose
+                anim = f"pose_{pose_id}"
+                info = self.looks[index].sprites.poses.get(pose_id)
+                offset = info.stand_offset if info is not None and with_stand else None
+            self.looks[index].draw(
+                surface,
+                (feet_x, FEET_Y),
+                self.tick,
+                scale=2,
+                flip=side == 1,
+                stand=with_stand,
+                anim=anim,
+                stand_offset=offset,
+            )
             if self.flash_f[side]:
                 strength = self.flash_f[side] / PICK_FLASH_F
                 flash = pygame.Surface((SIDE_W, 110), pygame.SRCALPHA)
@@ -370,5 +458,34 @@ class CharacterSelectScene(Scene):
         surface.fill((40, 34, 56), (bar_x, y + 2, 60, 5))
         surface.fill((240, 200, 70), (bar_x, y + 2, bar_w, 5))
         y += 12
+        if side == self.choosing:
+            self._draw_pose_lines(surface, box, y, index)
+            return
         lines = font.wrap(fdef.blurb, SIDE_W - 10)[: max(0, (box.bottom - y) // 10)]
         draw_wrapped(surface, " ".join(lines), (box.x + 5, y), SIDE_W - 10)
+
+    def _draw_pose_lines(
+        self, surface: pygame.Surface, box: pygame.Rect, y: int, index: int
+    ) -> None:
+        """The lines (POSE 1/4, POSE STAND 2/3), the chosen pose's full name with its
+        arrows, then where it comes from."""
+        poses = self.looks[index].sprites.poses
+        english = i18n.language() == "en"
+        x = box.x + 5
+        for row, stand in enumerate(self.pose_rows()):
+            ids = self._poses(stand)
+            pose_id = self.loadout.stand_pose if stand else self.loadout.pose
+            at = ids.index(pose_id) + 1 if pose_id in ids else 0
+            title = text.POSE_STAND_ROW if stand else text.POSE_ROW
+            label = f"{title} {at}/{len(ids)}"
+            font.draw(surface, label, (x, y), WHITE if row == self.row else DIM)
+            x += font.text_width(label) + 10
+        y += 11
+        stand = self.pose_rows()[self.row]
+        info = poses.get(self.loadout.stand_pose if stand else self.loadout.pose)
+        if info is None:
+            return
+        name = info.label_en if english else info.label
+        y = draw_wrapped(surface, f"< {name} >", (box.x + 5, y), SIDE_W - 10, GOLD)
+        lines = font.wrap(info.source, SIDE_W - 10)[: max(0, (box.bottom - y) // 10)]
+        draw_wrapped(surface, " ".join(lines), (box.x + 5, y), SIDE_W - 10, DIM)

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pygame
@@ -26,6 +27,9 @@ def look_animations(look: Look, view: str) -> AnimTable:
     table = animations(view, look.pose)
     for name, anim in look.anims.items():
         table[name] = (anim.fps, anim.loop, anim.frame_phases(), anim.frames(view))
+    for pose_id, pose in look.poses.items():
+        anim = pose.anim
+        table[f"pose_{pose_id}"] = (anim.fps, anim.loop, anim.frame_phases(), anim.frames(view))
     return table
 
 
@@ -102,6 +106,13 @@ def build_sheet(look: Look) -> tuple[pygame.Surface, str]:
         lines += [f"fps = {fps}", f"loop = {'true' if loop else 'false'}"]
         if phases:
             lines.append(f"phases = {phases}")
+    for pose_id, pose in look.poses.items():
+        # Strings as JSON: a valid TOML basic string, accents and quotes included.
+        lines += ["", f"[poses.{pose_id}]"]
+        for key in ("label", "label_en", "source"):
+            lines.append(f"{key} = {json.dumps(getattr(pose, key), ensure_ascii=False)}")
+        lines.append(f"stand = {'true' if pose.stand else 'false'}")
+        lines.append(f"stand_offset = {list(pose.stand_offset)}")
     return sheet, "\n".join(lines) + "\n"
 
 

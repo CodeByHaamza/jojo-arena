@@ -15,6 +15,24 @@ STAND_BEHIND = 13  # px (before scaling) the Stand stands behind its user in men
 STAND_RISE = 7
 
 
+def stand_feet(
+    feet: tuple[float, float],
+    scale: int,
+    flip: bool,
+    offset: tuple[float, float] | None = None,
+) -> tuple[float, float]:
+    """Where a Stand stands in a menu, before its float: just behind its user, or where
+    a pose puts it (`offset` = ahead, aside; ahead is where the fighter looks, aside
+    comes towards the viewer, as in a fight)."""
+    x, y = feet
+    if offset is None:
+        back = 1 if flip else -1  # behind = away from where the fighter looks
+        return x + back * STAND_BEHIND * scale, y - STAND_RISE * scale
+    ahead, aside = offset
+    forward = -1 if flip else 1
+    return x + forward * ahead * scale, y + (aside * 0.5 - STAND_RISE) * scale
+
+
 class FighterLook:
     """A fighter's sprites, and its Stand's, posed for menus (idle animation)."""
 
@@ -54,6 +72,7 @@ class FighterLook:
         direction: str = "right",
         glow: bool = True,
         anim: str = "idle",
+        stand_offset: tuple[float, float] | None = None,
     ) -> None:
         """Draw the fighter standing at `feet`, facing right (left with `flip`)."""
         x, y = feet
@@ -61,11 +80,12 @@ class FighterLook:
             aura = tuple(round(c * 0.35) for c in self.fdef.aura)
             blit_glow(surface, radial_glow(18 * scale, aura), (x, y - self.height * scale * 0.55))
         if stand and self.stand is not None:
-            back = 1 if flip else -1  # behind = away from where the fighter looks
             float_y = math.sin(tick * 0.06) * 1.5
-            stand_feet = (x + back * STAND_BEHIND * scale, y - (STAND_RISE + float_y) * scale)
+            sx, sy = stand_feet(feet, scale, flip, stand_offset)
             image = self._frame(self.stand, tick, direction, flip, anim)
-            self._blit(surface, self.stand, image, stand_feet, scale, flip, STAND_ALPHA)
+            self._blit(
+                surface, self.stand, image, (sx, sy - float_y * scale), scale, flip, STAND_ALPHA
+            )
         blit_shadow(surface, (x, y), round((14 + self.height * 0.25) * scale), 7 * scale)
         image = self._frame(self.sprites, tick, direction, flip, anim)
         self._blit(surface, self.sprites, image, (x, y), scale, flip)

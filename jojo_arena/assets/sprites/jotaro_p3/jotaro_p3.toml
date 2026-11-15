@@ -143,3 +143,94 @@ frames = 7
 fps = 8
 loop = false
 phases = [2, 4, 1]
+
+[anims.pose_doigt_pointe]
+row = 63
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_venture]
+row = 66
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_yare_yare]
+row = 69
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_poches]
+row = 72
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_couverture_13]
+row = 75
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_poing_21]
+row = 78
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_premiere_fois]
+row = 81
+frames = 2
+fps = 4
+loop = true
+
+[poses.doigt_pointe]
+label = "Le doigt pointé"
+label_en = "The pointing finger"
+source = "Weekly Shonen Jump 1989 n°36 (ch. 134) ; couvertures des tomes 14 et 25"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.venture]
+label = "Le doigt de JoJo's Venture"
+label_en = "JoJo's Venture point"
+source = "JoJo's Venture (Capcom, 1998), pose de provocation"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.yare_yare]
+label = "Yare yare daze"
+label_en = "Yare yare daze"
+source = "Couverture du tome 24 ; Eyes of Heaven, Dual Heat avec Kakyoin (le doigt le long de la visière)"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.poches]
+label = "Les mains dans les poches"
+label_en = "Hands in pockets"
+source = "Couverture du tome 22"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.couverture_13]
+label = "Star Platinum dans son dos"
+label_en = "Star Platinum at his back"
+source = "Weekly Shonen Jump 1989 n°23 (ch. 121), repris sur la couverture du tome 13"
+stand = true
+stand_offset = [-9.0, -6.0]
+
+[poses.poing_21]
+label = "Le poing de Star Platinum"
+label_en = "Star Platinum's fist"
+source = "Couverture du tome 21"
+stand = true
+stand_offset = [8.0, -8.0]
+
+[poses.premiere_fois]
+label = "Star Platinum surgit"
+label_en = "Star Platinum emerges"
+source = "Première apparition de Star Platinum (manga), galerie Star Platinum de JoJo Wiki"
+stand = true
+stand_offset = [-6.0, -9.0]

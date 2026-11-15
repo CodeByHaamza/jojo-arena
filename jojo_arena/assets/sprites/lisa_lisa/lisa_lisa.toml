@@ -150,3 +150,42 @@ frames = 9
 fps = 12
 loop = false
 phases = [4, 4, 1]
+
+[anims.pose_chapitre_72]
+row = 66
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_mains_hanches]
+row = 69
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_ballerine]
+row = 72
+frames = 2
+fps = 4
+loop = true
+
+[poses.chapitre_72]
+label = "La couverture du chapitre 72"
+label_en = "The chapter 72 cover"
+source = "Page de couverture du ch. 72 ; Eyes of Heaven, rendu de Lisa Lisa"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.mains_hanches]
+label = "Les mains sur les hanches"
+label_en = "Hands on the hips"
+source = "Eyes of Heaven, rendu de Lisa Lisa (galerie de JoJo Wiki)"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.ballerine]
+label = "La ballerine"
+label_en = "The ballerina"
+source = "ASBR, GHA : « twirls her scarf around her not unlike a ballerina »"
+stand = false
+stand_offset = [-14.0, -8.0]

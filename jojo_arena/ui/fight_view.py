@@ -28,6 +28,7 @@ from jojo_arena.stages.base import StageDef
 from jojo_arena.ui import sfx, sounds, text, vfx
 from jojo_arena.ui.cutscenes import make_cutscene
 from jojo_arena.ui.duel_view import DuelScreen
+from jojo_arena.ui.loadout import Loadout, resolve_loadout
 from jojo_arena.ui.widgets import draw_cap
 
 OUTLINE = (23, 18, 31)
@@ -120,7 +121,7 @@ def status_tint(fighter: Fighter) -> tuple[int, int, int, int] | None:
 
 
 class FighterView:
-    def __init__(self, fighter_def: FighterDef) -> None:
+    def __init__(self, fighter_def: FighterDef, loadout: Loadout | None = None) -> None:
         self.fighter_def = fighter_def
         sheet = None
         if fighter_def.sprite:
@@ -152,6 +153,8 @@ class FighterView:
                 base.with_suffix(".png"), base.with_suffix(".toml")
             )
         self.stand = self.stand or next(iter(self.stands.values()), None)
+        # The poses picked on the select screen (the sheet's first ones by default).
+        self.loadout = resolve_loadout(self.sprites, loadout)
 
     @staticmethod
     def resolve(sprites, anim: str) -> tuple[str, AnimSpec]:
@@ -180,6 +183,8 @@ class FighterView:
         if fighter.state == State.ATTACK and fighter.attack is not None:
             anim = fighter.attack.move.anim
             phase = fighter.attack.phase_info()
+        elif fighter.state == State.POSE:
+            anim = self.pose_anim(fighter)
         else:
             anim = STATE_ANIMS.get(fighter.state, "idle")
             hands_free = fighter.kit.prop_hold == "hair"  # his hair holds it for him
@@ -219,6 +224,13 @@ class FighterView:
             image.fill(tint, special_flags=pygame.BLEND_RGB_ADD)
         return image
 
+    def pose_anim(self, fighter: Fighter) -> str:
+        """The animation the Pose key plays: the pose struck with the Stand when it is out
+        and there is one, else the pose struck alone, else the generic pose."""
+        if self.loadout.stand_pose and self.stand_presence(fighter) > 0:
+            return f"pose_{self.loadout.stand_pose}"
+        return f"pose_{self.loadout.pose}" if self.loadout.pose else "pose"
+
     # The Stand ---------------------------------------------------------------------------
 
     def use_stance(self, fighter: Fighter) -> None:
@@ -245,6 +257,23 @@ class FighterView:
             return 1.0  # the Stand holds (or throws) a prop, even when called back
         return 1.0 if fighter.aura_active else 0.0
 
+    def stand_draw_spot(self, fighter: Fighter) -> Vec2:
+        """Where the Stand is drawn: the spot the simulation uses for hits on it, except
+        while its user strikes a pose with it, when it stands where that pose puts it (on
+        screen only: the hit boxes do not move)."""
+        anim = self.pose_anim(fighter) if fighter.state == State.POSE else ""
+        info = self.sprites.poses.get(anim.removeprefix("pose_")) if anim else None
+        if info is None or not info.stand:
+            return fighter.stand_spot()
+        ahead, aside = info.stand_offset
+        facing = fighter.facing
+        # In profile the sprite is mirrored: "aside" stays on the same side of the screen
+        # (towards the viewer), so a Stand behind does not jump in front when its user
+        # turns round.
+        profile = abs(facing.x) >= abs(facing.y)
+        beside = Vec2(0, 1) if profile else Vec2(-facing.y, facing.x)
+        return fighter.pos + facing * ahead + beside * aside
+
     def _stand_pose(self, fighter: Fighter, anim: str, index: int) -> pygame.Surface:
         name, spec = self.resolve(self.stand, anim)
         direction, flip = sprite_direction(fighter.facing.x, fighter.facing.y)
@@ -254,7 +283,7 @@ class FighterView:
         presence = self.stand_presence(fighter)
         if presence <= 0:
             return
-        pos = fighter.stand_spot()  # same spot the simulation uses for hits on the Stand
+        pos = self.stand_draw_spot(fighter)
         lift = STAND_FLOAT + round(math.sin(tick * 0.08) * 1.5)
         chest = pos + Vec2(0, -self.stand.chest - lift)
         aura = tuple(round(c * 0.45 * presence) for c in self.fighter_def.aura)
@@ -381,11 +410,21 @@ def hidden(fighter: Fighter) -> bool:
 
 
 class FightView:
-    def __init__(self, stage: StageDef, fighter_defs: list[FighterDef]) -> None:
+    def __init__(
+        self,
+        stage: StageDef,
+        fighter_defs: list[FighterDef],
+        loadouts: list[Loadout | None] | None = None,
+    ) -> None:
         from jojo_arena.stages import stage_renderer
 
         self.renderer = stage_renderer(stage)
-        self.fighter_views = [FighterView(d) for d in fighter_defs]
+        loadouts = list(loadouts or [])
+        loadouts += [None] * (len(fighter_defs) - len(loadouts))
+        self.fighter_views = [
+            FighterView(d, loadout) for d, loadout in zip(fighter_defs, loadouts, strict=False)
+        ]
+
         self.fighter_defs = fighter_defs
         self.sparks: list[Spark] = []
         self._fx_voiced: dict[int, tuple[int, int]] = {}  # a move's own sound, once
@@ -413,6 +452,11 @@ class FightView:
         self._burst_word_f = 0
 
     # Reacting to the simulation ------------------------------------------------------
+
+    def stand_layer_y(self, fighter: Fighter) -> float:
+        """The depth a fighter's Stand is sorted at: where it is drawn (a pose can put
+        it somewhere else than its usual spot)."""
+        return self.fighter_views[fighter.index].stand_draw_spot(fighter).y
 
     def chest(self, index: int | None) -> Vec2:
         """Chest offset of one fighter, or the average of both when nobody in particular."""
@@ -908,7 +952,7 @@ class FightView:
         for fighter in match.fighters:
             view = self.fighter_views[fighter.index]
             if view.stand_presence(fighter) > 0 and not hidden(fighter):
-                drawables.append((fighter.stand_spot().y, 2, fighter))
+                drawables.append((self.stand_layer_y(fighter), 2, fighter))
         for _, kind, item in sorted(drawables, key=lambda d: (d[0], d[1])):
             if kind == 0:
                 self.renderer.draw_obstacle(surface, item)
