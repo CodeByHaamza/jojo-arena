@@ -169,7 +169,7 @@ second côté passe à la couleur suivante de ce costume.
 
 Le panneau de réglage passe de deux lignes côte à côte à une liste, une ligne par choix :
 
-```
+```text
  J1
 ┌──────────────────────────────┐
 │ JOTARO KUJO                  │
