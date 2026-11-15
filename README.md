@@ -110,7 +110,7 @@ chacun de leur côté. C'est ce qui rend les replays exacts et le rollback possi
 > *Un jeu qui tourne n'est pas un jeu juste.*
 
 <div align="center">
-<img src="docs/media/chiffres.svg" alt="21 persos, 5 arènes, 1195 tests, 94 % de couverture, 60 images par seconde" width="100%">
+<img src="docs/media/chiffres.svg" alt="21 persos, 5 arènes, 1204 tests, 94 % de couverture, 60 images par seconde" width="100%">
 </div>
 
 | Critère | Mesure | Comment |

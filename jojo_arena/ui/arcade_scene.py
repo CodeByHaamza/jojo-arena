@@ -163,6 +163,7 @@ class ArcadeFight(FightScene):
             stage_id=stage_for_part(opponent.part),
             bots=(False, True),
             cpu_level=arcade.level,
+            entrance=True,
         )
         self.mode = "arcade"
 

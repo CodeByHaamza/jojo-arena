@@ -151,17 +151,27 @@ def _play(tour: Tour, title) -> None:
     tour.keys("Return", "Return", "Right", "Return", "Return", wait=20)  # both, poses
     tour.keys("Return", wait=20)  # the arena
     tour.shot("vs_screen")
-    tour.keys("Return", wait=60)
+    tour.keys("Return", wait=80)
+    tour.shot("fight_entrance")  # they walked in: the first one poses and speaks
+    fight = tour.scene
+    while fight.entrance is not None:
+        tour.wait(1)
+    tour.wait(60)
     tour.shot("fight_intro")
     tour.wait(120)
     tour.shot("fight")
     tour.keys("Escape", wait=3)
     tour.shot("fight_pause")
     tour.keys("Escape", wait=3)
-    fight = tour.scene
     fight.rounds.match.fighters[1].hurt(fight.rounds.match.fighters[1].hp)
     tour.wait(60)
     tour.shot("knockout")
+    tour.wait(110)
+    tour.shot("winner")  # the arena dims: its pose, its Stand, its line
+    while fight.result_menu is None:
+        tour.wait(1)
+    tour.wait(5)
+    tour.shot("result")
 
     # Options.
     from jojo_arena.ui.options_scene import OptionsScene

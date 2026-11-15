@@ -142,6 +142,7 @@ class SetupScene(Scene):
                     bots=(False, self.cpu),
                     cpu_level=self.ctx.settings.cpu_level,
                     stage_options=self.stage_options,
+                    entrance=True,
                 )
             )
         elif (kind == "confirm" and key == "back") or kind == "back":

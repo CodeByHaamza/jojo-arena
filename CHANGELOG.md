@@ -10,9 +10,13 @@ des corrections seules une patch.
 
 - **Ils se parlent.** À l'écran VS, les deux persos prennent la pose que tu as choisie et
   échangent les répliques que les jeux donnent à cette affiche : « Espèce d'ordure ! »,
-  « Voilà... le dernier round ! ». À la fin, le gagnant prend sa pose et dit sa réplique
-  pour cet adversaire. 15 affiches pour commencer, toutes tirées d'All-Star Battle et
-  d'All-Star Battle R.
+  « Voilà... le dernier round ! ». 15 affiches pour commencer, toutes tirées d'All-Star
+  Battle et d'All-Star Battle R.
+- **Entrée en scène.** Avant le premier round, les deux persos entrent dans l'arène, et
+  chacun à son tour prend sa pose, son Stand à côté de lui, et dit sa réplique. Entrée
+  pour passer.
+- **Le moment du vainqueur.** Après « VICTOIRE ! », l'arène s'assombrit : le gagnant, sa
+  pose, son Stand et sa réplique pour cet adversaire. Le bilan du combat vient ensuite.
 - **Kakyoin retrouve ses coups d'All-Star Battle R.** Un troisième coup léger sans Stand,
   les **émeraudes à bout portant** ; un Emerald Splash sans Stand de 5 émeraudes au lieu
   de 3 ; Stand sorti, les **estocs de tentacule** au bout de sa chaîne, et **« Didn't you

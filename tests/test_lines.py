@@ -1,5 +1,6 @@
 """What two fighters say to each other: the data, the VS screen that plays it line by line
-in the poses picked, and the winner's line and pose once the fight is over."""
+in the poses picked, the entrance they make on the arena before the first round, and the
+winner's moment (its pose, its Stand, its line) before the summary."""
 
 import pygame
 import pytest
@@ -7,16 +8,23 @@ import pytest
 from jojo_arena import controls
 from jojo_arena.characters import load_roster
 from jojo_arena.characters.lines import LINES_FILE, exchange_for, load_exchanges
+from jojo_arena.combat.fighter import State
 from jojo_arena.combat.rounds import Phase
 from jojo_arena.context import GameContext
 from jojo_arena.engine import font, i18n
 from jojo_arena.engine.data import load_toml
 from jojo_arena.engine.display import Display
-from jojo_arena.engine.input import InputManager
+from jojo_arena.engine.input import KEY_SCANCODES, InputManager
 from jojo_arena.engine.scene import SceneManager
-from jojo_arena.ui.fight_scene import WINNER_LINE_W, WINNER_POSE_AFTER_F, FightScene
+from jojo_arena.ui.fight_scene import (
+    RESULT_MENU_AFTER_F,
+    WINNER_LINE_W,
+    WINNER_POSE_AFTER_F,
+    FightScene,
+)
 from jojo_arena.ui.loadout import Loadout
 from jojo_arena.ui.setup_scene import LINE_F, LINE_PAUSE_F, LINE_W, SetupScene
+from jojo_arena.ui.staging import GAP_F, POSE_F, WALK_F, Entrance
 
 
 @pytest.fixture
@@ -198,3 +206,120 @@ def test_nothing_is_said_while_the_fight_is_on(ctx):
     step(ctx, 30)
     assert fight.winner_line() == ""
     assert not any(view.celebrating for view in fight.view.fighter_views)
+
+
+# The entrance, on the arena, before the first round -----------------------------------------
+
+
+def tap(ctx, key: str):
+    code = KEY_SCANCODES[key]
+    ctx.inputs.handle_event(pygame.event.Event(pygame.KEYDOWN, scancode=code, key=0, mod=0))
+    ctx.inputs.handle_event(pygame.event.Event(pygame.KEYUP, scancode=code, key=0, mod=0))
+
+
+def _enter(ctx, ids=("jotaro_p3", "dio_p3")):
+    fight = start(ctx, FightScene(ctx, rounds_to_win=1, fighter_ids=ids, entrance=True))
+    step(ctx)
+    assert fight.entrance is not None
+    return fight
+
+
+def test_a_fight_goes_straight_to_the_round_unless_asked_for_an_entrance(ctx):
+    fight = start(ctx, FightScene(ctx, rounds_to_win=1, fighter_ids=("jotaro_p3", "dio_p3")))
+    step(ctx, 5)
+    assert fight.entrance is None and fight.rounds.phase_f == 5
+
+
+def test_they_walk_in_then_each_strikes_its_pose_and_says_its_line(ctx):
+    fight = _enter(ctx)
+    entrance, views = fight.entrance, fight.view.fighter_views
+    jotaro, dio = fight.rounds.match.fighters
+    marks = [mark.copy() for mark in entrance.marks]
+    assert jotaro.pos.distance_to(marks[0]) > 30 and jotaro.state == State.WALK  # walking in
+    step(ctx, WALK_F + 5)
+    assert jotaro.pos.distance_to(marks[0]) < 0.01 and dio.pos.distance_to(marks[1]) < 0.01
+    who, line, _ = entrance.beat()
+    assert who == 0 and line == fight.exchange.intro[0][1]  # Jotaro first
+    assert views[0].celebrating and not views[1].celebrating
+    assert views[0].posing(jotaro) and views[0].pose_anim(jotaro).startswith("pose_")
+    step(ctx, POSE_F + GAP_F)
+    who, line, _ = entrance.beat()
+    assert who == 1 and line == fight.exchange.intro[1][1]  # DIO answers
+    assert views[1].celebrating and not views[0].celebrating
+    fight.draw(pygame.Surface((480, 270)))
+
+
+def test_the_stand_comes_out_to_pose_even_though_it_was_called_back(ctx):
+    fight = _enter(ctx)
+    jotaro = fight.rounds.match.fighters[0]
+    view = fight.view.fighter_views[0]
+    step(ctx, WALK_F + 30)
+    assert not jotaro.aura_active  # the simulation still has it called back...
+    assert view.stand_presence(jotaro) == 1.0  # ...but it is there, on screen, posing
+    assert view.sprites.poses[view.pose_anim(jotaro).removeprefix("pose_")].stand
+
+
+def test_nothing_of_the_entrance_reaches_the_fight_or_its_replay(ctx):
+    fight = _enter(ctx)
+    played_on = fight.rounds
+    assert fight.rounds.phase_f == 0  # the rounds wait while they make their entrance
+    step(ctx, fight.entrance.length + 2)
+    assert fight.entrance is None
+    assert fight.rounds is not played_on  # that match was a stage: a fresh one starts
+    plain = start(ctx, FightScene(ctx, rounds_to_win=1, fighter_ids=("jotaro_p3", "dio_p3")))
+    step(ctx, fight.rounds.phase_f)
+    assert not any(view.celebrating for view in fight.view.fighter_views)
+    for staged, fresh in zip(fight.rounds.match.fighters, plain.rounds.match.fighters, strict=True):
+        assert staged.pos == fresh.pos and staged.state == fresh.state
+        assert staged.facing == fresh.facing and staged.state_f == fresh.state_f
+    assert len(fight.replay.frames) == len(plain.replay.frames)
+
+
+def test_confirm_skips_the_entrance(ctx):
+    fight = _enter(ctx)
+    step(ctx, 10)
+    tap(ctx, "Return")
+    step(ctx, 2)
+    assert fight.entrance is None and fight.rounds.phase_f <= 2
+
+
+def test_a_pair_with_nothing_to_say_poses_together_and_briefly(ctx):
+    silent = _enter(ctx, ("bruford", "kakyoin"))
+    spoken = Entrance([], [], ("jotaro_p3", "dio_p3"), exchange_for("jotaro_p3", "dio_p3"))
+    assert silent.entrance.length < spoken.length
+    step(ctx, WALK_F + 10)
+    who, line, _ = silent.entrance.beat()
+    assert who is None and line == ""
+    assert all(view.celebrating for view in silent.view.fighter_views)
+    silent.draw(pygame.Surface((480, 270)))
+
+
+def test_a_replay_and_a_demo_have_no_entrance(ctx):
+    demo = FightScene(ctx, fighter_ids=("jotaro_p3", "dio_p3"), bots=(True, True), entrance=True)
+    start(ctx, demo)
+    step(ctx, 3)
+    assert demo.entrance is None and demo.rounds.phase_f == 3
+
+
+# The winner's moment, before the summary --------------------------------------------------------
+
+
+def test_the_summary_waits_for_the_winner_to_have_said_its_line(ctx):
+    fight = _win(ctx, ("jotaro_p3", "dio_p3"))
+    line = fight.winner_line()
+    assert fight.winner_moment_f() > WINNER_POSE_AFTER_F + len(line) // 2  # typed, then read
+    step(ctx, fight.winner_moment_f() - fight.rounds.phase_f - 2)
+    assert fight.result_menu is None
+    fight.draw(pygame.Surface((480, 270)))
+    step(ctx, 4)
+    assert fight.result_menu is not None
+    fight.draw(pygame.Surface((480, 270)))
+
+
+def test_confirm_cuts_the_winners_moment_short(ctx):
+    fight = _win(ctx, ("jotaro_p3", "dio_p3"))
+    step(ctx, RESULT_MENU_AFTER_F + 5 - fight.rounds.phase_f)
+    assert fight.result_menu is None
+    tap(ctx, "Return")
+    step(ctx, 2)
+    assert fight.result_menu is not None

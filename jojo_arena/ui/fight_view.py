@@ -155,7 +155,10 @@ class FighterView:
         self.stand = self.stand or next(iter(self.stands.values()), None)
         # The poses picked on the select screen (the sheet's first ones by default).
         self.loadout = resolve_loadout(self.sprites, loadout)
-        self.celebrating = False  # the fight is won: standing free, it strikes its pose
+        # Showing off (an entrance, a fight just won): standing free, it strikes its pose,
+        # its Stand out beside it even when it was called back.
+        self.celebrating = False
+        self.celebrate_f = 0
 
     @staticmethod
     def resolve(sprites, anim: str) -> tuple[str, AnimSpec]:
@@ -232,7 +235,8 @@ class FighterView:
     def pose_anim(self, fighter: Fighter) -> str:
         """The animation the Pose key plays: the pose struck with the Stand when it is out
         and there is one, else the pose struck alone, else the generic pose."""
-        if self.loadout.stand_pose and self.stand_presence(fighter) > 0:
+        showing = self.celebrating and fighter.state == State.IDLE and self.stand is not None
+        if self.loadout.stand_pose and (showing or self.stand_presence(fighter) > 0):
             return f"pose_{self.loadout.stand_pose}"
         return f"pose_{self.loadout.pose}" if self.loadout.pose else "pose"
 
@@ -260,7 +264,11 @@ class FighterView:
             return 1.0  # it surges out for this one blow
         if fighter.carrying is not None or self.throw_f > 0:
             return 1.0  # the Stand holds (or throws) a prop, even when called back
-        return 1.0 if fighter.aura_active else 0.0
+        if fighter.aura_active:
+            return 1.0
+        if self.celebrating and fighter.state == State.IDLE and self.loadout.stand_pose:
+            return min(1.0, self.celebrate_f / 12)  # it comes out to pose with its user
+        return 0.0
 
     def stand_draw_spot(self, fighter: Fighter) -> Vec2:
         """Where the Stand is drawn: the spot the simulation uses for hits on it, except
@@ -457,6 +465,22 @@ class FightView:
         self._burst_word_f = 0
 
     # Reacting to the simulation ------------------------------------------------------
+
+    def draw_spotlight(self, surface: pygame.Surface, fighter: Fighter, strength: float) -> None:
+        """Dim the whole arena and draw this fighter again over it, its Stand with it: the
+        winner's moment. `strength` goes from 0 (nothing) to 1."""
+        if strength <= 0:
+            return
+        dark = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
+        dark.fill((10, 8, 24, round(120 * min(1.0, strength))))
+        surface.blit(dark, (0, 0))
+        view = self.fighter_views[fighter.index]
+        behind = self.stand_layer_y(fighter) <= fighter.pos.y
+        if behind:
+            view.draw_stand(surface, fighter, self.tick)
+        view.draw(surface, fighter, self.tick)
+        if not behind:
+            view.draw_stand(surface, fighter, self.tick)
 
     def stand_layer_y(self, fighter: Fighter) -> float:
         """The depth a fighter's Stand is sorted at: where it is drawn (a pose can put
@@ -889,6 +913,8 @@ class FightView:
         self.punch_f = max(0, self.punch_f - 1)
         self.awaken_f = max(0, self.awaken_f - 1)
         self._burst_word_f = max(0, self._burst_word_f - 1)
+        for view in self.fighter_views:
+            view.celebrate_f = view.celebrate_f + 1 if view.celebrating else 0
         if match is not None:
             for view, fighter in zip(self.fighter_views, match.fighters, strict=True):
                 view.use_stance(fighter)

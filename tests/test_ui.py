@@ -248,7 +248,8 @@ def test_result_menu_offers_a_rematch(ctx):
     ctx.scenes.apply_pending()
     steps(ctx, ctx.scenes.current.rules.round_intro_f + 1)
     scene.rounds.match.fighters[1].hurt(10_000)
-    steps(ctx, scene.rules.round_outro_f + 130)
+    # The winner has the screen for a moment (its pose, its line) before the summary.
+    steps(ctx, scene.rules.round_outro_f + scene.winner_moment_f() + 10)
     assert scene.result_menu is not None
     tap(ctx, "Return")
     steps(ctx)
