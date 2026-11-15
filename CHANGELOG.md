@@ -87,11 +87,16 @@ des corrections seules une patch.
   qui leur font face de l'autre, un VS au milieu.
 - **Muhammad Avdol et Magician's Red** (partie 3), zoneur de feu, d'après sa fiche et ses
   coups d'All-Star Battle R : **Crossfire Hurricane** (un ankh de feu), la **Variation**
-  posée là où tu vises et qui jaillit sous les pieds, **Red Bind** (des cordes de feu
-  imparables), **Flaming Detector** (une flamme lente qui chasse l'adversaire), « HELL 2
-  U ! », le contre « Now's my chance ! », « I'll burn you to cinders ! » qui explose tout
-  autour, la HHA « Give me four wishes instead ! » et la GHA **Crossfire Hurricane
-  Special** en cinématique : l'anneau d'ankhs se referme.
+  posée là où tu vises et qui jaillit sous les pieds, **Red Bind !** (sa saisie : ligoté,
+  puis un souffle de feu en plein visage), « Must I do this the hard way ? » (les mêmes
+  cordes lancées au loin, qui ligotent sur place et qu'on peut bloquer), **Flaming
+  Detector** (une flamme lente qui chasse l'adversaire), « HELL 2 U ! », « Now's my
+  chance ! » (Magician's Red arme son poing, encaisse un coup, et ce coup déclenche le
+  sien), « I'll burn you to cinders ! » qui explose tout autour, le **souffle de feu** en
+  quatre coups, la HHA « Give me four wishes instead ! » où Magician's Red fonce droit
+  devant, et la GHA **Crossfire Hurricane Special** en cinématique : l'anneau d'ankhs se
+  referme. Comme dans ASBR, **l'ankh et le Flaming Detector s'éteignent si Avdol est
+  touché** : aller le chercher est la bonne réponse à son feu.
 - **Le feu de Magician's Red reste accroché** : ce qu'il touche net brûle encore après
   le coup. C'est l'altération **feu** du moteur, la même que le sang d'Esidisi : un
   second coup la relance sans l'empiler.
