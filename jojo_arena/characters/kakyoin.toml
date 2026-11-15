@@ -277,7 +277,9 @@ knockback = 340
 hitstop_f = 10
 wall_bounce = true
 clashable = false
-cooldown_s = 3
+# 3 s at first: with the whole cast measured together (bot, 30 fights a side) he won 69 %,
+# this grab landing two times in three. A longer wait, not a weaker grab.
+cooldown_s = 5
 anim = "special"
 
 # With a direction: "You're already in my grasp!" - tentacles spike up from the ground
