@@ -53,6 +53,10 @@ taunts): the pages name poses but never describe the body. Elbows, knees and `sw
 a pose read at 48 px. Cite the source in `source`; a pose invented where nothing is found
 says so (owner's rule of 15/11/2026).
 
+Costumes and colours: not in the game yet (step 3 of the ROADMAP). Once they are, this
+step gets their own instructions (costumes from ASBR, EoH and canon outfits, several
+colours each); until then a new fighter has none.
+
 ## 4. The roster - `jojo_arena/characters/roster.toml`
 
 Name, kit, sprites, colour, aura, Stand and its sprite sheet, role and blurb, both
