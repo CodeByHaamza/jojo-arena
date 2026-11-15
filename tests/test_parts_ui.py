@@ -84,7 +84,7 @@ def test_the_select_screen_has_a_tab_per_part(ctx):
     assert select.tab == 4 and select.cursor is None and select.backdrop.part == 4
     press(ctx, "Return")
     assert select.picks == [] and select.toast_f > 0
-    press(ctx, "Q", "Return")  # back to part 3, pick Kakyoin
+    press(ctx, "Q", "Return", "Return")  # back to part 3, pick Kakyoin, keep his poses
     assert select.fighter_ids == ("kakyoin",)
     press(ctx, "Q", "Q")  # part 1, then the picked fighter is not on screen
     assert select.tab == 1
