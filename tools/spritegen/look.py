@@ -13,6 +13,10 @@ from .skeleton import DIRECTIONS, POINT_FIELDS, POSE_FIELDS, POSE_NAMES, Build, 
 BODY_SLOTS = ("head", "torso", "arms", "hands", "legs", "feet")
 DEFAULT_CELL = 64
 ANIM_SETTINGS = ("fps", "loop", "phases", "tween")
+# What a pose says besides its key poses: its name in both languages, where it comes from,
+# whether the Stand strikes it too, and where the Stand stands then (ahead, aside), in px.
+POSE_SETTINGS = ("label", "label_en", "source", "stand", "stand_offset")
+DEFAULT_STAND_OFFSET = (-14.0, -8.0)  # just behind and beside, as when it is out
 # A view the look does not pose copies the first of these that it does.
 VIEW_STANDINS = {"down": ("up", "right"), "up": ("down", "right"), "right": ("down", "up")}
 
@@ -42,6 +46,18 @@ def ramp(base: Color) -> list[Color]:
     return [tone(-0.11, 0.05, 0.015), base, tone(0.11, -0.03, -0.01), tone(0.26, -0.12, -0.02)]
 
 
+@dataclass(frozen=True)
+class PoseDef:
+    """A JoJo pose: its key poses and what the select screen and the sheet say of it."""
+
+    anim: KeyAnim
+    label: str = ""
+    label_en: str = ""
+    source: str = ""
+    stand: bool = False  # struck with the Stand out, the Stand posing beside its user
+    stand_offset: tuple[float, float] = DEFAULT_STAND_OFFSET
+
+
 @dataclass
 class Look:
     id: str
@@ -55,6 +71,7 @@ class Look:
     recolor: list[str] = field(default_factory=list)  # palette entries the game may swap
     pose: str = "raise"  # signature pose (see skeleton.POSE_NAMES)
     anims: dict[str, KeyAnim] = field(default_factory=dict)  # key-pose animations
+    poses: dict[str, PoseDef] = field(default_factory=dict)  # JoJo poses, in order
 
 
 def parse_pose(data: dict, where: str) -> Pose:
@@ -109,6 +126,36 @@ def parse_anims(data: dict, where: str) -> dict[str, KeyAnim]:
     return anims
 
 
+def parse_poses(data: dict, where: str) -> dict[str, PoseDef]:
+    """[poses.<id>]: a JoJo pose, played as the animation `pose_<id>`. A fighter's pose
+    names itself and its source; a Stand's pose of the same id gives only its frames."""
+    poses = {}
+    for pose_id, spec in data.items():
+        place = f"{where}: poses.{pose_id}"
+        allowed = set(POSE_SETTINGS) | set(ANIM_SETTINGS) | set(DIRECTIONS)
+        unknown = set(spec) - allowed
+        if unknown:
+            raise ValueError(f"{place}: unknown settings {', '.join(sorted(unknown))}")
+        named = [key for key in ("label", "label_en", "source") if spec.get(key)]
+        if named and len(named) < 3:
+            raise ValueError(f"{place}: a pose with a label needs label, label_en and source")
+        offset = spec.get("stand_offset", DEFAULT_STAND_OFFSET)
+        if len(offset) != 2:
+            raise ValueError(f"{place}: stand_offset needs two numbers [ahead, aside]")
+        frames = {key: value for key, value in spec.items() if key not in POSE_SETTINGS}
+        frames.setdefault("fps", 4)
+        frames.setdefault("loop", True)
+        poses[pose_id] = PoseDef(
+            anim=parse_anims({pose_id: frames}, f"{where}: poses")[pose_id],
+            label=str(spec.get("label", "")),
+            label_en=str(spec.get("label_en", "")),
+            source=str(spec.get("source", "")),
+            stand=bool(spec.get("stand", False)),
+            stand_offset=(float(offset[0]), float(offset[1])),
+        )
+    return poses
+
+
 def load_look(path: Path) -> Look:
     with path.open("rb") as handle:
         data = tomllib.load(handle)
@@ -146,4 +193,5 @@ def load_look(path: Path) -> Look:
         recolor=list(data.get("recolor", [])),
         pose=pose,
         anims=parse_anims(data.get("anims", {}), path.name),
+        poses=parse_poses(data.get("poses", {}), path.name),
     )

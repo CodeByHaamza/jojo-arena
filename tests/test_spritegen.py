@@ -271,3 +271,76 @@ def test_key_poses_take_elbows_knees_and_sway():
     assert pose.elbow_l == (1.0, 2.0) and pose.knee_r == (-3.0, 0.0) and pose.sway == 1.5
     middle = blend(Pose(), pose, 0.5)
     assert middle.elbow_l == (0.5, 1.0) and middle.sway == 0.75
+
+
+# Poses in look files ------------------------------------------------------------------
+
+POSES = """
+[poses.point]
+label = "Le doigt pointé"
+label_en = "The pointing finger"
+source = "Stardust Crusaders, ch. 114"
+
+[[poses.point.down]]
+hand_r = [-6, -9]
+elbow_r = [2, 0]
+
+[poses.duo]
+label = "Dos à dos"
+label_en = "Back to back"
+source = "ASBR, pose de provocation 2"
+stand = true
+stand_offset = [-10, 6]
+fps = 3
+
+[[poses.duo.down]]
+lean = 1
+"""
+
+
+def test_poses_become_animations_with_their_source_in_the_sheet(tmp_path):
+    look = look_with(tmp_path, POSES)
+    assert list(look.poses) == ["point", "duo"]
+    sheet, spec = build_sheet(look)
+    data = tomllib.loads(spec)
+    assert "pose_point" in data["anims"] and "pose_duo" in data["anims"]
+    assert data["anims"]["pose_duo"]["fps"] == 3 and data["anims"]["pose_duo"]["loop"]
+    assert data["poses"]["point"] == {
+        "label": "Le doigt pointé",
+        "label_en": "The pointing finger",
+        "source": "Stardust Crusaders, ch. 114",
+        "stand": False,
+        "stand_offset": [-14.0, -8.0],
+    }
+    assert data["poses"]["duo"]["stand"] and data["poses"]["duo"]["stand_offset"] == [-10.0, 6.0]
+    sprites = SheetSprites(sheet, data)
+    assert list(sprites.poses) == ["point", "duo"]
+    duo = sprites.poses["duo"]
+    assert duo.label_en == "Back to back" and duo.stand and duo.stand_offset == (-10.0, 6.0)
+    assert sprites.spec("pose_point").frames >= 1
+
+
+def test_a_stand_pose_may_be_frames_only(tmp_path):
+    look = look_with(tmp_path, "[[poses.duo.down]]\nlean = 2\n")
+    _, spec = build_sheet(look)
+    assert tomllib.loads(spec)["poses"]["duo"]["label"] == ""
+
+
+@pytest.mark.parametrize(
+    "bad, message",
+    [
+        ('[poses.x]\nlabel = "A"\n[[poses.x.down]]\nlean = 1\n', "label_en and source"),
+        ("[poses.x]\nspeed = 2\n[[poses.x.down]]\nlean = 1\n", "unknown settings"),
+        ("[poses.x]\nstand_offset = [1]\n[[poses.x.down]]\nlean = 1\n", "stand_offset"),
+    ],
+)
+def test_bad_poses_are_refused_with_a_clear_message(tmp_path, bad, message):
+    with pytest.raises(ValueError, match=message):
+        look_with(tmp_path, bad)
+
+
+def test_sheets_without_poses_have_none():
+    sprites = SheetSprites.load(
+        SPRITES_DIR / "mannequin" / "mannequin.png", SPRITES_DIR / "mannequin" / "mannequin.toml"
+    )
+    assert sprites.poses == {}

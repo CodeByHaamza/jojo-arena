@@ -69,10 +69,26 @@ def sprite_direction(fx: float, fy: float) -> tuple[str, bool]:
     return "right", fx < 0
 
 
+@dataclass(frozen=True)
+class PoseInfo:
+    """A JoJo pose a sheet can play (animation `pose_<id>`), and where it comes from."""
+
+    id: str
+    label: str
+    label_en: str
+    source: str
+    stand: bool  # struck with the Stand out, the Stand posing too
+    stand_offset: tuple[float, float]  # where the Stand stands then: ahead, aside (px)
+
+
+NO_POSES: dict[str, PoseInfo] = {}
+
+
 class SpriteSet:
     anchor: tuple[int, int] = (24, 44)
     chest: int = 16  # pixels above the feet where hits and effects should appear
     height: int = 38  # pixels above the feet to the top of the head
+    poses: dict[str, PoseInfo] = NO_POSES  # in the order of the look file; read only
 
     def spec(self, anim: str) -> AnimSpec | None:
         raise NotImplementedError
@@ -88,6 +104,19 @@ class SheetSprites(SpriteSet):
         self.chest = spec_data.get("chest", SpriteSet.chest)
         self.height = spec_data.get("height", SpriteSet.height)
         self.directions = list(spec_data["directions"])
+        self.poses = {
+            pose_id: PoseInfo(
+                pose_id,
+                info.get("label", ""),
+                info.get("label_en", ""),
+                info.get("source", ""),
+                bool(info.get("stand", False)),
+                (float(info["stand_offset"][0]), float(info["stand_offset"][1]))
+                if "stand_offset" in info
+                else (-14.0, -8.0),
+            )
+            for pose_id, info in spec_data.get("poses", {}).items()
+        }
         self.specs: dict[str, AnimSpec] = {}
         self._frames: dict[tuple[str, str], list[pygame.Surface]] = {}
         self._flipped: dict[tuple[str, str, int], pygame.Surface] = {}
