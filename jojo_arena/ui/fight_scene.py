@@ -11,6 +11,7 @@ import pygame
 
 from jojo_arena import __version__
 from jojo_arena.characters import get_fighter
+from jojo_arena.characters.lines import exchange_for
 from jojo_arena.combat.ai import CpuPlayer
 from jojo_arena.combat.replay import Replay, save_replay
 from jojo_arena.combat.rounds import Phase, Rounds
@@ -19,6 +20,7 @@ from jojo_arena.context import GameContext
 from jojo_arena.engine import font, music
 from jojo_arena.engine.actions import NEUTRAL, InputFrame
 from jojo_arena.engine.scene import Scene
+from jojo_arena.engine.sprites import shade
 from jojo_arena.stages import load_stage
 from jojo_arena.stages.base import StageOptions
 from jojo_arena.ui import text
@@ -33,6 +35,9 @@ from jojo_arena.ui.rumble import FightRumble, pad_slots
 from jojo_arena.ui.widgets import DIM, GOLD, WHITE, draw_box, draw_toast, veil
 
 RESULT_MENU_AFTER_F = 120  # let the victory sink in before offering a rematch
+WINNER_POSE_AFTER_F = 40  # the last blow lands, then the winner strikes its pose
+WINNER_LINE_Y = 44  # under the life bars, over the summary
+WINNER_LINE_W = 380
 TOAST_F = 90
 MOUSE_AIM_F = 60  # the mouse aims for a keyboard player if it moved in the last second
 
@@ -55,6 +60,8 @@ class FightScene(Scene):
         self.stage_options = stage_options or StageOptions()
         self.fighter_ids = fighter_ids
         self.fighter_defs = [get_fighter(i) for i in fighter_ids]
+        # What the games give this pair to say (None: nothing): the winner's line, at the end.
+        self.exchange = exchange_for(*fighter_ids)
         self.stage = load_stage(stage_id)
         music.request(track_for_stage(stage_id))
         self.rules = load_rules()
@@ -178,6 +185,9 @@ class FightScene(Scene):
         self.hud.on_events(events, self.rounds)
         self.view.update(self.rounds.match)
         self.hud.update(self.rounds)
+        won = self.rounds.phase == Phase.MATCH_OVER and self.rounds.phase_f >= WINNER_POSE_AFTER_F
+        for side, fighter_view in enumerate(self.view.fighter_views):
+            fighter_view.celebrating = won and side == self.rounds.winner
         if self.rounds.phase == Phase.MATCH_OVER and self.rounds.phase_f >= RESULT_MENU_AFTER_F:
             if self.demo or self.playback is not None:
                 if self.demo:
@@ -185,6 +195,13 @@ class FightScene(Scene):
             else:
                 self.save_replay()
                 self.result_menu = Menu(self._result_items())
+
+    def winner_line(self) -> str:
+        """What the winner says to this opponent once the fight is over ("": nothing)."""
+        winner = self.rounds.winner
+        if self.exchange is None or winner is None or self.rounds.phase != Phase.MATCH_OVER:
+            return ""
+        return self.exchange.victory_line(self.fighter_ids[winner])
 
     def on_step(self, events: list) -> None:
         """Called with the events of each logic step (training reads them)."""
@@ -323,6 +340,7 @@ class FightScene(Scene):
                 font.draw(surface, label, (surface.get_width() // 2, 38), GOLD, align="center")
         draw_toast(surface, text.REPLAY_SAVED, self.toast_f, y=60)
         center = surface.get_width() // 2
+        self._draw_winner_line(surface, center)
         if self.pause_menu is not None:
             surface.blit(veil(surface.get_size(), (10, 8, 24, 160)), (0, 0))
             items = len(self.pause_menu.items)
@@ -341,6 +359,20 @@ class FightScene(Scene):
             self.result_menu.draw(surface, center, box.y + 9, spacing=15)
         if self.move_list is not None:
             self.move_list.draw(surface)
+
+    def _draw_winner_line(self, surface: pygame.Surface, center: int) -> None:
+        """The winner's line to this opponent, in its color, under the life bars."""
+        line = self.winner_line()
+        if not line or self.rounds.phase_f < WINNER_POSE_AFTER_F or self.pause_menu is not None:
+            return
+        rows = font.wrap(line, WINNER_LINE_W)
+        width = max(font.text_width(row) for row in rows) + 12
+        box = pygame.Rect(0, 0, width, len(rows) * 10 + 7)
+        box.midtop = (center, WINNER_LINE_Y)
+        draw_box(surface, box)
+        color = shade(self.fighter_defs[self.rounds.winner].color, 70)
+        for i, row in enumerate(rows):
+            font.draw(surface, row, (center, box.y + 4 + i * 10), color, align="center")
 
     def _draw_summary(self, surface: pygame.Surface, center: int) -> None:
         """What each of them did over the whole fight, over the rematch menu."""

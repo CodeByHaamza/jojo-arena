@@ -155,6 +155,7 @@ class FighterView:
         self.stand = self.stand or next(iter(self.stands.values()), None)
         # The poses picked on the select screen (the sheet's first ones by default).
         self.loadout = resolve_loadout(self.sprites, loadout)
+        self.celebrating = False  # the fight is won: standing free, it strikes its pose
 
     @staticmethod
     def resolve(sprites, anim: str) -> tuple[str, AnimSpec]:
@@ -183,7 +184,7 @@ class FighterView:
         if fighter.state == State.ATTACK and fighter.attack is not None:
             anim = fighter.attack.move.anim
             phase = fighter.attack.phase_info()
-        elif fighter.state == State.POSE:
+        elif self.posing(fighter):
             anim = self.pose_anim(fighter)
         else:
             anim = STATE_ANIMS.get(fighter.state, "idle")
@@ -224,6 +225,10 @@ class FighterView:
             image.fill(tint, special_flags=pygame.BLEND_RGB_ADD)
         return image
 
+    def posing(self, fighter: Fighter) -> bool:
+        """Striking a pose: the Pose key held, or the fight just won."""
+        return fighter.state == State.POSE or (self.celebrating and fighter.state == State.IDLE)
+
     def pose_anim(self, fighter: Fighter) -> str:
         """The animation the Pose key plays: the pose struck with the Stand when it is out
         and there is one, else the pose struck alone, else the generic pose."""
@@ -261,7 +266,7 @@ class FighterView:
         """Where the Stand is drawn: the spot the simulation uses for hits on it, except
         while its user strikes a pose with it, when it stands where that pose puts it (on
         screen only: the hit boxes do not move)."""
-        anim = self.pose_anim(fighter) if fighter.state == State.POSE else ""
+        anim = self.pose_anim(fighter) if self.posing(fighter) else ""
         info = self.sprites.poses.get(anim.removeprefix("pose_")) if anim else None
         if info is None or not info.stand:
             return fighter.stand_spot()

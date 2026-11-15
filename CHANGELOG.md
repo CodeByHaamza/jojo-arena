@@ -8,6 +8,11 @@ des corrections seules une patch.
 
 ### Ajouté
 
+- **Ils se parlent.** À l'écran VS, les deux persos prennent la pose que tu as choisie et
+  échangent les répliques que les jeux donnent à cette affiche : « Espèce d'ordure ! »,
+  « Voilà... le dernier round ! ». À la fin, le gagnant prend sa pose et dit sa réplique
+  pour cet adversaire. 15 affiches pour commencer, toutes tirées d'All-Star Battle et
+  d'All-Star Battle R.
 - **Kakyoin retrouve ses coups d'All-Star Battle R.** Un troisième coup léger sans Stand,
   les **émeraudes à bout portant** ; un Emerald Splash sans Stand de 5 émeraudes au lieu
   de 3 ; Stand sorti, les **estocs de tentacule** au bout de sa chaîne, et **« Didn't you

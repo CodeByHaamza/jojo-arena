@@ -1,0 +1,306 @@
+# What two fighters say to each other before a fight, and what the winner says after it.
+#
+# Nothing here is made up: every line is one the games give to that pair, in the battle
+# named by `source` (All-Star Battle and All-Star Battle R, read on the JoJo Wiki pages
+# of the fighters, section "Dialogue", on 15/11/2026). `text_en` is the game's own line;
+# `text` is its French translation.
+#
+#   fighters = the two fighter ids (roster.toml), in any order;
+#   intro    = the lines, in the order they are said; `by` is who says each;
+#   victory  = what one of the two says when it is the winner (not every pair has both).
+#
+# A pair with no entry says nothing: add one only with its source.
+
+# Part 3 -----------------------------------------------------------------------------------
+
+[[exchanges]]
+fighters = ["jotaro_p3", "dio_p3"]
+source = "ASBR, combat de boss sur le pont du Caire ; la victoire de DIO : ASB, 3-10"
+
+[[exchanges.intro]]
+by = "jotaro_p3"
+text = "Espèce d'ordure !"
+text_en = "You bastard!"
+
+[[exchanges.intro]]
+by = "dio_p3"
+text = "Voilà... le dernier round !"
+text_en = "This is it... the final round!"
+
+[exchanges.victory.jotaro_p3]
+text = "Tu as perdu pour une seule raison, DIO... Une raison toute simple. Tu m'as mis en colère."
+text_en = "There's only one reason you lost, DIO... A simple one. You pissed me off."
+
+[exchanges.victory.dio_p3]
+text = "Invincible ! Immortel ! Et le Stand le plus puissant ! Personne ne me surpasse !"
+text_en = "Invincible! Immortal! And with the most powerful Stand! None can surpass me!"
+
+[[exchanges]]
+fighters = ["jotaro_p3", "kakyoin"]
+source = "ASBR, combat dans les rues du Caire ; la victoire de Kakyoin : ASB"
+
+[[exchanges.intro]]
+by = "jotaro_p3"
+text = "Le mal, c'est piétiner les faibles pour son seul profit !"
+text_en = "Evil is stomping all over the weak just for your own gain!"
+
+[[exchanges.intro]]
+by = "kakyoin"
+text = "Le perdant est le mal, le vainqueur est le juste. Celui qui survit a gagné. C'est la loi."
+text_en = "The loser is the evil one, the victor is just. Whoever survives, wins. That's the law of the land."
+
+[exchanges.victory.jotaro_p3]
+text = "Le mal ne gagne jamais. Et tu sais ce que ça veut dire."
+text_en = "Evil never wins. And you know what that means."
+
+[exchanges.victory.kakyoin]
+text = "Le perdant est le mal. C'est tout."
+text_en = "The loser is the evil one. That's all there is to it."
+
+[[exchanges]]
+fighters = ["jotaro_p3", "avdol"]
+source = "ASBR, combat dans les rues du Caire"
+
+[[exchanges.intro]]
+by = "jotaro_p3"
+text = "Tu l'auras cherché !"
+text_en = "You brought this on yourself!"
+
+[[exchanges.intro]]
+by = "avdol"
+text = "Quel Stand puissant... Une erreur, et je suis mal..."
+text_en = "What a powerful Stand... I'll be in trouble if I screw up..."
+
+[exchanges.victory.jotaro_p3]
+text = "Je te l'avais dit... Ne viens pas te plaindre..."
+text_en = "I told you... Don't blame me for what happens..."
+
+[[exchanges]]
+fighters = ["dio_p3", "kakyoin"]
+source = "ASBR, combat de boss dans les rues du Caire (ASB, 3-7)"
+
+[[exchanges.intro]]
+by = "kakyoin"
+text = "Je vais percer le secret de ton Stand, DIO !"
+text_en = "I'm gonna unravel the secret of your Stand, DIO!"
+
+[[exchanges.intro]]
+by = "dio_p3"
+text = "Imbécile. Sache-le... le pouvoir de The World permet de régner sur tout !"
+text_en = "You fool. Know this... the power of The World allows you to rule over everything!"
+
+[exchanges.victory.kakyoin]
+text = "J'ai compris ! C'est le temps ! Il arrête le temps lui-même !"
+text_en = "I got it! It's time! He can stop time itself!"
+
+[[exchanges]]
+fighters = ["dio_p3", "polnareff"]
+source = "ASB, 3-9, « The Backstab Strike »"
+
+[[exchanges.intro]]
+by = "polnareff"
+text = "Te voilà, DIO !"
+text_en = "There you are, DIO!"
+
+[[exchanges.intro]]
+by = "dio_p3"
+text = "Je me disais bien que tu viendrais me frapper dans le dos..."
+text_en = "I figured you'd be sneaking up and attacking me from behind by now..."
+
+[exchanges.victory.polnareff]
+text = "Retourne en enfer, DIO ! Yaaaargh !"
+text_en = "Back to hell with you, DIO! Yaaaargh!"
+
+[exchanges.victory.dio_p3]
+text = "Personne n'assassine DIO..."
+text_en = "No one can assassinate DIO..."
+
+[[exchanges]]
+fighters = ["dio_p3", "joseph_p3"]
+source = "ASBR, combat normal (ASB, 3-EX 2)"
+
+[[exchanges.intro]]
+by = "joseph_p3"
+text = "Kakyoin n'est pas du genre à plaisanter dans un moment pareil... Pourquoi irait-il par là ?"
+text_en = "Kakyoin's not one to fool around at a time like this... Why would he go that way?"
+
+[[exchanges.intro]]
+by = "dio_p3"
+text = "Joseph... Tu es le suivant !"
+text_en = "Joseph... You're next!"
+
+[exchanges.victory.joseph_p3]
+text = "N-Non ! Impossible ! The World de DIO peut vraiment arrêter le temps ?!"
+text_en = "N-No! It can't be! DIO's The World can really stop time?!"
+
+[[exchanges]]
+fighters = ["polnareff", "avdol"]
+source = "ASBR, combat normal ; la victoire de Polnareff : ASB, 3-3, « The Sword Master »"
+
+[[exchanges.intro]]
+by = "polnareff"
+text = "J'ai une prédiction, Avdol. Tu vas périr par le pouvoir de ton propre Stand !"
+text_en = "I got a prediction, Avdol. You're gonna be done in by your own Stand's power!"
+
+[[exchanges.intro]]
+by = "avdol"
+text = "Quelle maîtrise de l'épée... Mais tu crois pouvoir me battre ? C'est ton orgueil qui parle !"
+text_en = "Such amazing swordsmanship... But you think you can beat me? That's your ego talking!"
+
+[exchanges.victory.avdol]
+text = "Il t'en faudra bien plus pour prédire mieux que moi ! Tu ne joues pas dans ma catégorie !"
+text_en = "You've gotta put in more effort than that to out-prophet me! You're way out of your league!"
+
+[exchanges.victory.polnareff]
+text = "Ha ha ! Comme prévu. Brûlé vif par ton propre feu."
+text_en = "Ha ha! Just as predicted. You're burned to death by your own fire."
+
+# Across the parts ---------------------------------------------------------------------------
+
+[[exchanges]]
+fighters = ["dio_p3", "jonathan"]
+source = "ASBR, combat bonus de Stardust Crusaders"
+
+[[exchanges.intro]]
+by = "jonathan"
+text = "Dio ?! Et ce corps !"
+text_en = "Dio?! And that body!"
+
+[[exchanges.intro]]
+by = "dio_p3"
+text = "Une rencontre qui traverse le temps lui-même, c'est ça, JoJo ?!"
+text_en = "So an encounter that crosses time itself, is it, JoJo?!"
+
+[exchanges.victory.dio_p3]
+text = "Mon ami... Ce corps me servira encore longtemps !"
+text_en = "My friend... This body will continue to serve me into the future!"
+
+[[exchanges]]
+fighters = ["dio_p3", "dio_p1"]
+source = "ASBR, combat bonus de Phantom Blood"
+
+[[exchanges.intro]]
+by = "dio_p3"
+text = "Essayer mon Stand sur celui que j'étais... comme c'est amusant !"
+text_en = "Testing my Stand against my former self... how amusing!"
+
+[[exchanges.intro]]
+by = "dio_p1"
+text = "Un Stand, dis-tu ? Intéressant. Essaie-le donc sur moi !"
+text_en = "A Stand, you say? Interesting. Try it on me!"
+
+[exchanges.victory.dio_p1]
+text = "Ton Stand m'a surpris d'abord, mais je sais maintenant qu'il n'y a rien à craindre !"
+text_en = "Your Stand was surprising at first, but now I know it's nothing to fear!"
+
+# Part 1 -----------------------------------------------------------------------------------
+
+[[exchanges]]
+fighters = ["jonathan", "dio_p1"]
+source = "ASBR, page de Dio Brando, section Dialogue (le combat n'y est pas nommé)"
+
+[[exchanges.intro]]
+by = "dio_p1"
+text = "Je vais t'arracher jusqu'à ta dernière goutte de vie !"
+text_en = "I'll wring every last bit of life out of you!"
+
+[[exchanges.intro]]
+by = "jonathan"
+text = "Je purifierai ce monde de ta souillure !"
+text_en = "I'll cleanse the world of your filth!"
+
+[exchanges.victory.jonathan]
+text = "Tu dois être anéanti, Dio !"
+text_en = "You must be annihilated, Dio!"
+
+# Part 2 -----------------------------------------------------------------------------------
+
+[[exchanges]]
+fighters = ["joseph_p2", "caesar"]
+source = "ASBR, combat normal (ASB, 2-1, « The Pigeon and the Girl »)"
+
+[[exchanges.intro]]
+by = "caesar"
+text = "Laisse tomber ! Ton Onde ne battrait même pas cette fille !"
+text_en = "Forget it! Your Ripple could never even beat this girl!"
+
+[[exchanges.intro]]
+by = "joseph_p2"
+text = "Ha ha ha ! Un type comme toi ne battrait même pas un pigeon !"
+text_en = "Ha ha ha! A guy like you couldn't even beat a pigeon!"
+
+[exchanges.victory.joseph_p2]
+text = "Je le redis. Tu ne battrais toujours pas un pigeon !"
+text_en = "I'll say it one more time. You still couldn't even beat a pigeon!"
+
+[[exchanges]]
+fighters = ["joseph_p2", "wamuu"]
+source = "ASBR, combat normal (ASB, 2-2, « The Blood Clock »)"
+
+[[exchanges.intro]]
+by = "joseph_p2"
+text = "Tu aimes t'en prendre aux gens, hein ? Je vais te la faire ravaler, ton arrogance !"
+text_en = "Like to pick on people, huh? I'll smash that attitude of yours good!"
+
+[[exchanges.intro]]
+by = "wamuu"
+text = "Montre-moi ton âme de guerrier !"
+text_en = "Show me your warrior's spirit!"
+
+[exchanges.victory.joseph_p2]
+text = "Je n'ai jamais supporté les arrogants de ton espèce !"
+text_en = "Could never stand arrogant bastards like you!"
+
+[[exchanges]]
+fighters = ["joseph_p2", "esidisi"]
+source = "ASBR, combat normal (ASB, 2-3, « The Disturbing Esidisi »)"
+
+[[exchanges.intro]]
+by = "joseph_p2"
+text = "Alors tu as compris que c'est Lisa Lisa qui a la Pierre Rouge d'Aja, hein ?"
+text_en = "So you've figured out that Lisa Lisa has the Red Stone of Aja, huh?"
+
+[[exchanges.intro]]
+by = "esidisi"
+text = "Tu as du cran. Mais ceux qui me tiennent tête comme ça... meurent toujours vite !"
+text_en = "You got spunk. But those who meet me with such an attitude... always die quickly!"
+
+[exchanges.victory.joseph_p2]
+text = "Va-t'en ! Et emporte la puissance que t'ont donnée tous ces milliers de morts !"
+text_en = "Go away! And take that rush of power you earned by killing all those thousands with you!"
+
+[[exchanges]]
+fighters = ["joseph_p2", "kars"]
+source = "ASBR, combat de boss (ASB, 2-7, « The Ultimate Being »)"
+
+[[exchanges.intro]]
+by = "joseph_p2"
+text = "J'ai un atout dans ma manche !"
+text_en = "I have an ace up my sleeve!"
+
+[[exchanges.intro]]
+by = "kars"
+text = "JoJo ! Ta mort sera offerte à ma naissance !"
+text_en = "JoJo! Your death will be dedicated to my birth!"
+
+[exchanges.victory.joseph_p2]
+text = "Je me tire !"
+text_en = "I'm outta here!"
+
+[[exchanges]]
+fighters = ["joseph_p2", "lisa_lisa"]
+source = "ASBR, combat normal, Caesar en soutien"
+
+[[exchanges.intro]]
+by = "joseph_p2"
+text = "Alors, comment je vais t'embêter ? Hé hé hé !"
+text_en = "Now, how should I pick on you? Heh heh heh!"
+
+[[exchanges.intro]]
+by = "lisa_lisa"
+text = "Je ne vivrai pas une vie si vaine qu'un enfant me prendrait en pitié !"
+text_en = "I will not live a life so in vain that it invites pity from children!"
+
+[exchanges.victory.lisa_lisa]
+text = "J'ai toujours voulu mettre à l'épreuve ce talent étonnant..."
+text_en = "I've always wanted to test that amazing talent of yours..."
