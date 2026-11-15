@@ -14,7 +14,10 @@ Sans `make`, voir les commandes équivalentes dans le README.
 
 ## Avant de proposer une modification
 
-- `make check` doit passer (lint, puis tous les tests). La CI le refait sur GitHub.
+- Ta pull request vise **`develop`** (la branche par défaut). `main` ne reçoit que les
+  releases : chaque merge dedans publie une version.
+- `make check` doit passer (lint, puis tous les tests). La CI le refait sur ta pull
+  request ; venant d'un fork, elle attend que le propriétaire l'approuve.
 - Une modification de gameplay suit le [GDD](docs/GDD.md). S'il est ambigu, ouvre une discussion plutôt que d'inventer.
 - Les valeurs d'équilibrage vont dans les fichiers de données (kits, `combat/rules.toml`), jamais dans le code.
 - `engine/` et `combat/` ne citent jamais JoJo, et `combat/` n'importe pas pygame.

@@ -26,11 +26,12 @@ ROUNDS ?= 3
 SCENE ?= title
 STAGE ?= cairo_night
 FIGHTS ?= 20
+VERSION ?=
 ARGS ?=
 
 .DEFAULT_GOAL := help
 .PHONY: help install hooks run menu training fight versus demo test test-fast lint format check balance \
-        screens screenshot clip sprites icons exe clean
+        screens screenshot clip sprites icons exe release-pr clean
 
 help:
 	$(info JoJo Arena - make targets)
@@ -64,6 +65,7 @@ help:
 	$(info $(INDENT)make sprites      regenerate the character sprite sheets from their looks)
 	$(info $(INDENT)make icons        regenerate the icons (part emblems...) from tools/icons/)
 	$(info $(INDENT)make exe          build dist/JoJoArena.exe)
+	$(info $(INDENT)make release-pr   VERSION=x.y.z: bump, close the changelog, open the PR into main)
 	$(info $(INDENT)make clean        delete build/ dist/ and the caches)
 	$(info )
 	$(info Now: P1=$(P1) P2=$(P2) ROUNDS=$(ROUNDS) SCENE=$(SCENE))
@@ -150,6 +152,10 @@ icons: $(VENV_PY)
 
 exe: $(VENV_PY)
 	$(PY) tools/build_exe.py
+
+# On develop: the merge of the PR it opens into main publishes the Release.
+release-pr: $(VENV_PY)
+	$(PY) tools/release_pr.py $(VERSION)
 
 clean:
 	$(PY) -c "import pathlib, shutil; [shutil.rmtree(p, ignore_errors=True) for p in ['build', 'dist', '.pytest_cache', '.ruff_cache', *pathlib.Path('.').glob('[jt]*/**/__pycache__')]]"

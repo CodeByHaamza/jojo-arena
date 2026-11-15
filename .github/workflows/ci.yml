@@ -1,54 +1,41 @@
 name: CI
 
-# Lint and tests on every push and pull request.
+# Lint and tests on every pull request, once per push. Pull requests go to develop; a
+# merge into main is a release (release.yml).
+#
+# Where it runs: a branch of this repository is tested on the home server's runner
+# (label `maison`); a pull request from a fork runs on GitHub's Ubuntu, after the owner
+# approves it. The runner itself also refuses any job that does not come from this
+# repository (its job-started hook, in the `maison` repository): a fork that rewrites
+# `runs-on` below still never runs on the server.
 on:
-  push:
-    branches: ["**"]
   pull_request:
+    branches: [develop, main]
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
 
 permissions:
   contents: read
 
-# A new push on the same branch replaces the run in progress (but never on main).
+# A new push on the same pull request replaces the run in progress.
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  group: ci-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 env:
   SDL_VIDEODRIVER: dummy
   SDL_AUDIODRIVER: dummy
   PYGAME_HIDE_SUPPORT_PROMPT: "1"
-  # Coverage through sys.monitoring (Python 3.12): the classic tracer made the suite
-  # about three times slower, and the jobs ran out of time.
-  COVERAGE_CORE: sysmon
 
 jobs:
-  # Lint first, on its own: it answers in under a minute and catches most mistakes.
-  lint:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+  check:
+    runs-on: ${{ github.event.pull_request.head.repo.full_name == github.repository && fromJSON('["self-hosted", "maison"]') || 'ubuntu-latest' }}
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-python@v7
         with:
-          python-version: "3.12"
-          cache: pip
-          cache-dependency-path: pyproject.toml
-      - run: python -m pip install -e ".[dev]"
-      - run: ruff check --output-format=github .
-      - run: ruff format --check .
-
-  # The whole suite on Windows (where the game ships) and Linux (where contributors are).
-  test:
-    needs: lint
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest, ubuntu-latest]
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 40
-    steps:
-      - uses: actions/checkout@v7
+          fetch-depth: 0 # every tag, for the version check into main
 
       - uses: actions/setup-python@v7
         with:
@@ -61,67 +48,26 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e ".[dev]"
 
-      # Spread over every core of the runner: the suite is long (900+ tests).
-      - name: Test
-        run: pytest -q -n auto --cov --cov-report=term-missing --cov-report=xml
-
-      - name: Coverage summary
-        if: always()
-        shell: bash
+      - name: Lint
         run: |
-          echo "### Couverture (${{ matrix.os }})" >> "$GITHUB_STEP_SUMMARY"
-          python -m coverage report --format=markdown >> "$GITHUB_STEP_SUMMARY"
+          ruff check --output-format=github .
+          ruff format --check .
 
-      - uses: actions/upload-artifact@v7
-        if: matrix.os == 'windows-latest'
-        with:
-          name: coverage
-          path: coverage.xml
-          retention-days: 14
+      # Spread over the runner's cores (three on the home server, set by the runner).
+      - name: Test
+        run: pytest -q -n auto
+
+      # Into main, the version must be new and the changelog must have its section.
+      - name: A new version
+        if: github.base_ref == 'main'
+        run: python tools/release_pr.py --check
 
       # Every screen of the game, to look at without running it.
       - name: Screenshot tour
-        if: matrix.os == 'windows-latest'
         run: python tools/screenshot_tour.py screenshots/tour
 
       - uses: actions/upload-artifact@v7
-        if: matrix.os == 'windows-latest'
         with:
           name: screenshots
           path: screenshots/tour
-          retention-days: 14
-
-  # A test build of the .exe for every push to main and every pull request,
-  # downloadable from the run's page: try a change without tagging a release.
-  test-exe:
-    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
-    needs: test
-    runs-on: windows-latest
-    timeout-minutes: 25
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: actions/setup-python@v7
-        with:
-          python-version: "3.12"
-          cache: pip
-          cache-dependency-path: pyproject.toml
-
-      - name: Install
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install -e ".[dev]"
-
-      - name: Build the .exe
-        run: python tools/build_exe.py
-
-      - name: Smoke test the .exe
-        run: |
-          $run = Start-Process -FilePath dist\JoJoArena.exe -ArgumentList '--demo', '--frames', '600' -Wait -PassThru
-          if ($run.ExitCode -ne 0) { throw "JoJoArena.exe exited with code $($run.ExitCode)" }
-
-      - uses: actions/upload-artifact@v7
-        with:
-          name: JoJoArena-test-exe
-          path: dist/JoJoArena.exe
           retention-days: 7

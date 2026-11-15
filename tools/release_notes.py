@@ -36,7 +36,9 @@ def sections(text: str) -> dict[str, str]:
 def notes_for(version: str, text: str) -> str:
     version = version.removeprefix("v")
     parts = sections(text)
-    body = parts.get(version) or parts.get(UNRELEASED, "")
+    # `## 0.2.0` or `## 0.2.0 - 2026-11-14`: the first word is the version.
+    own = next((body for title, body in parts.items() if title.split()[:1] == [version]), "")
+    body = own or parts.get(UNRELEASED, "")
     return f"{HEADER}\n{body}\n" if body else HEADER
 
 
