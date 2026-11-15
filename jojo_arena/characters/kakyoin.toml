@@ -4,6 +4,25 @@
 # Splash.
 # Feel: never where you want him. He kicks you away, zips off on a tentacle, and the
 # arena itself fires at you.
+#
+# Sources, read on 15/11/2026 (the owner: "buff Kakyoin, or change his moveset"):
+# JoJo Wiki, ASBR Kakyoin (https://jojowiki.com/All-Star_Battle_R/Noriaki_Kakyoin).
+# - Stand off, his heavy normal is "a short-range shotgun burst of emeralds": it is now
+#   the third blow of his chain, which stopped at two.
+# - Stand off, his Emerald Splash is the same volley as with the Stand out, only slower:
+#   it had three emeralds here, half a move.
+# - Stand on, his heavy normal is "long-range tentacle stabs, hitting up to three times,
+#   the last hit launches": the third blow of that chain.
+# - "Didn't you notice?" (a throw): "tendrils travel a long distance along the ground;
+#   on contact they wrap the opponent, and Hierophant Green fires a point-blank Emerald
+#   Splash that sends them flying". It replaces the plain tentacle that pulled in: a
+#   trapper needs something a guard does not stop, and this is his.
+# - "You're already in my grasp!": the tendrils that spike up under the opponent were
+#   already here; they now carry their name.
+# Not in: "How's this!" (Hierophant flies forward, then tentacles burst from the ground)
+# and his throw "No match for my Stand!": no button left for them. His 900 HP of ASBR are
+# not taken either: he is the one who needed help.
+# The kicks, the sweep and the grapple are the GDD's, kept as they were.
 
 name = "Noriaki Kakyoin"
 # Hierophant unravels into tendrils: they are what carries a crate, not its hands.
@@ -25,8 +44,8 @@ label_en = "NO STAND"
 [stances.base.moves.light]
 label = "COUP DE PIED"
 label_en = "KICK"
-info = "Longue jambe. Encore la touche : pied retourné"
-info_en = "Long leg. Press again: spinning kick"
+info = "Longue jambe. Encore la touche : pied retourné, puis émeraudes à bout portant"
+info_en = "Long leg. Press again: spinning kick, then point-blank emeralds"
 startup_f = 5
 active_f = 3
 recovery_f = 10
@@ -55,8 +74,35 @@ hitstun_f = 26
 knockback = 360
 hitstop_f = 7
 wall_bounce = true
-cancel_on_hit = ["special"]
+cancel_on_hit = ["light", "special"]
+chain = "light3"
 anim = "kick_high"
+
+# ASBR, standing heavy: "a short-range shotgun burst of emeralds". They die out a few
+# steps away: it is a blow, not a volley.
+[stances.base.moves.light3]
+shout = "EMERALD SPLASH !"
+label = "ÉMERAUDES À BOUT PORTANT"
+label_en = "POINT-BLANK EMERALDS"
+info = "S'enchaîne sur le pied retourné : une gerbe d'émeraudes tirée de tout près"
+info_en = "Follows the spinning kick: a burst of emeralds fired from up close"
+stand_flash = true
+startup_f = 8
+active_f = 1
+recovery_f = 20
+anim = "special_splash"
+
+[stances.base.moves.light3.projectile]
+look = "gem"
+speed = 320
+radius = 3
+damage = 10
+lifetime_s = 0.16
+hitstun_f = 20
+knockback = 220
+hitstop_f = 3
+count = 5
+spread_deg = 44
 
 # A low spinning sweep that hits all around him.
 [stances.base.moves.heavy]
@@ -95,13 +141,14 @@ wall_bounce = true
 cancel_on_hit = ["special"]
 anim = "heavy"
 
-# A small Emerald Splash that curves toward the target.
+# Emerald Splash without the Stand out: the same volley, slower than Hierophant's own
+# (ASBR), and it curves toward the target.
 [stances.base.moves.special]
 anim = "special_splash"
-label = "PETIT EMERALD SPLASH"
-label_en = "SMALL EMERALD SPLASH"
-info = "3 émeraudes à tête chercheuse"
-info_en = "3 homing emeralds"
+shout = "EMERALD SPLASH !"
+label = "EMERALD SPLASH"
+info = "5 émeraudes à tête chercheuse, plus lentes que Stand sorti"
+info_en = "5 homing emeralds, slower than with the Stand out"
 startup_f = 12
 active_f = 1
 recovery_f = 18
@@ -115,8 +162,8 @@ lifetime_s = 1.0
 hitstun_f = 12
 knockback = 40
 hitstop_f = 2
-count = 3
-spread_deg = 20
+count = 5  # was 3: half a volley
+spread_deg = 30
 homing_deg_s = 70
 
 # Grapple: Hierophant's tentacle pulls him to the aimed spot (mouse, right stick, or the
@@ -148,8 +195,8 @@ shape = "line"
 fx = "tentacle"
 label = "FOUET"
 label_en = "WHIP"
-info = "Tentacule à longue portée. Encore : double fouet"
-info_en = "Long-range tentacle. Again: double whip"
+info = "Tentacule à longue portée. Encore : double fouet, puis trois estocs"
+info_en = "Long-range tentacle. Again: double whip, then three stabs"
 startup_f = 7
 active_f = 4
 recovery_f = 12
@@ -178,34 +225,66 @@ damage = 20
 reach = 38
 radius = 8
 hitstun_f = 24
-knockback = 200
+knockback = 120
+hitstop_f = 4
+cancel_on_hit = ["light", "special"]
+chain = "light3"
+
+# ASBR, standing heavy with the Stand: "long-range tentacle stabs, hitting up to three
+# times; the last hit launches".
+[stances.stand.moves.light3]
+shape = "line"
+fx = "tentacle"
+label = "ESTOCS DE TENTACULE"
+label_en = "TENTACLE STABS"
+info = "S'enchaîne sur le double fouet : trois estocs de tentacule, le dernier projette"
+info_en = "Follows the double whip: three tentacle stabs, the last one launches"
+startup_f = 9
+active_f = 12
+recovery_f = 18
+hits = 3
+hit_every_f = 4
+damage = 12
+last_damage = 28
+reach = 44
+radius = 8
+hitstun_f = 22
+knockback = 40
+last_knockback = 340
+last_wall_bounce = true
 hitstop_f = 4
 cancel_on_hit = ["special"]
 
-# The tentacle catches from afar and reels the opponent in.
+# "Didn't you notice?": tendrils run along the ground a long way; what they touch is
+# wrapped, guard or not, and takes an Emerald Splash at point-blank range. Slow to
+# leave and slow to come back: missed, it is his turn to be caught.
 [stances.stand.moves.heavy]
 shape = "line"
 fx = "tentacle"
-label = "TENTACULE"
-label_en = "TENTACLE"
-info = "Attrape de loin et ramène l'adversaire vers lui"
-info_en = "Grabs from afar and pulls the opponent in"
-startup_f = 14
-active_f = 4
-recovery_f = 20
-damage = 48
-reach = 46
+shout = "DIDN'T YOU NOTICE ?"
+label = "DIDN'T YOU NOTICE ?"
+info = "Des tentacules filent au ras du sol, très loin : ils ligotent, puis un Emerald Splash à bout portant. Imparable"
+info_en = "Tendrils run along the ground, very far: they bind, then a point-blank Emerald Splash. Unblockable"
+unblockable = true
+startup_f = 20
+active_f = 5
+recovery_f = 30
+damage = 85
+reach = 84
 radius = 7
-hitstun_f = 32
-knockback = -280
-hitstop_f = 6
-cancel_on_hit = ["light", "special"]
+hitstun_f = 36
+knockback = 340
+hitstop_f = 10
+wall_bounce = true
+clashable = false
+cooldown_s = 3
+anim = "special"
 
 # With a direction: "You're already in my grasp!" - tentacles spike up from the ground
 # right under the opponent.
 [stances.stand.moves.heavy_alt]
-label = "TENTACULES DU SOL"
-label_en = "GROUND TENTACLES"
+shout = "YOU'RE ALREADY IN MY GRASP !"
+label = "YOU'RE ALREADY IN MY GRASP !"
 info = "Avec une direction : les tentacules jaillissent du sol sous l'adversaire"
 info_en = "With a direction: tentacles burst from the ground under the opponent"
 startup_f = 18

@@ -8,6 +8,11 @@ des corrections seules une patch.
 
 ### Ajouté
 
+- **Kakyoin retrouve ses coups d'All-Star Battle R.** Un troisième coup léger sans Stand,
+  les **émeraudes à bout portant** ; un Emerald Splash sans Stand de 5 émeraudes au lieu
+  de 3 ; Stand sorti, les **estocs de tentacule** au bout de sa chaîne, et **« Didn't you
+  notice ? »** : des tentacules qui filent au ras du sol, très loin, et qu'aucune garde
+  n'arrête. Lent à partir, lent à revenir : raté, c'est lui qu'on attrape.
 - **Les vraies poses JoJo.** Chaque perso a ses poses, tirées du manga, des couvertures,
   d'All-Star Battle R et d'Eyes of Heaven, avec leur source : le doigt pointé de Jotaro,
   Kakyoin contre Tower of Gray, DIO de dos, le « Tch, tch... YES I AM! » d'Avdol, la
