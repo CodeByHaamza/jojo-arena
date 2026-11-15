@@ -31,7 +31,7 @@ ARGS ?=
 
 .DEFAULT_GOAL := help
 .PHONY: help install hooks run menu training fight versus demo test test-fast lint format check balance \
-        screens screenshot clip sprites icons exe release-pr clean
+        screens screenshot clip sprites icons sound-pack exe release-pr clean
 
 help:
 	$(info JoJo Arena - make targets)
@@ -64,6 +64,7 @@ help:
 	$(info Build)
 	$(info $(INDENT)make sprites      regenerate the character sprite sheets from their looks)
 	$(info $(INDENT)make icons        regenerate the icons (part emblems...) from tools/icons/)
+	$(info $(INDENT)make sound-pack   list what your own sound pack can hold, and check it)
 	$(info $(INDENT)make exe          build dist/JoJoArena.exe)
 	$(info $(INDENT)make release-pr   VERSION=x.y.z: bump, close the changelog, open the PR into main)
 	$(info $(INDENT)make clean        delete build/ dist/ and the caches)
@@ -149,6 +150,10 @@ sprites: $(VENV_PY)
 
 icons: $(VENV_PY)
 	$(PY) tools/make_icons.py
+
+sound-pack: $(VENV_PY)
+	$(PY) tools/sound_pack.py manifest
+	$(PY) tools/sound_pack.py check
 
 exe: $(VENV_PY)
 	$(PY) tools/build_exe.py

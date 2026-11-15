@@ -25,7 +25,7 @@ from jojo_arena.engine.sprites import (
 )
 from jojo_arena.paths import SPRITES_DIR
 from jojo_arena.stages.base import StageDef
-from jojo_arena.ui import sfx, sounds, text, vfx
+from jojo_arena.ui import sfx, sound_pack, sounds, text, vfx
 from jojo_arena.ui.cutscenes import make_cutscene
 from jojo_arena.ui.duel_view import DuelScreen
 from jojo_arena.ui.loadout import Loadout, resolve_loadout
@@ -645,6 +645,7 @@ class FightView:
                 fx.dust(event.pos, 10, 1.8, 4)
             elif kind == "ko" and event.fighter is not None:
                 loser = match.fighters[event.fighter]
+                sound_pack.say(sound_pack.generic_slot(self.fighter_defs[loser.index].id, "ko"))
                 self.impact(pos, frames=3, punch=10)
                 words.add(sfx.BAAN, self._head(loser) + Vec2(0, -6), "ko", 4, 80, 0.15, 1)
                 fx.add(vfx.Ring(pos, (255, 90, 90), 3.5, 18, 3))
@@ -835,6 +836,8 @@ class FightView:
             last_state, last_serial = self._seen[i]
             attack = fighter.attack
             serial = attack.serial if attack is not None else last_serial
+            if fighter.state == State.POSE and last_state != State.POSE:
+                sound_pack.say(sound_pack.generic_slot(self.fighter_defs[i].id, "pose"))
             if fighter.state == State.DASH and last_state != State.DASH:
                 audio.play("whoosh", 0.5)
                 self.fx.dust(fighter.pos, 5, 1.0)
@@ -842,6 +845,9 @@ class FightView:
             if attack is not None and serial != last_serial and fighter.state == State.ATTACK:
                 move = attack.move
                 audio.play("beam" if move.fx == "beam" else "whoosh", 0.7 if move.fx else 0.35)
+                # The player's sound pack may have this fighter's voice for this move.
+                fighter_id = self.fighter_defs[i].id
+                sound_pack.say(sound_pack.move_slot(fighter_id, fighter.kit, fighter.stance, move))
                 if move.shout and move.hits <= 1:
                     self.words.add(move.shout, self._head(fighter), self._shout_style(i), 2, 46)
                 elif move.hits > 1:

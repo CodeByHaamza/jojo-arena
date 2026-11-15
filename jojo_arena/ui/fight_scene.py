@@ -23,7 +23,7 @@ from jojo_arena.engine.scene import Scene
 from jojo_arena.engine.sprites import shade
 from jojo_arena.stages import load_stage
 from jojo_arena.stages.base import StageOptions
-from jojo_arena.ui import text
+from jojo_arena.ui import sound_pack, text
 from jojo_arena.ui.fight_view import FightView
 from jojo_arena.ui.hud import Hud
 from jojo_arena.ui.labels import action_label, menu_key
@@ -198,6 +198,14 @@ class FightScene(Scene):
         won = self.rounds.phase == Phase.MATCH_OVER and self.rounds.phase_f >= WINNER_POSE_AFTER_F
         for side, fighter_view in enumerate(self.view.fighter_views):
             fighter_view.celebrating = won and side == self.rounds.winner
+        if won and self.rounds.phase_f == WINNER_POSE_AFTER_F and self.rounds.winner is not None:
+            # The winner's moment starts: its voice, if the player's sound pack has it.
+            winner = self.fighter_ids[self.rounds.winner]
+            loser = self.fighter_ids[1 - self.rounds.winner]
+            sound_pack.say(
+                sound_pack.line_slot(winner, "victory", loser),
+                sound_pack.generic_slot(winner, "win"),
+            )
         if self.rounds.phase == Phase.MATCH_OVER and self._summary_due():
             if self.demo or self.playback is not None:
                 if self.demo:

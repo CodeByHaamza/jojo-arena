@@ -16,6 +16,7 @@ from jojo_arena.combat.fighter import Fighter, State
 from jojo_arena.engine import font
 from jojo_arena.engine.geometry import Vec2
 from jojo_arena.engine.sprites import shade
+from jojo_arena.ui import sound_pack
 from jojo_arena.ui.widgets import draw_box
 
 WALK_F = 50  # frames to walk in
@@ -57,6 +58,7 @@ class Entrance:
     def __init__(self, fighters, views, fighter_ids, exchange: Exchange | None) -> None:
         self.fighters: list[Fighter] = list(fighters)
         self.views = list(views)
+        self.fighter_ids = tuple(fighter_ids)
         self.marks = [fighter.pos.copy() for fighter in self.fighters]
         lines = exchange.intro if exchange is not None else ()
         # A beat: who poses (None: both) and what is said meanwhile.
@@ -93,6 +95,18 @@ class Entrance:
     def update(self) -> None:
         self.frame += 1
         self._stage()
+        beat = self.beat()
+        if beat is not None and beat[2] == 0:
+            self._say(beat[0])
+
+    def _say(self, who: int | None) -> None:
+        """The player's sound pack may have the voice for this beat: the line this fighter
+        has for this opponent, or the sound of its pose."""
+        for side in (0, 1) if who is None else (who,):
+            me, other = self.fighter_ids[side], self.fighter_ids[1 - side]
+            sound_pack.say(
+                sound_pack.line_slot(me, "intro", other), sound_pack.generic_slot(me, "pose")
+            )
 
     def _stage(self) -> None:
         """Put every fighter where this frame of the entrance wants it."""

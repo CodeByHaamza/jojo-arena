@@ -8,6 +8,11 @@ des corrections seules une patch.
 
 ### Ajouté
 
+- **Le pack de sons.** Le jeu synthétise toujours tous ses sons, mais il joue les tiens à la
+  place si tu en as : un dossier `sound_pack/` à côté de tes réglages, avec tes bruitages
+  (le temps arrêté, le Hamon...), tes musiques (par arène) et les voix des persos (le cri
+  de chaque coup, la réplique pour chaque adversaire). `tools/sound_pack.py` liste ce qu'il
+  peut contenir et coupe tes fichiers au bon format. Rien n'est fourni avec le jeu.
 - **Ils se parlent.** À l'écran VS, les deux persos prennent la pose que tu as choisie et
   échangent les répliques que les jeux donnent à cette affiche : « Espèce d'ordure ! »,
   « Voilà... le dernier round ! ». 15 affiches pour commencer, toutes tirées d'All-Star

@@ -30,6 +30,11 @@ faites et fusionnées dans `develop` ; **on reprend à l'étape 3**.
 5. [ ] **Sons** : bruitages réels sous licence CC0 (Kenney, OpenGameArt) avec crédits, et
    un pack de voix **local**, hors du dépôt et ignoré par git (jamais de voix de l'anime
    ou des jeux dans le dépôt).
+   - [x] **Le pack de sons** (15/11/2026) : le jeu lit `sound_pack/` à côté des réglages du
+     joueur (bruitages, musiques, voix), `tools/sound_pack.py` dit quoi y mettre
+     (271 emplacements), vérifie et coupe. Voir le README.
+   - [ ] Remplir le pack (au propriétaire de fournir les fichiers), et les bruitages CC0
+     par défaut.
 6. [ ] **Optimisation mesurée** : un test de budget (1000 pas de simulation), puis le
    profilage d'un combat chargé.
 

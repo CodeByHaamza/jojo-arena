@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from jojo_arena.engine import music
 from jojo_arena.engine.music import Track
 
 NATURAL_MINOR = (0, 2, 3, 5, 7, 8, 10)
@@ -47,5 +48,6 @@ TRACKS = {
 
 
 def track_for_stage(stage_id: str) -> str:
-    """The music of an arena (the menu theme when it has none of its own)."""
-    return stage_id if stage_id in TRACKS else "menu"
+    """The music of an arena (the menu theme when it has none of its own): a rendered
+    track, or one the player's sound pack brings for that arena."""
+    return stage_id if stage_id in TRACKS or music.has(stage_id) else "menu"

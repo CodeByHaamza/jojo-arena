@@ -110,7 +110,7 @@ chacun de leur côté. C'est ce qui rend les replays exacts et le rollback possi
 > *Un jeu qui tourne n'est pas un jeu juste.*
 
 <div align="center">
-<img src="docs/media/chiffres.svg" alt="21 persos, 5 arènes, 1204 tests, 94 % de couverture, 60 images par seconde" width="100%">
+<img src="docs/media/chiffres.svg" alt="21 persos, 5 arènes, 1221 tests, 94 % de couverture, 60 images par seconde" width="100%">
 </div>
 
 | Critère | Mesure | Comment |
@@ -425,6 +425,32 @@ tests/          pytest
 Toutes les valeurs d'équilibrage sont dans des fichiers TOML commentés : `combat/rules.toml` (règles globales) et `characters/*.toml` (attaques de chaque perso).
 
 </details>
+
+## Tes propres sons : le pack de sons
+
+Le jeu **synthétise** tous ses sons et sa musique, et n'embarque aucun enregistrement.
+Si tu as tes propres fichiers (voix, bruitages, musiques), il les joue à la place : dépose-les
+dans un dossier `sound_pack/` à côté de tes réglages (le chemin est affiché au lancement,
+ligne `Controls file`).
+
+| Dossier | Ce qu'il remplace |
+| --- | --- |
+| `sfx/<nom>.ogg` | un bruitage du jeu : `time_stop`, `time_resume`, `hamon`, `clash`, `ko`… |
+| `music/<piste>.ogg` | une musique : `menu`, ou le nom d'une arène (`cairo_night`, `swiss_castle`…) |
+| `voices/<perso>/<emplacement>.ogg` | ce que dit un perso : le cri d'un coup (`stand.heavy`), ses ultimes (`hha`, `gha`), sa réplique pour un adversaire (`intro.dio_p3`, `victory.dio_p3`), `pose`, `win`, `ko` |
+
+```
+python tools/sound_pack.py manifest   # écrit MANIFEST.md dans le pack : chaque fichier attendu
+python tools/sound_pack.py check      # ce que le pack contient, ce qui manque
+python tools/sound_pack.py cut        # coupe les fichiers de sound_pack/inbox/ (il faut ffmpeg)
+```
+
+`cut` lit `inbox/cuts.toml` : pour chaque fichier, l'emplacement visé, le début et la fin
+en secondes. Il coupe, met au bon niveau et range sous le bon nom. Un fichier absent n'est
+jamais une erreur : le jeu garde son propre son.
+
+Le pack reste **chez toi** : il ne fait partie ni du dépôt ni du `.exe`, et un test vérifie
+qu'aucun fichier son n'entre dans le jeu.
 
 ## Créer ou modifier l'apparence d'un perso
 
