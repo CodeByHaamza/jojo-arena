@@ -81,3 +81,31 @@ type = "emblem"
 material = "bow"
 shape = "bow"
 on = "chest"
+
+# JoJo poses ---------------------------------------------------------------------------
+# Picked on the select screen; the Pose key plays the one picked. Each was drawn from the
+# image named in `source`, looked at on JoJo Wiki (pages "JoJo Poses", the Jump Comics
+# covers, the Eyes of Heaven renders, the All-Star Battle R pages) on 15/11/2026. One key
+# per view: it breathes on its own.
+
+# Eyes of Heaven, after chapter 20: one finger to the sky, the other hand on the hip,
+# the legs crossed.
+[poses.doigt_ciel]
+label = "Le doigt vers le ciel"
+label_en = "Finger to the sky"
+source = "Eyes of Heaven, rendu de Zeppeli (ch. 20, « Jack l'Éventreur et l'étrange Zeppeli »)"
+
+[[poses.doigt_ciel.down]]
+hand_r = [2, -26]
+elbow_r = [1, -3]
+hand_l = [2, -5]
+elbow_l = [-4, 0]
+foot_l = [2, 0]
+foot_r = [-2, 0]
+
+[[poses.doigt_ciel.right]]
+hand_r = [3, -26]
+hand_l = [1, -5]
+elbow_l = [-3, 0]
+foot_l = [3, 0]
+foot_r = [-1, 0]

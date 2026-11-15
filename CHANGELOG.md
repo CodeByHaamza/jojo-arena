@@ -8,6 +8,14 @@ des corrections seules une patch.
 
 ### Ajouté
 
+- **Les vraies poses JoJo.** Chaque perso a ses poses, tirées du manga, des couvertures,
+  d'All-Star Battle R et d'Eyes of Heaven, avec leur source : le doigt pointé de Jotaro,
+  Kakyoin contre Tower of Gray, DIO de dos, le « Tch, tch... YES I AM! » d'Avdol, la
+  ballerine de Lisa Lisa... Les manieurs de Stand en ont aussi **avec leur Stand**, qui
+  prend sa propre pose à côté d'eux. On choisit sa pose (et sa pose avec Stand) à l'écran
+  de sélection, juste après le perso ; la touche Pose joue celle qu'on a choisie.
+- **Coudes et genoux.** Les sprites plient enfin les bras et les jambes.
+
 - **Options d'arène.** Sur l'écran des arènes (Haut/Bas) : le soleil (aucun, à l'aube,
   plein jour) et les événements de l'arène (oui/non). Les replays s'en souviennent.
 - **Événements d'arène.** Au manoir Joestar, le lustre tombe toutes les 30 s sur l'un

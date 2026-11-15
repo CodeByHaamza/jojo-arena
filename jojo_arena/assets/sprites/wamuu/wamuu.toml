@@ -136,3 +136,29 @@ row = 57
 frames = 2
 fps = 10
 loop = true
+
+[anims.pose_bras_en_x]
+row = 60
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_en_arriere]
+row = 63
+frames = 2
+fps = 4
+loop = true
+
+[poses.bras_en_x]
+label = "Les bras en X"
+label_en = "Arms in an X"
+source = "Page de couverture B du ch. 67 (« JoJo Poses », JoJo Wiki)"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.en_arriere]
+label = "Il se plie en arrière"
+label_en = "Bent backwards"
+source = "ASBR : « He bent backwards! »"
+stand = false
+stand_offset = [-14.0, -8.0]

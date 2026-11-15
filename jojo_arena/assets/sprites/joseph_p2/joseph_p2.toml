@@ -136,3 +136,42 @@ row = 57
 frames = 2
 fps = 10
 loop = true
+
+[anims.pose_tome_8]
+row = 60
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_prochaine_replique]
+row = 63
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_tome_5]
+row = 66
+frames = 2
+fps = 4
+loop = true
+
+[poses.tome_8]
+label = "Les bras derrière la tête"
+label_en = "Arms behind the head"
+source = "Tome 8 (« JoJo Poses », JoJo Wiki) ; Eyes of Heaven, rendu de Joseph"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.prochaine_replique]
+label = "« Ta prochaine réplique sera... »"
+label_en = "\"Your next line is...\""
+source = "ASBR, « Your next line is » : « puts his hands on his hips »"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.tome_5]
+label = "Le doigt du tome 5"
+label_en = "The volume 5 point"
+source = "Couverture du tome 5"
+stand = false
+stand_offset = [-14.0, -8.0]

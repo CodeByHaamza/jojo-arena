@@ -149,3 +149,42 @@ frames = 9
 fps = 12
 loop = false
 phases = [4, 2, 3]
+
+[anims.pose_main_visage]
+row = 66
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_garde_eoh]
+row = 69
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_poing_leve]
+row = 72
+frames = 2
+fps = 4
+loop = true
+
+[poses.main_visage]
+label = "La main devant le visage"
+label_en = "Hand before the face"
+source = "Couverture du tome 4 (« JoJo Poses », JoJo Wiki) ; ASBR, provocation B"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.garde_eoh]
+label = "La garde du Hamon"
+label_en = "Ripple guard"
+source = "Eyes of Heaven, rendu de Jonathan (galerie de JoJo Wiki)"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.poing_leve]
+label = "Le poing levé"
+label_en = "Raised fist"
+source = "Couverture du tome 2"
+stand = false
+stand_offset = [-14.0, -8.0]

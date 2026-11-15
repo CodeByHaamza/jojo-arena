@@ -95,3 +95,72 @@ length = 17
 width = 1.7
 curve = 6.5
 back = 8
+
+
+# JoJo poses ---------------------------------------------------------------------------
+# Picked on the select screen; the Pose key plays the one picked. Each was drawn from the
+# image named in `source`, looked at on JoJo Wiki (pages "JoJo Poses", the Jump Comics
+# covers, the Eyes of Heaven renders, the All-Star Battle R pages) on 15/11/2026. One key
+# per view: it breathes on its own.
+
+# There can be only one sitting at the peak: the blade of light raised, the other hand low.
+[poses.au_sommet]
+label = "« Un seul au sommet ! »"
+label_en = "\"Only one at the peak!\""
+source = "« Kars: There can be only one sitting at the peak! » (« JoJo Poses », JoJo Wiki)"
+
+[[poses.au_sommet.down]]
+hand_r = [1, -24]
+elbow_r = [4, -3]
+hand_l = [2, -5]
+elbow_l = [-4, 0]
+
+[[poses.au_sommet.right]]
+hand_r = [4, -24]
+elbow_r = [3, -3]
+hand_l = [1, -5]
+elbow_l = [-3, 0]
+
+# Eyes of Heaven: loose, a hand on the hip, the other relaxed before him.
+[poses.nonchalant]
+label = "Nonchalant"
+label_en = "Nonchalant"
+source = "Eyes of Heaven, rendu de Kars (galerie de JoJo Wiki)"
+
+[[poses.nonchalant.down]]
+sway = 1.5
+hand_l = [2, -5]
+elbow_l = [-4, 0]
+hand_r = [-3, -4]
+elbow_r = [2, 1]
+foot_r = [2, 0]
+
+[[poses.nonchalant.right]]
+sway = 1
+hand_r = [5, -4]
+hand_l = [1, -5]
+elbow_l = [-3, 0]
+
+# Arm yourself! The guard of Eyes of Heaven: crouched, the forearms crossed before him.
+[poses.en_garde]
+label = "« Prends une arme ! »"
+label_en = "\"Arm yourself!\""
+source = "Eyes of Heaven, « Arm yourself! » : « stationary defensive posture »"
+
+[[poses.en_garde.down]]
+bob = 2
+hand_l = [5, -12]
+elbow_l = [-4, 1]
+hand_r = [-5, -12]
+elbow_r = [4, 1]
+knee_l = [-3, -1]
+knee_r = [3, -1]
+
+[[poses.en_garde.right]]
+bob = 2
+lean = 1
+hand_r = [6, -12]
+hand_l = [5, -11]
+knee_r = [3, -1]
+foot_r = [3, 0]
+foot_l = [-3, 0]

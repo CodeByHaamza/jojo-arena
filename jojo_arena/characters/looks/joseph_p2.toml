@@ -87,3 +87,71 @@ below = "jeans"
 type = "boots"
 material = "boots"
 length = 0.3
+
+
+# JoJo poses ---------------------------------------------------------------------------
+# Picked on the select screen; the Pose key plays the one picked. Each was drawn from the
+# image named in `source`, looked at on JoJo Wiki (pages "JoJo Poses", the Jump Comics
+# covers, the Eyes of Heaven renders, the All-Star Battle R pages) on 15/11/2026. One key
+# per view: it breathes on its own.
+
+# Volume 8: both arms raised behind the head, the elbows up and out.
+[poses.tome_8]
+label = "Les bras derrière la tête"
+label_en = "Arms behind the head"
+source = "Tome 8 (« JoJo Poses », JoJo Wiki) ; Eyes of Heaven, rendu de Joseph"
+
+[[poses.tome_8.down]]
+sway = 1
+hand_l = [2, -21]
+elbow_l = [-7, -5]
+hand_r = [-2, -21]
+elbow_r = [7, -5]
+
+[[poses.tome_8.right]]
+hand_r = [-1, -21]
+elbow_r = [4, -5]
+hand_l = [-3, -21]
+elbow_l = [-2, -5]
+
+# Your next line is...! The hands on the hips.
+[poses.prochaine_replique]
+label = "« Ta prochaine réplique sera... »"
+label_en = "\"Your next line is...\""
+source = "ASBR, « Your next line is » : « puts his hands on his hips »"
+
+[[poses.prochaine_replique.down]]
+head = [0, -1]
+hand_l = [2, -5]
+elbow_l = [-5, 0]
+hand_r = [-2, -5]
+elbow_r = [5, 0]
+foot_l = [-1, 0]
+foot_r = [1, 0]
+
+[[poses.prochaine_replique.right]]
+head = [0, -1]
+hand_r = [1, -5]
+elbow_r = [-3, 0]
+hand_l = [1, -5]
+elbow_l = [-3, 0]
+
+# The cover of volume 5: the arm thrust out, pointing at the reader.
+[poses.tome_5]
+label = "Le doigt du tome 5"
+label_en = "The volume 5 point"
+source = "Couverture du tome 5"
+
+[[poses.tome_5.down]]
+lean = 1
+hand_r = [-5, -10]
+elbow_r = [2, 0]
+big_hand_r = true
+hand_l = [2, -3]
+
+[[poses.tome_5.right]]
+lean = 1
+hand_r = [13, -11]
+hand_l = [-3, -2]
+foot_l = [-3, 0]
+foot_r = [3, 0]

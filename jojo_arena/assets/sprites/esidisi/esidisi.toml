@@ -136,3 +136,29 @@ row = 57
 frames = 2
 fps = 10
 loop = true
+
+[anims.pose_griffes]
+row = 60
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_larmes]
+row = 63
+frames = 2
+fps = 4
+loop = true
+
+[poses.griffes]
+label = "Les griffes levées"
+label_en = "Claws raised"
+source = "Eyes of Heaven, rendu d'Esidisi (ch. 78)"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.larmes]
+label = "Il pleure"
+label_en = "He weeps"
+source = "ASBR, contre : « begins to quietly weep »"
+stand = false
+stand_offset = [-14.0, -8.0]

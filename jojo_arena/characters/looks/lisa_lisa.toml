@@ -259,3 +259,69 @@ hand_r = [10, -4]
 [[anims.pirouette.up]]
 hand_l = [-3, -1]
 hand_r = [3, -1]
+
+
+# JoJo poses ---------------------------------------------------------------------------
+# Picked on the select screen; the Pose key plays the one picked. Each was drawn from the
+# image named in `source`, looked at on JoJo Wiki (pages "JoJo Poses", the Jump Comics
+# covers, the Eyes of Heaven renders, the All-Star Battle R pages) on 15/11/2026. One key
+# per view: it breathes on its own.
+
+# The cover of chapter 72: a hand on the hip, the other at the scarf before the chest.
+[poses.chapitre_72]
+label = "La couverture du chapitre 72"
+label_en = "The chapter 72 cover"
+source = "Page de couverture du ch. 72 ; Eyes of Heaven, rendu de Lisa Lisa"
+
+[[poses.chapitre_72.down]]
+sway = 1.5
+hand_l = [2, -5]
+elbow_l = [-4, 0]
+hand_r = [-2, -12]
+elbow_r = [3, 1]
+
+[[poses.chapitre_72.right]]
+sway = 1
+hand_r = [4, -12]
+elbow_r = [1, 2]
+hand_l = [1, -5]
+elbow_l = [-3, 0]
+
+# Both hands on the hips, the scarf down her back.
+[poses.mains_hanches]
+label = "Les mains sur les hanches"
+label_en = "Hands on the hips"
+source = "Eyes of Heaven, rendu de Lisa Lisa (galerie de JoJo Wiki)"
+
+[[poses.mains_hanches.down]]
+sway = -1
+hand_l = [2, -5]
+elbow_l = [-5, 0]
+hand_r = [-2, -5]
+elbow_r = [5, 0]
+
+[[poses.mains_hanches.right]]
+hand_r = [1, -5]
+elbow_r = [-3, 0]
+hand_l = [1, -5]
+elbow_l = [-3, 0]
+
+# The scarf twirled around her like a ballerina: an arm curved over the head, the other
+# out, up on her toes.
+[poses.ballerine]
+label = "La ballerine"
+label_en = "The ballerina"
+source = "ASBR, GHA : « twirls her scarf around her not unlike a ballerina »"
+
+[[poses.ballerine.down]]
+hand_r = [-1, -24]
+elbow_r = [4, -4]
+hand_l = [-8, -10]
+elbow_l = [-2, -1]
+foot_r = [1, -1]
+
+[[poses.ballerine.right]]
+hand_r = [1, -24]
+elbow_r = [3, -4]
+hand_l = [-6, -10]
+foot_r = [1, -1]

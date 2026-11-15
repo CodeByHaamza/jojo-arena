@@ -136,3 +136,16 @@ row = 57
 frames = 2
 fps = 10
 loop = true
+
+[anims.pose_doigt_ciel]
+row = 60
+frames = 2
+fps = 4
+loop = true
+
+[poses.doigt_ciel]
+label = "Le doigt vers le ciel"
+label_en = "Finger to the sky"
+source = "Eyes of Heaven, rendu de Zeppeli (ch. 20, « Jack l'Éventreur et l'étrange Zeppeli »)"
+stand = false
+stand_offset = [-14.0, -8.0]
