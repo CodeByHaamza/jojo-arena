@@ -1817,7 +1817,101 @@ class CrossfireSpecial(CutscenePlayer):
             vfx.draw_body_ablaze(world, self.v, 40, f, 3)
 
 
+# Old Joseph: Hermit Purple and Ripple ---------------------------------------------------------
+
+
+class HermitOverdrive(CutscenePlayer):
+    """The vine has caught. Hermit Purple winds round the opponent, lifts them and brings
+    them down on the floor; the Ripple runs along the vine; one pull, and they arrive
+    under the edge of his hand."""
+
+    length = 240
+    BOUND = 34
+    LIFT = 52
+    SLAM = 84
+    PULSE = 100
+    PULL = 160
+    FINISH = 200
+    HAMON = (255, 228, 120)
+
+    def where(self, f) -> tuple[Vec2, float]:
+        """The opponent's feet and how high off the floor they are, at frame `f`."""
+        if f < self.LIFT:
+            return self.v, 0.0
+        if f < self.SLAM:
+            t = (f - self.LIFT) / (self.SLAM - self.LIFT)
+            return self.v, 34 * math.sin(t * math.pi) if t < 0.8 else 34 * (1 - t) * 3
+        if f < self.PULL:
+            return self.v, 0.0
+        t = min(1.0, (f - self.PULL) / (self.FINISH - self.PULL - 6))
+        arrive = self.u + Vec2(self.side * 18, 0)
+        return self.v + (arrive - self.v) * (t * t), 0.0
+
+    def camera(self, f):
+        if f < self.BOUND:
+            return self.v + Vec2(0, -10), 3  # the vines closing round them
+        if f < self.PULL:
+            return (self.u + self.v) * 0.5, 2
+        return self.u + Vec2(self.side * 10, -12), 3
+
+    def cue(self, f):
+        fx = self.fx
+        pos, _ = self.where(f)
+        hit = self.chest(self.scene.target, pos)
+        if f == 1:
+            self.shout(text.HERMIT_BIND_LINE, scale=2, life=44)
+        if f == self.BOUND:
+            self.world_words.add(sfx.GA, hit + Vec2(0, -8), "impact", 2, 26, 0.3, 2)
+            self.shake = 4
+        if f == self.SLAM:
+            fx.add(vfx.Ring(self.v, (220, 214, 232), 4.0, 20, 2))
+            self.world_words.add(sfx.DOGO, self.v + Vec2(0, -14), "impact", 3, 40, 0.2, 2)
+            self.shake = 14
+        if self.PULSE <= f < self.PULL and (f - self.PULSE) % 14 == 0:
+            fx.add(vfx.Flash(hit, 10, self.HAMON, 6))
+            self.world_words.add(sfx.CRACKLE, hit + Vec2(0, -10), "impact", 2, 20, 0.35, 2)
+        if f == self.PULL:
+            self.shout(text.HERMIT_RIPPLE_LINE, scale=2, life=40)
+            fx.add(vfx.Ring(self.chest(self.scene.user, self.u), self.HAMON, 2.4, 18, 2))
+        if f == self.FINISH:
+            fx.add(vfx.Flash(hit, 54, self.HAMON, 14))
+            fx.add(vfx.Ring(hit, self.HAMON, 5.0, 26, 3))
+            fx.focus(hit, heavy=True)
+            self.world_words.add(sfx.BAKI, hit + Vec2(0, -16), "impact", 3, 48, 0.2, 2)
+            self.flash, self.shake = 14, 18
+
+    def negative(self, f):
+        return self.FINISH <= f < self.FINISH + 3
+
+    def scene_draw(self, world, f):
+        user, target, right = self.scene.user, self.scene.target, self.side > 0
+        pos, lift = self.where(f)
+        anim = "heavy" if f >= self.FINISH - 6 else "special"
+        self.body(world, user, self.u, anim, 2, right)
+        jitter = Vec2(self.rng.choice((-1, 0, 1)), 0) if f % 4 < 2 else Vec2()
+        self.body(world, target, pos + jitter, "hurt", 0, self.side < 0, lift=lift)
+        if f >= self.FINISH:
+            return  # let go: the chop is all there is to see
+        hand = self.chest(user, self.u) + Vec2(self.side * 6, 2)
+        held = self.chest(target, pos, lift=lift)
+        vfx.draw_reach(world, hand, held, vfx.VINE, "vine", 2)
+        # The coils round the body, tighter as they close.
+        coils = 1 if f < self.BOUND // 2 else (2 if f < self.BOUND else 3)
+        for i in range(coils):
+            box = pygame.Rect(0, 0, 15, 5)
+            box.center = (round(held.x), round(held.y - 6 + i * 6))
+            pygame.draw.ellipse(world, OUTLINE, box.inflate(2, 2), 3)
+            pygame.draw.ellipse(world, vfx.VINE, box, 1)
+        if self.PULSE <= f < self.PULL:
+            # The Ripple on its way down the vine, one spark after another.
+            t = ((f - self.PULSE) % 14) / 14
+            spark = hand + (held - hand) * t
+            blit_glow(world, radial_glow(7, (150, 120, 30)), (spark.x, spark.y))
+            world.set_at((round(spark.x), round(spark.y)), self.HAMON)
+
+
 CUTSCENES = {
+    "hermit_overdrive": HermitOverdrive,
     "road_roller": RoadRoller,
     "star_finish": StarFinish,
     "chariot_clones": ChariotClones,

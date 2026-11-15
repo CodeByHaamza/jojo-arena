@@ -309,6 +309,24 @@ blurb_en = "Fire ankhs, traps that erupt and ropes that bind: everything he touc
 color = "#c4462a"
 aura = "#ff6a2a"
 
+# Old Joseph: the kit plays (make training P1=joseph_p3), but he stays off the select
+# screen until his look, his poses and his glossary page are in.
+[[fighters]]
+id = "joseph_p3"
+side = "hero"
+part = 3
+name = "JOSEPH JOESTAR ÂGÉ"
+name_en = "OLD JOSEPH JOESTAR"
+kit = "joseph_p3"
+stand_name = "HERMIT PURPLE"
+role = "GRAPPLER - STAND + HAMON"
+role_en = "GRAPPLER - STAND + RIPPLE"
+blurb = "Des ronces qui attrapent de loin et ramènent à lui, et le Hamon qui descend le long des ronces."
+blurb_en = "Vines that catch from afar and drag you to him, and the Ripple running down the vines."
+color = "#b89a5a"
+aura = "#a060e0"
+selectable = false
+
 [[fighters]]
 id = "mannequin_red"
 name = "MANNEQUIN ROUGE"

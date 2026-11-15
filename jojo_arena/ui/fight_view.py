@@ -1094,6 +1094,9 @@ class FightView:
         if trap.defn.projectile.look == "eruption":
             vfx.draw_floor_ankh(surface, trap.pos, self.tick, aura)
             return
+        if trap.defn.projectile.look == "tar":
+            vfx.draw_tar_puddle(surface, trap.pos, trap.defn.radius, self.tick)
+            return
         dim = tuple(c // 3 for c in aura)
         r = trap.defn.radius
         center = trap.pos
@@ -1111,7 +1114,7 @@ class FightView:
         attack = fighter.attack
         if attack is None or not attack.move.at_target or attack.phase > 1:
             return
-        if attack.move.fx in ("tentacle", "hair"):
+        if attack.move.fx in ("tentacle", "hair", "vine"):
             self._draw_ground_tentacles(surface, fighter)
             return
         if attack.move.fx == "beam":

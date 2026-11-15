@@ -37,6 +37,10 @@ CHAIN_DARK = (100, 100, 112)
 HAMON_EDGE = (255, 220, 110)
 SCARF = (168, 40, 58)
 SCARF_LIGHT = (226, 96, 104)
+VINE = (146, 84, 196)  # thorny vines: purple in the manga and the anime
+VINE_LIGHT = (208, 156, 240)
+TAR = (30, 26, 36)
+TAR_SHEEN = (92, 84, 116)
 
 
 def _side(d: Vec2) -> Vec2:
@@ -82,6 +86,8 @@ def draw_projectile(
         _draw_ankh(surface, pos, d)
     elif look == "flame":
         _draw_flame(surface, pos, 1.0)
+    elif look == "tar":
+        _draw_tar_splash(surface, pos, radius)
     elif look == "eruption":
         draw_eruption(surface, pos, radius)
     else:
@@ -389,6 +395,32 @@ def draw_eruption(surface: pygame.Surface, pos: Vec2, radius: float) -> None:
     _draw_flame(surface, Vec2(column.centerx, column.top), 1.6)
 
 
+def draw_tar_puddle(surface: pygame.Surface, center: Vec2, radius: float, tick: int) -> None:
+    """A puddle of coal tar spilled on the floor: black, flat, a slow sheen across it."""
+    box = pygame.Rect(0, 0, round(radius * 2), max(4, round(radius * 1.1)))
+    box.center = (round(center.x), round(center.y))
+    pygame.draw.ellipse(surface, OUTLINE, box.inflate(2, 2))
+    pygame.draw.ellipse(surface, TAR, box)
+    # The sheen slides from one end to the other and comes back.
+    slide = math.sin(tick * 0.04) * radius * 0.45
+    shine = pygame.Rect(0, 0, max(3, round(radius * 0.7)), 2)
+    shine.center = (round(center.x + slide), round(center.y - box.height * 0.18))
+    pygame.draw.ellipse(surface, TAR_SHEEN, shine)
+    for dx, dy in ((-0.9, 0.5), (0.95, 0.35)):  # two drops that ran off
+        drop = (round(center.x + dx * radius), round(center.y + dy * radius * 0.55))
+        pygame.draw.circle(surface, OUTLINE, drop, 2)
+        surface.set_at(drop, TAR)
+
+
+def _draw_tar_splash(surface: pygame.Surface, pos: Vec2, radius: float) -> None:
+    """Someone going down in the tar: black drops thrown up all round."""
+    for i in range(6):
+        out = Vec2.from_angle(i * math.tau / 6 + 0.4, radius * 0.6)
+        drop = (round(pos.x + out.x), round(pos.y + 8 + out.y * 0.5))
+        pygame.draw.circle(surface, OUTLINE, drop, 2)
+        surface.set_at(drop, TAR_SHEEN)
+
+
 def draw_floor_ankh(surface: pygame.Surface, center: Vec2, tick: int, color) -> None:
     """A Variation ankh waiting on the floor: drawn into the ground, smouldering."""
     glow = 60 + round(30 * math.sin(tick * 0.15))
@@ -510,6 +542,27 @@ def draw_reach(
         return
     if kind == "chain":
         draw_chain(surface, start, tip)
+        return
+    if kind == "vine":
+        # A thorny vine: it winds a little on its way, a thorn now on one side, now on
+        # the other. Purple whoever throws it: the colour is the vine's, not the user's.
+        d = (tip - start).normalized()
+        side = _side(d)
+        length = (tip - start).length()
+        steps = max(3, round(length / 3))
+        points = []
+        for i in range(steps + 1):
+            t = i / steps
+            wave = math.sin(t * length / 6) * 1.8 * min(1.0, 4 * t * (1 - t) + 0.2)
+            points.append(start + (tip - start) * t + side * wave)
+        ints = [_ints(p) for p in points]
+        pygame.draw.lines(surface, OUTLINE, False, ints, width + 2)
+        pygame.draw.lines(surface, VINE, False, ints, width)
+        pygame.draw.lines(surface, VINE_LIGHT, False, ints[: len(ints) * 2 // 3], 1)
+        for i in range(2, steps, 3):
+            out = side * (2.6 if (i // 3) % 2 else -2.6)
+            pygame.draw.line(surface, OUTLINE, _ints(points[i]), _ints(points[i] + out * 1.3), 1)
+            surface.set_at(_ints(points[i] + out), VINE_LIGHT)
         return
     if kind == "lens":
         # A bubble held up as a lens: sunlight focused through it into one hot ray.

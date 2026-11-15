@@ -1,0 +1,480 @@
+# Joseph Joestar, old (Part 3) - Hermit Purple and the Ripple. GDD: "Stand + Hamon ·
+# Trickster": vines that catch from afar and carry the Hamon; a grab across the arena.
+#
+# Sources, read on 15/11/2026:
+# - JoJo Wiki, "Hermit Purple" (https://jojowiki.com/Hermit_Purple): several purple,
+#   thorn-covered vines that grow from Joseph's hands, strong enough to hold his weight
+#   and long enough to bind a person. No body. Stats D C D A D E. He swings on them from
+#   place to place, binds with them, and sends the Ripple through them.
+# - JoJo Wiki, ASBR Old Joseph
+#   (https://jojowiki.com/All-Star_Battle_R/Old_Joseph_Joestar): HP 950; a long-ranged
+#   grappler, a hybrid of the Stand and Ripple styles.
+#   * Normals, Stand off: a jab, a short slide into a hip-height kick, a step-in
+#     uppercut. "That changes everything!": a kick to the shins from a short run-up.
+#   * "Ripple Overdrive!": he slides forward with a Ripple-infused overhead chop;
+#     paying for it makes it faster, longer, and it crumples.
+#   * "Cunning Tactician": a counter; he wraps the vines round his torso and the next
+#     blow shocks the attacker and pushes them away.
+#   * "Coal Tar": Hermit Purple brings out a drum of coal tar and spills it; the drum
+#     hits twice, and the puddle stays as a trap that makes one slip (his battle with
+#     Empress).
+#   * Stand on: "Hermit Purple!" (a mid-range vine swing over a wide area, three hits),
+#     then "Solar Energy Ripple!" (the opponent is wrapped and the Ripple pulses through
+#     the vines); "You gotta stand on your own!" (a low vine that pulls the opponent
+#     in); "Take a STAND for it!" (a throw: the vines fan out forward, bind, swing the
+#     opponent in a circle and launch them); "Panic isn't in my vocabulary" (Hermit
+#     Purple grabs hold above and pulls him away).
+#   * Heart Heat Attack "Years of Experience": a counter. Great Heat Attack "Hermit
+#     Purple and Ripple!": a long-range vine whip; if it connects he binds, slams,
+#     pulls in and ends on a Ripple Overdrive chop to the neck.
+# - JoJo Wiki, EoH Old Joseph
+#   (https://jojowiki.com/Eyes_of_Heaven/Old_Joseph_Joestar): his normal combo is
+#   Hermit Purple thrust forward at mid-range, a yank that pulls the opponent in, then a
+#   Ripple-charged sideways chop. "Panic isn't in my vocabulary" pulls him to an anchor
+#   point he chooses.
+# Choices for a top-down arena:
+# - Stand on, the three light blows are EoH's (vine, yank, chop): from above, vines at
+#   mid-range say "Hermit Purple" where ASBR's fists wrapped in vines say nothing.
+# - "Panic isn't in my vocabulary" is EoH's: he is pulled to the aimed point. ASBR's
+#   pulls him up to a ceiling the camera cannot show.
+# - "Now I gotcha!" (ASBR, an anti-air that only hits airborne opponents) is left out
+#   until something flies (Iggy, Pet Shop): the owner was told.
+# - Cunning Tactician catches the blow, as every counter does here; in ASBR he takes
+#   the damage first. The puddle of Coal Tar trips the opponent only; in ASBR it trips
+#   him too. Both said to the owner.
+# - Tap the Stand key for Hermit Purple, hold it to breathe (ASBR: down, down + Stand).
+#
+# Feel: an old fox. He looks slow, he never comes to you, and the moment you reach for
+# him you are already tied up and the Ripple is on its way down the vine.
+
+name = "Joseph Joestar"
+max_hp = 950  # ASBR
+walk_speed = 98
+strength = 0.7  # Hermit Purple: Destructive Power D
+# No stand_body: Hermit Purple is vines from his hands, nothing to hit beside him.
+style = { type = "stance_toggle", off = "base", on = "stand", breath = true }
+
+# Joseph alone: fists and the Ripple -----------------------------------------------------
+
+[stances.base]
+label = "SANS STAND"
+label_en = "NO STAND"
+
+# Jab, sliding kick, uppercut: the same button three times (his standing normals in ASBR).
+[stances.base.moves.light]
+label = "DIRECT"
+label_en = "JAB"
+info = "Rapide. Encore la touche : coup de pied glissé, puis uppercut"
+info_en = "Fast. Press again: sliding kick, then uppercut"
+startup_f = 5
+active_f = 3
+recovery_f = 10
+damage = 26
+reach = 15
+radius = 10
+hitstun_f = 18
+knockback = 80
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.base.moves.light2]
+label = "COUP DE PIED GLISSÉ"
+label_en = "SLIDING KICK"
+info = "S'enchaîne sur le direct : il glisse et frappe à la hanche"
+info_en = "Follows the jab: he slides in and kicks at the hip"
+startup_f = 7
+active_f = 4
+recovery_f = 13
+lunge = 70
+damage = 32
+reach = 18
+radius = 11
+hitstun_f = 21
+knockback = 110
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "kick"
+
+[stances.base.moves.light3]
+label = "UPPERCUT"
+label_en = "UPPERCUT"
+info = "Un pas en avant et un uppercut qui soulève"
+info_en = "A step in and an uppercut that lifts"
+startup_f = 9
+active_f = 4
+recovery_f = 18
+lunge = 90
+damage = 44
+reach = 16
+radius = 12
+hitstun_f = 26
+knockback = 300
+hitstop_f = 8
+cancel_on_hit = ["special"]
+anim = "heavy"
+
+# Ripple Overdrive!: he slides forward with an overhead chop. With enough Hamon it is
+# paid for and hits harder; without, it is only a chop.
+[stances.base.moves.heavy]
+shout = "RIPPLE OVERDRIVE !"
+label = "HAMON OVERDRIVE"
+label_en = "RIPPLE OVERDRIVE"
+info = "Il glisse et abat le tranchant de la main. Avec du Hamon : plus fort, et ça brûle les morts-vivants"
+info_en = "He slides in and brings the edge of his hand down. With Hamon: harder, and it burns the undead"
+startup_f = 14
+active_f = 4
+recovery_f = 22
+lunge = 150
+damage = 62
+reach = 17
+radius = 12
+hitstun_f = 30
+knockback = 280
+hitstop_f = 10
+wall_bounce = true
+hamon_cost = 25
+anim = "heavy"
+
+# That changes everything!: a kick to the shins from a short run-up.
+[stances.base.moves.heavy_alt]
+shout = "THAT CHANGES EVERYTHING !"
+label = "THAT CHANGES EVERYTHING !"
+info = "Avec une direction : trois pas d'élan et un coup de pied dans les tibias, qui soulève"
+info_en = "With a direction: a short run-up and a kick to the shins, which lifts"
+startup_f = 10
+active_f = 4
+recovery_f = 18
+lunge = 170
+damage = 40
+reach = 14
+radius = 11
+hitstun_f = 28
+knockback = 300
+hitstop_f = 7
+cancel_on_hit = ["special"]
+anim = "kick"
+
+# Coal Tar: Hermit Purple swings out a drum of coal tar (two hits) and spills it. The
+# puddle stays where the drum fell: whoever steps in it goes down.
+[stances.base.moves.special]
+shout = "COAL TAR !"
+label = "COAL TAR"
+info = "Hermit Purple balance un bidon de goudron (deux coups) et le renverse : la flaque fait tomber qui marche dedans"
+info_en = "Hermit Purple swings a drum of coal tar (two hits) and spills it: the puddle trips whoever steps in"
+stand_flash = true
+startup_f = 16
+active_f = 8
+recovery_f = 22
+hits = 2
+hit_every_f = 4
+damage = 10
+last_damage = 42
+reach = 24
+radius = 13
+hitstun_f = 24
+knockback = 60
+last_knockback = 260
+hitstop_f = 6
+fx = "vine"
+anim = "special"
+
+[stances.base.moves.special.trap]
+distance = 30
+radius = 13
+lifetime_s = 6
+max_count = 1
+
+# Slipping: thrown off their feet where they stand (a ring of radius 0).
+[stances.base.moves.special.trap.projectile]
+look = "tar"
+origin = "ring"
+ring_radius = 0
+speed = 0
+radius = 16
+damage = 20
+lifetime_s = 0.25
+hitstun_f = 40
+knockback = 0
+hitstop_f = 5
+
+# Cunning Tactician: vines wrapped round his torso, the Ripple in them. The blow that
+# lands on them is caught, and the vines burst out.
+[stances.base.moves.special_alt]
+label = "CUNNING TACTICIAN"
+info = "Avec une direction : il s'enroule dans ses ronces. Un coup reçu est attrapé, et le Hamon répond"
+info_en = "With a direction: he wraps himself in his vines. A blow is caught, and the Ripple answers"
+stand_flash = true
+startup_f = 4
+active_f = 26
+recovery_f = 18
+counter = "tactician_shock"
+anim = "counter"
+
+[stances.base.moves.tactician_shock]
+shout = "CUNNING TACTICIAN !"
+label = "LES RONCES RÉPONDENT (CONTRE)"
+label_en = "THE VINES ANSWER (COUNTER)"
+info = "La réponse du contre : les ronces chargées de Hamon repoussent l'attaquant"
+info_en = "The counter's answer: the Ripple-charged vines throw the attacker back"
+startup_f = 2
+active_f = 5
+recovery_f = 16
+invincible_f = 12
+damage = 60
+reach = 6
+radius = 20
+hitstun_f = 32
+knockback = 340
+hitstop_f = 10
+wall_bounce = true
+hamon = true
+status = "shock"
+status_s = 1.0
+clashable = false
+fx = "vine"
+anim = "heavy"
+
+# Hermit Purple out: vines at mid-range -----------------------------------------------------
+
+[stances.stand]
+label = "AVEC HERMIT PURPLE"
+label_en = "WITH HERMIT PURPLE"
+walk_speed_mult = 0.95
+
+# Vine, yank, Ripple chop: the same button three times (his normal combo in EoH).
+[stances.stand.moves.light]
+shape = "line"
+fx = "vine"
+label = "RONCE"
+label_en = "VINE"
+info = "Hermit Purple frappe à mi-distance. Encore : il tire l'adversaire à lui, puis tranchant de Hamon"
+info_en = "Hermit Purple strikes at mid-range. Again: he yanks the opponent in, then a Ripple chop"
+startup_f = 7
+active_f = 4
+recovery_f = 12
+damage = 28
+reach = 34
+radius = 8
+hitstun_f = 20
+knockback = 60
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.stand.moves.light2]
+shape = "line"
+fx = "vine"
+label = "RONCE QUI RAMÈNE"
+label_en = "VINE YANK"
+info = "S'enchaîne sur la ronce : il tire d'un coup sec et l'adversaire vient à lui"
+info_en = "Follows the vine: one sharp pull and the opponent comes to him"
+startup_f = 7
+active_f = 4
+recovery_f = 14
+damage = 24
+reach = 38
+radius = 8
+hitstun_f = 26
+knockback = -240
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+
+[stances.stand.moves.light3]
+label = "TRANCHANT DE HAMON"
+label_en = "RIPPLE CHOP"
+info = "Un tranchant de la main en travers, chargé de Hamon s'il en a"
+info_en = "A sideways chop, charged with the Ripple if he has some"
+startup_f = 8
+active_f = 4
+recovery_f = 18
+damage = 42
+reach = 16
+radius = 12
+hitstun_f = 26
+knockback = 320
+hitstop_f = 8
+wall_bounce = true
+hamon_cost = 15
+cancel_on_hit = ["special"]
+anim = "heavy"
+
+# Take a STAND for it!, his throw: the vines fan out ahead; whoever they touch is bound,
+# swung round and let go.
+[stances.stand.moves.heavy]
+shape = "line"
+fx = "vine"
+shout = "TAKE A STAND FOR IT !"
+label = "TAKE A STAND FOR IT !"
+info = "Saisie : les ronces partent en éventail, ligotent, font tourner l'adversaire et le lâchent. Imparable"
+info_en = "A grab: the vines fan out, bind, swing the opponent round and let go. Unblockable"
+unblockable = true
+startup_f = 16
+active_f = 5
+recovery_f = 28
+damage = 86
+reach = 42
+radius = 12
+hitstun_f = 36
+knockback = 400
+hitstop_f = 10
+wall_bounce = true
+clashable = false
+cooldown_s = 3
+anim = "grab"
+
+# You gotta stand on your own!: a vine low along the ground that brings the opponent
+# to his feet.
+[stances.stand.moves.heavy_alt]
+shape = "line"
+fx = "vine"
+shout = "YOU GOTTA STAND ON YOUR OWN !"
+label = "YOU GOTTA STAND ON YOUR OWN !"
+info = "Avec une direction : une ronce au ras du sol, très loin, qui ramène l'adversaire à ses pieds"
+info_en = "With a direction: a vine low along the ground, very far, that drags the opponent to his feet"
+startup_f = 16
+active_f = 5
+recovery_f = 24
+damage = 30
+reach = 66
+radius = 6
+hitstun_f = 38
+knockback = -380
+hitstop_f = 6
+cancel_on_hit = ["light", "special"]
+anim = "special"
+
+# Hermit Purple!: the vines swept wide in front of him, three hits. The same button
+# again once it lands: Solar Energy Ripple.
+[stances.stand.moves.special]
+fx = "vine"
+shout = "HERMIT PURPLE !"
+label = "HERMIT PURPLE !"
+info = "Les ronces balaient large devant lui, trois coups. Encore la touche si ça touche : Solar Energy Ripple"
+info_en = "The vines sweep wide in front of him, three hits. The button again on hit: Solar Energy Ripple"
+startup_f = 14
+active_f = 9
+recovery_f = 20
+hits = 3
+hit_every_f = 3
+damage = 10
+last_damage = 28
+reach = 30
+radius = 22
+hitstun_f = 26
+knockback = 30
+hitstop_f = 4
+cancel_on_hit = ["special"]
+chain = "solar_energy"
+anim = "special"
+
+[stances.stand.moves.solar_energy]
+fx = "vine"
+shout = "SOLAR ENERGY RIPPLE !"
+label = "HAMON DE L'ÉNERGIE SOLAIRE"
+label_en = "SOLAR ENERGY RIPPLE"
+info = "L'adversaire est ligoté et le Hamon court dans les ronces : quatre décharges. Sans Hamon, les ronces serrent seulement"
+info_en = "The opponent is bound and the Ripple runs down the vines: four pulses. Without Hamon, the vines only squeeze"
+at_target = true
+startup_f = 6
+active_f = 16
+recovery_f = 20
+hits = 4
+hit_every_f = 4
+damage = 9
+last_damage = 30
+radius = 14
+hitstun_f = 26
+knockback = 0
+last_knockback = 300
+last_wall_bounce = true
+hitstop_f = 4
+hamon_cost = 30
+status = "shock"
+status_s = 1.0
+anim = "special"
+
+# Panic isn't in my vocabulary: Hermit Purple catches hold of something over there and
+# pulls him to it (mouse, right stick, or the held direction).
+[stances.stand.moves.special_alt]
+label = "PANIC ISN'T IN MY VOCABULARY"
+info = "Avec une direction : Hermit Purple s'accroche là où tu vises et le tire jusque-là"
+info_en = "With a direction: Hermit Purple catches hold where you aim and pulls him there"
+startup_f = 12
+active_f = 1
+recovery_f = 10
+leap = 150
+leap_to = "cursor"
+invincible_f = 10
+fx = "vine"
+anim = "special"
+
+# Super moves (same with or without Hermit Purple) ------------------------------------------
+
+# Heart Heat Attack (1 bar): Years of Experience, a counter. He braces with the Ripple;
+# struck, he throws the opponent to the ground and comes down on them.
+[moves.hha]
+shout = "YEARS OF EXPERIENCE !"
+label = "YEARS OF EXPERIENCE"
+info = "Un contre : il se campe, chargé de Hamon. Frappé, il jette l'adversaire au sol et l'écrase"
+info_en = "A counter: he braces, full of the Ripple. Struck, he throws the opponent down and crushes them"
+stand_flash = true
+startup_f = 3
+active_f = 34
+recovery_f = 20
+counter = "experience_answer"
+anim = "counter"
+
+[moves.experience_answer]
+shout = "TAKE THIS !"
+label = "L'EXPÉRIENCE RÉPOND (CONTRE)"
+label_en = "EXPERIENCE ANSWERS (COUNTER)"
+info = "La réponse du contre : l'adversaire à terre, et Joseph retombe sur lui, porté par ses ronces"
+info_en = "The counter's answer: the opponent down, and Joseph lands on them, carried by his vines"
+startup_f = 2
+active_f = 6
+recovery_f = 20
+invincible_f = 16
+damage = 170
+reach = 10
+radius = 20
+hitstun_f = 44
+knockback = 460
+hitstop_f = 14
+wall_bounce = true
+hamon = true
+clashable = false
+fx = "vine"
+anim = "heavy"
+
+# Great Heat Attack (2 bars): Hermit Purple and Ripple! A vine whipped out across the
+# arena; if it catches: bound, slammed, pulled in, and the Ripple Overdrive on the neck.
+[moves.gha]
+shout = "HERMIT PURPLE AND RIPPLE !"
+label = "HERMIT PURPLE ET HAMON"
+label_en = "HERMIT PURPLE AND RIPPLE"
+info = "Une ronce fouettée à travers l'arène. Si elle attrape : ligoté, jeté au sol, ramené, et le tranchant de Hamon"
+info_en = "A vine whipped across the arena. If it catches: bound, slammed, pulled in, and the Ripple chop"
+stand_flash = true
+shape = "line"
+fx = "vine"
+startup_f = 22
+active_f = 5
+recovery_f = 30
+invincible_f = 12
+damage = 28
+reach = 220
+radius = 7
+hitstun_f = 40
+hitstop_f = 10
+clashable = false
+hamon = true
+anim = "special"
+cinematic = "hermit_overdrive"
+cinematic_s = 4.0
+finish_damage = 270
+finish_hitstun_f = 50
+finish_knockback = 440
+finish_wall_bounce = true

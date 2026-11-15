@@ -131,6 +131,14 @@ def test_oil_carries_you_on_unless_you_breathe_the_ripple():
     assert slide_after_walking("jotaro_p3", "cairo_night", (186, 110)) == 0
 
 
+def test_a_stand_user_who_breathes_the_ripple_is_spared_too():
+    """Old Joseph has a Stand *and* the Ripple: the oil and the spikes know it."""
+    assert slide_after_walking("joseph_p3", "air_supplena", (186, 110)) == 0
+    hurt, events = spikes_on("joseph_p3")
+    assert any(e.kind == "hazard_spikes" for e in events)
+    assert hurt == 0
+
+
 def test_in_st_moritz_nobody_keeps_their_footing():
     assert slide_after_walking("joseph_p2", "st_moritz", (100, 160)) > 10
 
