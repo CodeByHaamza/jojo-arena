@@ -183,7 +183,7 @@ class CpuPlayer:
             if distance > 90 and self.breath_f:
                 return InputFrame((0.0, 0.0), frozenset({"stand"}), {})
             self.breath_f = 0
-        if style == "hamon" and me.hamon < 40 and distance > 120 and rng.random() < 0.05:
+        if me.kit.breathes and me.hamon < 40 and distance > 120 and rng.random() < 0.05:
             self.breath_f = rng.randint(40, 90)
             return InputFrame((0.0, 0.0), frozenset({"stand"}), {"stand": 1})
         stance_on = me.style.params.get("on")

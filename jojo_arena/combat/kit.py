@@ -387,6 +387,19 @@ class Kit:
     stance_labels: dict[str, str] = field(default_factory=dict)  # move list headings
     stance_tags: dict[str, str] = field(default_factory=dict)  # short name for the HUD
     awakening: AwakeningDef | None = None  # what the Power Up key turns them into
+
+    @property
+    def styles(self) -> frozenset[str]:
+        """Every style the fighter has: its own, and the Ripple too for one whose style
+        says `breath = true` (a Stand user who still breathes it)."""
+        extra = {"hamon"} if self.style_params.get("breath") else set()
+        return frozenset({self.style} | extra)
+
+    @property
+    def breathes(self) -> bool:
+        """Has the Hamon gauge: fills it by breathing, spends it on `hamon_cost`."""
+        return "hamon" in self.styles
+
     strength: float = 1.0  # the Stand's raw power: how fast and hard it throws props
     prop_hold: str = "hands"  # "hair": his hair carries and swings what he picks up
     nature: str = "human"  # "vampire", "pillar_man"...: what Hamon burns

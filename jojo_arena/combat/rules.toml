@@ -128,6 +128,8 @@ spacing = 46                  # the two step apart so their barrages meet betwee
 max = 100
 start = 40                    # each round starts with this much Hamon
 breath_per_s = 25             # breathing fills the gauge, standing still and open to hits
+hold_s = 0.25                 # a Stand user who also breathes: the key held this long is a
+                              # breath, let go sooner it calls the Stand
 boost_mult = 1.4              # a boosted move (its hamon_cost paid) hits this much harder
 weak_natures = ["vampire", "zombie", "pillar_man"]
 vs_weak_mult = 2.0            # Hamon on vampires, zombies and Pillar Men

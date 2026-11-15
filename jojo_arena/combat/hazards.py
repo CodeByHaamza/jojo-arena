@@ -166,10 +166,10 @@ class Hazards:
     ) -> Hazards:
         return cls([Drop(d) for d in drops], [TrapZone(z) for z in zones], surfaces, exits)
 
-    def grip_at(self, pos: Vec2, style: str) -> tuple[float, float]:
-        """(grip, slide) of the floor under `pos` for a body of this kit style."""
+    def grip_at(self, pos: Vec2, styles: frozenset[str]) -> tuple[float, float]:
+        """(grip, slide) of the floor under `pos` for a body with these kit styles."""
         for surface in self.surfaces:
-            if surface.spare_style and surface.spare_style == style:
+            if surface.spare_style and surface.spare_style in styles:
                 continue
             if surface.rect is None or surface.rect.contains(pos):
                 return surface.grip, surface.slide

@@ -731,7 +731,7 @@ class Match:
                 raw = inputs[victim.index]
                 mash = sum(raw.presses(a) for a in (*ATTACK_SLOTS, "dash", "guard", "stand"))
                 if mash:
-                    hamon = victim.kit.style == "hamon"
+                    hamon = victim.kit.breathes
                     cut = self.rules.struggle_f * (self.rules.hamon_struggle_mult if hamon else 1)
                     user.inside_f -= round(mash * cut)
                     user.expelled_by_hamon = hamon and user.inside_f <= 0
@@ -945,7 +945,7 @@ class Match:
                 continue
             zone.rearm_left, zone.sprung_left = defn.rearm_f, defn.rearm_f
             events = [Event("hazard_spikes", fighter.pos.copy(), fighter.index)]
-            if defn.spare_style and fighter.kit.style == defn.spare_style:
+            if defn.spare_style and defn.spare_style in fighter.kit.styles:
                 return events  # it springs, and does not bite this one
             out = fighter.pos - defn.rect.center
             push = out.normalized() if out.length_sq() > 1e-6 else Vec2(0, 1)

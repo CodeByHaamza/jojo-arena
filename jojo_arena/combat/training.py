@@ -60,7 +60,7 @@ class Training:
             fighter.min_hp = 1 if self.infinite_life else 0
             if self.infinite_hh:
                 fighter.hh = self.rules.hh_max
-                if fighter.kit.style == "hamon":
+                if fighter.kit.breathes:
                     fighter.hamon = self.rules.hamon_max
                 if fighter.kit.style == "vampire":
                     fighter.blood = self.rules.blood_max

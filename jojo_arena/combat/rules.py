@@ -110,6 +110,7 @@ class Rules:
     hamon_max: float
     hamon_start: float
     hamon_breath_per_f: float
+    hamon_hold_f: int
     hamon_boost_mult: float
     hamon_weak_natures: tuple[str, ...]
     hamon_vs_weak_mult: float
@@ -150,6 +151,7 @@ class Rules:
             hamon_max=data["hamon"]["max"],
             hamon_start=data["hamon"]["start"],
             hamon_breath_per_f=data["hamon"]["breath_per_s"] / HZ,
+            hamon_hold_f=seconds_to_frames(data["hamon"]["hold_s"]),
             hamon_boost_mult=data["hamon"]["boost_mult"],
             hamon_weak_natures=tuple(data["hamon"]["weak_natures"]),
             hamon_vs_weak_mult=data["hamon"]["vs_weak_mult"],

@@ -194,8 +194,10 @@ class Hud:
         )
         label_x = 8 if i == 0 else SCREEN_W - 8
         align = "left" if i == 0 else "right"
-        if fighter.kit.style == "hamon":
-            self._draw_hamon(surface, fighter, bars)
+        if fighter.kit.breathes:
+            # A Stand user who breathes the Ripple: the gauge is named after whoever is out.
+            tag = fighter.kit.stance_tags.get(fighter.stance, "") or text.STANCE_ON
+            self._draw_hamon(surface, fighter, bars, tag if fighter.aura_active else text.HAMON)
             return
         if fighter.kit.style == "vampire":
             self._draw_blood(surface, fighter, bars)
@@ -212,7 +214,7 @@ class Hud:
             stop_x = label_x + (40 if i == 0 else -40)
             font.draw(surface, text.TIME_STOP_READY, (stop_x, HH_Y - 11), color, align=align)
 
-    def _draw_hamon(self, surface: pygame.Surface, fighter: Fighter, bars: int) -> None:
+    def _draw_hamon(self, surface: pygame.Surface, fighter: Fighter, bars: int, label: str) -> None:
         """The Hamon gauge, a thin golden bar over the Heart Heat bars."""
         i = fighter.index
         width = bars * (HH_SEGMENT_W + 2) - 2
@@ -226,7 +228,7 @@ class Hud:
         surface.fill(color, (x if i == 0 else x + width - fill, y, fill, 3))
         label_x = 8 if i == 0 else SCREEN_W - 8
         align = "left" if i == 0 else "right"
-        font.draw(surface, text.HAMON, (label_x, y - 11), color, align=align)
+        font.draw(surface, label, (label_x, y - 11), color, align=align)
 
     def _draw_blood(self, surface: pygame.Surface, fighter: Fighter, bars: int) -> None:
         """The blood gauge of a vampire, a thin red bar over the Heart Heat bars."""

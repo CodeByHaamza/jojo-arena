@@ -140,7 +140,7 @@ class Fighter:
         self.dash_dir = Vec2()
         self.evaded = False  # this dash already earned a Stylish Evade
         self.hh = 0.0  # Heart Heat gauge
-        self.hamon = rules.hamon_start if kit.style == "hamon" else 0.0
+        self.hamon = rules.hamon_start if kit.breathes else 0.0
         self.blood = rules.blood_start if kit.style == "vampire" else 0.0
         self.regen_wait = 0  # vampires: steps before their wounds start to close
         self._regen_left = 0.0
@@ -391,7 +391,18 @@ class Fighter:
             free = self.state in (State.IDLE, State.WALK, State.SWITCH)
             if self.stand_hold_f == self.rules.remote_hold_f and not self.remote and free:
                 return self.enter_remote(remote_stance)
+        elif self.style.params.get("breath") and frame.is_held("stand"):
+            # A Stand user who also breathes the Ripple: the key let go at once calls the
+            # Stand, the key held breathes. Until it is one or the other, nothing happens.
+            self.stand_hold_f += 1
+            self.buffer.pop("stand", None)
+            free = self.state in (State.IDLE, State.WALK)
+            if self.stand_hold_f >= self.rules.hamon_hold_f and free:
+                self.begin_breath()
+                return [Event("breath", self.pos, self.index)]
         else:
+            if self.style.params.get("breath") and 0 < self.stand_hold_f < self.rules.hamon_hold_f:
+                self.buffer["stand"] = BUFFER_F  # let go early: it was a tap
             self.stand_hold_f = 0
         if self.possessed_f > 0:
             # Steered by someone else: it walks where they push it, and nothing else.
@@ -823,7 +834,7 @@ class Fighter:
                     # Slide along the surface: drop the part of the speed going into it.
                     self.velocity = self.velocity - normal * self.velocity.dot(normal)
             self.pos = pos
-            _, slide = arena.hazards.grip_at(pos, self.kit.style)
+            _, slide = arena.hazards.grip_at(pos, self.kit.styles)
             friction = self.rules.knockback_friction * slide
             new_speed = max(0.0, self.velocity.length() - friction)
             self.velocity = self.velocity.normalized() * new_speed
@@ -847,7 +858,7 @@ class Fighter:
         elif self.walk_dir.length_sq() or self.glide.length_sq() > GLIDE_REST:
             # On a normal floor the body goes where it is walked; on oil or ice it only
             # leans that way, and keeps sliding the way it was going.
-            grip, _ = arena.hazards.grip_at(self.pos, self.kit.style)
+            grip, _ = arena.hazards.grip_at(self.pos, self.kit.styles)
             wanted = self.walk_dir * self.walk_speed() if self.walk_dir.length_sq() else Vec2()
             self.glide = wanted if grip >= 1 else self.glide + (wanted - self.glide) * grip
             if self.glide.length_sq() <= GLIDE_REST:

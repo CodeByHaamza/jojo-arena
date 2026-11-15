@@ -222,7 +222,7 @@ def build_pages(
         answer = kit.move(kit.base_stance_name, kit.pose_counter)
         entry = MoveEntry((key("pose"),), answer.label or answer.name, _info(answer))
         basics.insert(4, entry)
-    if kit.style == "hamon":
+    if kit.breathes:
         basics.insert(1, MoveEntry((key("stand"),), text.SYS_BREATH, text.SYS_BREATH_INFO))
     if kit.style == "vampire":
         basics.insert(1, MoveEntry((key("stand"),), text.SYS_FREEZE, text.SYS_FREEZE_INFO))
