@@ -118,7 +118,7 @@ def _play(tour: Tour, title) -> None:
         tour.shot(f"move_list_page{page + 1}")
         tour.keys("Right")
     tour.keys("Escape")
-    tour.keys("Return")  # player 1
+    tour.keys("Return", "Return")  # player 1, and its pose
     tour.keys("Right", wait=20)
     tour.shot("select_dummy")
     tour.keys("E", "E", wait=5)  # part 3: its roster is not complete yet
@@ -148,7 +148,7 @@ def _play(tour: Tour, title) -> None:
 
     # Local fight: select, VS screen, fight, pause, result.
     tour.choose(tour.scene.menu, "versus", wait=10)
-    tour.keys("Return", "Right", "Return", wait=20)
+    tour.keys("Return", "Return", "Right", "Return", "Return", wait=20)  # both, poses
     tour.keys("Return", wait=20)  # the arena
     tour.shot("vs_screen")
     tour.keys("Return", wait=60)

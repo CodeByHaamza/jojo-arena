@@ -131,7 +131,7 @@ def test_title_to_local_fight_to_pause_and_back(ctx):
     keys(ctx, "Up", "Up", "Return")  # from "training", up twice is "local fight"
     select = ctx.scenes.current
     assert isinstance(select, CharacterSelectScene) and select.mode == "versus"
-    keys(ctx, "Return", "Right", "Return")  # J1 and J2 pick
+    keys(ctx, "Return", "Return", "Right", "Return", "Return")  # J1, J2 and their poses
     arenas = ctx.scenes.current
     assert isinstance(arenas, StageSelectScene)  # the arena comes next
     keys(ctx, "Return")
@@ -174,7 +174,7 @@ def test_training_flow(ctx):
     keys(ctx, "Return")  # player 1
     keys(ctx, "Escape")  # changed my mind
     assert select.picks == []
-    keys(ctx, "Return", "Right", "Return")  # player 1, then the dummy (first tab)
+    keys(ctx, "Return", "Return", "Right", "Return")  # player 1 and its pose, the dummy
     assert isinstance(ctx.scenes.current, StageSelectScene)
     keys(ctx, "Return")  # the arena of player 1's part, offered first
     training = ctx.scenes.current

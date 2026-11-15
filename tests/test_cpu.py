@@ -117,7 +117,7 @@ def test_versus_the_computer_from_the_menu(ctx):
     select = ctx.scenes.current
     assert isinstance(select, CharacterSelectScene) and select.mode == "vs_cpu"
     assert select.side_label(1) == "IA"
-    keys(ctx, "Return", "Right", "Return")
+    keys(ctx, "Return", "Return", "Right", "Return")  # P1 and its pose; the computer
     keys(ctx, "Return")  # the arena
     setup = ctx.scenes.current
     assert isinstance(setup, SetupScene) and setup.cpu
@@ -134,7 +134,7 @@ def test_versus_the_computer_from_the_menu(ctx):
 
 def test_arcade_from_the_menu_to_the_ending(ctx):
     start(ctx, MainMenuScene(ctx, cursor="arcade"))
-    keys(ctx, "Return", "Return")  # Arcade, then pick the first fighter
+    keys(ctx, "Return", "Return", "Return")  # Arcade, the first fighter, its pose
     ladder = ctx.scenes.current
     assert isinstance(ladder, ArcadeScene) and ladder.index == 0
     keys(ctx, "Return")
