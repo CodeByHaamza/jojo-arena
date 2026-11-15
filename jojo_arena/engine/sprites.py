@@ -83,6 +83,9 @@ class PoseInfo:
 
 NO_POSES: dict[str, PoseInfo] = {}
 
+# Sheets already decoded (see SheetSprites.load).
+_LOADED: dict[tuple, SheetSprites] = {}
+
 
 class SpriteSet:
     anchor: tuple[int, int] = (24, 44)
@@ -137,16 +140,36 @@ class SheetSprites(SpriteSet):
     def load(
         cls, png_path: Path, spec_path: Path, palette: dict[str, list[Color]] | None = None
     ) -> SheetSprites | None:
-        """Load a sheet, recolored with `palette`. Returns None when the files are missing."""
+        """Load a sheet, recolored with `palette`. Returns None when the files are missing.
+
+        A sheet is decoded once and shared: every menu and every fight asks for the same
+        ones, and a sheet is only ever read once built. A file changed on disk, another
+        palette, or a display opened since, is another sheet."""
         if not png_path.exists() or not spec_path.exists():
             return None
+        converting = pygame.display.get_init() and pygame.display.get_surface() is not None
+        key = (
+            str(png_path),
+            str(spec_path),
+            png_path.stat().st_mtime_ns,
+            spec_path.stat().st_mtime_ns,
+            tuple(
+                sorted((slot, tuple(map(tuple, tones))) for slot, tones in (palette or {}).items())
+            ),
+            converting,
+        )
+        cached = _LOADED.get(key)
+        if cached is not None:
+            return cached
         spec_data = load_toml(spec_path)
         sheet = pygame.image.load(str(png_path))
         if palette:
             sheet = recolor(sheet, spec_data.get("recolor", {}), palette)
-        if pygame.display.get_init() and pygame.display.get_surface() is not None:
+        if converting:
             sheet = sheet.convert_alpha()
-        return cls(sheet, spec_data)
+        loaded = cls(sheet, spec_data)
+        _LOADED[key] = loaded
+        return loaded
 
     def spec(self, anim: str) -> AnimSpec | None:
         return self.specs.get(anim)
