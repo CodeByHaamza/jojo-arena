@@ -987,7 +987,10 @@ class Fighter:
             self.pending_hits.append(PendingHit(hitstun_f, knockback, wall_bounce))
             return False
         if self.armored():
-            self.attack.armor_used += 1
+            attack = self.attack
+            attack.armor_used += 1
+            if attack.move.armor_release and attack.phase == 0:
+                attack.frame = attack.move.startup_f  # struck while winding up: it goes now
             self.hurt(damage)
             return True
         awakening = self.kit.awakening

@@ -44,6 +44,7 @@ class ProjectileDef:
     status_f: int = 0
     hamon: bool = False  # it carries the Ripple itself (sunlight through a lens)
     drain: float = 0.0  # share of its damage given back to its owner as life
+    fragile: bool = False  # a blow landed on its owner puts it out in mid-flight
 
     @classmethod
     def from_data(cls, data: dict) -> ProjectileDef:
@@ -72,6 +73,7 @@ class ProjectileDef:
             status_f=seconds_to_frames(data.get("status_s", 0)),
             hamon=data.get("hamon", False),
             drain=data.get("drain", 0.0),
+            fragile=data.get("fragile", False),
             drag=data.get("drag", 1.0),
         )
 
@@ -206,6 +208,8 @@ class MoveDef:
     leap_to: str = "target"  # ...toward the opponent ("target") or the aimed point ("cursor")
     leap_height: float = 0.0  # px: height of the jump arc, for the view (0 = slide)
     armor: int = 0  # hits taken without flinching during startup and active frames
+    # A blow absorbed by that armor during the startup lets the attack go at once.
+    armor_release: bool = False
     possess_f: int = 0  # on a clean hit, the user steers the opponent's walk this long
     # On a clean hit, the user's whole body slips inside the opponent's: hidden in there
     # for this long, it walks them about and eats them (`inside_dps`, `drain` of it).
@@ -299,6 +303,7 @@ class MoveDef:
             leap_to=data.get("leap_to", "target"),
             leap_height=data.get("leap_height", 0.0),
             armor=data.get("armor", 0),
+            armor_release=data.get("armor_release", False),
             possess_f=seconds_to_frames(data.get("possess_s", 0)),
             infiltrate_f=seconds_to_frames(data.get("infiltrate_s", 0)),
             inside_dps=data.get("inside_dps", 0.0),

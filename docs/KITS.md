@@ -115,6 +115,7 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `infiltrate_s` | Le corps entier du perso entre dans celui de l'adversaire s'il touche (Santana) : il disparaît (plus de hitbox, le soleil ne l'atteint plus), dirige la marche de l'hôte pendant cette durée et le mange. L'hôte le chasse plus vite en martelant n'importe quel bouton ; l'Onde le chasse encore plus vite et le brûle (`[infiltration]` dans `rules.toml`) |
 | `inside_dps` | Avec `infiltrate_s` : dégâts par seconde infligés de l'intérieur ; `drain` en rend cette part au perso |
 | `armor` | Nombre de coups encaissés sans broncher pendant le démarrage et la phase active (on prend les dégâts) |
+| `armor_release` | Avec `armor` : un coup encaissé pendant le démarrage fait partir l'attaque aussitôt, sans attendre la fin de l'élan (« Now's my chance! » d'Avdol : « single-hit attacks against it release the punch early ») |
 
 ### Rafales
 
@@ -166,6 +167,7 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `hamon` | Le projectile lui-même porte l'onde : il brûle double sur les vampires, zombies et Hommes du Pilier, même tiré par un piège (les lentilles de Caesar concentrent la lumière du soleil) |
 | `status`, `status_s` | Comme pour un coup : ce qu'il laisse sur qui il touche |
 | `drain` | Part des dégâts rendue en vie à son lanceur (l'écureuil carnivore de Kars mange ce qu'il mord) |
+| `fragile` | Un coup encaissé par son lanceur éteint le projectile en plein vol, sans qu'il touche (l'ankh et le Flaming Detector d'Avdol dans ASBR : « disappears if Avdol takes damage ») |
 
 ## Pièges
 

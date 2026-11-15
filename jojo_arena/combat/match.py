@@ -406,7 +406,13 @@ class Match:
     def _update_projectiles(self) -> list[Event]:
         events: list[Event] = []
         for projectile in self.projectiles:
-            if self.fighters[projectile.owner].frozen:
+            owner = self.fighters[projectile.owner]
+            if owner.frozen:
+                continue
+            if projectile.defn.fragile and owner.state in (State.HITSTUN, State.GUARD_BROKEN):
+                # Its owner is struck: the shot goes out where it is, without hitting.
+                projectile.alive = False
+                events.append(Event("trap_popped", projectile.pos, projectile.owner))
                 continue
             if projectile.defn.homing and self._projectile_moves(projectile):
                 target = self.fighters[1 - projectile.owner]
