@@ -167,6 +167,12 @@ frames = 2
 fps = 4
 loop = true
 
+[anims.pose_crossfire]
+row = 75
+frames = 2
+fps = 4
+loop = true
+
 [poses.tsk_tsk]
 label = "« Tch, tch... YES I AM! »"
 label_en = "\"Tsk, tsk... YES I AM!\""
@@ -201,3 +207,10 @@ label_en = "Magician's Red, arms crossed"
 source = "Eyes of Heaven, rendu d'Avdol et Magician's Red (ch. 125)"
 stand = true
 stand_offset = [-8.0, -8.0]
+
+[poses.crossfire]
+label = "« Crossfire Hurricane ! »"
+label_en = "\"Crossfire Hurricane!\""
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : Crossfire Hurricane, l'ankh de feu que Magician's Red lance"
+stand = true
+stand_offset = [-7.0, -8.0]

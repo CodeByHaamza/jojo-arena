@@ -121,3 +121,25 @@ head = [0, 1]
 hand_r = [-2, -21]
 elbow_r = [4, -3]
 hand_l = [-1, 0]
+
+
+# More poses, where the sources ran out: invented in the fighter's spirit at the owner's
+# request (15/11/2026), from his moments in the manga; each says so in `source`.
+
+[poses.se_retire]
+label = "Speedwagon se retire avec style"
+label_en = "Speedwagon withdraws in style"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : son ultime d'ASBR, « Speedwagon se retire avec style » : il salue avant de partir"
+
+[[poses.se_retire.down]]
+lean = 1
+head = [0, 1]
+hand_r = [-2, -12]
+elbow_r = [3, 1]
+hand_l = [-9, -8]
+
+[[poses.se_retire.right]]
+lean = 2.5
+head = [1, 1]
+hand_r = [5, -11]
+hand_l = [-8, -8]

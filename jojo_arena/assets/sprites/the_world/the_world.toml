@@ -149,6 +149,12 @@ frames = 2
 fps = 4
 loop = true
 
+[anims.pose_road_roller]
+row = 66
+frames = 2
+fps = 4
+loop = true
+
 [poses.za_warudo]
 label = ""
 label_en = ""
@@ -157,6 +163,13 @@ stand = false
 stand_offset = [-14.0, -8.0]
 
 [poses.the_world_eoh]
+label = ""
+label_en = ""
+source = ""
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.road_roller]
 label = ""
 label_en = ""
 source = ""

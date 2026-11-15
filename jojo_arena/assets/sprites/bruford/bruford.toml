@@ -136,3 +136,42 @@ row = 57
 frames = 2
 fps = 10
 loop = true
+
+[anims.pose_assis_cheveux]
+row = 60
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_luck_pluck]
+row = 63
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_salut_chevalier]
+row = 66
+frames = 2
+fps = 4
+loop = true
+
+[poses.assis_cheveux]
+label = "Assis sur ses cheveux"
+label_en = "Sitting on his hair"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : ses cheveux qui attrapent et boivent, assez forts pour qu'il s'y asseye"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.luck_pluck]
+label = "Luck & Pluck levée"
+label_en = "Luck & Pluck raised"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : l'épée Luck, sur laquelle Jonathan grave « Pluck »"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.salut_chevalier]
+label = "Le salut du chevalier"
+label_en = "The knight's salute"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : le chevalier qui salue le courage de Jonathan avant de mourir"
+stand = false
+stand_offset = [-14.0, -8.0]

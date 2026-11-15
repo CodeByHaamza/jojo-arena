@@ -109,3 +109,17 @@ hand_r = [5, -11]
 elbow_r = [1, 2]
 hand_l = [4, -10]
 elbow_l = [-1, 2]
+
+
+# Crossfire Hurricane (invented, avdol.toml): both arms thrown wide and forward.
+
+[[poses.crossfire.down]]
+hand_l = [-9, -12]
+elbow_l = [-3, 0]
+hand_r = [9, -12]
+elbow_r = [3, 0]
+
+[[poses.crossfire.right]]
+lean = 1
+hand_r = [11, -12]
+hand_l = [8, -12]

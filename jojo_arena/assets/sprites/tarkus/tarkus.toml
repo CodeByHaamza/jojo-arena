@@ -136,3 +136,42 @@ row = 57
 frames = 2
 fps = 10
 loop = true
+
+[anims.pose_chaines_tendues]
+row = 60
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_colosse]
+row = 63
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_ecrase]
+row = 66
+frames = 2
+fps = 4
+loop = true
+
+[poses.chaines_tendues]
+label = "Les chaînes tendues"
+label_en = "Chains pulled taut"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : le duel au nœud de chaînes contre Jonathan"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.colosse]
+label = "Le colosse"
+label_en = "The colossus"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : le géant en armure qui gonfle ses muscles"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.ecrase]
+label = "Prêt à écraser"
+label_en = "Ready to crush"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : ses poings qui écrasent tout ce qu'ils frappent"
+stand = false
+stand_offset = [-14.0, -8.0]

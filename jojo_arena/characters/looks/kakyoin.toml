@@ -298,3 +298,28 @@ hand_l = [1, -5]
 elbow_l = [-3, 0]
 foot_l = [-3, 0]
 foot_r = [2, 0]
+
+
+# More poses, where the sources ran out: invented in the fighter's spirit at the owner's
+# request (15/11/2026), from his moments in the manga; each says so in `source`.
+
+[poses.rero_rero]
+label = "Rero rero rero"
+label_en = "Rero rero rero"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : la cerise qu'il fait rouler sur sa langue"
+stand = true
+stand_offset = [-8, 7]
+
+[[poses.rero_rero.down]]
+head = [0, 1]
+hand_r = [-1, -17]
+elbow_r = [4, 0]
+hand_l = [2, -5]
+elbow_l = [-4, 0]
+
+[[poses.rero_rero.right]]
+head = [0, 1]
+hand_r = [5, -17]
+elbow_r = [2, 1]
+hand_l = [1, -5]
+elbow_l = [-3, 0]

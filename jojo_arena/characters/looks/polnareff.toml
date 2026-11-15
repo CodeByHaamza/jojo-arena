@@ -191,3 +191,29 @@ hand_r = [-1, -21]
 elbow_r = [4, -4]
 hand_l = [-3, -21]
 elbow_l = [-2, -4]
+
+
+# More poses, where the sources ran out: invented in the fighter's spirit at the owner's
+# request (15/11/2026), from his moments in the manga; each says so in `source`.
+
+[poses.en_garde]
+label = "En garde !"
+label_en = "En garde!"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : le duelliste qui défie son adversaire, Silver Chariot à ses côtés"
+stand = true
+stand_offset = [2, 9]
+
+[[poses.en_garde.down]]
+lean = 0.5
+hand_r = [-5, -10]
+elbow_r = [2, 0]
+big_hand_r = true
+hand_l = [2, -5]
+elbow_l = [-4, 0]
+
+[[poses.en_garde.right]]
+hand_r = [12, -11]
+hand_l = [1, -5]
+elbow_l = [-3, 0]
+foot_l = [-3, 0]
+foot_r = [2, 0]

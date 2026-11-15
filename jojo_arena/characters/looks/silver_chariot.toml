@@ -134,3 +134,20 @@ elbow_l = [-3, 1]
 foot_r = [4, 0]
 knee_r = [2, -1]
 foot_l = [-4, 0]
+
+
+# En garde (invented, polnareff.toml): the rapier straight at the opponent.
+
+[[poses.en_garde.down]]
+lean = 1
+hand_r = [-4, -10]
+big_hand_r = true
+hand_l = [-2, -3]
+
+[[poses.en_garde.right]]
+lean = 1.5
+hand_r = [13, -10]
+hand_l = [-3, -6]
+elbow_l = [-3, 1]
+foot_r = [4, 0]
+foot_l = [-4, 0]

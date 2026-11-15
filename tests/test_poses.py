@@ -273,20 +273,9 @@ from jojo_arena.paths import SPRITES_DIR  # noqa: E402
 
 # The parts whose fighters strike their real poses.
 POSED_PARTS = {1, 2, 3}
-# Three poses alone, except where the sources run out (15/11/2026): nothing is invented to
-# fill the gap, the owner is told instead. Bruford, Tarkus, Straizo and Santana have no
-# gallery on JoJo Wiki and are in neither All-Star Battle R nor Eyes of Heaven: they keep
-# the generic pose. Zeppeli, Speedwagon, Wamuu and Esidisi have one or two sourced poses.
-POSES_ALONE = {
-    "bruford": 0,
-    "tarkus": 0,
-    "straizo": 0,
-    "santana": 0,
-    "zeppeli": 1,
-    "speedwagon": 2,
-    "wamuu": 2,
-    "esidisi": 2,
-}
+# Three poses alone for everyone, three with the Stand for its users. Where no source
+# showed a pose, it was invented in the fighter's spirit at the owner's request
+# (15/11/2026), and its `source` says so.
 
 
 def _sheet(name: str) -> SheetSprites:
@@ -302,13 +291,12 @@ def _sheet(name: str) -> SheetSprites:
 def test_every_fighter_of_a_posed_part_has_its_poses(fighter):
     poses = _sheet(fighter.sprite).poses
     alone = [p for p in poses.values() if not p.stand]
-    wanted = POSES_ALONE.get(fighter.id, 3)
-    assert len(alone) >= wanted, f"{fighter.id}: {len(alone)} poses alone"
+    assert len(alone) >= 3, f"{fighter.id}: {len(alone)} poses alone"
     for pose in poses.values():
         assert pose.label and pose.label_en and pose.source, f"{fighter.id}: {pose.id}"
     if fighter.stand_sprite:
         together = [p for p in poses.values() if p.stand]
-        assert len(together) >= 2, f"{fighter.id}: {len(together)} poses with the Stand"
+        assert len(together) >= 3, f"{fighter.id}: {len(together)} poses with the Stand"
         stand = _sheet(fighter.stand_sprite)
         for pose in together:
             assert f"pose_{pose.id}" in stand.specs, f"{fighter.stand_sprite} lacks {pose.id}"

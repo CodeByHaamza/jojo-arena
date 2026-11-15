@@ -217,3 +217,27 @@ foot_r = [2, 0]
 hand_r = [3, -17]
 elbow_r = [3, 1]
 hand_l = [-1, 0]
+
+
+# More poses, where the sources ran out: invented in the fighter's spirit at the owner's
+# request (15/11/2026), from his moments in the manga; each says so in `source`.
+
+[poses.crossfire]
+label = "« Crossfire Hurricane ! »"
+label_en = "\"Crossfire Hurricane!\""
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : Crossfire Hurricane, l'ankh de feu que Magician's Red lance"
+stand = true
+stand_offset = [-7, -8]
+
+[[poses.crossfire.down]]
+hand_r = [-4, -11]
+elbow_r = [2, 1]
+big_hand_r = true
+hand_l = [2, -5]
+elbow_l = [-4, 0]
+
+[[poses.crossfire.right]]
+lean = 0.5
+hand_r = [11, -11]
+hand_l = [1, -5]
+elbow_l = [-3, 0]

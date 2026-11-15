@@ -107,3 +107,16 @@ lean = 1
 hand_r = [10, -11]
 hand_l = [9, -10]
 elbow_l = [-2, 1]
+
+
+# Rero rero rero (invented, kakyoin.toml): the tentacles spread behind him.
+
+[[poses.rero_rero.down]]
+hand_l = [-7, -16]
+elbow_l = [-3, -2]
+hand_r = [7, -16]
+elbow_r = [3, -2]
+
+[[poses.rero_rero.right]]
+hand_r = [5, -16]
+hand_l = [-5, -16]

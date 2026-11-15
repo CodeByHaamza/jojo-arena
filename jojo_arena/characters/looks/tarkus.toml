@@ -84,3 +84,66 @@ length = 0.35
 type = "chain"
 material = "chain"
 length = 8
+
+
+# JoJo poses ---------------------------------------------------------------------------
+# No source shows a pose of this fighter (no JoJo Wiki gallery, absent from All-Star
+# Battle R and Eyes of Heaven, searched 15/11/2026). The owner asked for poses invented in
+# the fighter's bizarre spirit, from his moments in the manga; each says so in `source`.
+# One key per view: it breathes on its own.
+
+[poses.chaines_tendues]
+label = "Les chaînes tendues"
+label_en = "Chains pulled taut"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : le duel au nœud de chaînes contre Jonathan"
+
+[[poses.chaines_tendues.down]]
+hand_l = [-7, -22]
+elbow_l = [-4, -4]
+hand_r = [7, -22]
+elbow_r = [4, -4]
+foot_l = [-2, 0]
+foot_r = [2, 0]
+
+[[poses.chaines_tendues.right]]
+hand_r = [6, -22]
+elbow_r = [3, -4]
+hand_l = [-5, -22]
+
+[poses.colosse]
+label = "Le colosse"
+label_en = "The colossus"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : le géant en armure qui gonfle ses muscles"
+
+[[poses.colosse.down]]
+bob = 1
+head = [0, 1]
+hand_l = [3, -6]
+elbow_l = [-6, -1]
+hand_r = [-3, -6]
+elbow_r = [6, -1]
+
+[[poses.colosse.right]]
+bob = 1
+head = [1, 1]
+hand_r = [4, -6]
+elbow_r = [-2, -2]
+hand_l = [3, -6]
+
+[poses.ecrase]
+label = "Prêt à écraser"
+label_en = "Ready to crush"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : ses poings qui écrasent tout ce qu'ils frappent"
+
+[[poses.ecrase.down]]
+lean = -1
+hand_l = [1, -24]
+elbow_l = [-3, -3]
+hand_r = [-1, -24]
+elbow_r = [3, -3]
+
+[[poses.ecrase.right]]
+lean = -1.5
+hand_r = [1, -24]
+elbow_r = [2, -3]
+hand_l = [0, -24]

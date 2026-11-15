@@ -149,6 +149,12 @@ frames = 2
 fps = 4
 loop = true
 
+[anims.pose_rero_rero]
+row = 66
+frames = 2
+fps = 4
+loop = true
+
 [poses.hierophant_derriere]
 label = ""
 label_en = ""
@@ -157,6 +163,13 @@ stand = false
 stand_offset = [-14.0, -8.0]
 
 [poses.emerald_splash]
+label = ""
+label_en = ""
+source = ""
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.rero_rero]
 label = ""
 label_en = ""
 source = ""

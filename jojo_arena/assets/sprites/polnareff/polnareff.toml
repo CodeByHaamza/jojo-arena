@@ -167,6 +167,12 @@ frames = 2
 fps = 4
 loop = true
 
+[anims.pose_en_garde]
+row = 75
+frames = 2
+fps = 4
+loop = true
+
 [poses.pose_anime]
 label = "La fente de l'anime"
 label_en = "The anime lunge"
@@ -201,3 +207,10 @@ label_en = "Silver Chariot without armour"
 source = "Ch. 126 (ASBR, pose d'esquive stylée 4) ; galerie de Polnareff sur JoJo Wiki"
 stand = true
 stand_offset = [-5.0, 10.0]
+
+[poses.en_garde]
+label = "En garde !"
+label_en = "En garde!"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : le duelliste qui défie son adversaire, Silver Chariot à ses côtés"
+stand = true
+stand_offset = [2.0, 9.0]

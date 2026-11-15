@@ -139,3 +139,24 @@ head = [1, 1]
 hand_r = [5, -18]
 elbow_r = [1, 2]
 hand_l = [4, -18]
+
+
+# More poses, where the sources ran out: invented in the fighter's spirit at the owner's
+# request (15/11/2026), from his moments in the manga; each says so in `source`.
+
+[poses.ruse]
+label = "La ruse d'Esidisi"
+label_en = "Esidisi's trick"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : le Pilier rusé qui fait semblant de pleurer"
+
+[[poses.ruse.down]]
+head = [1, 0]
+hand_r = [-2, -16]
+elbow_r = [4, 0]
+hand_l = [1, -4]
+elbow_l = [-3, 1]
+
+[[poses.ruse.right]]
+hand_r = [4, -16]
+elbow_r = [2, 1]
+hand_l = [-2, -4]

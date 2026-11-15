@@ -14,6 +14,9 @@ des corrections seules une patch.
   ballerine de Lisa Lisa... Les manieurs de Stand en ont aussi **avec leur Stand**, qui
   prend sa propre pose à côté d'eux. On choisit sa pose (et sa pose avec Stand) à l'écran
   de sélection, juste après le perso ; la touche Pose joue celle qu'on a choisie.
+  Quand aucune source ne montre de pose (Bruford, Tarkus, Straizo, Santana...), elles
+  sont inventées dans l'esprit bizarre du perso, et leur source le dit : Bruford assis
+  sur ses propres cheveux, Santana à quatre pattes, DIO et son « Road Roller da ! ».
 - **Coudes et genoux.** Les sprites plient enfin les bras et les jambes.
 
 - **Options d'arène.** Sur l'écran des arènes (Haut/Bas) : le soleil (aucun, à l'aube,

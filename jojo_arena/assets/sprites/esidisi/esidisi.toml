@@ -149,6 +149,12 @@ frames = 2
 fps = 4
 loop = true
 
+[anims.pose_ruse]
+row = 66
+frames = 2
+fps = 4
+loop = true
+
 [poses.griffes]
 label = "Les griffes levées"
 label_en = "Claws raised"
@@ -160,5 +166,12 @@ stand_offset = [-14.0, -8.0]
 label = "Il pleure"
 label_en = "He weeps"
 source = "ASBR, contre : « begins to quietly weep »"
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.ruse]
+label = "La ruse d'Esidisi"
+label_en = "Esidisi's trick"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : le Pilier rusé qui fait semblant de pleurer"
 stand = false
 stand_offset = [-14.0, -8.0]

@@ -154,3 +154,27 @@ head = [-2, -1]
 hand_r = [-5, -4]
 hand_l = [-6, -2]
 knee_r = [2, -1]
+
+
+# More poses, where the sources ran out: invented in the fighter's spirit at the owner's
+# request (15/11/2026), from his moments in the manga; each says so in `source`.
+
+[poses.divine_sandstorm]
+label = "Divine Sandstorm"
+label_en = "Divine Sandstorm"
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : Divine Sandstorm, les avant-bras qui tournent en sens contraire"
+
+[[poses.divine_sandstorm.down]]
+hand_r = [-4, -13]
+elbow_r = [3, 1]
+hand_l = [4, -6]
+elbow_l = [-3, 1]
+foot_l = [-2, 0]
+foot_r = [2, 0]
+
+[[poses.divine_sandstorm.right]]
+lean = 1
+hand_r = [11, -13]
+hand_l = [9, -6]
+foot_r = [3, 0]
+foot_l = [-3, 0]

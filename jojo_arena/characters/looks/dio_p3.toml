@@ -328,3 +328,28 @@ hand_l = [-2, -22]
 elbow_l = [-4, -3]
 hand_r = [3, -6]
 elbow_r = [1, 2]
+
+
+# More poses, where the sources ran out: invented in the fighter's spirit at the owner's
+# request (15/11/2026), from his moments in the manga; each says so in `source`.
+
+[poses.road_roller]
+label = "« Road Roller da ! »"
+label_en = "\"Road Roller da!\""
+source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : le rouleau compresseur qu'il abat sur Jotaro"
+stand = true
+stand_offset = [-8, -7]
+
+[[poses.road_roller.down]]
+head = [0, -1]
+hand_l = [-3, -25]
+elbow_l = [-4, -3]
+hand_r = [3, -25]
+elbow_r = [4, -3]
+
+[[poses.road_roller.right]]
+head = [0, -1]
+lean = -1
+hand_r = [3, -25]
+elbow_r = [3, -3]
+hand_l = [-1, -25]
