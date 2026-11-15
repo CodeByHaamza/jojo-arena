@@ -24,34 +24,34 @@ def body_parts(sk: Skeleton, look: Look) -> list[Part]:
     (ta, tb, tr) = sk.torso
     head = Part(m["head"], disc(hx, hy, b.head_r), z=50, highlight=head_highlight)
     if sk.view == "right":
-        (far_sh, near_sh), (far_hand, near_hand) = sk.shoulders, sk.hands
-        (far_hip, near_hip), (far_foot, near_foot) = sk.hips, sk.feet
+        (far_hand, near_hand), (far_foot, near_foot) = sk.hands, sk.feet
+        (far_arm, near_arm), (far_leg, near_leg) = sk.arms, sk.legs
         parts = [
-            Part(m["arms"], capsule(*far_sh, *far_hand, b.arm_r * 0.95), z=5),
+            Part(m["arms"], far_arm.pixels(b.arm_r * 0.95), z=5),
             Part(m["hands"], disc(*far_hand, b.hand_r * 0.95), z=6),
-            Part(m["legs"], capsule(*far_hip, *far_foot, b.leg_r * 0.96), z=7),
+            Part(m["legs"], far_leg.pixels(b.leg_r * 0.96), z=7),
             Part(m["feet"], disc(far_foot[0] + 1, far_foot[1] + 1, b.foot_r), z=8),
             Part(m["torso"], capsule(*ta, *tb, tr), z=30),
-            Part(m["legs"], capsule(*near_hip, *near_foot, b.leg_r), z=35),
+            Part(m["legs"], near_leg.pixels(b.leg_r), z=35),
             Part(m["feet"], disc(near_foot[0] + 1, near_foot[1] + 1, b.foot_r * 1.04), z=36),
             head,
-            Part(m["arms"], capsule(*near_sh, *near_hand, b.arm_r * 1.05), z=60),
+            Part(m["arms"], near_arm.pixels(b.arm_r * 1.05), z=60),
             Part(m["hands"], disc(*near_hand, b.hand_r * 1.15), z=61),
         ]
     else:
-        (sl, sr), (hl, hr) = sk.shoulders, sk.hands
-        (pl, pr), (fl, fr) = sk.hips, sk.feet
+        hl, hr = sk.hands
+        fl, fr = sk.feet
         torso_highlight = {(round(ta[0] - 0.65 * tr), round(ta[1] - 0.5 * tr))}
         # Hands go in front of the body, except raised hands seen from the back.
         rest_y = sk.shoulder_y + b.arms * 0.6
         hands_z = 60 if sk.view == "down" or sk.big_hand or hr[1] > rest_y else 15
         parts = [
-            Part(m["legs"], capsule(*pl, *fl, b.leg_r), z=10),
-            Part(m["legs"], capsule(*pr, *fr, b.leg_r), z=10),
+            Part(m["legs"], sk.legs[0].pixels(b.leg_r), z=10),
+            Part(m["legs"], sk.legs[1].pixels(b.leg_r), z=10),
             Part(m["feet"], disc(fl[0], fl[1] + 1, b.foot_r), z=11),
             Part(m["feet"], disc(fr[0], fr[1] + 1, b.foot_r), z=11),
-            Part(m["arms"], capsule(*sl, *hl, b.arm_r), z=20),
-            Part(m["arms"], capsule(*sr, *hr, b.arm_r), z=20),
+            Part(m["arms"], sk.arms[0].pixels(b.arm_r), z=20),
+            Part(m["arms"], sk.arms[1].pixels(b.arm_r), z=20),
             Part(m["torso"], capsule(*ta, *tb, tr), z=30, highlight=torso_highlight),
             head,
             Part(m["hands"], disc(*hl, b.hand_r), z=hands_z),

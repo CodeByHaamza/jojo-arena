@@ -11,6 +11,7 @@ arm and leg lengths, so every body shape can play the same animations.
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, fields
 
 Point = tuple[float, float]
@@ -50,6 +51,71 @@ class Pose:
     foot_l: Point = (0.0, 0.0)
     foot_r: Point = (0.0, 0.0)
     big_hand_r: bool = False  # foreshortened fist coming at the viewer
+    # Joints, for poses: where the elbow or the knee sits, from the middle of the limb
+    # (scaled like the hands). Zero leaves the limb straight, as every move draws it.
+    elbow_l: Point = (0.0, 0.0)
+    elbow_r: Point = (0.0, 0.0)
+    knee_l: Point = (0.0, 0.0)
+    knee_r: Point = (0.0, 0.0)
+    sway: float = 0.0  # the hips slide sideways (front/back) or forward (profile)
+
+
+@dataclass(frozen=True)
+class Limb:
+    """An arm or a leg: from its root (shoulder, hip) through its joint (elbow, knee) to
+    its end (hand, foot). A straight limb is drawn and measured exactly as the single
+    segment root-end always was; a bent one is two segments."""
+
+    root: Point
+    joint: Point
+    end: Point
+    bent: bool
+
+    def _lengths(self) -> tuple[float, float]:
+        return math.dist(self.root, self.joint), math.dist(self.joint, self.end)
+
+    def point(self, t: float) -> Point:
+        """The point a fraction `t` of the way along the limb, from the root."""
+        (ax, ay), (bx, by) = self.root, self.end
+        if not self.bent:
+            return ax + (bx - ax) * t, ay + (by - ay) * t
+        first, second = self._lengths()
+        share = first / ((first + second) or 1e-9)
+        if t <= share:
+            u = t / (share or 1e-9)
+            (jx, jy) = self.joint
+            return ax + (jx - ax) * u, ay + (jy - ay) * u
+        u = (t - share) / ((1 - share) or 1e-9)
+        (jx, jy) = self.joint
+        return jx + (bx - jx) * u, jy + (by - jy) * u
+
+    def path(self, t0: float = 0.0, t1: float = 1.0) -> list[Point]:
+        """The corners of the part of the limb from `t0` to `t1`."""
+        corners = [self.point(t0)]
+        if self.bent:
+            first, second = self._lengths()
+            share = first / ((first + second) or 1e-9)
+            if t0 < share < t1:
+                corners.append(self.joint)
+        corners.append(self.point(t1))
+        return corners
+
+    def pixels(self, r: float, t0: float = 0.0, t1: float = 1.0) -> set:
+        """The limb (or the part of it from `t0` to `t1`) drawn `r` pixels thick."""
+        from .raster import capsule
+
+        corners = self.path(t0, t1)
+        found: set = set()
+        for a, b in zip(corners, corners[1:], strict=False):
+            found |= capsule(*a, *b, r)
+        return found
+
+    def end_direction(self) -> Point:
+        """Unit vector along the last segment, toward the end (the forearm, the shin)."""
+        start = self.joint if self.bent else self.root
+        dx, dy = self.end[0] - start[0], self.end[1] - start[1]
+        norm = math.hypot(dx, dy) or 1e-9
+        return dx / norm, dy / norm
 
 
 @dataclass(frozen=True)
@@ -66,6 +132,8 @@ class Skeleton:
     hip_y: float
     lean: float
     big_hand: bool
+    arms: tuple[Limb, Limb]  # same order as shoulders and hands
+    legs: tuple[Limb, Limb]  # same order as hips and feet
 
     @property
     def head_r(self) -> float:
@@ -114,47 +182,76 @@ def make_skeleton(view: str, pose: Pose, build: Build, cell: int) -> Skeleton:
         margin = build.foot_r + 8  # pointed boots reach past the foot
         return inside(x + off[0] * leg_k, margin), feet_y + off[1] * leg_k
 
+    def joint(root: Point, end: Point, off: Point, k: float) -> tuple[Point, bool]:
+        # The elbow or knee: the middle of the limb, moved by the pose (scaled like the
+        # hand or foot), kept inside the cell. No offset: a straight limb.
+        if off == (0.0, 0.0):
+            return ((root[0] + end[0]) / 2, (root[1] + end[1]) / 2), False
+        margin = build.hand_r + 3
+        mx, my = (root[0] + end[0]) / 2 + off[0] * k, (root[1] + end[1]) / 2 + off[1] * k
+        return (inside(mx, margin), inside(my, margin)), True
+
+    def limbs(roots, ends, offs, k) -> tuple[Limb, Limb]:
+        made = []
+        for root, end, off in zip(roots, ends, offs, strict=True):
+            point, bent = joint(root, end, off, k)
+            made.append(Limb(root, point, end, bent))
+        return made[0], made[1]
+
+    sway = pose.sway
     if view == "right":
         torso_r = build.torso_r * 0.87
         shoulder = (cx + lean, shoulder_y + 1)
+        shoulders = (shoulder, (shoulder[0] + 1.5, shoulder[1]))
+        hands = (
+            hand(shoulder[0] - 1, shoulder_y + build.arms, pose.hand_l),
+            hand(shoulder[0] + 2.5, shoulder_y + build.arms, pose.hand_r),
+        )
+        hips = ((cx - 1 + sway, hip_y), (cx + 1 + sway, hip_y))
+        feet = (foot(cx - 2, pose.foot_l), foot(cx + 2, pose.foot_r))
         return Skeleton(
             view=view,
             build=build,
             head=(cx + 1 + lean * 1.2 + pose.head[0], head_y),
-            torso=((cx + lean, shoulder_y + torso_r - 3.2), (cx, hip_y - 2), torso_r),
-            shoulders=(shoulder, (shoulder[0] + 1.5, shoulder[1])),
-            hands=(
-                hand(shoulder[0] - 1, shoulder_y + build.arms, pose.hand_l),
-                hand(shoulder[0] + 2.5, shoulder_y + build.arms, pose.hand_r),
-            ),
-            hips=((cx - 1, hip_y), (cx + 1, hip_y)),
-            feet=(foot(cx - 2, pose.foot_l), foot(cx + 2, pose.foot_r)),
+            torso=((cx + lean, shoulder_y + torso_r - 3.2), (cx + sway, hip_y - 2), torso_r),
+            shoulders=shoulders,
+            hands=hands,
+            hips=hips,
+            feet=feet,
             shoulder_y=shoulder_y,
             hip_y=hip_y,
             lean=lean,
             big_hand=False,
+            arms=limbs(shoulders, hands, (pose.elbow_l, pose.elbow_r), arm_k),
+            legs=limbs(hips, feet, (pose.knee_l, pose.knee_r), leg_k),
         )
     half = build.shoulders
+    shoulders = ((cx - half + lean, shoulder_y), (cx + half + lean, shoulder_y))
+    hands = (
+        hand(cx - half - 2 + lean, shoulder_y + build.arms, pose.hand_l),
+        hand(cx + half + 2 + lean, shoulder_y + build.arms, pose.hand_r),
+    )
+    hips = ((cx - build.hips + sway, hip_y), (cx + build.hips + sway, hip_y))
+    feet = (foot(cx - build.hips, pose.foot_l), foot(cx + build.hips, pose.foot_r))
     return Skeleton(
         view=view,
         build=build,
         head=(cx + lean + pose.head[0], head_y),
         torso=(
             (cx + lean, shoulder_y + build.torso_r - 3.2),
-            (cx + lean * 0.5, hip_y - 2),
+            (cx + lean * 0.5 + sway, hip_y - 2),
             build.torso_r,
         ),
-        shoulders=((cx - half + lean, shoulder_y), (cx + half + lean, shoulder_y)),
-        hands=(
-            hand(cx - half - 2 + lean, shoulder_y + build.arms, pose.hand_l),
-            hand(cx + half + 2 + lean, shoulder_y + build.arms, pose.hand_r),
-        ),
-        hips=((cx - build.hips, hip_y), (cx + build.hips, hip_y)),
-        feet=(foot(cx - build.hips, pose.foot_l), foot(cx + build.hips, pose.foot_r)),
+        shoulders=shoulders,
+        hands=hands,
+        hips=hips,
+        feet=feet,
         shoulder_y=shoulder_y,
         hip_y=hip_y,
         lean=lean,
         big_hand=pose.big_hand_r,
+        arms=limbs(shoulders, hands, (pose.elbow_l, pose.elbow_r), arm_k),
+        legs=limbs(hips, feet, (pose.knee_l, pose.knee_r), leg_k),
     )
 
 
@@ -505,7 +602,17 @@ POSE_NAMES = ("raise", "point", "arch", "frame_face", "point_up", "spread", "fle
 # frames are blended from two keys, so a move can last longer and still read smoothly.
 
 POSE_FIELDS = tuple(f.name for f in fields(Pose))
-POINT_FIELDS = ("head", "hand_l", "hand_r", "foot_l", "foot_r")
+POINT_FIELDS = (
+    "head",
+    "hand_l",
+    "hand_r",
+    "foot_l",
+    "foot_r",
+    "elbow_l",
+    "elbow_r",
+    "knee_l",
+    "knee_r",
+)
 
 
 def blend(a: Pose, b: Pose, t: float) -> Pose:
