@@ -43,6 +43,12 @@ def test_the_computer_knows_how_far_its_moves_reach():
     assert move_reach(jotaro.move("stand", "special_alt")) > 60  # Star Finger
     assert move_reach(jotaro.move("base", "light")) < 40
     assert move_reach(jotaro.move("stand", "special")) == 0  # time stop: not a blow
+    tar = get_fighter("joseph_p3").kit.move("base", "special")
+    assert tar.trap is not None and move_reach(tar) < 60  # a drum swung: as far as the drum
+    threads = get_fighter("kakyoin").kit.move("stand", "special_alt")
+    assert threads.trap is not None and move_reach(threads) > 200  # only a trap: from anywhere
+    grapple = get_fighter("kakyoin").kit.move("base", "special_alt")
+    assert grapple.leap and move_reach(grapple) == 0  # it carries him away: not a blow
 
 
 def test_the_computer_guards_or_dodges_what_it_sees_coming():
@@ -56,6 +62,24 @@ def test_the_computer_guards_or_dodges_what_it_sees_coming():
     jotaro.set_state(State.IDLE)
     answers = [calm.think(jonathan, jotaro) for _ in range(LEVELS[3].reaction_f + 4)]
     assert not any("guard" in a.held for a in answers)
+
+
+def test_the_computer_keeps_a_counter_super_for_a_blow_coming():
+    """Old Joseph's one-bar super is a counter: thrown at an open opponent it catches
+    nothing, so the computer keeps it for when it is being struck."""
+    match = make_duel("joseph_p3", "jotaro_p3", p1=(150, 100), p2=(172, 100))
+    joseph, jotaro = match.fighters
+    joseph.hh = match.rules.hh_bar  # one bar: the counter
+    jotaro.set_state(State.POSE)  # wide open, and close
+    idle = [CpuPlayer(3, seed=s).think(joseph, jotaro) for s in range(300)]
+    assert not any(a.was_pressed("heart_heat") for a in idle)
+    jotaro.set_state(State.IDLE)
+    jotaro.start_attack(jotaro.kit.move("base", "heavy"), joseph.pos)
+    answers = []
+    for seed in range(40):
+        cpu = CpuPlayer(3, seed=seed)
+        answers += [cpu.think(joseph, jotaro) for _ in range(LEVELS[3].reaction_f + 2)]
+    assert any(a.was_pressed("heart_heat") for a in answers)
 
 
 def test_the_top_level_beats_the_simple_bot():
