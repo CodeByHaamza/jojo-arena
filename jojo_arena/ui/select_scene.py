@@ -400,11 +400,13 @@ class CharacterSelectScene(Scene):
         if index is not None:
             # The fighter faces the middle; its Stand looms behind, towards the edge.
             feet_x = center + 12 if side == 0 else center - 12
-            anim, with_stand = "idle", True
+            anim, with_stand, offset = "idle", True, None
             if side == self.choosing:
                 with_stand = self.pose_rows()[self.row]
                 pose_id = self.loadout.stand_pose if with_stand else self.loadout.pose
                 anim = f"pose_{pose_id}"
+                info = self.looks[index].sprites.poses.get(pose_id)
+                offset = info.stand_offset if info is not None and with_stand else None
             self.looks[index].draw(
                 surface,
                 (feet_x, FEET_Y),
@@ -413,6 +415,7 @@ class CharacterSelectScene(Scene):
                 flip=side == 1,
                 stand=with_stand,
                 anim=anim,
+                stand_offset=offset,
             )
             if self.flash_f[side]:
                 strength = self.flash_f[side] / PICK_FLASH_F

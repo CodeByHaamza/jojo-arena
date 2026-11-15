@@ -71,7 +71,7 @@ def sprite_direction(fx: float, fy: float) -> tuple[str, bool]:
 
 @dataclass(frozen=True)
 class PoseInfo:
-    """A JoJo pose a sheet can play (animation `pose_<id>`), and where it comes from."""
+    """A named pose a sheet can play (animation `pose_<id>`), and where it comes from."""
 
     id: str
     label: str

@@ -266,8 +266,13 @@ class FighterView:
         if info is None or not info.stand:
             return fighter.stand_spot()
         ahead, aside = info.stand_offset
-        beside = Vec2(-fighter.facing.y, fighter.facing.x)
-        return fighter.pos + fighter.facing * ahead + beside * aside
+        facing = fighter.facing
+        # In profile the sprite is mirrored: "aside" stays on the same side of the screen
+        # (towards the viewer), so a Stand behind does not jump in front when its user
+        # turns round.
+        profile = abs(facing.x) >= abs(facing.y)
+        beside = Vec2(0, 1) if profile else Vec2(-facing.y, facing.x)
+        return fighter.pos + facing * ahead + beside * aside
 
     def _stand_pose(self, fighter: Fighter, anim: str, index: int) -> pygame.Surface:
         name, spec = self.resolve(self.stand, anim)
@@ -419,6 +424,7 @@ class FightView:
         self.fighter_views = [
             FighterView(d, loadout) for d, loadout in zip(fighter_defs, loadouts, strict=False)
         ]
+
         self.fighter_defs = fighter_defs
         self.sparks: list[Spark] = []
         self._fx_voiced: dict[int, tuple[int, int]] = {}  # a move's own sound, once
@@ -446,6 +452,11 @@ class FightView:
         self._burst_word_f = 0
 
     # Reacting to the simulation ------------------------------------------------------
+
+    def stand_layer_y(self, fighter: Fighter) -> float:
+        """The depth a fighter's Stand is sorted at: where it is drawn (a pose can put
+        it somewhere else than its usual spot)."""
+        return self.fighter_views[fighter.index].stand_draw_spot(fighter).y
 
     def chest(self, index: int | None) -> Vec2:
         """Chest offset of one fighter, or the average of both when nobody in particular."""
@@ -941,7 +952,7 @@ class FightView:
         for fighter in match.fighters:
             view = self.fighter_views[fighter.index]
             if view.stand_presence(fighter) > 0 and not hidden(fighter):
-                drawables.append((fighter.stand_spot().y, 2, fighter))
+                drawables.append((self.stand_layer_y(fighter), 2, fighter))
         for _, kind, item in sorted(drawables, key=lambda d: (d[0], d[1])):
             if kind == 0:
                 self.renderer.draw_obstacle(surface, item)

@@ -136,3 +136,42 @@ row = 57
 frames = 2
 fps = 10
 loop = true
+
+[anims.pose_au_sommet]
+row = 60
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_nonchalant]
+row = 63
+frames = 2
+fps = 4
+loop = true
+
+[anims.pose_en_garde]
+row = 66
+frames = 2
+fps = 4
+loop = true
+
+[poses.au_sommet]
+label = ""
+label_en = ""
+source = ""
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.nonchalant]
+label = ""
+label_en = ""
+source = ""
+stand = false
+stand_offset = [-14.0, -8.0]
+
+[poses.en_garde]
+label = ""
+label_en = ""
+source = ""
+stand = false
+stand_offset = [-14.0, -8.0]

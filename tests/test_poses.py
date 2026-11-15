@@ -312,3 +312,65 @@ def test_every_fighter_of_a_posed_part_has_its_poses(fighter):
         stand = _sheet(fighter.stand_sprite)
         for pose in together:
             assert f"pose_{pose.id}" in stand.specs, f"{fighter.stand_sprite} lacks {pose.id}"
+
+
+# Final review fixes ---------------------------------------------------------------------
+
+
+def test_a_posing_stand_is_layered_where_it_is_drawn(tmp_path):
+    from jojo_arena.stages import load_stage
+    from jojo_arena.ui.fight_view import FightView
+
+    match = make_duel("jotaro_p3", "mannequin_blue")
+    stand_out(match)
+    view = FightView(
+        load_stage("cairo_night"), [get_fighter("jotaro_p3"), get_fighter("mannequin_blue")]
+    )
+    jotaro_view = view.fighter_views[0]
+    jotaro_view.sprites = posed_sheet(tmp_path)
+    jotaro_view.loadout = resolve_loadout(jotaro_view.sprites, None)
+    fighter = posing(match)
+    spot = jotaro_view.stand_draw_spot(fighter)
+    assert spot != fighter.stand_spot()
+    assert view.stand_layer_y(fighter) == spot.y
+
+
+def test_the_stand_keeps_its_side_when_its_user_turns(tmp_path):
+    match = make_duel("jotaro_p3", "mannequin_blue")
+    stand_out(match)
+    view = view_with("jotaro_p3", posed_sheet(tmp_path), None)
+    fighter = posing(match)
+    fighter.facing = Vec2(1, 0)
+    right = view.stand_draw_spot(fighter) - fighter.pos
+    fighter.facing = Vec2(-1, 0)
+    left = view.stand_draw_spot(fighter) - fighter.pos
+    # Ahead follows the facing; aside stays on the same side of the screen (the profile
+    # sprite is mirrored, the composition must not flip from behind to in front).
+    assert right.x == -left.x and right.y == left.y == 6
+
+
+def test_the_preview_puts_the_stand_where_the_pose_does():
+    from jojo_arena.ui.portraits import stand_feet
+
+    feet = (100.0, 150.0)
+    ahead = stand_feet(feet, 2, flip=False, offset=(9, 6))
+    behind = stand_feet(feet, 2, flip=False, offset=(-9, 6))
+    assert ahead[0] > feet[0] > behind[0]
+    assert stand_feet(feet, 2, flip=True, offset=(9, 6))[0] < feet[0]  # facing left
+    assert stand_feet(feet, 2, flip=False, offset=None)[0] < feet[0]  # the usual: behind
+
+
+def test_kars_keeps_his_pose_once_he_is_the_ultimate_life_form():
+    kars = _sheet(get_fighter("kars").sprite)
+    ultimate = _sheet(get_fighter("kars").body_sprites["ultimate"])
+    for pose_id in kars.poses:
+        assert f"pose_{pose_id}" in ultimate.specs, pose_id
+
+
+def test_the_engine_names_no_jojo():
+    from pathlib import Path
+
+    engine = Path(__file__).resolve().parents[1] / "jojo_arena" / "engine"
+    for path in engine.glob("*.py"):
+        text = path.read_text(encoding="utf-8").replace("jojo_arena", "")
+        assert "jojo" not in text.lower(), path.name
