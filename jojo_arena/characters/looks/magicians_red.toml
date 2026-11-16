@@ -123,3 +123,21 @@ elbow_r = [3, 0]
 lean = 1
 hand_r = [11, -12]
 hand_l = [8, -12]
+
+# Its colours ------------------------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ Muhammad Avdol, "Costumes & Tints": Magician's Red's tint
+# A is "Magician's Red's anime colors", its tint B the Adventure Battle Card J-083, "with
+# colors carried over from All-Star Battle" (the feathers of its legs gone blue).
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, Magician's Red, couleur A : les couleurs de l'anime"
+
+[colors.j083]
+label = "Carte J-083"
+label_en = "Card J-083"
+source = "ASBR, Magician's Red, couleur B : la carte Adventure Battle J-083"
+
+[colors.j083.palette]
+feather = "#2a5c9c"

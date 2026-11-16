@@ -1,0 +1,70 @@
+# DIO as he first appears, in the shadows: a costume of looks/dio_p3.toml (it says only
+# what changes).
+#
+# Sources, read on 16/11/2026:
+# - JoJo Wiki, All-Star Battle R ★ DIO, "Costumes & Tints": Special Costume D is "based on
+#   DIO's initial shadowy appearance"; its tint A is that appearance, its tint B the
+#   Statue Legend figure.
+# - The game's renders of the two tints: bare to the waist, no jacket, the face lost in
+#   shadow under the hair, dark bands at the wrists, a dark belt, tall brown boots; in
+#   tint B the hair is pale grey and the trousers dark.
+
+base = "dio_p3"
+
+[costume]
+label = "Dans l'ombre"
+label_en = "In the shadows"
+source = "ASBR, costume spécial D : sa première apparition, dans l'ombre"
+
+[palette]
+shade = "#1e1824"        # his face: it stays in the dark
+cuff = "#2c2832"         # the bands at his wrists, and his belt
+
+# The face in shadow, the chest bare.
+[body]
+head = "shade"
+torso = "skin"
+
+[face]
+brows = false
+nose = false
+
+[[parts]]
+type = "hair"
+material = "hair"
+style = "mane"
+volume = 8.4
+flare = 0.75
+back_length = 4
+
+[[parts]]
+type = "gloves"
+material = "cuff"
+length = 0.16
+
+[[parts]]
+type = "belt"
+material = "cuff"
+buckle = "heart"
+buckle_shape = "heart"
+
+# Tall boots, not the pointed shoes.
+[[parts]]
+type = "boots"
+material = "shoes"
+length = 0.42
+
+[colors.apparition]
+label = "Première apparition"
+label_en = "First appearance"
+source = "ASBR, spécial D, couleur A : sa première apparition, dans l'ombre"
+
+[colors.statue]
+label = "Statue Legend"
+label_en = "Statue Legend"
+source = "ASBR, spécial D, couleur B : la figurine Statue Legend"
+
+[colors.statue.palette]
+hair = "#dcdad2"
+trousers = "#3e3434"
+shoes = "#6a2e32"

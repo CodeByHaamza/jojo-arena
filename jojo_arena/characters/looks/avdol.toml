@@ -241,3 +241,58 @@ lean = 0.5
 hand_r = [11, -11]
 hand_l = [1, -5]
 elbow_l = [-3, 0]
+
+# The outfit and its colours ---------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ Muhammad Avdol, "Costumes & Tints" (read 16/11/2026): the
+# normal costume is "Avdol's main Stardust Crusaders attire"; its tints are the anime's
+# colours (A), Cover A of Chapter 136 in Weekly Shonen Jump Issue #38 (B), one whose
+# origin the page does not give (C: "This section requires expansion") and the Adventure
+# Battle Card J-039 (D). The tones were read off the game's render of each tint.
+# Magician's Red has two tints: the second is a card too (J-083), it goes with J-039.
+
+[costume]
+label = "Tenue de Stardust Crusaders"
+label_en = "Stardust Crusaders attire"
+source = "Sa tenue principale de Stardust Crusaders (ASBR, costume normal)"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+
+# A white coat over green, the hair green too.
+[colors.chapitre136]
+label = "Chapitre 136"
+label_en = "Chapter 136"
+source = "ASBR, couleur B : la couverture A du chapitre 136 (Weekly Shonen Jump n° 38)"
+
+[colors.chapitre136.palette]
+robe = "#e6e4de"
+gown = "#6f9c5c"
+scarf = "#aeaaa2"
+hair = "#2f6c42"
+
+# A teal coat over lavender, the hair dark blue.
+[colors.asbr]
+label = "All-Star Battle R"
+label_en = "All-Star Battle R"
+source = "ASBR, couleur C (JoJo Wiki n'en note pas l'origine)"
+
+[colors.asbr.palette]
+robe = "#3fb0ba"
+gown = "#8a8eda"
+scarf = "#2a7a88"
+hair = "#22427c"
+
+# A yellow coat over orange, the hair teal.
+[colors.j039]
+label = "Carte J-039"
+label_en = "Card J-039"
+source = "ASBR, couleur D : la carte Adventure Battle J-039"
+stand = "j083"
+
+[colors.j039.palette]
+robe = "#e8ba22"
+gown = "#e09c20"
+scarf = "#b07c1a"
+hair = "#2a8c82"

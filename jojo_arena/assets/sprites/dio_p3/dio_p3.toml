@@ -6,6 +6,17 @@ chest = 29
 height = 46
 directions = ["down", "up", "right"]
 
+[costume]
+label = "Tenue de Stardust Crusaders"
+label_en = "Stardust Crusaders attire"
+source = "Sa tenue principale de Stardust Crusaders (ASBR, costume normal)"
+
+[recolor]
+hair = [[247, 223, 48], [245, 216, 106], [247, 224, 160], [252, 245, 232]]
+jacket = [[178, 132, 26], [217, 149, 43], [223, 164, 93], [230, 196, 162]]
+top = [[10, 9, 13], [36, 34, 44], [62, 60, 74], [105, 104, 106]]
+trousers = [[178, 143, 29], [214, 160, 50], [221, 173, 100], [229, 201, 167]]
+
 [anims.idle]
 row = 0
 frames = 4
@@ -221,3 +232,43 @@ label_en = "\"Road Roller da!\""
 source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : le rouleau compresseur qu'il abat sur Jotaro"
 stand = true
 stand_offset = [-8.0, -7.0]
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+stand = ""
+
+[colors.jump7]
+label = "Jump n° 7"
+label_en = "Jump #7"
+source = "ASBR, couleur B : Weekly Shonen Jump n° 7 et la Super Action Statue"
+stand = "sas"
+
+[colors.jump7.palette]
+jacket = [[190, 76, 22], [224, 86, 44], [228, 119, 96], [234, 174, 166]]
+trousers = [[187, 67, 21], [224, 74, 40], [228, 109, 92], [234, 167, 163]]
+hair = [[180, 51, 28], [216, 58, 48], [222, 98, 98], [230, 166, 170]]
+
+[colors.asb]
+label = "All-Star Battle"
+label_en = "All-Star Battle"
+source = "ASBR, couleur C : une couleur propre à All-Star Battle"
+stand = ""
+
+[colors.asb.palette]
+jacket = [[177, 49, 102], [200, 82, 142], [211, 127, 175], [226, 188, 212]]
+trousers = [[161, 49, 98], [192, 74, 136], [204, 118, 168], [220, 179, 205]]
+hair = [[38, 35, 60], [60, 60, 92], [85, 88, 123], [132, 135, 153]]
+
+[colors.j367]
+label = "Carte J-367"
+label_en = "Card J-367"
+source = "ASBR, couleur D : la carte Adventure Battle J-367"
+stand = ""
+
+[colors.j367.palette]
+jacket = [[202, 174, 16], [232, 186, 42], [235, 193, 95], [239, 213, 168]]
+trousers = [[190, 110, 22], [224, 122, 44], [228, 145, 96], [234, 188, 166]]
+hair = [[202, 145, 26], [224, 156, 60], [229, 173, 111], [237, 206, 180]]
+top = [[20, 41, 33], [42, 76, 60], [65, 110, 86], [104, 146, 121]]

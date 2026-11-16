@@ -237,6 +237,7 @@ part = 3
 name = "JOTARO KUJO"
 kit = "jotaro_p3"
 sprite = "jotaro_p3/jotaro_p3"
+costumes = { coatless = "jotaro_p3_coatless/jotaro_p3_coatless", inherited_soul = "jotaro_p3_inherited_soul/jotaro_p3_inherited_soul" }
 stand_sprite = "star_platinum/star_platinum"
 stand_name = "STAR PLATINUM"
 role = "BAGARREUR - COURTE PORTÉE"
@@ -269,6 +270,7 @@ part = 3
 name = "DIO"
 kit = "dio_p3"
 sprite = "dio_p3/dio_p3"
+costumes = { shadow = "dio_p3_shadow/dio_p3_shadow" }
 stand_sprite = "the_world/the_world"
 stand_name = "THE WORLD"
 role = "FRAPPE ET FUITE - VAMPIRE"
@@ -301,6 +303,7 @@ part = 3
 name = "MUHAMMAD AVDOL"
 kit = "avdol"
 sprite = "avdol/avdol"
+costumes = { father = "avdol_father/avdol_father" }
 stand_sprite = "magicians_red/magicians_red"
 stand_name = "MAGICIAN'S RED"
 role = "ZONER - FEU"

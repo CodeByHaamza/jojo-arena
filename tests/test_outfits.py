@@ -277,3 +277,32 @@ def test_jonathan_wears_what_asbr_and_eoh_give_him():
     assert outfit_colors(jonathan, "inherited_soul") == ["blanc", "noir"]
     # Shirtless is another body, not another colour: no top on that sheet.
     assert _sheet(jonathan.costumes["shirtless"]).costume[0]
+
+
+def test_the_crusaders_and_dio_wear_what_the_games_give_them():
+    jotaro, dio, avdol = (get_fighter(i) for i in ("jotaro_p3", "dio_p3", "avdol"))
+    assert list(jotaro.costumes) == ["coatless", "inherited_soul"]
+    assert outfit_colors(jotaro) == ["anime", "tome16", "tome26", "tome24"]
+    assert outfit_colors(jotaro, "coatless") == ["anime", "manga"]
+    assert list(dio.costumes) == ["shadow"]
+    assert outfit_colors(dio) == ["anime", "jump7", "asb", "j367"]
+    assert outfit_colors(dio, "shadow") == ["apparition", "statue"]
+    assert list(avdol.costumes) == ["father"]
+    assert outfit_colors(avdol) == ["anime", "chapitre136", "asbr", "j039"]
+    assert outfit_colors(avdol, "father") == ["anime", "manga"]
+
+
+def test_a_stand_follows_the_colour_its_user_names():
+    """Each Stand has the two tints of the games; one colour of its user calls the second."""
+    for fighter_id, color, stand_color in (
+        ("jotaro_p3", "tome16", "tome17"),
+        ("dio_p3", "jump7", "sas"),
+        ("avdol", "j039", "j083"),
+    ):
+        fighter = get_fighter(fighter_id)
+        stand = _sheet(fighter.stand_sprite)
+        assert list(stand.colors)[1] == stand_color, fighter_id
+        assert _sheet(fighter.sprite).colors[color].stand == stand_color
+        plain, dressed = FighterView(fighter, Loadout()), FighterView(fighter, Loadout(color=color))
+        assert dressed.stand is not plain.stand  # another sheet: repainted
+        assert FighterView(fighter, Loadout(color="anime")).stand is plain.stand

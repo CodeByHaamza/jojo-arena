@@ -344,3 +344,55 @@ hand_l = [-3, -2]
 foot_l = [-3, 0]
 foot_r = [3, 0]
 knee_r = [1, -1]
+
+# The outfit and its colours ---------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ Jotaro Kujo, "Costumes & Tints" (read 16/11/2026): the
+# normal costume is "Jotaro's main Stardust Crusaders attire"; its tints are the anime's
+# colours (A), the cover of volume 16 (B), of volume 26 (C) and of volume 24 (D). The
+# tones were read off the game's render of each tint and brought to this sprite's own
+# brightness. Star Platinum has two tints there: the green one (cover of volume 17) goes
+# with the green coat of volume 16.
+
+[costume]
+label = "Tenue de Stardust Crusaders"
+label_en = "Stardust Crusaders attire"
+source = "Sa tenue principale de Stardust Crusaders (ASBR, costume normal)"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+
+# A green coat over a violet shirt.
+[colors.tome16]
+label = "Tome 16"
+label_en = "Volume 16"
+source = "ASBR, couleur B : la couverture du tome 16"
+stand = "tome17"
+
+[colors.tome16.palette]
+uniform = "#2f8c5c"
+shirt = "#8a5cc2"
+shoes = "#3a6ab2"
+
+# A magenta coat over a blue shirt.
+[colors.tome26]
+label = "Tome 26"
+label_en = "Volume 26"
+source = "ASBR, couleur C : la couverture du tome 26"
+
+[colors.tome26.palette]
+uniform = "#a83ca2"
+shirt = "#4a6aca"
+shoes = "#6a4aba"
+
+# A blue coat over a violet shirt.
+[colors.tome24]
+label = "Tome 24"
+label_en = "Volume 24"
+source = "ASBR, couleur D : la couverture du tome 24"
+
+[colors.tome24.palette]
+uniform = "#2c52aa"
+shirt = "#8e62c6"
+shoes = "#5a48b2"

@@ -6,6 +6,9 @@ chest = 28
 height = 47
 directions = ["down", "up", "right"]
 
+[recolor]
+feather = [[136, 20, 20], [180, 32, 46], [215, 53, 78], [220, 124, 145]]
+
 [anims.idle]
 row = 0
 frames = 4
@@ -175,3 +178,18 @@ label_en = ""
 source = ""
 stand = false
 stand_offset = [-14.0, -8.0]
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, Magician's Red, couleur A : les couleurs de l'anime"
+stand = ""
+
+[colors.j083]
+label = "Carte J-083"
+label_en = "Card J-083"
+source = "ASBR, Magician's Red, couleur B : la carte Adventure Battle J-083"
+stand = ""
+
+[colors.j083.palette]
+feather = [[27, 58, 115], [42, 92, 156], [58, 127, 196], [124, 170, 206]]

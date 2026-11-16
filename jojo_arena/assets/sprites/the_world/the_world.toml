@@ -6,6 +6,11 @@ chest = 28
 height = 46
 directions = ["down", "up", "right"]
 
+[recolor]
+gold = [[95, 106, 34], [176, 166, 54], [230, 205, 75], [255, 243, 166]]
+deep = [[76, 90, 28], [143, 138, 42], [205, 180, 60], [247, 226, 124]]
+rib = [[85, 105, 42], [147, 168, 69], [200, 216, 114], [239, 246, 188]]
+
 [anims.idle]
 row = 0
 frames = 4
@@ -175,3 +180,20 @@ label_en = ""
 source = ""
 stand = false
 stand_offset = [-14.0, -8.0]
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, The World, couleur A : les couleurs de l'anime"
+stand = ""
+
+[colors.sas]
+label = "Super Action Statue"
+label_en = "Super Action Statue"
+source = "ASBR, The World, couleur B : la Super Action Statue"
+stand = ""
+
+[colors.sas.palette]
+gold = [[108, 100, 88], [184, 172, 152], [224, 214, 194], [248, 242, 230]]
+deep = [[90, 82, 72], [156, 144, 128], [200, 188, 168], [236, 228, 214]]
+rib = [[94, 92, 84], [160, 156, 142], [207, 202, 188], [240, 236, 224]]

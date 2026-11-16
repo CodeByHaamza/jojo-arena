@@ -1,0 +1,102 @@
+# "Avdol's Father?": the disguise he comes back in on the island of the Judgement arc. A
+# costume of looks/avdol.toml (it says only what changes).
+#
+# Sources, read on 16/11/2026:
+# - JoJo Wiki, All-Star Battle R ★ Muhammad Avdol, "Costumes & Tints": Extra Costume A,
+#   "Season Pass exclusive", is "the disguise Avdol wears in the Judgement story arc";
+#   one tint has "the colors from the anime", the other those of the coloured manga
+#   (JOJO-D).
+# - The game's renders of the two tints, looked at for the shapes and the tones: grey
+#   hair standing in spikes over a dark headband, a short white cape on the shoulders, a
+#   collar of big medallions, a dark sleeveless top and a dark sash, a long cloth hanging
+#   front and back from the waist, bare legs, wraps at the ankles, sandals. Silver
+#   medallions, a grey cloth and pink wraps in the anime's colours; gold, tan and yellow
+#   in the manga's.
+
+base = "avdol"
+
+[costume]
+label = "Le père d'Avdol ?"
+label_en = "Avdol's Father?"
+source = "ASBR, costume extra A : son déguisement de l'arc Judgement"
+
+[palette]
+hair = "#b6b6c0"         # grey, standing up
+band = "#2a2c36"
+# Four tones by hand: computed, its highlight came out the very white of the hair's.
+cape = ["#b2aea6", "#e8e6e0", "#f4f1ea", "#fffcf4"]
+metal = "#c4c8d6"        # the medallions and the bracelets: silver
+top = "#30323e"
+sash = "#22242e"
+skirt = "#a6a6ae"        # the long cloth, grey
+wrap = "#d8929c"         # pink wraps at the ankles
+sandal = "#4c3628"
+
+# Bare arms and bare legs.
+[body]
+torso = "skin"
+arms = "skin"
+legs = "skin"
+feet = "sandal"
+
+[[parts]]
+type = "hair"
+material = "hair"
+style = "spiky"
+volume = 7.4
+
+[[parts]]
+type = "headband"
+material = "band"
+
+[[parts]]
+type = "top"
+material = "top"
+neckline = 1
+
+[[parts]]
+type = "pauldrons"
+material = "cape"
+size = 4.6
+
+[[parts]]
+type = "belt"
+material = "sash"
+
+[[parts]]
+type = "loincloth"
+material = "skirt"
+length = 0.72
+
+[[parts]]
+type = "medallions"
+material = "metal"
+ankh = "tassel"
+tassel = "tassel"
+
+[[parts]]
+type = "bracelets"
+material = "metal"
+width = 1.8
+
+[[parts]]
+type = "boots"
+material = "wrap"
+length = 0.2
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, extra A : les couleurs de l'anime"
+
+[colors.manga]
+label = "Manga en couleur"
+label_en = "Coloured manga"
+source = "ASBR, extra A : les couleurs du manga colorisé (JOJO-D)"
+
+[colors.manga.palette]
+cape = "#e6d0a2"
+metal = "#e8c452"
+top = "#3c2e28"
+skirt = "#c8aa7a"
+wrap = "#e0ba32"

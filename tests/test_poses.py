@@ -1,6 +1,7 @@
 """Poses: the one picked on the select screen is the one the Pose key plays, the Stand
 strikes its own beside its user, and nothing breaks when a pose is missing."""
 
+import dataclasses
 import random
 import tomllib
 
@@ -193,9 +194,12 @@ def keys(ctx, *names: str):
 
 
 def select_on(ctx, tmp_path, mode="versus", fighter="jotaro_p3"):
-    """The select screen, the cursor on a fighter whose sheets have the test poses."""
+    """The select screen, the cursor on a fighter whose sheets have the test poses, and
+    nothing else to pick (these tests are about the poses, whatever the roster's fighter
+    has come to wear since)."""
     select = CharacterSelectScene(ctx, mode, cursor=fighter)
     index = [f.id for f in select.roster].index(fighter)
+    select.roster[index] = dataclasses.replace(select.roster[index], costumes={})
     select.looks[index].sprites = posed_sheet(tmp_path)
     select.looks[index].stand = posed_sheet(tmp_path, "[[poses.together.down]]\nlean = -2\n")
     ctx.scenes.switch(select)
