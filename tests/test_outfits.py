@@ -241,3 +241,39 @@ def test_an_arcade_opponent_does_not_inherit_what_player_two_last_wore(ctx):
     ctx.loadouts[1] = Loadout("some_pose", "", costume="alt", color="c2")
     ArcadeFight(ctx, arcade)
     assert ctx.loadouts[1] == Loadout()
+
+
+# The first costumes -------------------------------------------------------------------------
+
+
+def _sheet(name: str):
+    from jojo_arena.engine.sprites import SheetSprites
+    from jojo_arena.paths import SPRITES_DIR
+
+    base = SPRITES_DIR / name
+    return SheetSprites.load(base.with_suffix(".png"), base.with_suffix(".toml"))
+
+
+def test_every_roster_costume_has_its_sheet_two_colours_and_its_sources():
+    """A fighter with costumes: every outfit, the normal one included, is named and
+    sourced, and comes in two colours at least (so a mirror match can be told apart)."""
+    for fighter in load_roster():
+        if not fighter.costumes:
+            continue
+        for sheet_name in (fighter.sprite, *fighter.costumes.values()):
+            sheet = _sheet(sheet_name)
+            assert sheet is not None, sheet_name
+            assert all(sheet.costume), f"{sheet_name}: [costume] label, label_en, source"
+            assert len(sheet.colors) >= 2, f"{sheet_name}: two colours at least"
+            for color in sheet.colors.values():
+                assert color.label and color.label_en and color.source, (sheet_name, color.id)
+
+
+def test_jonathan_wears_what_asbr_and_eoh_give_him():
+    jonathan = get_fighter("jonathan")
+    assert list(jonathan.costumes) == ["shirtless", "inherited_soul"]
+    assert outfit_colors(jonathan) == ["anime", "tome4", "tome3", "j534"]
+    assert outfit_colors(jonathan, "shirtless") == ["anime", "inverse"]
+    assert outfit_colors(jonathan, "inherited_soul") == ["blanc", "noir"]
+    # Shirtless is another body, not another colour: no top on that sheet.
+    assert _sheet(jonathan.costumes["shirtless"]).costume[0]

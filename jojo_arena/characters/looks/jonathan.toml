@@ -80,6 +80,64 @@ type = "boots"
 material = "boots"
 length = 0.3
 
+# The outfit and its colours ---------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ Jonathan Joestar, "Costumes & Tints" (read 16/11/2026):
+# the normal costume is "Jonathan's main Phantom Blood attire", and its four tints are
+# the anime's colours (A), the cover of volume 4 (B), the cover of volume 3 (C) and the
+# Adventure Battle Card J-534 (D). The tones were read off the game's render of each tint
+# and brought to this sprite's own brightness. The leather (shoulder pads, boots) follows
+# the gloves and the boots of the render, the belt its belt.
+
+[costume]
+label = "Tenue de Phantom Blood"
+label_en = "Phantom Blood attire"
+source = "Sa tenue principale de Phantom Blood (ASBR, costume normal)"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+
+# All in greens: a dark green top, green trousers, lime leather.
+[colors.tome4]
+label = "Tome 4"
+label_en = "Volume 4"
+source = "ASBR, couleur B : la couverture du tome 4"
+
+[colors.tome4.palette]
+top = "#2f7030"
+trousers = "#5a9c40"
+pad = "#93b030"
+boots = "#6f9020"
+belt = "#869436"
+
+# Crimson and pink, olive leather, the hair gone dark plum.
+[colors.tome3]
+label = "Tome 3"
+label_en = "Volume 3"
+source = "ASBR, couleur C : la couverture du tome 3"
+
+[colors.tome3.palette]
+top = "#b02c4c"
+trousers = "#c8546e"
+pad = "#a0963e"
+boots = "#787230"
+belt = "#b08c3c"
+hair = "#5c2c48"
+
+# Violet and indigo, orange leather.
+[colors.j534]
+label = "Carte J-534"
+label_en = "Card J-534"
+source = "ASBR, couleur D : la carte Adventure Battle J-534"
+
+[colors.j534.palette]
+top = "#5c4eba"
+trousers = "#4a44a6"
+pad = "#c8742e"
+boots = "#8a4a22"
+belt = "#a26c3c"
+
 # Key-pose animations ------------------------------------------------------------------
 # [anims.<name>] replaces the generated animation of that name, or adds a new one that a
 # move picks in the kit (anim = "<name>"). One [[anims.<name>.<view>]] table per key pose,

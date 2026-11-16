@@ -24,6 +24,7 @@ part = 1
 name = "JONATHAN JOESTAR"
 kit = "jonathan"
 sprite = "jonathan/jonathan"
+costumes = { shirtless = "jonathan_shirtless/jonathan_shirtless", inherited_soul = "jonathan_inherited_soul/jonathan_inherited_soul" }
 role = "TANK - HAMON"
 blurb = "Coups lourds, grosse vie et Hamon à courte portée : il encaisse, puis il écrase."
 blurb_en = "Heavy blows, a big life and short-range Hamon: he takes it, then he crushes."

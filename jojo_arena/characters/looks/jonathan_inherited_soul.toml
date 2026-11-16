@@ -1,0 +1,41 @@
+# Jonathan Joestar in the whites of JOESTAR The Inherited Soul: a costume of
+# looks/jonathan.toml (the same clothes, in other colours: it says only its palette).
+#
+# Sources, read on 16/11/2026:
+# - JoJo Wiki, All-Star Battle R ★ Jonathan Joestar, "Costumes & Tints": Extra Costume A,
+#   "exclusive to the Deluxe Edition", is "based on JOESTAR The Inherited Soul
+#   merchandise"; its tints A and B are both from that merchandise.
+# - The game's renders of the two tints, looked at for the tones: A is white from top to
+#   boots, with red gloves and red hair; B is the same in black.
+
+base = "jonathan"
+
+[costume]
+label = "The Inherited Soul"
+label_en = "The Inherited Soul"
+source = "ASBR, costume extra A : les produits JOESTAR The Inherited Soul"
+
+[palette]
+hair = "#a01e2e"       # red
+top = "#e6e6ee"        # white
+trousers = "#d2d4de"
+pad = "#b4283a"        # the leather is red, as his gloves are
+belt = "#3a3a40"
+boots = "#c8c4d2"
+
+[colors.blanc]
+label = "Blanc"
+label_en = "White"
+source = "ASBR, extra A, couleur A : les produits JOESTAR The Inherited Soul"
+
+[colors.noir]
+label = "Noir"
+label_en = "Black"
+source = "ASBR, extra A, couleur B : les produits JOESTAR The Inherited Soul"
+
+[colors.noir.palette]
+top = "#2c2c34"
+trousers = "#383a42"
+pad = "#a82c36"
+belt = "#1e1f24"
+boots = "#403a40"
