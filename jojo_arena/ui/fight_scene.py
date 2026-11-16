@@ -27,7 +27,7 @@ from jojo_arena.ui import sound_pack, text
 from jojo_arena.ui.fight_view import FightView
 from jojo_arena.ui.hud import Hud
 from jojo_arena.ui.labels import action_label, menu_key
-from jojo_arena.ui.loadout import random_loadout
+from jojo_arena.ui.loadout import random_loadout, settle
 from jojo_arena.ui.menu import Menu, MenuItem
 from jojo_arena.ui.movelist import MoveListPanel
 from jojo_arena.ui.music import track_for_stage
@@ -82,11 +82,15 @@ class FightScene(Scene):
         self.demo = all(bots)
         if any(bots) and not self.demo:
             self.mode = "vs_cpu"
-        self.view = FightView(self.stage, self.fighter_defs, list(ctx.loadouts))
+        self.view = FightView(
+            self.stage, self.fighter_defs, settle(self.fighter_defs, list(ctx.loadouts))
+        )
         for side, bot in enumerate(self.bots):
-            if bot is not None:  # the computer strikes any of its poses
+            if bot is not None:  # the computer strikes any of its poses, in what it wears
                 view = self.view.fighter_views[side]
-                view.loadout = random_loadout(view.sprites, random.Random())
+                poses = random_loadout(view.sprites, random.Random())
+                worn = view.loadout
+                view.loadout = replace(poses, costume=worn.costume, color=worn.color)
         self.hud = Hud(self.fighter_defs, [view.height for view in self.view.fighter_views])
         players = ctx.controls.active_preset.players
         self.hud.mash_keys = tuple(action_label(p, "light", ctx.inputs) for p in players)

@@ -31,6 +31,9 @@ class FighterDef:
     # A stance that changes the body itself (Kars, once he is the Ultimate Life
     # Form): his own sheet, used instead of `sprite` while he is in it.
     body_sprites: dict[str, str] = field(default_factory=dict)
+    # Other outfits: costume id -> its own sheet, in the order they are offered. `sprite`
+    # is the normal one. The colours of each are in its sheet.
+    costumes: dict[str, str] = field(default_factory=dict)
     stand_name: str = ""
     role: str = ""  # one line, for the character select screen
     blurb: str = ""  # a short presentation
@@ -91,6 +94,7 @@ def load_roster() -> list[FighterDef]:
                 stand_sprite=entry.get("stand_sprite", ""),
                 stand_sprites=dict(entry.get("stand_sprites", {})),
                 body_sprites=dict(entry.get("body_sprites", {})),
+                costumes=dict(entry.get("costumes", {})),
                 stand_name=entry.get("stand_name", ""),
                 role=localized(entry, "role"),
                 blurb=localized(entry, "blurb"),

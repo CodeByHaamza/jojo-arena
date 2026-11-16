@@ -10,6 +10,7 @@ from jojo_arena.characters import FighterDef
 from jojo_arena.engine.effects import blit_glow, blit_shadow, radial_glow
 from jojo_arena.engine.sprites import frame_index
 from jojo_arena.ui.fight_view import STAND_ALPHA, FighterView
+from jojo_arena.ui.loadout import Loadout
 
 STAND_BEHIND = 13  # px (before scaling) the Stand stands behind its user in menus
 STAND_RISE = 7
@@ -34,11 +35,13 @@ def stand_feet(
 
 
 class FighterLook:
-    """A fighter's sprites, and its Stand's, posed for menus (idle animation)."""
+    """A fighter's sprites, and its Stand's, posed for menus (idle animation), in the
+    costume and the colour of `loadout` (its normal outfit when none is given)."""
 
-    def __init__(self, fighter_def: FighterDef) -> None:
-        view = FighterView(fighter_def)
+    def __init__(self, fighter_def: FighterDef, loadout: Loadout | None = None) -> None:
+        view = FighterView(fighter_def, loadout)
         self.fdef = fighter_def
+        self.loadout = view.loadout  # what it wears and strikes, as its sheets allow
         self.sprites = view.sprites
         self.stand = view.stand
         self.height = view.height

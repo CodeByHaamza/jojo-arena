@@ -17,7 +17,7 @@ from jojo_arena.stages.base import StageOptions
 from jojo_arena.ui import text
 from jojo_arena.ui.backdrop import MenuBackdrop
 from jojo_arena.ui.labels import menu_key, preset_label
-from jojo_arena.ui.loadout import resolve_loadout
+from jojo_arena.ui.loadout import settle
 from jojo_arena.ui.menu import Menu, MenuItem
 from jojo_arena.ui.portraits import FighterLook
 from jojo_arena.ui.widgets import DIM, GOLD, P1_COLOR, P2_COLOR, draw_box, draw_hints
@@ -52,12 +52,11 @@ class SetupScene(Scene):
         self.fighter_ids = fighter_ids
         self.cpu = cpu
         self.defs = [get_fighter(i) for i in fighter_ids]
-        self.looks = [FighterLook(f) for f in self.defs]
-        # The poses picked on the select screen (a sheet's first ones for the computer).
-        self.loadouts = [
-            resolve_loadout(look.sprites, loadout)
-            for look, loadout in zip(self.looks, ctx.loadouts, strict=False)
-        ]
+        # The outfits and the poses picked on the select screen, as the fight will show
+        # them: two players on the same fighter are told apart here already.
+        worn = settle(self.defs, list(ctx.loadouts))
+        self.looks = [FighterLook(f, loadout) for f, loadout in zip(self.defs, worn, strict=True)]
+        self.loadouts = [look.loadout for look in self.looks]
         # What the games give these two to say to each other (None: nothing).
         self.exchange = exchange_for(*fighter_ids)
         self.backdrop = MenuBackdrop()

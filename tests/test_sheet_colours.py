@@ -2,43 +2,10 @@
 own description, and only a few repainted sheets kept in memory."""
 
 import pygame
+from helpers import GREY, body, colored_sheet
 
 from jojo_arena.engine import sprites
 from jojo_arena.engine.sprites import REPAINTED_KEPT, ColorInfo, SheetSprites, recolor
-
-GREY = (120, 120, 130)
-
-
-def colored_sheet(tmp_path, colors: int, name: str = "sheet"):
-    """A one-animation sheet of one flat tone, with `colors` colours: c0 is the sheet as it
-    is, cN paints the body (N * 20, 10, 10)."""
-    image = pygame.Surface((64, 192), pygame.SRCALPHA)
-    image.fill((*GREY, 255), (20, 20, 24, 24))
-    png, spec = tmp_path / f"{name}.png", tmp_path / f"{name}.toml"
-    pygame.image.save(image, str(png))
-    lines = [
-        "frame_size = [64, 64]",
-        "anchor = [32, 60]",
-        'directions = ["down", "up", "right"]',
-        "",
-        "[anims.idle]",
-        "row = 0",
-        "frames = 1",
-    ]
-    if colors:
-        lines += ["", "[costume]", 'label = "Tenue"', 'label_en = "Outfit"', 'source = "S"']
-        lines += ["", "[recolor]", f"body = [{list(GREY)}]"]
-    for n in range(colors):
-        lines += ["", f"[colors.c{n}]", f'label = "C{n}"', f'label_en = "C{n} en"']
-        lines += [f'source = "source {n}"', f'stand = "{"s1" if n == 1 else ""}"']
-        if n:
-            lines += [f"[colors.c{n}.palette]", f"body = [[{n * 20}, 10, 10]]"]
-    spec.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    return png, spec
-
-
-def body(sheet: SheetSprites):
-    return tuple(sheet.frame("idle", "down", False, 0).get_at((30, 30)))[:3]
 
 
 def test_a_tone_already_repainted_is_not_repainted_again():

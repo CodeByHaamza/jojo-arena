@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
+import pygame
+
 from jojo_arena.characters import get_fighter
 from jojo_arena.combat.arena import Arena, Obstacle
 from jojo_arena.combat.match import Match
 from jojo_arena.combat.rules import load_rules
 from jojo_arena.engine.actions import InputFrame
 from jojo_arena.engine.geometry import Rect, RoundedRect, Vec2
+from jojo_arena.engine.sprites import SheetSprites
 
 NONE = InputFrame()
 OPEN_BOUNDS = RoundedRect(Rect(0, 0, 400, 200), 20)
@@ -70,3 +73,40 @@ def run_held(match: Match, frames: int, p1=NONE, p2=NONE) -> list:
 
 def kinds(events) -> list[str]:
     return [e.kind for e in events]
+
+
+# Sprite sheets with colours, built on the fly ------------------------------------------------
+
+GREY = (120, 120, 130)
+
+
+def colored_sheet(tmp_path, colors: int, name: str = "sheet"):
+    """A one-animation sheet of one flat tone, with `colors` colours: c0 is the sheet as it
+    is, cN paints the body (N * 20, 10, 10)."""
+    image = pygame.Surface((64, 192), pygame.SRCALPHA)
+    image.fill((*GREY, 255), (20, 20, 24, 24))
+    png, spec = tmp_path / f"{name}.png", tmp_path / f"{name}.toml"
+    pygame.image.save(image, str(png))
+    lines = [
+        "frame_size = [64, 64]",
+        "anchor = [32, 60]",
+        'directions = ["down", "up", "right"]',
+        "",
+        "[anims.idle]",
+        "row = 0",
+        "frames = 1",
+    ]
+    if colors:
+        lines += ["", "[costume]", 'label = "Tenue"', 'label_en = "Outfit"', 'source = "S"']
+        lines += ["", "[recolor]", f"body = [{list(GREY)}]"]
+    for n in range(colors):
+        lines += ["", f"[colors.c{n}]", f'label = "C{n}"', f'label_en = "C{n} en"']
+        lines += [f'source = "source {n}"', f'stand = "{"s1" if n == 1 else ""}"']
+        if n:
+            lines += [f"[colors.c{n}.palette]", f"body = [[{n * 20}, 10, 10]]"]
+    spec.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return png, spec
+
+
+def body(sheet: SheetSprites):
+    return tuple(sheet.frame("idle", "down", False, 0).get_at((30, 30)))[:3]

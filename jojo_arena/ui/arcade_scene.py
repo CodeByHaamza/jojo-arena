@@ -18,6 +18,7 @@ from jojo_arena.ui.backdrop import MenuBackdrop
 from jojo_arena.ui.fight_scene import FightScene
 from jojo_arena.ui.icons import draw_icon
 from jojo_arena.ui.labels import menu_key
+from jojo_arena.ui.loadout import Loadout
 from jojo_arena.ui.menu import MenuItem
 from jojo_arena.ui.portraits import FighterLook
 from jojo_arena.ui.widgets import DIM, FAINT, GOLD, P1_COLOR, P2_COLOR, WHITE, draw_hints
@@ -156,6 +157,8 @@ class ArcadeFight(FightScene):
     def __init__(self, ctx: GameContext, arcade: ArcadeScene) -> None:
         self.arcade = arcade
         opponent = arcade.opponent
+        # Whatever player 2 last wore in another mode is not this opponent's to wear.
+        ctx.loadouts[1] = Loadout()
         super().__init__(
             ctx,
             rounds_to_win=ROUNDS_TO_WIN,

@@ -27,6 +27,8 @@ class Settings:
     training: dict = field(default_factory=dict)
     # The last poses picked for each fighter: id -> [pose alone, pose with the Stand].
     poses: dict = field(default_factory=dict)
+    # The last outfit picked for each fighter: id -> [costume, colour].
+    outfits: dict = field(default_factory=dict)
 
     def to_json(self) -> dict:
         return {
@@ -39,6 +41,7 @@ class Settings:
             "pad_style": self.pad_style,
             "training": self.training,
             "poses": self.poses,
+            "outfits": self.outfits,
         }
 
 
@@ -65,14 +68,16 @@ def parse_settings(data: object) -> Settings:
         settings.pad_style = data["pad_style"]
     if isinstance(data, dict) and isinstance(data.get("training"), dict):
         settings.training = data["training"]  # checked where it is used, not here
-    if isinstance(data, dict) and isinstance(data.get("poses"), dict):
-        settings.poses = {
-            key: list(value)
-            for key, value in data["poses"].items()
-            if isinstance(value, list)
-            and len(value) == 2
-            and all(isinstance(v, str) for v in value)
-        }
+    for name in ("poses", "outfits"):  # fighter id -> a pair of ids
+        if isinstance(data, dict) and isinstance(data.get(name), dict):
+            pairs = {
+                key: list(value)
+                for key, value in data[name].items()
+                if isinstance(value, list)
+                and len(value) == 2
+                and all(isinstance(v, str) for v in value)
+            }
+            setattr(settings, name, pairs)
     return settings
 
 

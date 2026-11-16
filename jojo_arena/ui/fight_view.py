@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import math
 import random
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 import pygame
 
@@ -28,7 +28,7 @@ from jojo_arena.stages.base import StageDef
 from jojo_arena.ui import sfx, sound_pack, sounds, text, vfx
 from jojo_arena.ui.cutscenes import make_cutscene
 from jojo_arena.ui.duel_view import DuelScreen
-from jojo_arena.ui.loadout import Loadout, resolve_loadout
+from jojo_arena.ui.loadout import Loadout, outfit_sheet, resolve_loadout
 from jojo_arena.ui.widgets import draw_cap
 
 OUTLINE = (23, 18, 31)
@@ -123,13 +123,24 @@ def status_tint(fighter: Fighter) -> tuple[int, int, int, int] | None:
 class FighterView:
     def __init__(self, fighter_def: FighterDef, loadout: Loadout | None = None) -> None:
         self.fighter_def = fighter_def
+        # The outfit picked: a costume is another sheet, a colour is that sheet repainted.
+        loadout = loadout or Loadout()
+        if loadout.costume not in fighter_def.costumes:
+            loadout = replace(loadout, costume="")
         sheet = None
-        if fighter_def.sprite:
-            base = SPRITES_DIR / fighter_def.sprite
+        name = outfit_sheet(fighter_def, loadout)
+        if name:
+            base = SPRITES_DIR / name
             sheet = SheetSprites.load(
-                base.with_suffix(".png"), base.with_suffix(".toml"), fighter_def.palette or None
+                base.with_suffix(".png"),
+                base.with_suffix(".toml"),
+                fighter_def.palette or None,
+                color=loadout.color,
             )
         self.sprites = sheet or PlaceholderSprites(fighter_def.color)
+        # The Stand goes with it: the colour of its own that the fighter's colour names.
+        worn = self.sprites.colors.get(loadout.color)
+        stand_color = worn.stand if worn is not None else ""
         # Effects happen at chest height, not on the ground; labels go over the head.
         self.chest = Vec2(0, -self.sprites.chest)
         self.height = self.sprites.height
@@ -146,11 +157,13 @@ class FighterView:
         self.throw_f = 0  # frames left of the Stand's throw pose (view only)
         if fighter_def.stand_sprite:
             base = SPRITES_DIR / fighter_def.stand_sprite
-            self.stand = SheetSprites.load(base.with_suffix(".png"), base.with_suffix(".toml"))
+            self.stand = SheetSprites.load(
+                base.with_suffix(".png"), base.with_suffix(".toml"), color=stand_color
+            )
         for stance, sheet in fighter_def.stand_sprites.items():
             base = SPRITES_DIR / sheet
             self.stands[stance] = SheetSprites.load(
-                base.with_suffix(".png"), base.with_suffix(".toml")
+                base.with_suffix(".png"), base.with_suffix(".toml"), color=stand_color
             )
         self.stand = self.stand or next(iter(self.stands.values()), None)
         # The poses picked on the select screen (the sheet's first ones by default).
