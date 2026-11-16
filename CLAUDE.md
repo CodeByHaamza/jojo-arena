@@ -133,6 +133,13 @@ ce qu'on a trouvé dans le commentaire en tête de son kit :
 7. **Ses poses** : 3 poses seules et, s'il a un Stand, 3 poses en duo (le Stand a la pose
    du même nom dans sa fiche), en `[poses.*]` dans `looks/<id>.toml`, chacune avec sa
    source (couvertures, rendus d'EoH, provocations d'ASBR). `tests/test_poses.py` vérifie.
+8. **Ses costumes et ses couleurs** : la section « Costumes & Tints » de ses pages ASBR et
+   EoH donne chaque costume et chaque teinte avec son origine (une couverture, une carte,
+   l'anime). Les teintes de la tenue normale vont en `[colors.*]` dans `looks/<id>.toml`,
+   chaque autre costume dans sa fiche `looks/<id>_<costume>.toml` (`base = "<id>"`), deux
+   couleurs au moins chacun, et le Stand a les siennes. Les tons se relèvent sur le rendu
+   du jeu, gardé hors du dépôt. Une couleur inventée seulement s'il n'en existe pas, et
+   sa `source` le dit. `tests/test_outfits.py` vérifie.
 
 ## Licence et mentions
 

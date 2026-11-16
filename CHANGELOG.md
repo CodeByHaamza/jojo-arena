@@ -8,6 +8,14 @@ des corrections seules une patch.
 
 ### Ajouté
 
+- **Costumes et couleurs.** À l'écran de sélection, juste après le perso : son costume, sa
+  couleur, puis ses poses, avec l'aperçu en direct. Pour commencer, Jonathan (torse nu,
+  *The Inherited Soul*), Jotaro (sans manteau, *The Inherited Soul*), DIO (dans l'ombre)
+  et Avdol (« le père d'Avdol ? »), chacun avec les quatre couleurs d'All-Star Battle R ;
+  Star Platinum, The World et Magician's Red changent de couleur avec leur manieur.
+  Chaque tenue et chaque couleur dit d'où elle vient.
+- **Match miroir lisible.** Deux joueurs sur le même perso ne sont plus jamais identiques :
+  le second prend une autre couleur.
 - **Le pack de sons.** Le jeu synthétise toujours tous ses sons, mais il joue les tiens à la
   place si tu en as : un dossier `sound_pack/` à côté de tes réglages, avec tes bruitages
   (le temps arrêté, le Hamon...), tes musiques (par arène) et les voix des persos (le cri

@@ -192,3 +192,14 @@ def test_every_costume_colour_and_pose_name_fits_the_panel(language):
             assert len(font.wrap(f"< {name} >", SIDE_W - 10)) <= 2, name
     finally:
         i18n.set_language("fr")
+
+
+def test_coming_back_to_the_screen_the_picked_side_still_wears_its_outfit(ctx, roster):
+    """Back from the arena screen: player 1 is already picked, in what was chosen."""
+    ctx.loadouts[0] = Loadout(color="c1")
+    select = CharacterSelectScene(ctx, "versus", picks=("hero",), cursor="hero")
+    assert select.picks == [0]
+    assert body(select.worn[0].sprites) == (20, 10, 10)
+    ctx.loadouts[0] = Loadout()
+    plain = CharacterSelectScene(ctx, "versus", picks=("hero",), cursor="hero")
+    assert plain.worn == {}  # the normal outfit: the look every screen already has

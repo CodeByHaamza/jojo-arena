@@ -110,7 +110,7 @@ chacun de leur côté. C'est ce qui rend les replays exacts et le rollback possi
 > *Un jeu qui tourne n'est pas un jeu juste.*
 
 <div align="center">
-<img src="docs/media/chiffres.svg" alt="21 persos, 5 arènes, 1221 tests, 94 % de couverture, 60 images par seconde" width="100%">
+<img src="docs/media/chiffres.svg" alt="21 persos, 5 arènes, 1324 tests, 94 % de couverture, 60 images par seconde" width="100%">
 </div>
 
 | Critère | Mesure | Comment |
@@ -486,6 +486,12 @@ Les sprites des persos sont **générés à partir d'une fiche de données**, sa
 Les Stands se font de la même façon (`star_platinum.toml`, `hierophant_green.toml`, `the_world.toml`, `silver_chariot.toml`). Dans `roster.toml`, la clé `stand_sprite` d'un perso indique la planche de son Stand : en combat, quand on appuie sur la touche Stand, il apparaît derrière son manieur et passe devant lui pour frapper.
 
 Un perso qui appelle **plusieurs** compagnons (Speedwagon et sa bande d'Ogre Street) utilise `stand_sprites` à la place : une planche par posture, `stand_sprites = { tattoo = "tattoo/tattoo", amato = "amato/amato" }`. La touche Stand fait défiler les postures (`style = { type = "stance_cycle", ... }`), et c'est le compagnon de la posture en cours qui apparaît.
+
+**Un costume** est une fiche qui part d'une autre et ne redit que ce qui change : `base = "jonathan"` en tête de `jonathan_shirtless.toml`, puis seulement sa `[palette]`, son `[body]` et ses `[[parts]]` (une liste de pièces remplace celle de la base ; les animations et les poses sont toujours celles de la base). Elle porte un bloc `[costume]` (`label`, `label_en`, `source`) et a sa propre planche. Dans `roster.toml` : `costumes = { shirtless = "jonathan_shirtless/jonathan_shirtless" }`.
+
+**Une couleur** est une table `[colors.<id>]` dans une fiche (de base, de costume ou de Stand) : `label`, `label_en`, `source`, et `[colors.<id>.palette]` avec les seules matières qui changent. La première couleur n'a pas de palette : c'est la fiche telle quelle. `stand = "<id>"` nomme la couleur du Stand qui va avec. Le jeu repeint la planche au chargement : une couleur ne coûte aucune image. Le générateur refuse une fiche où une matière à repeindre partage un ton avec une autre (il ne saurait plus les distinguer) et nomme les deux.
+
+Costumes et couleurs ont toujours une **source** : les teintes d'All-Star Battle R et d'Eyes of Heaven, dont JoJo Wiki donne l'origine (une couverture, une carte, l'anime). Une couleur inventée n'est permise que s'il n'en existe pas, et sa source le dit.
 
 Après une modification, régénère la planche :
 

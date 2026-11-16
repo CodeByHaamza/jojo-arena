@@ -49,8 +49,6 @@ TOAST_F = 90
 PICK_FLASH_F = 14
 
 MODES = ("training", "versus", "vs_cpu", "arcade")
-# The lines of the outfit step, in the order they are shown.
-OUTFIT_ROWS = ("costume", "color", "pose", "stand_pose")
 
 
 class CharacterSelectScene(Scene):
@@ -88,6 +86,11 @@ class CharacterSelectScene(Scene):
         self.row = 0  # index in self.outfit_rows()
         self.preview: FighterLook | None = None  # the fighter in the outfit being tried
         self.worn: dict[int, FighterLook] = {}  # each side that picked, dressed as it picked
+        for side, index in enumerate(self.picks):
+            # Already picked (back from the arena screen): still in what it chose.
+            loadout = ctx.loadouts[side]
+            if loadout.costume or loadout.color:
+                self.worn[side] = FighterLook(self.roster[index], loadout)
         self.toast_f = 0
         self.flash_f = [0, 0]
         self.tick = 0

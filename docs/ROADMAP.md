@@ -17,11 +17,14 @@ faites et fusionnées dans `develop` ; **on reprend à l'étape 3**.
 2. [x] **Poses** (PR #9) : 3 poses seules par perso, 3 avec le Stand pour ses manieurs,
    choisies à l'écran de sélection ; coudes et genoux dans le générateur ; les planches
    chargées une seule fois. Design : `docs/superpowers/specs/2026-11-15-poses-design.md`.
-3. [ ] **Costumes et couleurs** (comme ASBR et EoH : Jonathan torse nu, tenues blanches de
-   *JOESTAR The Inherited Soul*, le « père d'Avdol ? », tenues du manga qui ne sont dans
-   aucun jeu), plusieurs couleurs par costume, l'adversaire d'un match miroir dans une
-   autre couleur. Une ligne de plus dans le panneau de sélection des poses. Rien n'est
-   écrit pour l'instant : on commence par le design.
+3. [x] **Costumes et couleurs** (16/11/2026) : comme ASBR et EoH, un perso a plusieurs
+   costumes et plusieurs couleurs par costume, choisis à l'écran de sélection avec les
+   poses ; en match miroir, le second prend une autre couleur. Premier lot : Jonathan
+   (torse nu, *JOESTAR The Inherited Soul*), Jotaro (sans manteau, *The Inherited Soul*),
+   DIO (dans l'ombre), Avdol (le « père d'Avdol ? »), et les couleurs de leurs Stands :
+   7 costumes, 32 couleurs, toutes sourcées. Design :
+   `docs/superpowers/specs/2026-11-15-costumes-couleurs-design.md`.
+   - [ ] Les seize autres persos, et les tenues du manga qui ne sont dans aucun jeu.
 4. [ ] **Partie 3**, dans l'ordre de [PARTIE3.md](PARTIE3.md) : ~~Joseph âgé~~ (fait le
    15/11/2026, avant les costumes, à la demande du propriétaire), le manoir de
    DIO (Nukesaku, rideaux), Iggy, Pet Shop, Vanilla Ice, Hol Horse (et Calcutta, J. Geil),
