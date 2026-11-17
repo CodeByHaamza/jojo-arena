@@ -48,6 +48,8 @@ class ProjectileDef:
     hamon: bool = False  # it carries the Ripple itself (sunlight through a lens)
     drain: float = 0.0  # share of its damage given back to its owner as life
     fragile: bool = False  # a blow landed on its owner puts it out in mid-flight
+    bonus_status: str = ""  # hits harder for each level of this status on the target...
+    bonus_per_level: float = 0.0  # ...by this share of its damage per level
 
     @classmethod
     def from_data(cls, data: dict) -> ProjectileDef:
@@ -79,6 +81,8 @@ class ProjectileDef:
             drain=data.get("drain", 0.0),
             fragile=data.get("fragile", False),
             drag=data.get("drag", 1.0),
+            bonus_status=data.get("bonus_status", ""),
+            bonus_per_level=data.get("bonus_per_level", 0.0),
         )
 
 
@@ -93,6 +97,8 @@ class TrapDef:
     projectile: ProjectileDef  # what it fires at the opponent when triggered
     fragile: bool = False  # a blow landed on its owner pops it where it stands
     at_cursor: bool = False  # laid on the aimed point (mouse, right stick, held direction)
+    pull: float = 0.0  # px/frame it draws the opponent toward itself...
+    pull_range: float = 0.0  # ...from this far away
 
     @classmethod
     def from_data(cls, data: dict) -> TrapDef:
@@ -104,6 +110,8 @@ class TrapDef:
             projectile=ProjectileDef.from_data(data["projectile"]),
             fragile=data.get("fragile", False),
             at_cursor=data.get("at_cursor", False),
+            pull=per_frame(data.get("pull", 0)),
+            pull_range=data.get("pull_range", 0),
         )
 
 
@@ -249,6 +257,8 @@ class MoveDef:
     cage_radius: float = 0.0
     detonate: bool = False  # sets off every trap and grenade the user has laid
     reflect: bool = False  # while active, projectiles that reach the user fly back
+    bonus_status: str = ""  # hits harder for each level of this status on the target...
+    bonus_per_level: float = 0.0  # ...by this share of its damage per level
     shout: str = ""  # written on screen when used (each hit of a rush: "ORA", "MUDA")
     label: str = ""  # display name in the move list
     info: str = ""  # one-line description in the move list
@@ -329,6 +339,8 @@ class MoveDef:
             steer=data.get("steer", False),
             vanish=data.get("vanish", False),
             erase=data.get("erase", False),
+            bonus_status=data.get("bonus_status", ""),
+            bonus_per_level=data.get("bonus_per_level", 0.0),
             guard_damage=data.get("guard_damage", 1.0),
             stand_flash=data.get("stand_flash", False),
             fx=data.get("fx", ""),

@@ -183,6 +183,13 @@ walk_mult = 0.85
 no_meter = true               # no Heart Heat while the body is not his own
 guard_drain_per_s = 18
 
+[status.magnet]
+# A body made a magnet: it does nothing by itself, but metal comes for it, and the blows
+# that look for it (`bonus_status` in a kit) hit harder for each level. Each new touch
+# while it holds adds a level, up to the third; it all goes once it runs out.
+max_s = 9
+max_level = 3
+
 [stance]
 switch_f = 12                 # time to bring the Stand out or call it back
 

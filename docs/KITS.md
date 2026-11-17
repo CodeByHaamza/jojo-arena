@@ -105,7 +105,8 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `blood_cost` | Style vampire : le coup ne sort qu'avec assez de sang, et le dépense |
 | `hp_cost` | Le coup s'arrache à son auteur : il ne sort que s'il reste plus de vie que ça, et la prend au départ (Final Mode de Wamuu) |
 | `freeze_f` | Touché net, l'adversaire est gelé sur place ce nombre d'images (gel vaporisant) |
-| `status`, `status_s` | Touché net (jamais gardé), le coup laisse une altération d'état pendant cette durée : `burn` (le feu : des dégâts par seconde et aucune régénération tant que ça brûle), `chill` (le froid : marche ralentie, plus de respiration du Hamon ni de sang bu) ou `shock` (le courant : dégâts, marche ralentie, plus de Heart Heat gagné, et la jauge de garde qui se défait). Les durées et les effets sont dans `[status]` de `combat/rules.toml`, et la page du glossaire les décrit au joueur. Un deuxième coup relance l'altération, il ne l'empile pas |
+| `status`, `status_s` | Touché net (jamais gardé), le coup laisse une altération d'état pendant cette durée : `burn` (le feu : des dégâts par seconde et aucune régénération tant que ça brûle), `chill` (le froid : marche ralentie, plus de respiration du Hamon ni de sang bu) `shock` (le courant : dégâts, marche ralentie, plus de Heart Heat gagné, et la jauge de garde qui se défait) ou `magnet` (l'aimant : rien par lui-même, mais chaque nouveau contact ajoute un niveau, jusqu'à 3, et les coups qui le cherchent frappent plus fort ; Bastet de Mariah). Les durées et les effets sont dans `[status]` de `combat/rules.toml`, et la page du glossaire les décrit au joueur. Un deuxième coup relance l'altération, il ne l'empile pas (sauf les niveaux de `magnet`) |
+| `bonus_status`, `bonus_per_level` | Le coup frappe plus fort pour chaque niveau de cette altération sur l'adversaire : `bonus_per_level = 0.3` fait +30 % par niveau. Aussi dans un projectile (les couteaux et les boulons de Mariah) |
 | `finish_drain` | Part des dégâts du coup final d'une cinématique rendue en vie |
 | `detonate` | Au premier tir de son projectile, tous les pièges du perso explosent (avec ce même projectile) et ses grenades encore au sol sautent aussitôt (le plan caché de Joseph) |
 | `cage_s`, `cage_radius` | Touché net : un anneau de chaînes de ce rayon se ferme autour des deux combattants, ce nombre de secondes ; personne n'en sort (Tarkus) |
@@ -185,6 +186,7 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | --- | --- |
 | `distance` | Distance devant le perso ; avec `at_cursor`, distance maximale |
 | `at_cursor` | Posé au point visé (souris, sinon stick droit, sinon direction tenue, sinon droit devant) |
+| `pull`, `pull_range` | Le piège attire l'adversaire vers lui (vitesse) quand il passe à moins de `pull_range` (la ligne électrique de Mariah) |
 | `radius` | Rayon de détection |
 | `lifetime_s` | Durée de vie |
 | `max_count` | Nombre maximum ; le plus ancien disparaît |

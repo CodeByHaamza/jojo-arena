@@ -46,6 +46,8 @@ class Strike:
     freeze_f: int = 0  # frozen solid this long on a clean hit
     status: str = ""  # left burning, frozen stiff or crackling on a clean hit
     status_f: int = 0
+    bonus_status: str = ""  # hits harder for each level of this status on the defender
+    bonus_per_level: float = 0.0
 
 
 class Match:
@@ -346,6 +348,14 @@ class Match:
                 # A bubble is a bubble: one blow on Caesar and every lens pops, empty.
                 events.append(Event("trap_popped", trap.pos, trap.owner))
                 continue
+            if trap.defn.pull and target.alive and not target.frozen and not target.vanished:
+                # It draws the opponent in: a live wire, a magnet.
+                gap = trap.pos - target.pos
+                if 0 < gap.length() < trap.defn.pull_range:
+                    step = gap.normalized() * min(trap.defn.pull, gap.length())
+                    target.pos, _, _ = self.arena.constrain(
+                        target.pos + step, self.rules.body_radius
+                    )
             if target.alive and trap.touched_by(target.pos, self.rules.hurt_radius):
                 aim = trap.pos.copy()
                 direction = (target.pos - aim).normalized()
@@ -383,6 +393,8 @@ class Match:
             status=defn.status,
             status_f=defn.status_f,
             drain=defn.drain,
+            bonus_status=defn.bonus_status,
+            bonus_per_level=defn.bonus_per_level,
         )
         _, events = self._strike(self.fighters[projectile.owner], target, strike)
         return events
@@ -483,6 +495,8 @@ class Match:
                 status=defn.status,
                 status_f=defn.status_f,
                 drain=defn.drain,
+                bonus_status=defn.bonus_status,
+                bonus_per_level=defn.bonus_per_level,
             )
             landed, strike_events = self._strike(self.fighters[projectile.owner], target, strike)
             events += strike_events
@@ -554,6 +568,8 @@ class Match:
                 status_f=move.status_f,
                 key=(attacker.index, attack.serial),
                 super_move=move.name in ("hha", "gha"),
+                bonus_status=move.bonus_status,
+                bonus_per_level=move.bonus_per_level,
             )
             landed, strike_events = self._strike(attacker, defender, strike)
             events += strike_events
@@ -1059,6 +1075,8 @@ class Match:
                 hamon=move.hamon,
                 status=move.status,
                 status_f=move.status_f,
+                bonus_status=move.bonus_status,
+                bonus_per_level=move.bonus_per_level,
             )
             _, strike_events = self._strike(user, target, strike)
             events += strike_events
@@ -1235,6 +1253,8 @@ class Match:
                 return False, [Event("stylish", defender.pos, defender.index)]
             return False, []
         damage = strike.damage * attacker.damage_dealt_mult * defender.damage_taken_mult
+        if strike.bonus_per_level:
+            damage *= 1 + strike.bonus_per_level * defender.statuses.level(strike.bonus_status)
         if attacker.in_resolve:
             damage *= 1 + rules.resolve_damage_bonus
         burns = strike.hamon and defender.kit.nature in rules.hamon_weak_natures
