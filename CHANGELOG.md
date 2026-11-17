@@ -38,6 +38,9 @@ des corrections seules une patch.
   (« Lord DIO! ») et fait jaillir Cream du sol sous tes pieds. Vampire : le soleil et le
   Hamon le brûlent. Cinq couleurs (anime, manga, OVA, All-Star Battle, Eyes of Heaven), six
   poses tirées du manga, et ses répliques face à Avdol, Polnareff et DIO.
+- **Nouvelle arène : le rêve de Death 13**, un parc d'attractions de cauchemar (d'après Eyes
+  of Heaven) : Death 13 erre dans l'arène, va vers le plus proche et abat sa faux (« La Li
+  Ho ! »). Il a sa propre vie : battez-le, il disparaît un moment, puis revient.
 - **Nouvelle arène : les toits du Caire**, la nuit (d'après Eyes of Heaven) : des trous dans
   le toit où l'on tombe, l'enseigne néon « AIR » dont les lettres s'écrasent sur qui est
   projeté dedans, la tour de l'horloge et le château d'eau.

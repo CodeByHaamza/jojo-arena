@@ -54,6 +54,15 @@ TRACKS = {
         lead_wave="organ",
     ),
     # The bridge at the end of the journey: the same mode as the mansion, faster, lower.
+    # A dream that is a nightmare: a fairground waltz gone wrong.
+    "death13_dream": Track(
+        tempo=84,
+        root=50,  # D
+        scale=PHRYGIAN_DOMINANT,
+        progression=(0, 0, 1, 5),
+        motif=((0, 7, 2), (2, 6, 2), (4, 4, 4), (8, 2, 2), (10, 1, 2), (12, 0, 4)),
+        lead_wave="organ",
+    ),
     # Above the city at night: the bridge's mode, a little slower, higher.
     "cairo_rooftops": Track(
         tempo=104,

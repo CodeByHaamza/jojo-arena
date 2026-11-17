@@ -850,6 +850,13 @@ class FightView:
             elif kind == "armor":
                 fx.add(vfx.Flash(pos, 16, (255, 150, 60), 6))
                 fx.add(vfx.Ring(pos, (255, 170, 80), 2.0, 10))
+            elif kind == "roamer_windup":
+                words.add(text.LALIHO, event.pos + Vec2(0, -60), "impact", 2, 40, 0.2, 2)
+            elif kind == "roamer_hit" and event.pos is not None:
+                fx.add(vfx.Flash(event.pos, 12, (255, 255, 255), 5))
+            elif kind == "roamer_banished" and event.pos is not None:
+                fx.add(vfx.Ring(event.pos + Vec2(0, -20), (200, 120, 230), 3.0, 22, 2))
+                fx.dust(event.pos, 8, 1.4, 2, (150, 90, 170), 24)
             elif kind == "learned" and event.fighter is not None:
                 # A blow it has taken before: it is met, steel on steel.
                 knower = match.fighters[event.fighter]
@@ -1039,6 +1046,9 @@ class FightView:
                 self.fighter_views[item.index].draw(surface, item, self.tick)
             else:
                 self.fighter_views[item.index].draw_stand(surface, item, self.tick)
+        for roamer in match.arena.hazards.roamers:
+            if roamer.present:
+                vfx.draw_roamer(surface, roamer)
         for drop in match.arena.hazards.drops:
             if drop.spot is not None:
                 vfx.draw_falling(surface, drop.defn.look, drop.spot, drop.warning)

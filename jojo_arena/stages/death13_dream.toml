@@ -1,0 +1,99 @@
+# Death Thirteen's dream: the nightmare where its scythe is law (GDD: "Rêve de Death 13",
+# asked for by the owner on 17/11/2026, with Death 13 passing by to swing its scythe).
+#
+# Sources, read on 17/11/2026:
+# - JoJo Wiki, Eyes of Heaven stage data, "Nightmare World" (悪夢世界): "Death Thirteen
+#   wanders the stage and attacks fighters with its scythe"; its Stand "has a health bar
+#   of its own", so it can be attacked and banished for a while.
+# - JoJo Wiki, "Death Thirteen": its dream world is a fairy-tale amusement park, Ferris
+#   wheels, carousels, spinning teacups and colourful balloons; in a fight it relies on
+#   sweeps of its scythe, and it is fragile (Hierophant Green beat it easily). It shouts
+#   "La Li Ho!".
+# Coordinates are internal pixels (screen is 480 x 270). Rects are [x, y, width, height].
+
+name = "Le rêve de Death 13"
+name_en = "Death 13's dream"
+part = 3
+
+[bounds]
+rect = [16, 40, 448, 212]
+corner_radius = 28
+
+[spawns]
+p1 = [140, 150]
+p2 = [340, 150]
+
+# Event: Death 13 walks the dream to whoever is nearest, raises its scythe and sweeps.
+# Beaten down (its own life), it is gone a while. Off with the "events" option.
+[[roamers]]
+look = "death13"
+start = [240, 70]
+hp = 260
+speed = 46
+reach = 24
+radius = 18
+body = 14
+damage = 55
+hitstun_f = 26
+knockback = 200
+windup_s = 0.6
+rest_s = 1.4
+first_s = 4
+banish_s = 12
+
+[prop_kinds.teacup]
+hp = 90
+
+[prop_kinds.horse]
+hp = 70
+
+[prop_kinds.balloon]
+hp = 10
+throwable = true
+throw_damage = 20
+respawn_s = 6
+
+# Spinning teacups and carousel horses; balloons to throw.
+[[props]]
+kind = "teacup"
+rect = [66, 70, 26, 18]
+
+[[props]]
+kind = "teacup"
+rect = [386, 206, 26, 18]
+
+[[props]]
+kind = "horse"
+rect = [392, 74, 14, 20]
+
+[[props]]
+kind = "horse"
+rect = [74, 200, 14, 20]
+
+[[props]]
+kind = "balloon"
+rect = [196, 214, 8, 10]
+
+[[props]]
+kind = "balloon"
+rect = [282, 64, 8, 10]
+
+[[lanterns]]
+pos = [120, 37]
+
+[[lanterns]]
+pos = [360, 37]
+
+[[lanterns]]
+pos = [240, 254]
+
+[palette]
+frame = [52, 22, 70]
+frame_dark = [30, 12, 44]
+window = [255, 200, 240]
+curb = [150, 90, 170]
+tile_a = [116, 82, 132]
+tile_b = [98, 68, 114]
+tile_line = [86, 58, 100]
+lantern = [255, 170, 230]
+sky_star = [255, 236, 250]

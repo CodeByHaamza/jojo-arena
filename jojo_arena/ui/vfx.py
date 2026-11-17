@@ -1600,6 +1600,107 @@ def draw_knives_stuck(surface: pygame.Surface, spot: Vec2, seed: int) -> None:
         surface.set_at((round(x), round(y) - 1), STEEL)
 
 
+MASK, MASK_RED = (226, 222, 230), (190, 40, 60)
+ROBE, ROBE_DARK = (70, 36, 96), (44, 22, 62)
+GOLD_TRIM, GAUNTLET = (220, 184, 70), (190, 194, 206)
+
+
+def draw_death13(
+    surface: pygame.Surface, foot: Vec2, facing: Vec2, raised: float, swing: int, flash: bool
+) -> None:
+    """Death Thirteen: no body under the cloak, a carnival mask with a fixed smile and a
+    clown's nose, a mitre-like hat, metal arms, and the great scythe. `raised` 0 to 1 while
+    it lifts the scythe; `swing` the frames left of the sweep."""
+    blit_shadow(surface, (foot.x, foot.y), 18, 6)
+    float_y = foot.y - 6
+    side = 1 if facing.x >= 0 else -1
+    # The cloak, floating, frayed at the hem.
+    cloak = [
+        (foot.x - 9, float_y - 22),
+        (foot.x + 9, float_y - 22),
+        (foot.x + 11, float_y),
+        (foot.x + 5, float_y - 3),
+        (foot.x, float_y + 1),
+        (foot.x - 5, float_y - 3),
+        (foot.x - 11, float_y),
+    ]
+    pygame.draw.polygon(surface, OUTLINE, [(round(x), round(y)) for x, y in cloak])
+    inner = [(x * 0.92 + foot.x * 0.08, y + 1) for x, y in cloak]
+    pygame.draw.polygon(
+        surface, ROBE_DARK if flash else ROBE, [(round(x), round(y)) for x, y in inner]
+    )
+    surface.fill(GOLD_TRIM, (round(foot.x) - 8, round(float_y) - 22, 16, 2))  # the collar rings
+    # The mask and the mitre.
+    head = Vec2(foot.x, float_y - 28)
+    pygame.draw.circle(surface, OUTLINE, head.as_ints(), 7)
+    pygame.draw.circle(surface, (255, 255, 255) if flash else MASK, head.as_ints(), 6)
+    surface.fill(OUTLINE, (round(head.x) - 3, round(head.y) - 1, 2, 2))  # the empty eyes
+    surface.fill(OUTLINE, (round(head.x) + 2, round(head.y) - 1, 2, 2))
+    surface.set_at((round(head.x), round(head.y) + 1), MASK_RED)  # the clown's nose
+    pygame.draw.arc(
+        surface, MASK_RED, (round(head.x) - 3, round(head.y) + 1, 7, 4), math.pi, math.tau, 1
+    )
+    mitre = [(head.x - 6, head.y - 4), (head.x, head.y - 17), (head.x + 6, head.y - 4)]
+    pygame.draw.polygon(surface, OUTLINE, [(round(x), round(y)) for x, y in mitre])
+    pygame.draw.polygon(
+        surface,
+        ROBE,
+        [
+            (round(x), round(y))
+            for x, y in ((head.x - 4, head.y - 5), (head.x, head.y - 15), (head.x + 4, head.y - 5))
+        ],
+    )
+    surface.fill(GOLD_TRIM, (round(head.x) - 5, round(head.y) - 5, 11, 2))
+    # The metal arm and the scythe: raised behind it, then swept round in front.
+    hand = Vec2(foot.x + side * 9, float_y - 16 - raised * 10)
+    pygame.draw.line(
+        surface, OUTLINE, (round(foot.x + side * 5), round(float_y - 20)), hand.as_ints(), 4
+    )
+    pygame.draw.line(
+        surface, GAUNTLET, (round(foot.x + side * 5), round(float_y - 20)), hand.as_ints(), 2
+    )
+    if swing:
+        angle = math.atan2(facing.y, facing.x) + (swing / 10 - 0.5) * 2.2
+        blade_end = hand + Vec2.from_angle(angle, 26)
+        pygame.draw.arc(
+            surface,
+            STEEL,
+            (round(hand.x) - 24, round(hand.y) - 24, 48, 48),
+            -angle - 0.6,
+            -angle + 0.6,
+            2,
+        )
+    else:
+        blade_end = hand + Vec2(side * 4, -22 - raised * 6)
+    pygame.draw.line(surface, OUTLINE, hand.as_ints(), blade_end.as_ints(), 3)
+    pygame.draw.line(surface, GOLD_TRIM, hand.as_ints(), blade_end.as_ints(), 1)
+    tip = blade_end + Vec2(-side * 12, 4)
+    pygame.draw.polygon(
+        surface, OUTLINE, [blade_end.as_ints(), (blade_end + Vec2(0, 4)).as_ints(), tip.as_ints()]
+    )
+    pygame.draw.line(surface, STEEL, blade_end.as_ints(), tip.as_ints(), 2)
+
+
+ROAMER_LOOKS = {"death13": draw_death13}
+
+
+def draw_roamer(surface: pygame.Surface, roamer) -> None:
+    """Whatever walks the arena on its own, and its life above it once it is hurt."""
+    drawing = ROAMER_LOOKS.get(roamer.defn.look)
+    if drawing is None:
+        return
+    raised = 0.0
+    if roamer.windup > 0 and roamer.defn.windup_f > 0:
+        raised = 1.0 - roamer.windup / roamer.defn.windup_f
+    drawing(surface, roamer.pos, roamer.facing, raised, roamer.swing, roamer.flash % 2 == 1)
+    if roamer.hp < roamer.defn.hp:
+        bar = pygame.Rect(0, 0, 24, 3)
+        bar.midbottom = (round(roamer.pos.x), round(roamer.pos.y) - 56)
+        surface.fill(OUTLINE, bar.inflate(2, 2))
+        filled = round(bar.w * max(0, roamer.hp) / roamer.defn.hp)
+        surface.fill((200, 60, 90), (bar.x, bar.y, filled, bar.h))
+
+
 DROP_LOOKS = {
     "chandelier": draw_chandelier,
     "snow_slab": draw_snow_slab,
