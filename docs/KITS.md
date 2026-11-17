@@ -22,6 +22,9 @@ Unités : les durées en `_f` sont en images (60 par seconde) ; celles en `_s` e
 | `pose_heal_per_s` | La pose soigne autant de vie par seconde (le cri de Speedwagon) |
 | `pose_counter`, `pose_counter_ready_s` | Après avoir posé ce nombre de secondes (0,33 par défaut), le perso prédit que l'adversaire refera son dernier coup (la même touche) : s'il a raison, ce coup est attrapé et il répond avec ce coup du kit (« Ta prochaine réplique sera... » de Joseph) ; s'il a tort, il prend le coup |
 | `nature` | `human` par défaut ; `vampire`, `zombie` ou `pillar_man` : le Hamon fait double dégâts et bloque leur régénération, le soleil les brûle |
+| `style = { type = "move", move = "style" }` | La touche Stand lance un coup du kit (dans la posture, ou parmi les coups partagés) : Hol Horse fait tourner Emperor (« Gun beats sword. »). L'aura s'allume tant qu'une charge est prête |
+| `tags` | Des mots libres sur le perso (`["woman"]` pour Lisa Lisa), que le `passive` d'un autre perso peut viser |
+| `passive` | Table `[passive]`, toujours active contre un adversaire qui porte l'étiquette `vs_tag` : `damage_dealt_mult` (dégâts infligés), `hh_gain_mult` (Heart Heat gagnée). « Hol Horse loves the ladies! » : 10 % de dégâts en plus contre les femmes, la Heart Heat un peu plus lente |
 
 ## Les postures
 
@@ -73,6 +76,7 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `at_target` | La zone tombe là où se trouvait l'adversaire au début du coup ; `reach` sert alors de **distance maximale** de largage (0 = sans limite) |
 | `leap` | Bond pendant le démarrage, jusqu'à cette distance |
 | `burrow` | Avec `leap` : le perso file sous le sol pendant le démarrage (seule une bosse du sol est dessinée) ; à combiner avec `invincible_f` |
+| `boosted` | Le nom d'un autre coup du kit : si une charge est prête (un buff avec `charge`), c'est lui qui sort à la place, et la charge est dépensée (« Gun beats sword. » de Hol Horse) |
 | `steer` | Avec `lunge` : pendant le démarrage et les images actives, l'élan va où le joueur pousse (la direction tenue), et tourne avec lui (le vide de Cream) |
 | `vanish` | Pendant le démarrage et les images actives, le perso a disparu : ni dessiné (un frémissement au sol, tout au plus) ni touchable. Il réapparaît pour la récupération, et là on peut le frapper |
 | `erase` | Avec `lunge` : ce qui est solide sur son passage est détruit au lieu de l'arrêter (caisses, piliers, rideaux) |
@@ -161,6 +165,7 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `origin`, `ring_radius` | `self` (depuis le perso) ou `ring` (en cercle autour de la cible, vers elle) |
 | `waves`, `wave_every_f` | Plusieurs salves, à N images d'écart (chaque salve comble les trous de la précédente) |
 | `homing_deg_s` | Tête chercheuse : degrés par seconde dont il tourne vers la cible |
+| `steer_deg_s` | Piloté : degrés par seconde dont il tourne vers là où son tireur vise **maintenant** (souris, sinon stick droit), pendant que le tireur continue de bouger. Sans visée libre, il file droit (les balles d'Emperor) |
 | `returns` | Boomerang : à mi-course (ou contre un mur, ou après avoir touché) il revient dans la main de son lanceur |
 | `explode_radius` | Grenade : ne touche pas au contact, roule, s'arrête contre les murs et les objets, et explose en fin de vie ; l'adversaire à ce rayon (plus son corps) est touché |
 | `drag` | Part de sa vitesse gardée à chaque image (sous 1 : il ralentit jusqu'à s'arrêter) |
@@ -210,3 +215,4 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `damage_dealt_mult`, `damage_taken_mult` | Multiplie les dégâts infligés et reçus |
 | `afterimages` | Images rémanentes derrière le perso |
 | `heal_per_s` | Vie regagnée par seconde tant que l'état dure |
+| `charge` | Une charge : le prochain coup qui a une version `boosted` sort dans cette version, et ça dépense le bonus |

@@ -161,6 +161,8 @@ class Fighter:
         self.frozen = False  # caught in someone else's stopped time
         self.pending_hits: list[PendingHit] = []
         self.cursor: Vec2 | None = None  # where the player aims (mouse), if anywhere
+        self.stick: Vec2 | None = None  # the direction the right stick aims, if any
+        self.foe_tags: frozenset[str] = frozenset()  # the opponent's kit tags (set by the match)
         # Remote control: the Stand away from its user, steered by the player.
         self.remote_pos: Vec2 | None = None
         self.remote_dir = Vec2()
@@ -268,7 +270,25 @@ class Fighter:
 
     @property
     def damage_dealt_mult(self) -> float:
-        return self.buff.damage_dealt_mult if self.buff else 1.0
+        mult = self.buff.damage_dealt_mult if self.buff else 1.0
+        if self.passive_on:
+            mult *= self.kit.passive.damage_dealt_mult
+        return mult
+
+    @property
+    def passive_on(self) -> bool:
+        """The kit's passive holds against this opponent."""
+        passive = self.kit.passive
+        return passive is not None and passive.vs_tag in self.foe_tags
+
+    def steer_point(self, origin: Vec2) -> Vec2 | None:
+        """Where a shot steered by hand turns toward: the mouse, else a point along the
+        right stick from `origin`. None without free aim: it keeps flying straight."""
+        if self.cursor is not None:
+            return self.cursor
+        if self.stick is not None and self.stick.length_sq():
+            return origin + self.stick.normalized() * 100
+        return None
 
     @property
     def damage_taken_mult(self) -> float:
@@ -281,6 +301,8 @@ class Fighter:
     def gain_hh(self, amount: float) -> None:
         if self.statuses.no_meter:
             return  # a body under a current gains nothing: it is busy twitching
+        if self.passive_on:
+            amount *= self.kit.passive.hh_gain_mult
         self.hh = min(self.rules.hh_max, self.hh + amount)
 
     def in_stylish_window(self) -> bool:
@@ -396,6 +418,7 @@ class Fighter:
             return []  # its input steers the host (see Match._possession_inputs)
         self.guard_held = frame.is_held("guard") and not self.remote
         self.cursor = Vec2(*frame.cursor) if frame.cursor is not None else None
+        self.stick = Vec2(*frame.stick) if frame.stick is not None else None
         remote_stance = self.style.params.get("remote")
         if remote_stance and frame.is_held("stand"):
             self.stand_hold_f += 1
@@ -642,6 +665,10 @@ class Fighter:
     ) -> None:
         # A guard press made before the attack must not Flash Cancel it right away.
         self.buffer.pop("guard", None)
+        if move.boosted and self.buff is not None and self.buff.charge:
+            # Charged: the stronger version comes out, and that spends the charge.
+            move = self.kit.move(self.stance, move.boosted) or move
+            self.buff, self.buff_f = None, 0
         aim = self.aim_at(target)
         dest = None
         if move.leap > 0:
@@ -792,6 +819,7 @@ class Fighter:
         return (
             self.state == State.ATTACK
             and attack is not None
+            and attack.move.leap > 0  # a trap laid on the aimed point has a dest too
             and attack.dest is not None
             and attack.phase == 0
         )

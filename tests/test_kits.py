@@ -116,6 +116,7 @@ def test_every_signature_move_is_reachable():
         kit = fighter.kit
         shared_links = {m.chain for m in kit.shared_moves.values()}
         shared_links |= {m.counter for m in kit.shared_moves.values()}
+        shared_links |= {m.boosted for m in kit.shared_moves.values()}
         for stance in kit.stances.values():
             # The five attack buttons, plus the two super slots: a stance may give
             # a super of its own (awakened Kars does not fight like Kars).
@@ -124,7 +125,7 @@ def test_every_signature_move_is_reachable():
             reachable |= {kit.pose_counter} - {""}
             reachable |= shared_links - {""}  # an ultimate can chain or counter too
             for move in stance.moves.values():
-                reachable |= {move.chain, move.counter} - {""}
+                reachable |= {move.chain, move.counter, move.boosted} - {""}
                 reachable |= {name for _, name in move.chains}  # a branching chain
             assert set(stance.moves) <= reachable, (fighter.id, set(stance.moves) - reachable)
 

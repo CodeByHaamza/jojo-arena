@@ -32,6 +32,9 @@ class ProjectileDef:
     origin: str = "self"  # "self", or "ring": around the target, flying inward
     ring_radius: float = 0.0
     homing: float = 0.0  # radians per frame it turns toward the target (0 = straight)
+    # Radians per frame it turns toward where its owner aims now (mouse or right stick):
+    # steered in flight, while the owner keeps moving. Flies straight with no free aim.
+    steer: float = 0.0
     wall_bounce: bool = False  # what it hits rebounds off the walls
     bounces: int = 0  # times the shot itself comes off a wall and keeps going
     waves: int = 1  # volleys thrown one after the other...
@@ -62,6 +65,7 @@ class ProjectileDef:
             origin=data.get("origin", "self"),
             ring_radius=data.get("ring_radius", 0.0),
             homing=math.radians(data.get("homing_deg_s", 0.0)) / HZ,
+            steer=math.radians(data.get("steer_deg_s", 0.0)) / HZ,
             wall_bounce=data.get("wall_bounce", False),
             bounces=data.get("bounces", 0),
             waves=data.get("waves", 1),
@@ -138,6 +142,9 @@ class BuffDef:
     damage_taken_mult: float = 1.0
     afterimages: bool = False
     heal_per_s: float = 0.0  # life regained per second while it lasts
+    # A charge: the next move that has a `boosted` version comes out as that version, and
+    # that spends the buff.
+    charge: bool = False
 
     @classmethod
     def from_data(cls, data: dict) -> BuffDef:
@@ -148,6 +155,7 @@ class BuffDef:
             damage_taken_mult=data.get("damage_taken_mult", 1.0),
             afterimages=data.get("afterimages", False),
             heal_per_s=data.get("heal_per_s", 0.0),
+            charge=data.get("charge", False),
         )
 
 
@@ -188,6 +196,7 @@ class MoveDef:
     trap: TrapDef | None = None
     disarm_f: int = 0  # the Stand's own moves are unavailable this long afterwards
     buff: str = ""  # name of a buff (kit [buffs]) started by this move
+    boosted: str = ""  # with a charge (buff with `charge`) on, this move comes out instead
     chain: str = ""  # the same button, once this connects, continues into this move
     # ...or a choice of buttons, each leading somewhere else (Lisa Lisa's Ripple Chain).
     # Pairs, not a dict: a move is frozen and used as a key (cooldowns), so it must hash.
@@ -296,6 +305,7 @@ class MoveDef:
             trap=TrapDef.from_data(trap) if trap else None,
             disarm_f=seconds_to_frames(data.get("disarm_s", 0)),
             buff=data.get("buff", ""),
+            boosted=data.get("boosted", ""),
             chain=data.get("chain", ""),
             chains=tuple(sorted(data.get("chains", {}).items())),
             cinematic=data.get("cinematic", ""),
@@ -385,6 +395,23 @@ class Stance:
 
 
 @dataclass(frozen=True)
+class PassiveDef:
+    """Always on, against an opponent whose kit carries a tag (`vs_tag`)."""
+
+    vs_tag: str
+    damage_dealt_mult: float = 1.0
+    hh_gain_mult: float = 1.0  # Heart Heat gained
+
+    @classmethod
+    def from_data(cls, data: dict) -> PassiveDef:
+        return cls(
+            vs_tag=data["vs_tag"],
+            damage_dealt_mult=data.get("damage_dealt_mult", 1.0),
+            hh_gain_mult=data.get("hh_gain_mult", 1.0),
+        )
+
+
+@dataclass(frozen=True)
 class Kit:
     id: str
     name: str
@@ -414,6 +441,8 @@ class Kit:
     strength: float = 1.0  # the Stand's raw power: how fast and hard it throws props
     prop_hold: str = "hands"  # "hair": his hair carries and swings what he picks up
     nature: str = "human"  # "vampire", "pillar_man"...: what Hamon burns
+    tags: frozenset[str] = frozenset()  # free words other kits' passives can look for
+    passive: PassiveDef | None = None
     pose_heal_per_s: float = 0.0  # posing heals this much life per second
     pose_counter: str = ""  # posing a moment, the next blow is answered with this move
     pose_counter_ready_f: int = 20  # posing this long arms the pose counter
@@ -462,7 +491,7 @@ def parse_kit(data: dict, kit_id: str, source: str = "kit", hh_bar: float = 100.
     buffs = {name: BuffDef.from_data(b) for name, b in data.get("buffs", {}).items()}
     for stance_name, stance in stances.items():
         for move in [*stance.moves.values(), *shared.values()]:
-            for link in (move.chain, move.counter, *(n for _, n in move.chains)):
+            for link in (move.chain, move.counter, move.boosted, *(n for _, n in move.chains)):
                 if link and link not in stance.moves and link not in shared:
                     raise ValueError(
                         f"{source}: move '{move.name}' leads to unknown move '{link}' "
@@ -498,6 +527,8 @@ def parse_kit(data: dict, kit_id: str, source: str = "kit", hh_bar: float = 100.
         strength=data.get("strength", 1.0),
         prop_hold=data.get("prop_hold", "hands"),
         nature=data.get("nature", "human"),
+        tags=frozenset(data.get("tags", ())),
+        passive=PassiveDef.from_data(data["passive"]) if "passive" in data else None,
         pose_heal_per_s=data.get("pose_heal_per_s", 0.0),
         pose_counter=pose_counter,
         pose_counter_ready_f=round(data.get("pose_counter_ready_s", 0.33) * HZ),

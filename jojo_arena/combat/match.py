@@ -56,6 +56,8 @@ class Match:
             Fighter(0, kits[0], rules, arena.spawns[0], Vec2(1, 0)),
             Fighter(1, kits[1], rules, arena.spawns[1], Vec2(-1, 0)),
         ]
+        for fighter in self.fighters:
+            fighter.foe_tags = self.fighters[1 - fighter.index].kit.tags
         self.projectiles: list[Projectile] = []
         self.traps: list[Trap] = []
         self.webs: list[Web] = []
@@ -417,6 +419,10 @@ class Match:
             if projectile.defn.homing and self._projectile_moves(projectile):
                 target = self.fighters[1 - projectile.owner]
                 projectile.steer(target.pos, projectile.defn.homing)
+            if projectile.defn.steer and self._projectile_moves(projectile):
+                point = owner.steer_point(projectile.pos)
+                if point is not None:
+                    projectile.steer(point, projectile.defn.steer)
             if projectile.defn.returns and self._projectile_moves(projectile):
                 events += self._fly_home(projectile)
                 if not projectile.alive:

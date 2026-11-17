@@ -134,6 +134,13 @@ def build_pages(
                 continue
             keys = (text.DIRECTION, key(VARIANTS[slot])) if slot in VARIANTS else (key(slot),)
             entries.append(MoveEntry(keys, move.label or slot.upper(), _info(move)))
+            charged = stance.moves.get(move.boosted) if move.boosted else None
+            if charged is not None:
+                # Charged by the style button first: the same input, its stronger version.
+                charged_keys = (key("stand"), *keys)
+                entries.append(
+                    MoveEntry(charged_keys, charged.label or charged.name, _info(charged), True)
+                )
             if move.counter and move.counter in stance.moves:
                 # The answer of a counter comes out on its own, when struck.
                 answer = stance.moves[move.counter]
@@ -181,6 +188,16 @@ def build_pages(
                 info = f"[{tag}] {info}" if info else f"[{tag}]"
             keys = (text.DIRECTION, key("heart_heat")) if slot == "gha" else (key("heart_heat"),)
             supers.append(MoveEntry(keys, move.label or slot.upper(), info))
+            charged = (
+                kit.move(stance_name or kit.base_stance_name, move.boosted)
+                if move.boosted
+                else None
+            )
+            if charged is not None:
+                charged_keys = (key("stand"), *keys)
+                supers.append(
+                    MoveEntry(charged_keys, charged.label or charged.name, _info(charged), True)
+                )
             # An ultimate can be a counter too: its answer comes out when struck.
             answer = kit.move(kit.base_stance_name, move.counter) if move.counter else None
             if answer is not None:
@@ -229,6 +246,12 @@ def build_pages(
         basics.insert(2, MoveEntry((), text.SYS_BLOOD, text.SYS_BLOOD_INFO))
     elif len(kit.stances) > 1:
         basics.insert(1, MoveEntry((key("stand"),), stand_label, stand_info))
+    elif kit.style == "move":
+        # The style button starts a move of its own (a weapon spun, a charge).
+        styled = kit.move(kit.base_stance_name, kit.style_params.get("move", "style"))
+        if styled is not None:
+            entry = MoveEntry((key("stand"),), styled.label or styled.name, _info(styled))
+            basics.insert(1, entry)
     if kit.style_params.get("remote"):
         secs = f"{rules.remote_hold_f / 60:.1f}".replace(".", ",")
         stand = fdef.stand_name or text.SYS_STAND
