@@ -132,5 +132,6 @@ def test_a_complete_part_shows_no_slot_still_to_come(ctx):
     first_row = [select._cell_rect(i) for i in range(4)]
     middle = (first_row[0].left + first_row[-1].right) / 2
     assert abs((last_row[0].left + last_row[-1].right) / 2 - middle) <= 1
-    press(ctx, "E", "E")  # part 3 still has fighters to come
-    assert select.cells() > len(select.grid())
+    press(ctx, "E", "E")  # part 3 still has fighters to come: whole rows stay open
+    assert not select.parts[select.tab].complete
+    assert select.cells() == 4 * select.rows() >= len(select.grid())

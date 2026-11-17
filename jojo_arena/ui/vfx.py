@@ -41,6 +41,9 @@ VINE = (146, 84, 196)  # thorny vines: purple in the manga and the anime
 VINE_LIGHT = (208, 156, 240)
 TAR = (30, 26, 36)
 TAR_SHEEN = (92, 84, 116)
+WATER = (86, 120, 156)  # a puddle of water on the floor
+WATER_SHEEN = (176, 206, 230)
+BANDAGE = (206, 194, 168)  # Hanged Man's wrappings
 
 
 def _side(d: Vec2) -> Vec2:
@@ -90,6 +93,8 @@ def draw_projectile(
         _draw_tar_splash(surface, pos, radius)
     elif look == "eruption":
         draw_eruption(surface, pos, radius)
+    elif look == "reflection":
+        draw_reflection_stab(surface, pos, radius)
     else:
         _draw_orb(surface, pos, radius, aura)
 
@@ -393,6 +398,42 @@ def draw_eruption(surface: pygame.Surface, pos: Vec2, radius: float) -> None:
     surface.fill(FIRE, column)
     surface.fill(FIRE_LIGHT, column.inflate(-column.w // 2, 0))
     _draw_flame(surface, Vec2(column.centerx, column.top), 1.6)
+
+
+def draw_water_puddle(surface: pygame.Surface, center: Vec2, radius: float, tick: int) -> None:
+    """A puddle of water from a burst bottle: flat and grey-blue, the light trembling on
+    it; now and then a shape that is not there passes across the reflection."""
+    box = pygame.Rect(0, 0, round(radius * 2), max(4, round(radius * 1.0)))
+    box.center = (round(center.x), round(center.y))
+    pygame.draw.ellipse(surface, OUTLINE, box.inflate(2, 2))
+    pygame.draw.ellipse(surface, WATER, box)
+    shine = pygame.Rect(0, 0, max(3, round(radius * 0.8)), 1)
+    shine.center = (round(center.x + math.sin(tick * 0.09) * 2), round(center.y - box.height * 0.2))
+    pygame.draw.ellipse(surface, WATER_SHEEN, shine)
+    if (tick // 30) % 4 == 0:
+        # Something in the reflection, and nothing above it.
+        x = round(center.x + math.sin(tick * 0.2) * radius * 0.4)
+        surface.fill(BANDAGE, (x, round(center.y) - 1, 1, 3))
+
+
+def draw_reflection_stab(surface: pygame.Surface, pos: Vec2, radius: float) -> None:
+    """Hanged Man out of the reflection: a wrapped forearm and the blade on its wrist,
+    thrust up out of the water."""
+    foot = pos + Vec2(0, 8)
+    for i in range(5):  # the splash
+        out = Vec2.from_angle(i * math.tau / 5 + 0.3, radius * 0.6)
+        drop = (round(foot.x + out.x), round(foot.y + out.y * 0.4))
+        pygame.draw.circle(surface, OUTLINE, drop, 2)
+        surface.set_at(drop, WATER_SHEEN)
+    arm = pygame.Rect(0, 0, 4, round(radius * 1.1))
+    arm.midbottom = _ints(foot)
+    surface.fill(OUTLINE, arm.inflate(2, 2))
+    surface.fill(BANDAGE, arm)
+    for y in range(arm.top + 1, arm.bottom, 3):
+        surface.fill(shade(BANDAGE, -40), (arm.x, y, arm.w, 1))
+    tip = (arm.centerx + 2, arm.top - round(radius * 1.1))
+    pygame.draw.line(surface, OUTLINE, (arm.centerx + 2, arm.top), tip, 3)
+    pygame.draw.line(surface, STEEL, (arm.centerx + 2, arm.top), tip, 1)
 
 
 def draw_tar_puddle(surface: pygame.Surface, center: Vec2, radius: float, tick: int) -> None:

@@ -347,6 +347,21 @@ color = "#4a3c9c"
 aura = "#9a4ae0"
 
 [[fighters]]
+id = "hol_horse"
+side = "villain"
+part = 3
+name = "HOL HORSE"
+kit = "hol_horse"
+sprite = "hol_horse/hol_horse"
+stand_name = "EMPEROR"
+role = "TIREUR - PIÈGES"
+role_en = "GUNSLINGER - TRAPS"
+blurb = "Des balles qu'il pilote en plein vol pendant qu'il court, et la flaque où J. Geil attend son tour."
+blurb_en = "Bullets he steers in mid-flight while he runs, and the puddle where J. Geil waits his turn."
+color = "#c8b06a"
+aura = "#a8c0d8"
+
+[[fighters]]
 id = "mannequin_red"
 name = "MANNEQUIN ROUGE"
 name_en = "RED DUMMY"

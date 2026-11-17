@@ -8,6 +8,13 @@ des corrections seules une patch.
 
 ### Ajouté
 
+- **Nouveau perso : Hol Horse**, et Emperor dans sa main. Ses balles se pilotent en plein
+  vol à la souris (ou au stick droit) pendant qu'il court ; une balle rapide qui s'éteint
+  si on le touche ; la touche Stand fait tourner Emperor et charge son prochain tir
+  (« Gun beats sword. ») ; une bouteille lancée où il vise laisse une flaque d'où J. Geil
+  poignarde qui marche dedans. Il fait 10 % de dégâts en plus contre les femmes (« Hol
+  Horse loves the ladies! »). Quatre couleurs d'All-Star Battle R, cinq poses, et ses
+  répliques face à Polnareff, Avdol, Kakyoin et DIO.
 - **Nouveau perso : Vanilla Ice**, et Cream. Il se cache dans le vide de son Stand :
   invisible, intouchable, imparable, et tout ce qu'il traverse disparaît, caisses et
   piliers compris. Avec une direction, tu le guides au stick tout du long. Mais il doit
@@ -261,6 +268,7 @@ des corrections seules une patch.
   de 26.
 ### Corrigé
 
+- La Variation d'Avdol, posée au point visé, faisait bondir Avdol jusqu'au point.
 - Parties 1 et 2 : le curseur ne peut plus se poser sur une case vide (on pouvait
   « choisir » un perso qui n'existe pas).
 - **Une tornade n'est pas une rafale de poings.** Un coup multi-hit qui a son propre

@@ -262,6 +262,97 @@ text_en = "Everything I do, I do for you, Lord DIO..."
 text = "Tu n'as pas à mourir ici... Mon sang te ressuscitera."
 text_en = "You needn't die here... My blood will resurrect you."
 
+# Hol Horse: All-Star Battle R ★ Hol Horse, "Dialogue" (read 17/11/2026): the match
+# entrances of ASBR and the victory quotes against each of them.
+
+[[exchanges]]
+fighters = ["hol_horse", "polnareff"]
+source = "ASBR, entrée en matière et citations de victoire de Hol Horse et de Polnareff"
+
+[[exchanges.intro]]
+by = "polnareff"
+text = "S'il faut te battre avant de voir ce salaud, alors c'est ce que je ferai. En garde !"
+text_en = "If I gotta beat you before I can see that bastard, then that's what I'll do. En garde!"
+
+[[exchanges.intro]]
+by = "hol_horse"
+text = "Le pistolet est plus fort que l'épée, comme on dit. Si c'est pas la vérité, ça !"
+text_en = "'The gun is mightier than the sword.' Damn if that ain't the truth!"
+
+[exchanges.victory.hol_horse]
+text = "Tu t'es moqué de moi... et tu l'as payé de ta vie !"
+text_en = "You made fun of me... and you paid for it with your life!"
+
+[exchanges.victory.polnareff]
+text = "L'épée bat le pistolet quand on veut ! Enfin, quand c'est moi qui la tiens."
+text_en = "Swords beat guns any day! Well, they do if you're me, that is!"
+
+[[exchanges]]
+fighters = ["hol_horse", "avdol"]
+source = "ASBR, entrée en matière et citations de victoire de Hol Horse et d'Avdol"
+
+[[exchanges.intro]]
+by = "avdol"
+text = "Je vais réduire toutes tes balles en cendres !"
+text_en = "I'll burn away all of your bullets!"
+
+[[exchanges.intro]]
+by = "hol_horse"
+text = "Je vais te loger une balle entre les deux yeux, Avdol !"
+text_en = "I'll put a hole right between your eyes, Avdol!"
+
+[exchanges.victory.hol_horse]
+text = "Les pièces de ton petit jeu ne me font plus peur !"
+text_en = "The pieces of your little game no longer frighten me!"
+
+[exchanges.victory.avdol]
+text = "Qu'y a-t-il ? Ta cigarette s'est éteinte. Besoin de feu ?"
+text_en = "What's wrong? Your smoke's burnt out. Need a light?"
+
+[[exchanges]]
+fighters = ["hol_horse", "kakyoin"]
+source = "ASBR, entrée en matière et citations de victoire de Hol Horse et de Kakyoin"
+
+[[exchanges.intro]]
+by = "kakyoin"
+text = "Bande de lâches ! Vous allez tomber !"
+text_en = "You cowards! You're going down!"
+
+[[exchanges.intro]]
+by = "hol_horse"
+text = "Kakyoin, le manieur de Hierophant, hein ? Mort au traître !"
+text_en = "Kakyoin the Hierophant user, huh? Death to the betrayer!"
+
+[exchanges.victory.hol_horse]
+text = "Tu sais, la fin d'une vie, c'est souvent un rideau qui tombe d'un coup."
+text_en = "Well, the end of someone's life is usually a pretty sudden curtain call."
+
+[exchanges.victory.kakyoin]
+text = "Quelle bande de clowns. Vous ne voyez pas qu'on sait exactement comment vous opérez ?"
+text_en = "What a bunch of clowns. Don't you realize we know exactly how you work?"
+
+[[exchanges]]
+fighters = ["hol_horse", "dio_p3"]
+source = "ASBR, entrée en matière et citations de victoire de Hol Horse et de DIO"
+
+[[exchanges.intro]]
+by = "hol_horse"
+text = "Le fort d'Emperor, c'est l'assassinat à bout portant ! On le tient !"
+text_en = "Emperor's forte is close-quarters assassination! We got 'em now!"
+
+[[exchanges.intro]]
+by = "dio_p3"
+text = "Tu essaies vraiment de me tirer dessus ?"
+text_en = "Are you really trying to shoot me?"
+
+[exchanges.victory.hol_horse]
+text = "Je me range toujours du côté du plus fort. Point."
+text_en = "I stick by the strongest I find. That's it!"
+
+[exchanges.victory.dio_p3]
+text = "Tu me plais. Jamais une goutte de sueur, jamais perdu le rythme. Tu es froid comme la glace, Hol Horse."
+text_en = "I like you. You never sweated, never lost your rhythm. You are cool as ice, Hol Horse."
+
 # Part 1 -----------------------------------------------------------------------------------
 
 [[exchanges]]

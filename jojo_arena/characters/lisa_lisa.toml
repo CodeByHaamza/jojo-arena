@@ -10,6 +10,7 @@
 
 name = "Lisa Lisa"
 max_hp = 900
+tags = ["woman"]  # what passives such as Hol Horse's look for
 walk_speed = 98
 style = { type = "hamon" }
 

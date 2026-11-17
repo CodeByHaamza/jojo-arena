@@ -16,7 +16,7 @@ Ce qui n'est pas sûr est marqué **à vérifier**. Une source manque, se contre
 
 ## Où on en est
 
-- **Jouables** : Jotaro, Kakyoin, Polnareff, DIO, **Avdol** (fait le 24/10/2026), **Joseph âgé** (fait le 15/11/2026) et **Vanilla Ice** (fait le 17/11/2026).
+- **Jouables** : Jotaro, Kakyoin, Polnareff, DIO, **Avdol** (fait le 24/10/2026), **Joseph âgé** (fait le 15/11/2026), **Vanilla Ice** et **Hol Horse** (faits le 17/11/2026).
 - **Arène** : Le Caire, rue de nuit.
 - Le moteur **sait déjà** faire : Stand on/off, mode contrôle, temps arrêté, pièges, projectiles (`count`, `ring`), visée libre, saisies inbloquables, Hamon, vampire et soleil, `stance_cycle`, éveil, objets à lancer.
 - Il **ne sait pas encore** faire : vol, états qui s'accumulent. (Brûlure, Stand + Hamon, invisibilité et décor effacé : faits.)
@@ -230,6 +230,37 @@ Le nom officiel du coup est entre guillemets. La forme de la hitbox suit la règ
 - **Nature `vampire`** : DIO l'a fait vampire, et le soleil l'achève face à Polnareff.
 
 ### Hol Horse (Emperor)
+
+**Fait le 17/11/2026** (`characters/hol_horse.toml`, `looks/hol_horse.toml`). La page ASBR
+tranche ce qui était « à fixer » plus bas :
+
+- **Touche Stand : « Gun beats sword. »** Il fait tourner Emperor ; le prochain coup que
+  ASBR marque d'une étoile (les deux balles et « Eat this! ») sort **chargé** : plus de
+  balles, plus de dégâts. Champs génériques : le style `move` (la touche lance un coup),
+  la charge (`charge` sur un bonus) et `boosted` (la version chargée d'un coup).
+- **Spécial : « You lose, loser! »**, une balle rapide qui disparaît s'il est touché.
+- **Spécial + direction : « Even my bullets are part of my Stand! »**, plus lente, plus
+  forte, **pilotée en vol par la visée libre** (souris ou stick droit) pendant qu'il
+  continue de bouger, comme décidé le 24/10 (nouveau champ `steer_deg_s`).
+- **Lourd : « Now I've got ya! »**, sa projection d'ASBR (par le col, Hanged Man
+  poignarde), en saisie imparable.
+- **Lourd + direction : « Come get us! »**, la bouteille lancée au point visé ; la flaque
+  dure 15 s et **J. Geil** frappe depuis le reflet quiconque marche dedans (« You're up,
+  J. Geil! »). Pas de touche à part pour J. Geil : il n'y a plus d'emplacement libre.
+- **Passif « Hol Horse loves the ladies! »** : +10 % de dégâts contre une femme (Lisa Lisa
+  pour l'instant, Mariah ensuite), Heart Heat un peu plus lente. Champs génériques `tags`
+  et `[passive]`.
+- HHA **« Eat this! »** : dix balles qui reviennent vers la cible (douze, chargée). GHA
+  **« Hol Horse is gonna kill ya! »** : les bouteilles éclatent tout autour de lui, puis la
+  cinématique (Hanged Man sort d'un éclat de verre, la balle courbe d'éclat en éclat).
+- **Emperor se voit dans sa main** (une pièce `pistol` du générateur) : c'est un pistolet,
+  pas un Stand à côté de lui. Ses poses (5, tirées des planches des esquives stylées
+  d'ASBR) le montrent donc toujours en main ; pas de pose « en duo ».
+- **Écarts** : « I'll be right back! » (il s'enfuit) n'est pas repris, le dash en arrière
+  le fait déjà ; la cigarette et les éperons ne se voient pas à cette taille. Une seule
+  tenue (ASBR et EoH n'en ont pas d'autre), quatre couleurs.
+- **Bug corrigé au passage** : un piège posé au point visé (la Variation d'Avdol, la
+  bouteille) faisait bondir le perso jusqu'au point.
 
 **Rôle** : tireur qui bouge, buffe ses tirs.
 

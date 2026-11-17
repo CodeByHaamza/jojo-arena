@@ -1250,6 +1250,44 @@ def sword(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     return parts
 
 
+def pistol(sk: Skeleton, p: dict, look: Look) -> list[Part]:
+    """A handgun in the screen-right (profile: near) hand, pointing along the forearm.
+
+    Options: length (px of barrel past the fist), orb (color of a ball set in the frame
+    over the fist), grip (color of the grip, showing under the fist).
+    """
+    shoulder, hand = _forearm_root(sk.arms[1], sk.shoulders[1]), sk.hands[1]
+    dx, dy = hand[0] - shoulder[0], hand[1] - shoulder[1]
+    norm = max(1e-6, math.hypot(dx, dy))
+    ux, uy = dx / norm, dy / norm
+    length = p.get("length", 7)
+    low, high = 2, look.cell - 3
+    for axis_pos, axis_dir in ((hand[0], ux), (hand[1], uy)):
+        if axis_dir > 0:
+            length = min(length, (high - axis_pos) / axis_dir)
+        elif axis_dir < 0:
+            length = min(length, (axis_pos - low) / -axis_dir)
+    length = max(0.0, length)
+    tip = (hand[0] + ux * length, hand[1] + uy * length)
+    steps = max(1, round(length * 2))
+    barrel = points([_lerp(hand, tip, i / steps) for i in range(steps + 1)])
+    # The frame over the barrel: a second row along its back half, toward the fist.
+    frame = points(
+        [(hand[0] + ux * t * length + uy, hand[1] + uy * t * length - ux) for t in (0.2, 0.45, 0.7)]
+    )
+    z = {"down": 59.5, "up": 14.5, "right": 61.5}[sk.view]
+    parts = [Part(p["material"], barrel | frame, z=z, tone=1)]
+    orb = p.get("orb")
+    if orb:
+        ball = points([(hand[0] + ux * 2.2 + uy * 0.8, hand[1] + uy * 2.2 - ux * 0.8)])
+        parts.append(Part(orb, ball, z=z + 0.2, tone=2))
+    grip = p.get("grip")
+    if grip:
+        handle = points([(hand[0] - uy * 1.6, hand[1] + ux * 1.6)])
+        parts.append(Part(grip, handle, z=z - 0.2, tone=1))
+    return parts
+
+
 def _rings(pixels: set[Pixel], a: Point, b: Point, spacing: int = 2) -> set[Pixel]:
     """Pixels of a limb piece lying on rings across its length (a ribbed tube)."""
     length = max(1e-6, math.hypot(b[0] - a[0], b[1] - a[1]))
@@ -1387,10 +1425,13 @@ def top_hat(sk: Skeleton, p: dict, look: Look) -> list[Part]:
     """A tall top hat with a wide brim. Options: height (crown, head units), band (color of
     a band around the crown), checker (second color: harlequin diamonds on the band),
     bowler (true: a low, rounded crown, a bowler hat), fedora (true: a low crown, narrower
-    at the top and pinched in the middle, a fedora)."""
+    at the top and pinched in the middle, a fedora), cowboy (true: a fedora's crown on a
+    very wide brim turned up at both ends), straps (color of two thin strings hanging
+    from the brim down past the jaw)."""
     mat = p["material"]
     at = sk.at
-    fedora = p.get("fedora", False)
+    cowboy = p.get("cowboy", False)
+    fedora = p.get("fedora", False) or cowboy
     h = p.get("height", 4.8 if fedora else 9.0)
     shift = -0.6 if sk.view == "right" else 0.0
     base = -4.4
@@ -1419,8 +1460,31 @@ def top_hat(sk: Skeleton, p: dict, look: Look) -> list[Part]:
             ]
         )
     brim = polygon([at(-9, base - 0.3), at(9, base - 0.3), at(9, base + 1.2), at(-9, base + 1.2)])
+    if cowboy:
+        # Wider, and turned up at both ends.
+        brim = polygon(
+            [
+                at(-12, base - 1.6),
+                at(-9, base - 0.3),
+                at(9, base - 0.3),
+                at(12, base - 1.6),
+                at(12, base - 0.4),
+                at(9, base + 1.2),
+                at(-9, base + 1.2),
+                at(-12, base - 0.4),
+            ]
+        )
     shine = points([at(-4 + shift, base - h + 1.5), at(-4 + shift, base - h + 2.5)]) & crown
     parts = [Part(mat, crown, z=56, highlight=shine), Part(mat, brim, z=57)]
+    straps = p.get("straps")
+    if straps and sk.view != "up":
+        sides = (-7.5, 7.5) if sk.view == "down" else (-1.5,)
+        lines: set = set()
+        for x in sides:
+            lines |= points(
+                [at(x + 0.15 * i * (1 if x > 0 else -1), base + 1.5 + i) for i in range(10)]
+            )
+        parts.append(Part(straps, lines, z=57.2, tone=1))
     band = p.get("band")
     if band:
         top_of_band = base - (2.2 if p.get("bowler") else (2.6 if fedora else 4.2))
@@ -1706,6 +1770,7 @@ PART_TYPES: dict[str, Callable[[Skeleton, dict, Look], list[Part]]] = {
     "wings": wings,
     "arm_blade": arm_blade,
     "sword": sword,
+    "pistol": pistol,
     "boots": boots,
     "top": top,
     "helmet": helmet,

@@ -1148,6 +1148,9 @@ class FightView:
         if trap.defn.projectile.look == "tar":
             vfx.draw_tar_puddle(surface, trap.pos, trap.defn.radius, self.tick)
             return
+        if trap.defn.projectile.look == "reflection":
+            vfx.draw_water_puddle(surface, trap.pos, trap.defn.radius, self.tick)
+            return
         dim = tuple(c // 3 for c in aura)
         r = trap.defn.radius
         center = trap.pos

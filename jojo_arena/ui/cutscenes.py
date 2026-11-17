@@ -2035,6 +2035,116 @@ class VoidMiasma(CutscenePlayer):
                 self.body(world, user, spot + Vec2(-self.side * 18, 10), "pose", 2, right)
 
 
+# Hol Horse: Hol Horse is gonna kill ya! ------------------------------------------------------
+
+
+class EmperorHangedMan(CutscenePlayer):
+    """The bottles have burst: their shards hang in the air round the opponent. In one of
+    them, Hanged Man; it comes out of the reflection and stabs them in the shoulder,
+    pinning them. Hol Horse raises Emperor and fires; the bullet curves from shard to
+    shard, and goes into the forehead."""
+
+    length = 300
+    SHARDS = 30  # the glass hangs round them
+    STAB = 70  # Hanged Man out of a shard
+    AIM = 120  # Emperor raised
+    SHOT = 150  # the bullet leaves
+    HIT = 206  # and arrives
+    GLASS = (196, 226, 240)
+    BANDAGE = (206, 194, 168)
+
+    def shards(self) -> list[Vec2]:
+        """Where the shards hang: a loose ring round the opponent's head."""
+        head = self.head(self.scene.target, self.v)
+        rng = random.Random(self.scene.serial)
+        spots = []
+        for i in range(9):
+            angle = i * math.tau / 9 + rng.uniform(-0.2, 0.2)
+            reach = rng.uniform(16, 30)
+            spots.append(head + Vec2(math.cos(angle) * reach, math.sin(angle) * reach * 0.7))
+        return spots
+
+    def bullet(self, f: int) -> Vec2:
+        """The bullet on its way: from the muzzle, through three shards, to the brow."""
+        shards = self.shards()
+        path = [self.chest(self.scene.user, self.u) + Vec2(self.side * 10, -2)]
+        path += [shards[2], shards[6], shards[4], self.head(self.scene.target, self.v)]
+        t = min(1.0, max(0.0, (f - self.SHOT) / (self.HIT - self.SHOT)))
+        leg = min(len(path) - 2, int(t * (len(path) - 1)))
+        local = t * (len(path) - 1) - leg
+        return path[leg] + (path[leg + 1] - path[leg]) * local
+
+    def camera(self, f):
+        if f < self.SHARDS:
+            return self.u + Vec2(0, -16), 2
+        if f < self.AIM:
+            return self.v + Vec2(0, -24), 3  # the shards, and what is in them
+        if f < self.SHOT:
+            return self.u + Vec2(0, -20), 3  # Emperor raised
+        return (self.u + self.v) * 0.5 + Vec2(0, -16), 2
+
+    def cue(self, f):
+        fx = self.fx
+        if f == 1:
+            self.shout(text.HOL_HORSE_KILL_LINE, scale=2, life=50)
+            fx.add(vfx.Ring(self.u, self.GLASS, 4.0, 24, 2))
+            self.shake = 8
+        if f < self.SHARDS and f % 2 == 0:
+            drift = Vec2.from_angle(self.rng.uniform(0, math.tau), self.rng.uniform(1.0, 2.4))
+            fx.add(vfx.Dust(self.u + Vec2(0, -10), drift, 1, 16, self.GLASS))
+        if f == self.STAB:
+            hit = self.chest(self.scene.target, self.v) + Vec2(-self.side * 4, -4)
+            fx.add(vfx.Flash(hit, 16, self.GLASS, 6))
+            self.world_words.add(sfx.GA, hit + Vec2(0, -10), "impact", 2, 30, 0.3, 2)
+            self.shake = 6
+        if f == self.SHOT:
+            muzzle = self.bullet(f)
+            fx.add(vfx.Flash(muzzle, 14, (255, 236, 160), 5))
+            self.world_words.add(sfx.DON, muzzle + Vec2(0, -12), "impact", 2, 30, 0.2, 2)
+        if f == self.HIT:
+            brow = self.head(self.scene.target, self.v)
+            fx.add(vfx.Flash(brow, 44, (255, 236, 160), 12))
+            fx.add(vfx.Ring(brow, self.GLASS, 5.0, 26, 3))
+            fx.focus(brow, heavy=True)
+            self.world_words.add(sfx.BAKI, brow + Vec2(0, -16), "impact", 3, 46, 0.2, 2)
+            self.flash, self.shake = 12, 18
+
+    def negative(self, f):
+        return self.HIT <= f < self.HIT + 3
+
+    def scene_draw(self, world, f):
+        user, target, right = self.scene.user, self.scene.target, self.side > 0
+        anim = "light" if self.AIM <= f < self.HIT + 30 else "pose"
+        self.body(world, user, self.u, anim, 2, right)
+        self.victim(world, f)
+        if f >= self.SHARDS and f < self.HIT + 10:
+            # The shards hanging in the air, glinting one after the other.
+            for i, spot in enumerate(self.shards()):
+                color = (255, 255, 255) if (f // 4 + i) % 9 == 0 else self.GLASS
+                world.fill(OUTLINE, (round(spot.x) - 1, round(spot.y) - 1, 3, 3))
+                world.set_at(spot.as_ints(), color)
+        if self.STAB - 14 <= f < self.HIT:
+            # Hanged Man: out of the nearest shard, its blade in the shoulder.
+            shard = self.shards()[0]
+            shoulder = self.chest(target, self.v) + Vec2(-self.side * 4, -4)
+            reach = min(1.0, max(0.0, (f - self.STAB + 14) / 14))
+            tip = shard + (shoulder - shard) * reach
+            pygame.draw.line(world, OUTLINE, shard.as_ints(), tip.as_ints(), 4)
+            pygame.draw.line(world, self.BANDAGE, shard.as_ints(), tip.as_ints(), 2)
+            pygame.draw.line(
+                world,
+                (214, 220, 234),
+                tip.as_ints(),
+                (tip + (shoulder - shard).normalized() * 4).as_ints(),
+                1,
+            )
+        if self.SHOT <= f < self.HIT:
+            spot = self.bullet(f)
+            back = self.bullet(max(self.SHOT, f - 3))
+            pygame.draw.line(world, (255, 236, 160), back.as_ints(), spot.as_ints(), 1)
+            vfx.draw_projectile(world, "bullet", spot, spot - back, 3, self.aura(user))
+
+
 CUTSCENES = {
     "hermit_overdrive": HermitOverdrive,
     "road_roller": RoadRoller,
@@ -2058,6 +2168,7 @@ CUTSCENES = {
     "self_destruct": SelfDestruct,
     "crossfire_special": CrossfireSpecial,
     "void_miasma": VoidMiasma,
+    "emperor_hanged_man": EmperorHangedMan,
 }
 
 
