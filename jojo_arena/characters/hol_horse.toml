@@ -177,16 +177,16 @@ info = "Une balle rapide ; elle disparaît s'il est touché. Chargée : deux bal
 info_en = "A fast bullet; it vanishes if he is hit. Charged: two bullets that send far"
 startup_f = 9
 active_f = 1
-recovery_f = 15
+recovery_f = 19
 boosted = "special_boosted"
 anim = "light"
 
 [stances.base.moves.special.projectile]
 look = "bullet"
-speed = 480
+speed = 460
 radius = 3
-damage = 50
-lifetime_s = 0.8
+damage = 45
+lifetime_s = 0.75
 hitstun_f = 18
 knockback = 80
 hitstop_f = 4
@@ -200,7 +200,7 @@ info = "Chargée par Gun beats sword : deux balles, la seconde envoie loin"
 info_en = "Charged by Gun beats sword: two bullets, the second sends far"
 startup_f = 9
 active_f = 1
-recovery_f = 15
+recovery_f = 19
 anim = "light"
 
 [stances.base.moves.special_boosted.projectile]
@@ -226,7 +226,7 @@ info = "Avec une direction : une balle plus lente qui suit la visée (souris ou 
 info_en = "With a direction: a slower bullet that follows the aim (mouse or right stick) the whole way while he moves. Charged: stronger, quicker to turn"
 startup_f = 12
 active_f = 1
-recovery_f = 14
+recovery_f = 18
 boosted = "special_alt_boosted"
 anim = "light"
 
@@ -234,8 +234,8 @@ anim = "light"
 look = "bullet"
 speed = 200
 radius = 3
-damage = 60
-lifetime_s = 2.4
+damage = 55
+lifetime_s = 2.0
 hitstun_f = 24
 knockback = 140
 hitstop_f = 6
