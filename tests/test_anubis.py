@@ -35,8 +35,15 @@ def test_a_blow_taken_once_is_remembered_and_parried_the_next_time():
     _struck_once(match)
     assert len(anubis.learned) == 1
     hp = anubis.hp
-    events = run(match, 30, p2=press("light"))
+    jotaro = match.fighters[1]
+    events = []
+    match.step((NONE, press("light")))
+    for _ in range(30):
+        events += match.step((NONE, NONE))
+        if "learned" in kinds(events):
+            break
     assert anubis.hp == hp and "learned" in kinds(events)  # never twice
+    assert jotaro.state.name == "HITSTUN"  # parried: thrown off balance
 
 
 def test_each_blow_learned_makes_it_stronger_and_faster():

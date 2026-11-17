@@ -31,14 +31,15 @@
 # Feel: the longer the fight lasts, the worse it gets for you.
 
 name = "Anubis"
-max_hp = 950
-walk_speed = 102
+max_hp = 1000
+walk_speed = 104
 strength = 1.2
 
 [learn]
-damage = 0.05   # +5 % damage per blow remembered
-speed = 0.025   # +2.5 % speed per blow remembered
+damage = 0.06   # +6 % damage per blow remembered
+speed = 0.03    # +3 % speed per blow remembered
 max = 8
+stun_s = 0.35   # a blow parried leaves the attacker staggered: the opening is Anubis's
 
 [stances.base]
 label = "ANUBIS DÉGAINÉ"
@@ -108,11 +109,11 @@ label = "LA LAME TRAVERSE"
 label_en = "THE BLADE GOES THROUGH"
 info = "Un estoc que rien n'arrête : il traverse la garde"
 info_en = "A thrust nothing stops: it goes through the guard"
-startup_f = 14
+startup_f = 11
 active_f = 4
-recovery_f = 24
+recovery_f = 22
 shape = "line"
-damage = 58
+damage = 62
 reach = 28
 radius = 7
 hitstun_f = 28
@@ -151,10 +152,10 @@ label = "LA LAME LANCÉE"
 label_en = "THE BLADE THROWN"
 info = "Le sabre lancé : il traverse le décor sans le toucher, et revient dans la main (recharge 2 s)"
 info_en = "The sword thrown: it goes through the props without touching them, and comes back to hand (2 s cooldown)"
-startup_f = 12
+startup_f = 11
 active_f = 1
-recovery_f = 18
-cooldown_s = 2
+recovery_f = 16
+cooldown_s = 1.4
 anim = "special"
 
 [stances.base.moves.special.projectile]
@@ -175,11 +176,11 @@ label = "DERRIÈRE LE PILIER"
 label_en = "BEHIND THE PILLAR"
 info = "Avec une direction : une longue entaille qui passe à travers ce qui se tient entre eux (recharge 3 s)"
 info_en = "With a direction: a long cut that passes through whatever stands between them (3 s cooldown)"
-startup_f = 15
+startup_f = 12
 active_f = 4
-recovery_f = 22
+recovery_f = 20
 shape = "line"
-damage = 60
+damage = 64
 reach = 58
 radius = 8
 hitstun_f = 30

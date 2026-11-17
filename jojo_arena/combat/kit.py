@@ -466,6 +466,7 @@ class Kit:
     learn_damage: float = 0.0
     learn_speed: float = 0.0
     learn_max: int = 8
+    learn_stun_f: int = 0  # a blow it parries leaves the attacker staggered this long
     passive: PassiveDef | None = None
     pose_heal_per_s: float = 0.0  # posing heals this much life per second
     pose_counter: str = ""  # posing a moment, the next blow is answered with this move
@@ -557,6 +558,7 @@ def parse_kit(data: dict, kit_id: str, source: str = "kit", hh_bar: float = 100.
         learn_damage=data.get("learn", {}).get("damage", 0.0),
         learn_speed=data.get("learn", {}).get("speed", 0.0),
         learn_max=data.get("learn", {}).get("max", 8),
+        learn_stun_f=seconds_to_frames(data.get("learn", {}).get("stun_s", 0)),
         passive=PassiveDef.from_data(data["passive"]) if "passive" in data else None,
         pose_heal_per_s=data.get("pose_heal_per_s", 0.0),
         pose_counter=pose_counter,

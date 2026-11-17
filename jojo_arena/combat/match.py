@@ -1270,8 +1270,11 @@ class Match:
         if strike.melee and defender.countering and self._foreseen(defender, attacker):
             return False, self._counter(defender, attacker)
         if strike.melee and defender.kit.learns and defender.knows(strike.blow):
-            # It has taken this one before: it never loses twice to the same blow.
+            # It has taken this one before: it never loses twice to the same blow. Met
+            # steel on steel, the attacker is thrown off balance.
             self.hitstop = max(self.hitstop, rules.counter_freeze_f // 2)
+            if defender.kit.learn_stun_f:
+                attacker.take_hit(0, defender.kit.learn_stun_f, Vec2(), False)
             return False, [Event("learned", strike.where, defender.index)]
         if defender.invincible:
             if defender.in_stylish_window():
