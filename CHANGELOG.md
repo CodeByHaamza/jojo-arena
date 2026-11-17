@@ -8,6 +8,9 @@ des corrections seules une patch.
 
 ### Ajouté
 
+- **Tout le monde parle.** Chaque perso des jeux a sa réplique d'entrée et sa réplique de
+  victoire (celles d'All-Star Battle R) : un duel sans dialogue à lui ne reste plus muet, et
+  un vainqueur sans réplique pour cet adversaire dit la sienne.
 - **Nouveau perso : Hol Horse**, et Emperor dans sa main. Ses balles se pilotent en plein
   vol à la souris (ou au stick droit) pendant qu'il court ; une balle rapide qui s'éteint
   si on le touche ; la touche Stand fait tourner Emperor et charge son prochain tir
