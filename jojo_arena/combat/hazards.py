@@ -40,11 +40,14 @@ class DropDef:
     knockback: float  # px/frame, away from where it lands
     wreck_f: int = 0  # how long the wreck lies there afterwards (for the view)
     look: str = ""  # what the view draws
+    # Comes down where that fighter stands when it is marked, not on the nearest spot
+    # (someone jumping on you rather than something falling from where it hung).
+    on_fighter: bool = False
 
     @classmethod
     def from_data(cls, data: dict) -> DropDef:
         return cls(
-            spots=tuple(Vec2(*spot) for spot in data["spots"]),
+            spots=tuple(Vec2(*spot) for spot in data.get("spots", [])),
             first_f=seconds_to_frames(data["first_s"]),
             every_f=seconds_to_frames(data["every_s"]),
             warning_f=seconds_to_frames(data["warning_s"]),
@@ -54,6 +57,7 @@ class DropDef:
             knockback=data.get("knockback", 0) / HZ,
             wreck_f=seconds_to_frames(data.get("wreck_s", 0)),
             look=data.get("look", ""),
+            on_fighter=data.get("on_fighter", False),
         )
 
 
@@ -181,8 +185,10 @@ def parse_hazards(data: dict) -> tuple[tuple[DropDef, ...], tuple[TrapZoneDef, .
     drops = tuple(DropDef.from_data(d) for d in data.get("drops", []))
     zones = tuple(TrapZoneDef.from_data(z) for z in data.get("trap_zones", []))
     for drop in drops:
-        if not drop.spots or drop.every_f <= drop.warning_f:
-            raise ValueError("a drop needs spots, and to fall less often than it warns")
+        if not (drop.spots or drop.on_fighter) or drop.every_f <= drop.warning_f:
+            raise ValueError(
+                "a drop needs spots (or on_fighter), and to fall less often than it warns"
+            )
     return drops, zones
 
 

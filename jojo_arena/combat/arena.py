@@ -97,6 +97,9 @@ class Arena:
     sun_after_f: int = 0
     sun_spread_f: int = 0  # frames for the beams to reach the far wall (0 = at once)
     sun_widen: float = 0.3  # how much wider a beam gets on the way, as a share of it
+    # Windows shaded by something in front of them (a curtain): window index -> index of
+    # that obstacle. While it stands, no sun comes through; once it is broken, it does.
+    sun_blinds: dict[int, int] = field(default_factory=dict)
     cage: Cage | None = None
     hazards: Hazards = field(default_factory=Hazards)  # falling things, traps, slippery floor
     name: str = ""  # which arena this is (the view draws it by this name)
@@ -119,8 +122,16 @@ class Arena:
         widen = window.w * self.sun_widen * spread
         return Rect(window.x - widen / 2, window.y, window.w + widen, window.h + reach * spread)
 
+    def lit_windows(self) -> list[Rect]:
+        """The windows the sun comes through: those with nothing standing in front."""
+        return [
+            window
+            for i, window in enumerate(self.sun_windows)
+            if i not in self.sun_blinds or self.obstacles[self.sun_blinds[i]].broken
+        ]
+
     def in_sun(self, pos: Vec2, spread: float = 1.0) -> bool:
-        return any(self.sun_patch(w, spread).contains(pos) for w in self.sun_windows)
+        return any(self.sun_patch(w, spread).contains(pos) for w in self.lit_windows())
 
     def constrain(self, pos: Vec2, radius: float) -> tuple[Vec2, Vec2 | None, Obstacle | None]:
         """Keep a body inside the walls and out of solid obstacles.

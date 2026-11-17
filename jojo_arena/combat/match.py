@@ -912,7 +912,10 @@ class Match:
             # It starts to give: over whoever's turn it is, its shadow on the floor.
             aimed = self.fighters[drop.turn % 2].pos
             drop.turn += 1
-            drop.spot = min(defn.spots, key=lambda spot: (spot - aimed).length_sq())
+            if defn.on_fighter:
+                drop.spot = aimed.copy()
+            else:
+                drop.spot = min(defn.spots, key=lambda spot: (spot - aimed).length_sq())
             return [Event("hazard_warn", drop.spot.copy(), None, defn.radius)]
         if drop.countdown > 0 or drop.spot is None:
             if drop.countdown <= 0:
