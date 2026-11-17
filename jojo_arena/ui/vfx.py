@@ -1366,8 +1366,58 @@ def draw_snow_wreck(surface: pygame.Surface, spot: Vec2, seed: int) -> None:
         pygame.draw.ellipse(surface, SNOW, (piece.x, piece.y, size, size // 2 + 1))
 
 
-DROP_LOOKS = {"chandelier": draw_chandelier, "snow_slab": draw_snow_slab}
-WRECK_LOOKS = {"chandelier": draw_chandelier_wreck, "snow_slab": draw_snow_wreck}
+# Nukesaku (JoJo Wiki, "Nukesaku", anime colours): small and pale, long black hair swept
+# back, an orange cap with black stripes, dark burgundy tights under a tan vest, a light
+# purple scarf. He comes down arms and legs spread, then crouches where he landed.
+NUKE_SKIN = (232, 226, 236)
+NUKE_HAIR = (26, 22, 32)
+NUKE_CAP = (232, 138, 48)
+NUKE_TIGHTS = (96, 30, 48)
+NUKE_VEST = (196, 164, 112)
+NUKE_SCARF = (196, 168, 226)
+
+
+def _draw_nukesaku_body(surface: pygame.Surface, center: Vec2, spread: float) -> None:
+    x, y = round(center.x), round(center.y)
+    reach = round(5 + 3 * spread)
+    for dx in (-reach, reach):  # arms and legs, thrown out
+        pygame.draw.line(surface, OUTLINE, (x, y - 2), (x + dx, y - 5), 3)
+        pygame.draw.line(surface, NUKE_TIGHTS, (x, y - 2), (x + dx, y - 5), 1)
+        pygame.draw.line(surface, OUTLINE, (x, y + 3), (x + dx, y + 7), 3)
+        pygame.draw.line(surface, NUKE_TIGHTS, (x, y + 3), (x + dx, y + 7), 1)
+    body = pygame.Rect(x - 3, y - 4, 7, 9)
+    surface.fill(OUTLINE, body.inflate(2, 2))
+    surface.fill(NUKE_TIGHTS, body)
+    surface.fill(NUKE_VEST, (body.x, body.y, body.w, 4))
+    surface.fill(NUKE_SCARF, (body.x, body.y, body.w, 1))
+    pygame.draw.circle(surface, OUTLINE, (x, y - 8), 4)
+    pygame.draw.circle(surface, NUKE_SKIN, (x, y - 8), 3)
+    surface.fill(NUKE_HAIR, (x - 3, y - 10, 7, 2))  # swept back
+    surface.fill(NUKE_HAIR, (x - 2, y - 6, 1, 3))
+    surface.fill(NUKE_CAP, (x - 2, y - 12, 5, 2))
+    surface.set_at((x, y - 12), NUKE_HAIR)  # a black stripe
+
+
+def draw_nukesaku(surface: pygame.Surface, center: Vec2, scale: float = 1.0) -> None:
+    """Nukesaku jumping down from the gallery, arms and legs spread."""
+    _draw_nukesaku_body(surface, center, scale)
+
+
+def draw_nukesaku_landed(surface: pygame.Surface, spot: Vec2, seed: int) -> None:
+    """Crouched where he landed, a moment, before he scurries off again."""
+    _draw_nukesaku_body(surface, spot + Vec2(0, -6), 0.0)
+
+
+DROP_LOOKS = {
+    "chandelier": draw_chandelier,
+    "snow_slab": draw_snow_slab,
+    "nukesaku": draw_nukesaku,
+}
+WRECK_LOOKS = {
+    "chandelier": draw_chandelier_wreck,
+    "snow_slab": draw_snow_wreck,
+    "nukesaku": draw_nukesaku_landed,
+}
 DROP_FALL = 0.35  # the last share of the warning, the thing is visibly falling
 
 

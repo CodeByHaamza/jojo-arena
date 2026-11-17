@@ -8,6 +8,9 @@ des corrections seules une patch.
 
 ### Ajouté
 
+- **Nouvelle arène : le manoir de DIO.** Il fait grand jour dehors, mais les rideaux gardent le
+  soleil à la porte : arrache-les et la lumière brûle les vampires qui se tiennent dessous.
+  Et Nukesaku saute du plafond pile sur toi, encore et encore (comme dans All-Star Battle R).
 - **Tout le roster en couleurs.** Chaque perso a au moins deux couleurs, toutes sourcées :
   les teintes d'All-Star Battle R (4 pour la plupart : Zeppeli, Dio, Speedwagon, Joseph,
   Caesar, Lisa Lisa, Wamuu, Esidisi, Stroheim, Kakyoin...), et pour ceux qu'aucun jeu ne

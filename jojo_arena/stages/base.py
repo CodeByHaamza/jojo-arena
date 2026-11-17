@@ -68,6 +68,9 @@ class StageDef:
     sun_after_f: int = 0
     sun_spread_f: int = 0  # how long the beams take to cross the room
     sun_widen: float = 0.3  # how much wider each beam gets on the way
+    # Window index -> index in `props` of what shades it (a curtain): no sun through it
+    # until that prop is broken.
+    sun_blinds: tuple[tuple[int, int], ...] = ()
     part: int = 0  # the JoJo part it belongs to
     drops: tuple[DropDef, ...] = ()  # events: what falls from above
     trap_zones: tuple[TrapZoneDef, ...] = ()  # events: what springs from the floor
@@ -97,6 +100,7 @@ class StageDef:
             for p in self.props
         ]
         windows = list(self.sun_windows) if options.sun != "off" else []
+        blinds = dict(self.sun_blinds) if windows else {}
         full_day = options.sun == "day"
         events = options.events
         return Arena(
@@ -107,6 +111,7 @@ class StageDef:
             sun_after_f=0 if full_day else self.sun_after_f,
             sun_spread_f=0 if full_day else self.sun_spread_f,
             sun_widen=self.sun_widen,
+            sun_blinds=blinds,
             hazards=Hazards.build(
                 self.drops if events else (),
                 self.trap_zones if events else (),
@@ -142,9 +147,21 @@ def load_stage_def(path: Path, stage_id: str) -> StageDef:
                 respawn_f=seconds_to_frames(kind.get("respawn_s", 0)),
             )
         )
+    sun = data.get("sun", {})
+    # A window may be shaded by a prop of its own (`[sun.windows.blind]`): it is added to
+    # the props, and the window lets no sun in until that prop is broken.
+    blinds = []
+    for index, window in enumerate(sun.get("windows", [])):
+        blind = window.get("blind")
+        if blind is None:
+            continue
+        kind = kinds.get(blind["kind"], {})
+        blinds.append((index, len(props)))
+        props.append(
+            PropDef(blind["kind"], Rect(*blind["rect"]), blind.get("hp", kind.get("hp", 0)))
+        )
     props = tuple(props)
     lanterns = tuple(Vec2(*lamp["pos"]) for lamp in data.get("lanterns", []))
-    sun = data.get("sun", {})
     drops, trap_zones = parse_hazards(data)
     return StageDef(
         stage_id,
@@ -158,6 +175,7 @@ def load_stage_def(path: Path, stage_id: str) -> StageDef:
         sun_after_f=seconds_to_frames(sun.get("after_s", 0)),
         sun_spread_f=seconds_to_frames(sun.get("spread_s", 0)),
         sun_widen=sun.get("widen", 0.3),
+        sun_blinds=tuple(blinds),
         part=data.get("part", 0),
         drops=drops,
         trap_zones=trap_zones,

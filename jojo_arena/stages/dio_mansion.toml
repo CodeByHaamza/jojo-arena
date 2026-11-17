@@ -1,0 +1,152 @@
+# DIO's mansion in Cairo (GDD: "Manoir de DIO", Part 3: dark corridors, curtains that let
+# the sun in once torn down).
+#
+# Sources, read on 17/11/2026:
+# - JoJo Wiki, "DIO's Mansion" (https://jojowiki.com/DIO%27s_Mansion): an extravagant
+#   three-story terracotta mansion in an old district of Cairo; inside, it "mixes the
+#   derelict and the luxurious" and is mostly dim or pitch black, its owner being a
+#   vampire.
+# - JoJo Wiki, All-Star Battle R ★ DIO's Mansion: its Stage Gimmick is Nukesaku, who
+#   "jumps down and attacks the players, returning an unlimited number of times"; its
+#   Situation Finish throws the loser out through the opening in the wall (not in yet).
+# - JoJo Wiki, "Nukesaku": the small, pale vampire who lives there; Star Platinum sends
+#   him flying into the pillars.
+# The curtains are the GDD's: it is day outside (the Joestar group goes in by daylight),
+# and a curtain torn down lets the sun in on whoever stands under it.
+# Coordinates are internal pixels (screen is 480 x 270). Rects are [x, y, width, height].
+
+name = "Le manoir de DIO"
+name_en = "DIO's mansion"
+part = 3
+
+[bounds]
+rect = [16, 40, 448, 212]
+corner_radius = 8
+
+[spawns]
+p1 = [150, 150]
+p2 = [330, 150]
+
+# Broad daylight outside: no dawn to wait for. Only the curtains keep the sun out.
+[sun]
+after_s = 0
+spread_s = 0
+widen = 0.25
+
+[[sun.windows]]
+rect = [64, 40, 44, 96]
+
+[sun.windows.blind]
+kind = "curtain"
+rect = [66, 40, 40, 7]
+
+[[sun.windows]]
+rect = [218, 40, 44, 96]
+
+[sun.windows.blind]
+kind = "curtain"
+rect = [220, 40, 40, 7]
+
+[[sun.windows]]
+rect = [372, 40, 44, 96]
+
+[sun.windows.blind]
+kind = "curtain"
+rect = [374, 40, 40, 7]
+
+# Event: Nukesaku. He jumps down from the gallery right where whoever's turn it is stands
+# (move!), and he keeps coming back (ASBR: "an unlimited number of times"). Off with the
+# "events" option.
+[[drops]]
+look = "nukesaku"
+on_fighter = true
+first_s = 14
+every_s = 18
+warning_s = 1.1
+radius = 16
+damage = 55
+hitstun_f = 28
+knockback = 220
+wreck_s = 1.4
+
+# The curtains: heavy velvet, a few good blows bring one down. Not to be thrown.
+[prop_kinds.curtain]
+hp = 45
+
+[prop_kinds.pillar]
+hp = 160
+
+[prop_kinds.coffin]
+hp = 120
+
+[prop_kinds.candelabrum]
+hp = 25
+throwable = true
+throw_damage = 40
+respawn_s = 9
+
+[[props]]
+kind = "pillar"
+rect = [92, 186, 14, 14]
+
+[[props]]
+kind = "pillar"
+rect = [374, 186, 14, 14]
+
+[[props]]
+kind = "pillar"
+rect = [150, 92, 14, 14]
+
+[[props]]
+kind = "pillar"
+rect = [316, 92, 14, 14]
+
+[[props]]
+kind = "candelabrum"
+rect = [44, 140, 8, 9]
+
+[[props]]
+kind = "candelabrum"
+rect = [428, 140, 8, 9]
+
+[[props]]
+kind = "candelabrum"
+rect = [236, 214, 8, 9]
+
+# The coffin, against the south wall: DIO's, and it does not move.
+[[props]]
+kind = "coffin"
+rect = [222, 228, 36, 14]
+
+# Sconces in the dark.
+[[lanterns]]
+pos = [30, 110]
+
+[[lanterns]]
+pos = [450, 110]
+
+[[lanterns]]
+pos = [140, 37]
+
+[[lanterns]]
+pos = [340, 37]
+
+[palette]
+frame = [26, 16, 22]
+frame_dark = [14, 9, 14]
+wall = [92, 46, 38]          # terracotta, in the dark
+wall_light = [112, 58, 46]
+trim = [118, 92, 44]         # tarnished gold
+glass_day = [255, 226, 160]
+curb = [70, 44, 40]
+tile = [52, 44, 52]          # dark marble, cracked
+tile_light = [60, 52, 60]
+tile_dark = [44, 37, 44]
+seam = [30, 24, 30]
+carpet = [92, 22, 38]
+carpet_border = [118, 92, 44]
+velvet = [110, 24, 44]
+velvet_light = [140, 38, 60]
+velvet_dark = [74, 14, 30]
+lantern = [255, 170, 90]
+sun = [255, 214, 140]

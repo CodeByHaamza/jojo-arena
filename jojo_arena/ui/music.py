@@ -44,6 +44,15 @@ TRACKS = {
         motif=((0, 4, 4), (4, 3, 2), (6, 2, 2), (8, 6, 6), (14, 7, 2)),
         lead_wave="organ",
     ),
+    # DIO's mansion: slow, low, a heartbeat of a bass under a chromatic organ line.
+    "dio_mansion": Track(
+        tempo=92,
+        root=45,  # A
+        scale=PHRYGIAN_DOMINANT,
+        progression=(0, 1, 0, 5),
+        motif=((0, 4, 3), (4, 5, 1), (5, 4, 3), (8, 1, 6), (14, 0, 2)),
+        lead_wave="organ",
+    ),
 }
 
 
