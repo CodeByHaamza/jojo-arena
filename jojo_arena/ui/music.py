@@ -54,6 +54,15 @@ TRACKS = {
         lead_wave="organ",
     ),
     # The bridge at the end of the journey: the same mode as the mansion, faster, lower.
+    # Above the city at night: the bridge's mode, a little slower, higher.
+    "cairo_rooftops": Track(
+        tempo=104,
+        root=47,  # B
+        scale=PHRYGIAN_DOMINANT,
+        progression=(0, 1, 5, 1),
+        motif=((0, 4, 2), (2, 5, 2), (4, 2, 4), (8, 4, 2), (10, 1, 4)),
+        lead_wave="organ",
+    ),
     "cairo_bridge": Track(
         tempo=118,
         root=43,  # G

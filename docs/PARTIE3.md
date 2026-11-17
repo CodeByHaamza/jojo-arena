@@ -17,7 +17,7 @@ Ce qui n'est pas sûr est marqué **à vérifier**. Une source manque, se contre
 ## Où on en est
 
 - **Jouables** : Jotaro, Kakyoin, Polnareff, DIO, **Avdol** (fait le 24/10/2026), **Joseph âgé** (fait le 15/11/2026), **Vanilla Ice**, **Hol Horse**, **Mariah**, **N'Doul** et **Anubis** (faits le 17/11/2026).
-- **Arènes** : Le Caire, rue de nuit ; le manoir de DIO ; le pont du Caire (fait le 17/11/2026 : les couteaux de DIO en temps arrêté, sauf si DIO se bat, et le trou du tablier, d'après ASBR et EoH).
+- **Arènes** : Le Caire, rue de nuit ; le manoir de DIO ; le pont du Caire (fait le 17/11/2026 : les couteaux de DIO en temps arrêté, sauf si DIO se bat, et le trou du tablier, d'après ASBR et EoH) ; les toits du Caire (faits le 17/11/2026, d'après EoH : l'enseigne « AIR », la tour de l'horloge, le château d'eau ; les trous dans le toit sont la demande du propriétaire, la fiche EoH n'en parle pas).
 - Le moteur **sait déjà** faire : Stand on/off, mode contrôle, temps arrêté, pièges, projectiles (`count`, `ring`), visée libre, saisies inbloquables, Hamon, vampire et soleil, `stance_cycle`, éveil, objets à lancer.
 - Il **ne sait pas encore** faire : vol, états qui s'accumulent. (Brûlure, Stand + Hamon, invisibilité et décor effacé : faits.)
 

@@ -38,6 +38,9 @@ des corrections seules une patch.
   (« Lord DIO! ») et fait jaillir Cream du sol sous tes pieds. Vampire : le soleil et le
   Hamon le brûlent. Cinq couleurs (anime, manga, OVA, All-Star Battle, Eyes of Heaven), six
   poses tirées du manga, et ses répliques face à Avdol, Polnareff et DIO.
+- **Nouvelle arène : les toits du Caire**, la nuit (d'après Eyes of Heaven) : des trous dans
+  le toit où l'on tombe, l'enseigne néon « AIR » dont les lettres s'écrasent sur qui est
+  projeté dedans, la tour de l'horloge et le château d'eau.
 - **Nouvelle arène : le pont du Caire**, la nuit, où tout se termine. DIO arrête le temps et
   lance une volée de couteaux sur l'un de vous (sauf si c'est lui qui se bat, comme dans
   All-Star Battle R) ; un trou béant dans le tablier, une voiture en feu, un camion-citerne
