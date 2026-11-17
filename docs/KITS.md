@@ -24,6 +24,7 @@ Unités : les durées en `_f` sont en images (60 par seconde) ; celles en `_s` e
 | `nature` | `human` par défaut ; `vampire`, `zombie` ou `pillar_man` : le Hamon fait double dégâts et bloque leur régénération, le soleil les brûle |
 | `style = { type = "move", move = "style" }` | La touche Stand lance un coup du kit (dans la posture, ou parmi les coups partagés) : Hol Horse fait tourner Emperor (« Gun beats sword. »). L'aura s'allume tant qu'une charge est prête |
 | `hears` | Aveugle, il vise à l'oreille : ses coups vont là où l'adversaire a fait du bruit pour la dernière fois (marcher, dasher, frapper, être frappé ; rester immobile ou garder ne fait pas de bruit). N'Doul |
+| `learn` | Table `[learn]` : il apprend (Anubis) : chaque coup qu'il prend est retenu, et la fois suivante, s'il est libre de bouger, il le pare ; chaque nouveau coup retenu le rend plus fort (`damage`, par coup) et plus rapide (`speed`), jusqu'à `max` coups. Une combo passe quand même : en hitstun, il n'est pas libre |
 | `tags` | Des mots libres sur le perso (`["woman"]` pour Lisa Lisa), que le `passive` d'un autre perso peut viser |
 | `passive` | Table `[passive]`, toujours active contre un adversaire qui porte l'étiquette `vs_tag` : `damage_dealt_mult` (dégâts infligés), `hh_gain_mult` (Heart Heat gagnée). « Hol Horse loves the ladies! » : 10 % de dégâts en plus contre les femmes, la Heart Heat un peu plus lente |
 
@@ -167,6 +168,7 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `origin`, `ring_radius` | `self` (depuis le perso) ou `ring` (en cercle autour de la cible, vers elle) |
 | `waves`, `wave_every_f` | Plusieurs salves, à N images d'écart (chaque salve comble les trous de la précédente) |
 | `homing_deg_s` | Tête chercheuse : degrés par seconde dont il tourne vers la cible |
+| `phasing` | Il passe à travers le décor sans le toucher (le sabre lancé d'Anubis) |
 | `steer_deg_s` | Piloté : degrés par seconde dont il tourne vers là où son tireur vise **maintenant** (souris, sinon stick droit), pendant que le tireur continue de bouger. Sans visée libre, il file droit (les balles d'Emperor) |
 | `returns` | Boomerang : à mi-course (ou contre un mur, ou après avoir touché) il revient dans la main de son lanceur |
 | `explode_radius` | Grenade : ne touche pas au contact, roule, s'arrête contre les murs et les objets, et explose en fin de vie ; l'adversaire à ce rayon (plus son corps) est touché |

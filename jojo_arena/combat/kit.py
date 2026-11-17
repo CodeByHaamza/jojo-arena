@@ -48,6 +48,7 @@ class ProjectileDef:
     hamon: bool = False  # it carries the Ripple itself (sunlight through a lens)
     drain: float = 0.0  # share of its damage given back to its owner as life
     fragile: bool = False  # a blow landed on its owner puts it out in mid-flight
+    phasing: bool = False  # it passes through props as if they were not there
     bonus_status: str = ""  # hits harder for each level of this status on the target...
     bonus_per_level: float = 0.0  # ...by this share of its damage per level
 
@@ -83,6 +84,7 @@ class ProjectileDef:
             drag=data.get("drag", 1.0),
             bonus_status=data.get("bonus_status", ""),
             bonus_per_level=data.get("bonus_per_level", 0.0),
+            phasing=data.get("phasing", False),
         )
 
 
@@ -457,6 +459,13 @@ class Kit:
     # Blind, it aims by ear: where the opponent was when it last made a sound (walking,
     # dashing, striking, struck). Standing still, or only guarding, fools it.
     hears: bool = False
+    # It learns: each blow it takes is remembered, and, free to move, it parries a blow it
+    # has taken before; each new one makes it stronger (`learn_damage`) and faster
+    # (`learn_speed`), up to `learn_max` blows remembered.
+    learns: bool = False
+    learn_damage: float = 0.0
+    learn_speed: float = 0.0
+    learn_max: int = 8
     passive: PassiveDef | None = None
     pose_heal_per_s: float = 0.0  # posing heals this much life per second
     pose_counter: str = ""  # posing a moment, the next blow is answered with this move
@@ -544,6 +553,10 @@ def parse_kit(data: dict, kit_id: str, source: str = "kit", hh_bar: float = 100.
         nature=data.get("nature", "human"),
         tags=frozenset(data.get("tags", ())),
         hears=data.get("hears", False),
+        learns="learn" in data,
+        learn_damage=data.get("learn", {}).get("damage", 0.0),
+        learn_speed=data.get("learn", {}).get("speed", 0.0),
+        learn_max=data.get("learn", {}).get("max", 8),
         passive=PassiveDef.from_data(data["passive"]) if "passive" in data else None,
         pose_heal_per_s=data.get("pose_heal_per_s", 0.0),
         pose_counter=pose_counter,

@@ -48,6 +48,7 @@ class Strike:
     status_f: int = 0
     bonus_status: str = ""  # hits harder for each level of this status on the defender
     bonus_per_level: float = 0.0
+    blow: str = ""  # which blow it is (stance and move of a melee strike), to be learned
 
 
 class Match:
@@ -592,6 +593,7 @@ class Match:
                 super_move=move.name in ("hha", "gha"),
                 bonus_status=move.bonus_status,
                 bonus_per_level=move.bonus_per_level,
+                blow=f"{attacker.stance}/{move.name}",
             )
             landed, strike_events = self._strike(attacker, defender, strike)
             events += strike_events
@@ -1267,6 +1269,10 @@ class Match:
         rules = self.rules
         if strike.melee and defender.countering and self._foreseen(defender, attacker):
             return False, self._counter(defender, attacker)
+        if strike.melee and defender.kit.learns and defender.knows(strike.blow):
+            # It has taken this one before: it never loses twice to the same blow.
+            self.hitstop = max(self.hitstop, rules.counter_freeze_f // 2)
+            return False, [Event("learned", strike.where, defender.index)]
         if defender.invincible:
             if defender.in_stylish_window():
                 defender.evaded = True
@@ -1302,6 +1308,7 @@ class Match:
             return True, events
         damage = round(damage * self._combo_scale(defender, strike))
         armored = defender.take_hit(damage, strike.hitstun_f, strike.knockback, strike.wall_bounce)
+        learnt = strike.melee and defender.learn(strike.blow)
         if burns:
             # Hamon in an undead body: the wound will not close for a while.
             defender.regen_wait = max(defender.regen_wait, rules.hamon_regen_block_f)
@@ -1316,6 +1323,8 @@ class Match:
         events = [Event("hit", strike.where, defender.index, damage), *sparks]
         if armored:
             events.append(Event("armor", defender.pos, defender.index))
+        if learnt:
+            events.append(Event("learn", defender.pos, defender.index, len(defender.learned)))
         caught = strike.status and not armored and defender.alive
         if caught and defender.statuses.apply(strike.status, strike.status_f):
             # It took: the kind of status is the kind of the event, and the value is how

@@ -163,6 +163,7 @@ class Fighter:
         self.cursor: Vec2 | None = None  # where the player aims (mouse), if anywhere
         self.stick: Vec2 | None = None  # the direction the right stick aims, if any
         self.foe_tags: frozenset[str] = frozenset()  # the opponent's kit tags (set by the match)
+        self.learned: list[str] = []  # the blows it has taken and remembers (kit `learn`)
         # Remote control: the Stand away from its user, steered by the player.
         self.remote_pos: Vec2 | None = None
         self.remote_dir = Vec2()
@@ -273,7 +274,22 @@ class Fighter:
         mult = self.buff.damage_dealt_mult if self.buff else 1.0
         if self.passive_on:
             mult *= self.kit.passive.damage_dealt_mult
+        if self.learned:
+            mult *= 1 + self.kit.learn_damage * len(self.learned)
         return mult
+
+    def knows(self, blow: str) -> bool:
+        """It has taken this blow before, and is free to meet it now."""
+        return bool(blow) and blow in self.learned and self.can_act()
+
+    def learn(self, blow: str) -> bool:
+        """Remember a blow just taken. True when it is a new one."""
+        if not self.kit.learns or not blow or blow in self.learned:
+            return False
+        if len(self.learned) >= self.kit.learn_max:
+            return False
+        self.learned.append(blow)
+        return True
 
     @property
     def passive_on(self) -> bool:
@@ -325,6 +341,7 @@ class Fighter:
         base = self.kit.walk_speed or self.rules.walk_speed
         speed = base * self.kit.stances[self.stance].walk_speed_mult
         speed = speed * (self.buff.speed_mult if self.buff else 1.0)
+        speed = speed * (1 + self.kit.learn_speed * len(self.learned))
         if self.carrying is not None:
             speed *= self.rules.carry_speed_mult  # a prop over the head
         return speed * self.statuses.walk_mult
