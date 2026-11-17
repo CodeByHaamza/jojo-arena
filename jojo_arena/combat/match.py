@@ -913,6 +913,8 @@ class Match:
             return []
         events: list[Event] = []
         for drop in hazards.drops:
+            if any(f.kit.id in drop.defn.not_with for f in self.fighters):
+                continue  # who would send it is fighting: it does not come
             events += self._update_drop(drop)
         for zone in hazards.zones:
             events += self._update_trap_zone(zone)

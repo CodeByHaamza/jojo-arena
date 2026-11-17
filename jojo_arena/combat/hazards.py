@@ -43,6 +43,9 @@ class DropDef:
     # Comes down where that fighter stands when it is marked, not on the nearest spot
     # (someone jumping on you rather than something falling from where it hung).
     on_fighter: bool = False
+    # It does not happen while one of these kits is in the fight (whoever sends it would
+    # not send it at himself).
+    not_with: tuple[str, ...] = ()
 
     @classmethod
     def from_data(cls, data: dict) -> DropDef:
@@ -58,6 +61,7 @@ class DropDef:
             wreck_f=seconds_to_frames(data.get("wreck_s", 0)),
             look=data.get("look", ""),
             on_fighter=data.get("on_fighter", False),
+            not_with=tuple(data.get("not_with", ())),
         )
 
 
