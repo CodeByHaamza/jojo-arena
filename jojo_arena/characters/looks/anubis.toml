@@ -1,0 +1,201 @@
+# Anubis (Part 3): look file for tools/make_sprites.py. Anubis is a sword: what fights is
+# the body of whoever drew it. By default, Chaka, its first wielder; Khan is a costume
+# (anubis_khan.toml).
+#
+# JoJo Wiki, "Anubis" (read 17/11/2026, https://jojowiki.com/Anubis): a curved,
+# double-edged Shamshir blade with a jewelled cross-guard.
+# JoJo Wiki, "Chaka" (https://jojowiki.com/Chaka): medium height, muscular; dark hair tied
+# back in a ponytail; pronounced cheekbones; a tunic, a cape, a thin sash at the waist,
+# wristbands, ragged trousers torn above the shins; barefoot.
+# Colours: the anime's ("Color Schemes"): brown skin, dark brown hair, dark grey eyes; a
+# tan tunic; brown wristbands, sash and trousers.
+
+name = "Anubis"
+
+# The sword held out, the wielder's body only following it.
+# Signature pose (Pose key): see tools/spritegen/skeleton.py.
+pose = "point"
+
+[build]
+head_r = 5.4
+neck = 1.3
+torso = 13.5
+legs = 17.5
+arms = 14.5
+shoulders = 8.6
+hips = 3.2
+torso_r = 5.8
+arm_r = 2.4
+leg_r = 2.4
+hand_r = 2.1
+foot_r = 2.2
+
+[palette]
+skin = "#9a6a4a"
+hair = "#3a2a22"         # dark brown
+eyes = "#4a4a50"
+tunic = "#c8aa7a"        # tan
+cape = "#bc9e6c"         # the cape, a shade darker
+sash = "#7a5032"
+bands = "#6a4630"
+trousers = "#7a5a3a"
+feet = "#9a6a4b"         # barefoot: the skin's tone, a shade apart
+blade = "#d6dae6"
+gold = "#e0b84a"         # the jewelled cross-guard
+
+[body]
+head = "skin"
+torso = "tunic"
+arms = "skin"
+hands = "skin"
+legs = "trousers"
+feet = "feet"
+
+[face]
+eyes = "eyes"
+eye_style = "wide"
+brows = true
+nose = true
+
+# Dark hair tied back in a ponytail.
+[[parts]]
+type = "hair"
+material = "hair"
+style = "short"
+volume = 7.0
+ponytail = 7
+
+# The cape, over the shoulders and down the back.
+[[parts]]
+type = "coat"
+material = "cape"
+length = 0.55
+open = true
+opening = 10
+collar = false
+trail = 3
+
+[[parts]]
+type = "belt"
+material = "sash"
+
+[[parts]]
+type = "bracelets"
+material = "bands"
+width = 2.0
+
+# Anubis: the curved blade, the jewelled guard.
+[[parts]]
+type = "sword"
+material = "blade"
+length = 16
+guard = "gold"
+
+# JoJo poses ---------------------------------------------------------------------------
+# Picked on the select screen; the Pose key plays the one picked. Each was drawn from the
+# panel named in `source`, looked at in Anubis's JoJo Wiki gallery on 17/11/2026: the
+# poses are the sword's, whoever its wielder.
+
+# Anubis holding Chaka: the blade held low across the body, the free hand open.
+[poses.possession]
+label = "Anubis possède Chaka"
+label_en = "Anubis possesses Chaka"
+source = "JoJo Wiki, galerie d'Anubis : « Anubis possessing Chaka » (« Chaka_Anubis_God_Card »)"
+
+[[poses.possession.down]]
+lean = 0.5
+hand_r = [-4, -4]
+elbow_r = [4, -1]
+hand_l = [5, -10]
+elbow_l = [-3, -3]
+
+[[poses.possession.right]]
+lean = 1
+hand_r = [7, -5]
+elbow_r = [4, -2]
+hand_l = [9, -10]
+
+# "Ushaaa!": the slash, lunging, the sword swung all the way across.
+[poses.ushaaa]
+label = "« Oushaaa ! »"
+label_en = "\"Ushaaa!\""
+source = "JoJo Wiki, galerie d'Anubis : « Khan slashing with Anubis » (« Khan_USHAAA »)"
+
+[[poses.ushaaa.down]]
+lean = 2
+bob = 1
+hand_r = [9, -9]
+elbow_r = [6, -4]
+hand_l = [-6, -2]
+knee_l = [-3, -1]
+knee_r = [3, -1]
+
+[[poses.ushaaa.right]]
+lean = 2.5
+bob = 1
+hand_r = [13, -8]
+elbow_r = [7, -6]
+hand_l = [-5, -2]
+foot_r = [5, 0]
+foot_l = [-5, 0]
+
+# The blade under the chin: held level, close to the body, ready to cut.
+[poses.sous_le_menton]
+label = "Sous le menton"
+label_en = "Under the chin"
+source = "JoJo Wiki, galerie d'Anubis : « Anubis possessing Khan », la lame sous le menton de Polnareff (« AnubisKhanManga »)"
+
+[[poses.sous_le_menton.down]]
+hand_r = [-6, -14]
+elbow_r = [5, -5]
+hand_l = [6, -13]
+elbow_l = [-5, -4]
+
+[[poses.sous_le_menton.right]]
+hand_r = [9, -14]
+elbow_r = [5, -6]
+hand_l = [6, -13]
+
+# The outfit and its colours ---------------------------------------------------------------
+# Anubis is in neither All-Star Battle R nor Eyes of Heaven: no game tint to take. Chaka's
+# JoJo Wiki page, "Color Schemes" (read 17/11/2026), gives the colours of each medium; the
+# page warns they "may or may not be canon". Each colour below is one of them.
+
+[costume]
+label = "Chaka"
+label_en = "Chaka"
+source = "JoJo Wiki, Chaka, Appearance : son premier porteur, le garçon de ferme"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "JoJo Wiki, Chaka, Color Schemes : l'anime"
+
+# Fair skin, black hair, a yellow tunic, a blue sash, black wristbands and trousers.
+[colors.manga]
+label = "Manga en couleur"
+label_en = "Coloured manga"
+source = "JoJo Wiki, Chaka, Color Schemes : le manga en couleur"
+
+[colors.manga.palette]
+skin = "#f0d0b4"
+feet = "#f0d0b5"
+hair = "#2a2236"
+tunic = "#e8c84a"
+cape = "#dcbc40"
+sash = "#3a5ab0"
+bands = "#2a2a30"
+trousers = "#2a2a36"
+
+# Tan skin, a tan tunic, dark brown wristbands, sash and trousers, maroon in the light.
+[colors.capcom]
+label = "Capcom"
+label_en = "Capcom"
+source = "JoJo Wiki, Chaka, Color Schemes : les jeux de combat de Capcom"
+
+[colors.capcom.palette]
+skin = "#b88058"
+feet = "#b88059"
+sash = "#4a2c2a"
+bands = "#3e2a22"
+trousers = "#5a2e2e"

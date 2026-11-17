@@ -140,6 +140,16 @@ text_en = "One of the Nine Egyptian Glory Gods, blind, utterly loyal to DIO, who
 name_origin = "D'après le chanteur sénégalais Youssou N'Dour (cité dans le Shueisha Jump Remix)."
 name_origin_en = "After the Senegalese singer Youssou N'Dour (cited in the Shueisha Jump Remix)."
 
+[[characters]]
+id = "anubis"
+name = "ANUBIS"
+fighter = "anubis"
+stand = "ANUBIS"
+text = "Un sabre forgé il y a cinq siècles, au service de DIO, qui possède quiconque le dégaine. Chaka, un garçon de ferme, le tire du sable au bord du Nil ; Polnareff le bat au temple de Kom Ombo. Khan, un barbier d'Edfou, le dégaine ensuite ; Jotaro brise la lame en deux, mais elle continue. Puis Polnareff lui-même... Dans JoJo Arena, il se bat dans le corps de Chaka, ou de Khan."
+text_en = "A sword forged five centuries ago, in DIO's service, that possesses whoever draws it. Chaka, a farmhand, pulls it from the sand by the Nile; Polnareff beats him at the temple of Kom Ombo. Khan, a barber of Edfu, draws it next; Jotaro breaks the blade in two, but it keeps going. Then Polnareff himself... In JoJo Arena, it fights in Chaka's body, or Khan's."
+name_origin = "D'après Anubis, le dieu égyptien de la mort ; l'une des Neuf Divinités d'Égypte."
+name_origin_en = "After Anubis, the Egyptian god of death; one of the Nine Egyptian Glory Gods."
+
 [[stands]]
 id = "star_platinum"
 name = "STAR PLATINUM"
@@ -249,3 +259,14 @@ text = "Une petite masse d'eau sans forme, qui tiendrait dans une gourde, le plu
 text_en = "A small, shapeless mass of water that would fit in a canteen, most often a tentacle ending in a clawed hand. N'Doul steers it precisely up to four kilometres away, hidden under the sand to strike by surprise; its claw cuts flesh and metal, and the water stops projectiles. Its weakness: heat. Magician's Red's flames partly boil it away."
 name_origin = "D'après Geb, le dieu égyptien de la terre ; c'est l'une des Neuf Divinités d'Égypte."
 name_origin_en = "After Geb, the Egyptian god of the earth; it is one of the Nine Egyptian Glory Gods."
+
+[[stands]]
+id = "anubis_sword"
+name = "ANUBIS"
+user = "CHAKA, KHAN, POLNAREFF"
+icon = "glossary_anubis"  # a sword: its body is whoever holds it
+stats = "BBEAEC"
+text = "Un sabre courbe à double tranchant, la garde sertie de joyaux. Il contrôle quiconque le dégaine, quelle que soit sa volonté. Il retient chaque attaque qu'on lui porte et la contre ensuite : la même ruse ne marche jamais deux fois, et il devient plus rapide et plus fort au fil du combat. Sa lame passe à travers la pierre, les murs et les corps sans les abîmer, et tranche un ennemi caché derrière un pilier. Il n'apprend pourtant rien à son porteur : Chaka le manie en amateur."
+text_en = "A curved, double-edged sword, its guard set with jewels. It controls whoever draws it, whatever their will. It remembers every attack used on it and counters it afterwards: the same trick never works twice, and it grows faster and stronger as the fight goes on. Its blade passes through stone, walls and bodies without harming them, and cuts an enemy hidden behind a pillar. Yet it teaches its wielder nothing: Chaka swings it like an amateur."
+name_origin = "D'après Anubis, le dieu égyptien de la mort. Seul JoJo's Venture de Capcom l'avait rendu jouable ; JoJo Arena le refait à sa façon."
+name_origin_en = "After Anubis, the Egyptian god of death. Only Capcom's JoJo's Venture had made it playable; JoJo Arena makes it its own way."

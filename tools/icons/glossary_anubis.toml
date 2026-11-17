@@ -1,0 +1,30 @@
+# Anubis: the curved, double-edged sword, its guard set with jewels. The Stand's body is
+# whoever holds it, so its glossary page shows the sword (JoJo Wiki, "Anubis": "a curved,
+# double-edged Shamshir-style blade with a jewel-encrusted cross-guard").
+
+pixels = [
+    "............oo..",
+    "...........oSLo.",
+    "..........oSLo..",
+    ".........oSLo...",
+    "........oSLo....",
+    ".......oSLo.....",
+    "......oSLo......",
+    ".....oSLo.......",
+    "..o.oSLo........",
+    ".oGooLo.........",
+    "..oRGo..........",
+    "..oGoGo.........",
+    ".oBo.oGo........",
+    "oBo...o.........",
+    ".o..............",
+    "................",
+]
+
+[palette]
+o = "#17121f"
+S = "#b8c0cc"
+L = "#eef2f8"
+G = "#e0b84a"
+R = "#c83a4a"
+B = "#6a4630"

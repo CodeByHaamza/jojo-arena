@@ -393,6 +393,22 @@ color = "#8a6440"
 aura = "#4aa0e0"
 
 [[fighters]]
+id = "anubis"
+side = "villain"
+part = 3
+name = "ANUBIS"
+kit = "anubis"
+sprite = "anubis/anubis"
+costumes = { khan = "anubis_khan/anubis_khan" }
+stand_name = "ANUBIS"
+role = "SABRE QUI APPREND"
+role_en = "THE SWORD THAT LEARNS"
+blurb = "Un sabre qui possède qui le dégaine. Chaque coup qu'il prend, il le retient : jamais deux fois. Exclusif à JoJo Arena."
+blurb_en = "A sword that possesses whoever draws it. Every blow it takes, it remembers: never twice. Only in JoJo Arena."
+color = "#c8a040"
+aura = "#8a4ab0"
+
+[[fighters]]
 id = "mannequin_red"
 name = "MANNEQUIN ROUGE"
 name_en = "RED DUMMY"

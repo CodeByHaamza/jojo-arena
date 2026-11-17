@@ -850,6 +850,19 @@ class FightView:
             elif kind == "armor":
                 fx.add(vfx.Flash(pos, 16, (255, 150, 60), 6))
                 fx.add(vfx.Ring(pos, (255, 170, 80), 2.0, 10))
+            elif kind == "learned" and event.fighter is not None:
+                # A blow it has taken before: it is met, steel on steel.
+                knower = match.fighters[event.fighter]
+                fx.add(vfx.Flash(event.pos + Vec2(0, -14), 18, (255, 255, 255), 6))
+                words.add(
+                    text.LEARNED_WORD, self._head(knower), self._shout_style(knower.index), 2, 50
+                )
+            elif kind == "learn" and event.fighter is not None:
+                # A new blow remembered: it grows.
+                learner = match.fighters[event.fighter]
+                aura = self.fighter_defs[learner.index].aura
+                fx.add(vfx.Ring(learner.pos + Vec2(0, -14), aura, 1.6, 14, 1))
+                words.add(text.LEARN_WORD, self._head(learner), "white", 1, 30)
 
     def _rush_word(self, fighter: Fighter) -> str:
         """What a fighter shouts while mashing a rush: its rush move's shout."""

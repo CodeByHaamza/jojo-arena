@@ -16,7 +16,7 @@ Ce qui n'est pas sûr est marqué **à vérifier**. Une source manque, se contre
 
 ## Où on en est
 
-- **Jouables** : Jotaro, Kakyoin, Polnareff, DIO, **Avdol** (fait le 24/10/2026), **Joseph âgé** (fait le 15/11/2026), **Vanilla Ice**, **Hol Horse**, **Mariah** et **N'Doul** (faits le 17/11/2026).
+- **Jouables** : Jotaro, Kakyoin, Polnareff, DIO, **Avdol** (fait le 24/10/2026), **Joseph âgé** (fait le 15/11/2026), **Vanilla Ice**, **Hol Horse**, **Mariah**, **N'Doul** et **Anubis** (faits le 17/11/2026).
 - **Arène** : Le Caire, rue de nuit.
 - Le moteur **sait déjà** faire : Stand on/off, mode contrôle, temps arrêté, pièges, projectiles (`count`, `ring`), visée libre, saisies inbloquables, Hamon, vampire et soleil, `stance_cycle`, éveil, objets à lancer.
 - Il **ne sait pas encore** faire : vol, états qui s'accumulent. (Brûlure, Stand + Hamon, invisibilité et décor effacé : faits.)
@@ -294,6 +294,27 @@ tranche ce qui était « à fixer » plus bas :
 | Passif | **« Hol Horse loves the ladies! »** : passif contre les adversaires femmes (**à vérifier** : son effet exact) | règle de match |
 | **HHA** | **« Eat this! »** | rafale guidée |
 | **GHA** | **« Hol Horse is gonna kill ya! »**, avec la mise en scène de la DHA d'EoH : il lance une bouteille et la fait éclater d'une balle ; Hanged Man surgit dans les éclats, poignarde l'adversaire à l'épaule et l'immobilise ; Hol Horse tire la balle finale | `projectile`, cinématique |
+
+### Anubis (exclusif à JoJo Arena)
+
+**Fait le 17/11/2026** à la demande du propriétaire (`characters/anubis.toml`,
+`looks/anubis.toml`, `looks/anubis_khan.toml`). Il n'est ni dans ASBR ni dans EoH (seul le
+JoJo's Venture de Capcom l'avait) : tout vient de sa fiche JoJo Wiki.
+
+- **Il apprend** (nouvelle table de kit `[learn]`) : chaque coup reçu est retenu ; la fois
+  suivante, s'il est libre de bouger, il le pare (« je ne perds jamais deux fois ! ») ; chaque
+  coup appris lui donne +5 % de dégâts et +2,5 % de vitesse, jusqu'à 8. Une combo passe quand
+  même. Le contrer : lui montrer du nouveau à chaque fois.
+- **La lame traverse** : l'estoc passe la garde, le sabre lancé passe à travers le décor
+  (`phasing`) et revient en main, l'entaille « derrière le pilier » porte loin.
+- Le porteur se bat en amateur (la fiche le dit de Chaka) : des tailles simples.
+- HHA **« Je ne perds jamais deux fois ! »** (la phrase de Khan, ch. 196) : un contre. GHA
+  **« À travers tout »** : la lame à travers le pilier, en cinématique. La touche Stand ne
+  fait rien : Anubis n'a pas d'autre forme, c'est le sabre.
+- **Le corps** est celui de Chaka (couleurs de l'anime, du manga et des jeux Capcom) ; **Khan**
+  est un costume (anime, manga). Trois poses tirées de la galerie d'Anubis.
+- Idées pour plus tard : Polnareff possédé (les deux épées, avec Silver Chariot) en costume
+  ou en éveil ; la lame brisée qui continue (ce que Jotaro a vu).
 
 ### Mariah (Bastet)
 

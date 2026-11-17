@@ -666,3 +666,8 @@ victory = { text = "Ton pouvoir magnétique n'était qu'une plaisanterie.", text
 source = "Eyes of Heaven (il n'est pas dans ASBR), mission 1-3 du mode histoire, sur les toits du Caire : son entrée, et ce qu'il dit une fois l'ennemi tombé"
 intro = { text = "Heh... Je vais l'écraser comme une mouche !", text_en = "Heh... I'll pick him off like a fly!" }
 victory = { text = "Plus personne ne se dresse sur notre chemin.", text_en = "Now there is no one left to stand in our way." }
+
+[solo.anubis]
+source = "Le manga : ce qu'Anubis dit à Chaka qui vient de le dégainer (ch. 193), et ce qu'il dit par la bouche de Khan (ch. 196). Il n'est dans aucun jeu récent"
+intro = { text = "Tu m'as dégainé... Tu seras mon porteur.", text_en = "You have unsheathed me... You will be my user." }
+victory = { text = "Un adversaire combattu une fois... Je ne perds j-j-j-jamais deux fois !", text_en = "Once I've fought someone once, I n-n-n-n-NEVER lose twice!" }

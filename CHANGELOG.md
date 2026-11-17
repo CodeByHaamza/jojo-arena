@@ -11,6 +11,10 @@ des corrections seules une patch.
 - **Tout le monde parle.** Chaque perso des jeux a sa réplique d'entrée et sa réplique de
   victoire (celles d'All-Star Battle R) : un duel sans dialogue à lui ne reste plus muet, et
   un vainqueur sans réplique pour cet adversaire dit la sienne.
+- **Nouveau perso, exclusif à JoJo Arena : Anubis**, le sabre qui possède celui qui le
+  dégaine (Chaka, ou Khan en costume). Il retient chaque coup qu'il prend : la fois suivante,
+  il le pare (« je ne perds jamais deux fois ! »), et il devient plus fort et plus rapide à
+  chaque coup appris. Sa lame traverse la garde, et son sabre lancé traverse le décor.
 - **Nouveau perso : N'Doul**, et Geb (d'après Eyes of Heaven). Aveugle, il frappe là où il
   t'a entendu bouger pour la dernière fois : reste immobile, et il te perd. Tiens la touche
   Stand et Geb, une masse d'eau, part à l'autre bout de l'arène pendant qu'il reste assis ;

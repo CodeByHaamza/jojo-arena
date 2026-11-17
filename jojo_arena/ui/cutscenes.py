@@ -2339,6 +2339,78 @@ class GebSpike(CutscenePlayer):
             )
 
 
+# Anubis: through everything ----------------------------------------------------------------
+
+
+class AnubisThrough(CutscenePlayer):
+    """The blade has found them. A pillar rises between the two: the sword goes into the
+    stone, and out the other side, and the stone has not a scratch. Then the cut, all the
+    way through."""
+
+    length = 270
+    PILLAR = 20  # the pillar between them
+    INTO = 80  # the blade into the stone
+    OUT = 130  # and out the other side, into them
+    CUT = 190  # the cut
+    STONE, STONE_DARK, STONE_LIGHT = (168, 160, 150), (110, 104, 98), (210, 204, 196)
+    STEEL = (214, 220, 234)
+
+    def pillar(self) -> pygame.Rect:
+        mid = (self.u + self.v) * 0.5
+        rect = pygame.Rect(0, 0, 14, 40)
+        rect.midbottom = (round(mid.x), round(mid.y + 4))
+        return rect
+
+    def camera(self, f):
+        if f < self.OUT:
+            return (self.u + self.v) * 0.5 + Vec2(0, -18), 3
+        return (self.u + self.v) * 0.5 + Vec2(0, -14), 2
+
+    def cue(self, f):
+        fx = self.fx
+        hit = self.chest(self.scene.target, self.v)
+        if f == 1:
+            self.shout(text.ANUBIS_GHA_LINE, scale=2, life=48)
+        if f == self.INTO:
+            self.world_words.menace(Vec2(*self.pillar().midtop), 1)
+        if f == self.OUT:
+            fx.add(vfx.Flash(hit, 16, self.STEEL, 6))
+            self.world_words.add(sfx.GA, hit + Vec2(0, -10), "impact", 2, 26, 0.3, 2)
+            self.shake = 6
+        if f == self.CUT:
+            fx.add(vfx.Flash(hit, 50, self.STEEL, 12))
+            fx.add(vfx.Ring(hit, self.STEEL, 5.0, 26, 3))
+            fx.focus(hit, heavy=True)
+            self.world_words.add(sfx.BAKI, hit + Vec2(0, -16), "impact", 3, 46, 0.2, 2)
+            self.flash, self.shake = 12, 18
+
+    def negative(self, f):
+        return self.CUT <= f < self.CUT + 3
+
+    def scene_draw(self, world, f):
+        user, right = self.scene.user, self.side > 0
+        anim = "light" if f >= self.INTO - 10 else "pose"
+        self.body(world, user, self.u, anim, 2, right)
+        self.victim(world, f)
+        pillar = self.pillar()
+        if f >= self.PILLAR:
+            world.fill(OUTLINE, pillar.inflate(2, 2))
+            world.fill(self.STONE, pillar)
+            world.fill(self.STONE_LIGHT, (pillar.x + 2, pillar.y, 3, pillar.h))
+            world.fill(self.STONE_DARK, (pillar.right - 3, pillar.y, 3, pillar.h))
+        if self.INTO - 10 <= f < self.CUT + 20:
+            # The blade, from his hand, through the stone without a mark, into them.
+            hand = self.chest(user, self.u) + Vec2(self.side * 8, 0)
+            hit = self.chest(self.scene.target, self.v)
+            reach = min(1.0, max(0.0, (f - self.INTO + 10) / (self.OUT - self.INTO + 10)))
+            tip = hand + (hit - hand) * reach
+            pygame.draw.line(world, OUTLINE, hand.as_ints(), tip.as_ints(), 3)
+            pygame.draw.line(world, self.STEEL, hand.as_ints(), tip.as_ints(), 1)
+            if pillar.collidepoint(tip.as_ints()):
+                # Inside the stone: only a faint shimmer shows where it passes.
+                world.set_at(tip.as_ints(), (255, 255, 255))
+
+
 CUTSCENES = {
     "hermit_overdrive": HermitOverdrive,
     "road_roller": RoadRoller,
@@ -2365,6 +2437,7 @@ CUTSCENES = {
     "emperor_hanged_man": EmperorHangedMan,
     "bastet_cars": BastetCars,
     "geb_spike": GebSpike,
+    "anubis_through": AnubisThrough,
 }
 
 

@@ -347,6 +347,7 @@ EVENT_SOUNDS: dict[str, Callable[[Event], str]] = {
     "trap_popped": lambda e: "pop",
     "reflect": lambda e: "hamon",
     "foreseen": lambda e: "stylish",
+    "learned": lambda e: "block",
     "hazard_warn": lambda e: "chain",
     "hazard_drop": lambda e: "boom",
     "hazard_spikes": lambda e: "blade",
