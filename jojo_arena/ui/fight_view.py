@@ -98,6 +98,7 @@ STATUS_TINTS = {
     "burn": (48, 16, 0, 0),
     "chill": (14, 38, 64, 0),
     "shock": (26, 20, 0, 0),
+    "magnet": (24, 0, 34, 0),
 }
 
 
@@ -588,7 +589,12 @@ class FightView:
         fx, words = self.fx, self.words
         if kind == "status_tick":
             active = match.fighters[event.fighter].statuses.active
-            colors = {"burn": (120, 70, 40), "chill": (210, 236, 255), "shock": (240, 220, 120)}
+            colors = {
+                "burn": (120, 70, 40),
+                "chill": (210, 236, 255),
+                "shock": (240, 220, 120),
+                "magnet": (176, 96, 236),
+            }
             for name in active:
                 fx.dust(event.pos + Vec2(0, -10), 3, 1.0, 1, colors.get(name, (150, 140, 160)), 20)
             return
@@ -603,6 +609,9 @@ class FightView:
         elif name == "shock":
             fx.add(vfx.Flash(pos, 14, (255, 244, 170), 6))
             words.add(sfx.CRACKLE, pos + Vec2(0, -15), sfx.HAMON, 2, 26, 0.4, 1)
+        elif name == "magnet":
+            fx.add(vfx.Ring(pos, vfx.MAGNET, 2.0, 14, 2))
+            words.add(sfx.CRACKLE, pos + Vec2(0, -15), "impact", 2, 26, 0.4, 1)
 
     def _comic(self, events: list[Event], match: Match) -> None:
         """Sound effects written on screen and impact effects, comic-book style."""
@@ -1150,6 +1159,12 @@ class FightView:
             return
         if trap.defn.projectile.look == "reflection":
             vfx.draw_water_puddle(surface, trap.pos, trap.defn.radius, self.tick)
+            return
+        if trap.defn.projectile.look == "outlet":
+            vfx.draw_outlet(surface, trap.pos, self.tick)
+            return
+        if trap.defn.projectile.look == "live_wire":
+            vfx.draw_power_line(surface, trap.pos, trap.defn.pull_range, self.tick)
             return
         dim = tuple(c // 3 for c in aura)
         r = trap.defn.radius

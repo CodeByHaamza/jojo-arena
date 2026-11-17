@@ -120,6 +120,16 @@ text_en = "A cowboy-hatted hitman hired by DIO: bold, a womanizer, quick-witted,
 name_origin = "D'après le duo pop américain Hall & Oates (cité dans le Shueisha Jump Remix)."
 name_origin_en = "After the American pop duo Hall & Oates (cited in the Shueisha Jump Remix)."
 
+[[characters]]
+id = "mariah"
+name = "MARIAH"
+fighter = "mariah"
+stand = "BASTET"
+text = "L'une des Neuf Divinités d'Égypte envoyées par DIO : calme, sûre de son Stand, rusée et charmeuse, mais vite déstabilisée quand les choses tournent mal. Elle aimante Joseph et Avdol et les entraîne de piège en piège à travers une ville, jusqu'à ce que Joseph retourne contre elle tout le métal qui l'entoure."
+text_en = "One of the Nine Egyptian Glory Gods sent by DIO: calm, sure of her Stand, devious and flirtatious, but quick to lose her composure when things go wrong. She magnetizes Joseph and Avdol and leads them from trap to trap through a town, until Joseph turns all the metal around her against her."
+name_origin = "D'après la chanteuse américaine Mariah Carey."
+name_origin_en = "After the American singer Mariah Carey."
+
 [[stands]]
 id = "star_platinum"
 name = "STAR PLATINUM"
@@ -207,3 +217,14 @@ text = "Un revolver qui apparaît directement dans la main de Hol Horse : un lon
 text_en = "A revolver that appears straight in Hol Horse's hand: a long barrel under a metal frame, a cylinder below it connected to nothing, a big ball set in the frame. Its bullets are part of the Stand: he steers them in flight, round Silver Chariot's sword, in a U-turn, or down a pipe he cannot see. They stay held by Emperor's range."
 name_origin = "D'après l'arcane IV du tarot, l'Empereur, symbole d'ordre et d'autorité."
 name_origin_en = "After tarot card IV, The Emperor, a symbol of order and authority."
+
+[[stands]]
+id = "bastet"
+name = "BASTET"
+user = "MARIAH"
+icon = "glossary_bastet"  # no body: an outlet on a wall or on the floor
+stats = "EEBAEE"
+text = "Une prise électrique, un câble dessous, posée sur n'importe quelle surface. Qui la touche reçoit une décharge et devient un aimant : le métal vient à lui, de plus en plus lourd à mesure que le temps passe, jusqu'aux voitures, et peut l'écraser ou l'empaler. Plusieurs victimes s'attirent entre elles. Si Mariah s'éloigne trop, l'aimantation s'éteint. Aucune force de combat : c'est un piège."
+text_en = "An electrical outlet, a cable under it, laid on any surface. Whoever touches it gets a shock and becomes a magnet: metal comes for them, heavier and heavier as time passes, up to cars, and can crush or impale them. Several victims draw each other in. If Mariah goes too far, the magnetism wears off. No fighting power of its own: it is a trap."
+name_origin = "D'après Bastet, la déesse égyptienne protectrice ; c'est la quatrième des Neuf Divinités d'Égypte."
+name_origin_en = "After Bastet, the Egyptian goddess of protection; it is the fourth of the Nine Egyptian Glory Gods."

@@ -11,6 +11,11 @@ des corrections seules une patch.
 - **Tout le monde parle.** Chaque perso des jeux a sa réplique d'entrée et sa réplique de
   victoire (celles d'All-Star Battle R) : un duel sans dialogue à lui ne reste plus muet, et
   un vainqueur sans réplique pour cet adversaire dit la sienne.
+- **Nouveau perso : Mariah**, et Bastet. Touche la prise électrique qu'elle pose au sol et
+  tu deviens un aimant : chaque contact ajoute un niveau (jusqu'à trois), et à chaque niveau
+  ses couteaux, sa ligne électrique qui t'attire et le métal qui te tombe dessus font plus
+  mal. Quatre couleurs d'All-Star Battle R, cinq poses, et ses répliques face à Hol Horse,
+  Joseph, Avdol et DIO. Nouvelle altération dans le glossaire : AIMANT.
 - **Nouveau perso : Hol Horse**, et Emperor dans sa main. Ses balles se pilotent en plein
   vol à la souris (ou au stick droit) pendant qu'il court ; une balle rapide qui s'éteint
   si on le touche ; la touche Stand fait tourner Emperor et charge son prochain tir

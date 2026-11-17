@@ -1,0 +1,29 @@
+# Bastet: an electrical outlet, a cream plate in a green frame, two slots and a mouth that
+# look like a face, its cable hanging below. The Stand has no body, so its glossary page
+# shows this instead of a sprite (JoJo Wiki, "Bastet"; its All-Star Battle R model).
+
+pixels = [
+    "................",
+    "...oooooooooo...",
+    "...oGGGGGGGGo...",
+    "...oGCCCCCCGo...",
+    "...oGCCYYCCGo...",
+    "...oGCCCCCCGo...",
+    "...oGCoCCoCGo...",
+    "...oGCoCCoCGo...",
+    "...oGCCCCCCGo...",
+    "...oGCCooCCGo...",
+    "...oGCCCCCCGo...",
+    "...oGGGGGGGGo...",
+    "...oooooooooo...",
+    ".......oKo......",
+    "........oKo.....",
+    ".........oo.....",
+]
+
+[palette]
+o = "#17121f"
+G = "#56804a"
+C = "#e8e2ba"
+Y = "#c8a040"
+K = "#6e9650"

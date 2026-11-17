@@ -15,8 +15,8 @@ id = "status_effects"
 name = "ALTÉRATIONS D'ÉTAT"
 name_en = "STATUS EFFECTS"
 icon = "emblem_rules"
-text = "Certains coups laissent quelque chose derrière eux : le feu, le froid, un courant. Une altération ne s'applique que sur un coup qui touche vraiment - gardé, elle ne prend pas. Un deuxième coup la relance sans l'empiler, et chacune a son plafond : personne ne meurt cuit à distance en tenant un bouton. Le temps arrêté suspend tout, y compris ce qui brûle. Trois existent aujourd'hui : BRÛLURE, GEL et COURANT."
-text_en = "Some blows leave something behind: fire, cold, a current. A status only catches on a blow that really lands - blocked, it does not take. A second hit refreshes it without stacking, and each one has its own ceiling: nobody is cooked to death from across the arena by holding one button. Stopped time suspends everything, what is burning included. Three exist today: BURNING, FROZEN and CURRENT."
+text = "Certains coups laissent quelque chose derrière eux : le feu, le froid, un courant. Une altération ne s'applique que sur un coup qui touche vraiment - gardé, elle ne prend pas. Un deuxième coup la relance sans l'empiler, et chacune a son plafond : personne ne meurt cuit à distance en tenant un bouton. Le temps arrêté suspend tout, y compris ce qui brûle. Quatre existent aujourd'hui : BRÛLURE, GEL, COURANT et AIMANT."
+text_en = "Some blows leave something behind: fire, cold, a current. A status only catches on a blow that really lands - blocked, it does not take. A second hit refreshes it without stacking, and each one has its own ceiling: nobody is cooked to death from across the arena by holding one button. Stopped time suspends everything, what is burning included. Four exist today: BURNING, FROZEN, CURRENT and MAGNET."
 
 [[terms]]
 id = "status_burn"
@@ -41,3 +41,11 @@ name_en = "CURRENT"
 icon = "glossary_shock"
 text = "L'onde se montre comme des étincelles, et une écharpe de Satiporoja la conduit comme un paratonnerre : Lisa Lisa s'en sert pour faire passer le courant dans un corps. Les muscles répondent à autre chose qu'à leur propriétaire pendant 1,8 seconde : 10 points de vie par seconde, 15 % de vitesse en moins, plus un point de Heart Heat gagné, et la garde se défait toute seule."
 text_en = "The Ripple shows itself as sparks, and a Satiporoja scarf conducts it like a lightning rod: Lisa Lisa uses it to run a current through a body. For 1.8 seconds the muscles answer to something other than their owner: 10 points of life per second, 15 % slower, not one point of Heart Heat gained, and the guard shakes apart on its own."
+
+[[terms]]
+id = "status_magnet"
+name = "AIMANT"
+name_en = "MAGNET"
+icon = "glossary_magnet"
+text = "Qui touche Bastet, la prise électrique de Mariah, devient un aimant : tout le métal alentour vient à lui, les petits objets d'abord, puis de plus en plus lourds, jusqu'aux voitures. Ça ne fait rien par soi-même, mais chaque nouveau contact ajoute un niveau, jusqu'au troisième, et les coups de Mariah frappent plus fort à chaque niveau. Tout s'en va au bout de 9 secondes."
+text_en = "Whoever touches Bastet, Mariah's outlet, becomes a magnet: all the metal around comes for them, small things first, then heavier and heavier, up to cars. It does nothing by itself, but each new touch adds a level, up to the third, and Mariah's blows hit harder for each level. It all goes after 9 seconds."

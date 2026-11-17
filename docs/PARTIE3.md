@@ -16,7 +16,7 @@ Ce qui n'est pas sûr est marqué **à vérifier**. Une source manque, se contre
 
 ## Où on en est
 
-- **Jouables** : Jotaro, Kakyoin, Polnareff, DIO, **Avdol** (fait le 24/10/2026), **Joseph âgé** (fait le 15/11/2026), **Vanilla Ice** et **Hol Horse** (faits le 17/11/2026).
+- **Jouables** : Jotaro, Kakyoin, Polnareff, DIO, **Avdol** (fait le 24/10/2026), **Joseph âgé** (fait le 15/11/2026), **Vanilla Ice**, **Hol Horse** et **Mariah** (faits le 17/11/2026).
 - **Arène** : Le Caire, rue de nuit.
 - Le moteur **sait déjà** faire : Stand on/off, mode contrôle, temps arrêté, pièges, projectiles (`count`, `ring`), visée libre, saisies inbloquables, Hamon, vampire et soleil, `stance_cycle`, éveil, objets à lancer.
 - Il **ne sait pas encore** faire : vol, états qui s'accumulent. (Brûlure, Stand + Hamon, invisibilité et décor effacé : faits.)
@@ -296,6 +296,29 @@ tranche ce qui était « à fixer » plus bas :
 | **GHA** | **« Hol Horse is gonna kill ya! »**, avec la mise en scène de la DHA d'EoH : il lance une bouteille et la fait éclater d'une balle ; Hanged Man surgit dans les éclats, poignarde l'adversaire à l'épaule et l'immobilise ; Hol Horse tire la balle finale | `projectile`, cinématique |
 
 ### Mariah (Bastet)
+
+**Fait le 17/11/2026** (`characters/mariah.toml`, `looks/mariah.toml`), d'après sa page
+ASBR :
+
+- **L'aimantation** est une altération d'état générique, `magnet`, à **trois niveaux** :
+  chaque contact en ajoute un (Bastet, sa saisie, l'ultime), et tout s'éteint au bout de
+  9 s. Ses coups qui la cherchent frappent plus fort à chaque niveau (`bonus_status`,
+  `bonus_per_level`) : les couteaux, la ligne électrique, le métal qui tombe, les boulons.
+  Écart : dans ASBR la jauge tient tant que l'adversaire reste près d'elle ; ici, un minuteur.
+- **Touche Stand : Bastet**, la prise électrique posée devant elle (une à la fois), un piège.
+- **Spécial : « Sorry, but you'll have to die now. »**, trois couteaux à tête chercheuse.
+- **Spécial + direction : « The electricity will char you to a crisp! »**, une ligne
+  électrique qui pend devant elle, **attire** qui s'approche (nouveaux champs de piège
+  `pull`, `pull_range`) et l'électrocute (le courant `shock`).
+- **Lourd : « You were one fine specimen. »**, sa projection, en saisie : elle aimante.
+- **Lourd + direction : « You can't follow me anymore. »**, le métal tombe là où il se tient.
+- **Fin d'enchaînement : « Heh heh heh... Enjoy... »**, le fil de métal qui ligote.
+- HHA **« What are you drooling over? »** : écrous et boulons en rafale (moitié plus forte
+  par niveau, comme 136 / 204 / 272 dans ASBR). GHA **« You little turds! »** : Bastet
+  surgit sous l'adversaire où qu'il soit, puis la cinématique (fils, boulons, deux voitures).
+- 900 PV comme dans ASBR. Elle porte l'étiquette `woman` : Hol Horse fait 10 % de plus.
+- Une seule tenue dans ASBR (et EoH ne l'a pas), quatre couleurs ; cinq poses tirées des
+  planches de ses esquives, provocations et victoires d'ASBR.
 
 **Rôle** : piégeuse, fragile, gagne avec le temps.
 

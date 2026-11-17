@@ -41,6 +41,8 @@ VINE = (146, 84, 196)  # thorny vines: purple in the manga and the anime
 VINE_LIGHT = (208, 156, 240)
 TAR = (30, 26, 36)
 TAR_SHEEN = (92, 84, 116)
+MAGNET = (176, 96, 236)  # a body made a magnet: purple ripples round its feet
+OUTLET, OUTLET_RIM = (232, 226, 186), (86, 128, 70)  # Bastet: a cream plate, a green rim
 WATER = (86, 120, 156)  # a puddle of water on the floor
 WATER_SHEEN = (176, 206, 230)
 BANDAGE = (206, 194, 168)  # Hanged Man's wrappings
@@ -95,6 +97,12 @@ def draw_projectile(
         draw_eruption(surface, pos, radius)
     elif look == "reflection":
         draw_reflection_stab(surface, pos, radius)
+    elif look == "wire":
+        _draw_wire(surface, pos, d)
+    elif look == "bolt":
+        _draw_bolt(surface, pos)
+    elif look in ("live_wire", "outlet"):
+        draw_discharge(surface, pos, radius)
     else:
         _draw_orb(surface, pos, radius, aura)
 
@@ -398,6 +406,93 @@ def draw_eruption(surface: pygame.Surface, pos: Vec2, radius: float) -> None:
     surface.fill(FIRE, column)
     surface.fill(FIRE_LIGHT, column.inflate(-column.w // 2, 0))
     _draw_flame(surface, Vec2(column.centerx, column.top), 1.6)
+
+
+def _draw_wire(surface, pos: Vec2, d: Vec2) -> None:
+    """A metal wire shot out: a thin steel line with a hook at its head."""
+    head, tail = pos + d * 3, pos - d * 9
+    pygame.draw.line(surface, OUTLINE, _ints(head), _ints(tail), 3)
+    pygame.draw.line(surface, STEEL, _ints(head), _ints(tail), 1)
+    hook = head + _side(d) * 2 - d
+    pygame.draw.line(surface, STEEL, _ints(head), _ints(hook), 1)
+
+
+def _draw_bolt(surface, pos: Vec2) -> None:
+    """A nut or a bolt, flying."""
+    x, y = _ints(pos)
+    surface.fill(OUTLINE, (x - 2, y - 2, 4, 4))
+    surface.fill(STEEL_DARK, (x - 1, y - 1, 2, 2))
+    surface.set_at((x - 1, y - 1), STEEL)
+
+
+def draw_discharge(surface: pygame.Surface, pos: Vec2, radius: float) -> None:
+    """A current let loose on whoever touched it: a flash and arcs all round."""
+    blit_glow(surface, radial_glow(round(radius * 1.4), (70, 60, 12)), (pos.x, pos.y))
+    rng = random.Random(round(pos.x) * 31 + round(pos.y))
+    for _ in range(5):
+        point = pos
+        for _step in range(3):
+            nxt = point + Vec2(
+                rng.uniform(-radius, radius) * 0.5, rng.uniform(-radius, radius) * 0.5
+            )
+            pygame.draw.line(surface, CURRENT[0], _ints(point), _ints(nxt), 1)
+            point = nxt
+    surface.set_at(_ints(pos), CURRENT[1])
+
+
+def draw_outlet(surface: pygame.Surface, center: Vec2, tick: int) -> None:
+    """Bastet, laid on the floor: an electrical outlet, a cream plate in a green frame, two
+    slots and a mouth that look like a face, its cable trailing behind."""
+    plate = pygame.Rect(0, 0, 11, 13)
+    plate.center = _ints(center)
+    pygame.draw.line(
+        surface, OUTLINE, (plate.centerx, plate.bottom), (plate.centerx + 3, plate.bottom + 5), 3
+    )
+    pygame.draw.line(
+        surface,
+        (110, 150, 80),
+        (plate.centerx, plate.bottom),
+        (plate.centerx + 3, plate.bottom + 5),
+        1,
+    )
+    surface.fill(OUTLINE, plate.inflate(2, 2))
+    surface.fill(OUTLET_RIM, plate)
+    face = plate.inflate(-4, -4)
+    surface.fill(OUTLET, face)
+    surface.fill(OUTLINE, (face.x + 1, face.y + 2, 1, 3))  # the two slots
+    surface.fill(OUTLINE, (face.right - 2, face.y + 2, 1, 3))
+    surface.fill(OUTLINE, (face.centerx - 1, face.bottom - 2, 3, 1))  # the mouth
+    if (tick // 12) % 5 == 0:
+        surface.set_at((face.centerx, face.y), (255, 244, 170))
+
+
+def draw_power_line(surface: pygame.Surface, end: Vec2, reach: float, tick: int) -> None:
+    """A power line cut down, hanging live: the cable comes down from above and its torn
+    end spits sparks; round it, the pull it has on whoever comes near."""
+    top = end + Vec2(-6, -70)
+    sway = math.sin(tick * 0.1) * 2
+    mid = (top + end) * 0.5 + Vec2(sway, 0)
+    for a, b in ((top, mid), (mid, end)):
+        pygame.draw.line(surface, OUTLINE, _ints(a), _ints(b), 3)
+        pygame.draw.line(surface, (60, 60, 70), _ints(a), _ints(b), 1)
+    if tick % 4 < 2:
+        rng = random.Random(tick)
+        for _ in range(3):
+            spark = end + Vec2(rng.uniform(-5, 5), rng.uniform(-4, 4))
+            pygame.draw.line(surface, CURRENT[0], _ints(end), _ints(spark), 1)
+    ring = pygame.Rect(0, 0, round(reach * 2), round(reach))
+    ring.center = _ints(end + Vec2(0, 8))
+    if (tick // 8) % 2 == 0:
+        pygame.draw.ellipse(surface, shade(CURRENT[0], -120), ring, 1)
+
+
+def draw_magnetized(surface: pygame.Surface, center: Vec2, height: float, tick: int) -> None:
+    """A body made a magnet: purple ripples running out from its feet."""
+    for i in range(2):
+        grow = ((tick + i * 12) % 24) / 24
+        box = pygame.Rect(0, 0, round(10 + 14 * grow), round(4 + 6 * grow))
+        box.center = _ints(center + Vec2(0, 2))
+        pygame.draw.ellipse(surface, shade(MAGNET, round(-90 * grow)), box, 1)
 
 
 def draw_water_puddle(surface: pygame.Surface, center: Vec2, radius: float, tick: int) -> None:
@@ -1330,7 +1425,12 @@ def draw_current(surface: pygame.Surface, center: Vec2, height: float, tick: int
         )
 
 
-STATUS_DRAWINGS = {"burn": draw_burning, "chill": draw_frozen, "shock": draw_current}
+STATUS_DRAWINGS = {
+    "burn": draw_burning,
+    "chill": draw_frozen,
+    "shock": draw_current,
+    "magnet": draw_magnetized,
+}
 
 
 def draw_statuses(surface: pygame.Surface, center: Vec2, height: float, names, tick: int) -> None:

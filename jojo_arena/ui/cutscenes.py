@@ -2145,6 +2145,111 @@ class EmperorHangedMan(CutscenePlayer):
             vfx.draw_projectile(world, "bullet", spot, spot - back, 3, self.aura(user))
 
 
+# Mariah: You little turds! ------------------------------------------------------------------
+
+
+def draw_car(surface: pygame.Surface, foot: Vec2, face_right: bool, color) -> None:
+    """A car seen from the side, bottom centre at `foot`: body, cabin, two wheels."""
+    x, y = round(foot.x), round(foot.y)
+    d = 1 if face_right else -1
+    body = pygame.Rect(0, 0, 40, 11)
+    body.midbottom = (x, y - 4)
+    cabin = pygame.Rect(0, 0, 20, 9)
+    cabin.midbottom = (x - d * 3, body.top + 1)
+    for rect in (body, cabin):
+        pygame.draw.rect(surface, OUTLINE, rect.inflate(2, 2), border_radius=3)
+    pygame.draw.rect(surface, color, body, border_radius=3)
+    pygame.draw.rect(surface, color, cabin, border_radius=3)
+    surface.fill((150, 190, 220), cabin.inflate(-6, -4))
+    surface.fill(tuple(min(255, c + 50) for c in color), (body.x + 2, body.y + 1, body.w - 4, 1))
+    for wx in (x - 12, x + 12):
+        pygame.draw.circle(surface, OUTLINE, (wx, y - 4), 5)
+        pygame.draw.circle(surface, (60, 60, 70), (wx, y - 4), 3)
+
+
+class BastetCars(CutscenePlayer):
+    """Bastet has come up under them: they are a magnet now, as strong as it gets. The
+    live wires find them first, then the nuts and bolts, then everything heavier; and two
+    cars, drawn from either side, meet where they stand."""
+
+    length = 300
+    WIRES = 30  # the cables whip in
+    BOLTS = 90  # the hardware hails in
+    CARS = 170  # the cars start rolling
+    CRASH = 220  # and meet
+    METAL = (150, 150, 162)
+    RED_CAR, BLUE_CAR = (190, 50, 50), (60, 90, 170)
+
+    def camera(self, f):
+        if f < self.CARS:
+            return self.v + Vec2(0, -18), 3
+        return self.v + Vec2(0, -12), 2
+
+    def car_x(self, f: int) -> float:
+        """How far each car still is from them."""
+        t = min(1.0, max(0.0, (f - self.CARS) / (self.CRASH - self.CARS)))
+        return 200 * (1 - t * t)
+
+    def cue(self, f):
+        fx = self.fx
+        hit = self.chest(self.scene.target, self.v)
+        if f == 1:
+            self.shout(text.MARIAH_GHA_LINE, scale=2, life=50)
+            fx.add(vfx.Ring(self.v, vfx.MAGNET, 3.0, 22, 2))
+        if f == self.WIRES:
+            fx.add(vfx.Flash(hit, 20, (255, 244, 170), 8))
+            self.world_words.add(sfx.CRACKLE, hit + Vec2(0, -14), sfx.HAMON, 2, 30, 0.3, 2)
+            self.shake = 6
+        if self.BOLTS <= f < self.CARS and f % 3 == 0:
+            angle = self.rng.uniform(0, math.tau)
+            fx.add(
+                vfx.Dust(
+                    hit + Vec2.from_angle(angle, 4), Vec2.from_angle(angle, 1.2), 1, 12, self.METAL
+                )
+            )
+        if self.BOLTS <= f < self.CARS and (f - self.BOLTS) % 16 == 0:
+            self.world_words.add(
+                sfx.GA, hit + Vec2(self.rng.randint(-8, 8), -12), "impact", 2, 20, 0.3, 2
+            )
+            self.shake = 3
+        if f == self.CRASH:
+            fx.add(vfx.Flash(hit, 54, (255, 200, 120), 14))
+            fx.add(vfx.Ring(hit, (255, 200, 120), 5.0, 28, 3))
+            fx.add(vfx.Fireball(hit, 16, self.scene.serial, 30))
+            fx.focus(hit, heavy=True)
+            self.world_words.add(sfx.BOOM, hit + Vec2(0, -18), "impact", 3, 48, 0.2, 2)
+            self.flash, self.shake = 14, 20
+
+    def negative(self, f):
+        return self.CRASH <= f < self.CRASH + 3
+
+    def scene_draw(self, world, f):
+        target = self.scene.target
+        vfx.draw_outlet(world, self.v + Vec2(0, 4), f)
+        self.victim(world, f)
+        hit = self.chest(target, self.v)
+        if self.WIRES - 12 <= f < self.CRASH:
+            # The live wires, whipping in from above and wrapping round them.
+            for i, side in enumerate((-1, 1, -0.4)):
+                top = hit + Vec2(side * 40, -50 - i * 6)
+                reach = min(1.0, max(0.0, (f - self.WIRES + 12) / 12))
+                end = top + (hit - top) * reach
+                pygame.draw.line(world, OUTLINE, top.as_ints(), end.as_ints(), 3)
+                pygame.draw.line(world, (60, 60, 70), top.as_ints(), end.as_ints(), 1)
+        if self.BOLTS <= f < self.CRASH:
+            # Nuts and bolts stuck all over them, more and more.
+            count = min(14, (f - self.BOLTS) // 5)
+            rng = random.Random(self.scene.serial)
+            for _ in range(count):
+                spot = hit + Vec2(rng.uniform(-6, 6), rng.uniform(-14, 10))
+                world.fill(OUTLINE, (round(spot.x) - 1, round(spot.y) - 1, 3, 3))
+                world.set_at(spot.as_ints(), self.METAL)
+        if self.CARS <= f < self.CRASH + 8:
+            gap = self.car_x(f)
+            draw_car(world, self.v + Vec2(-gap - 18, 6), True, self.RED_CAR)
+            draw_car(world, self.v + Vec2(gap + 18, 6), False, self.BLUE_CAR)
+
+
 CUTSCENES = {
     "hermit_overdrive": HermitOverdrive,
     "road_roller": RoadRoller,
@@ -2169,6 +2274,7 @@ CUTSCENES = {
     "crossfire_special": CrossfireSpecial,
     "void_miasma": VoidMiasma,
     "emperor_hanged_man": EmperorHangedMan,
+    "bastet_cars": BastetCars,
 }
 
 

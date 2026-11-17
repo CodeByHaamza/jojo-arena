@@ -362,6 +362,21 @@ color = "#c8b06a"
 aura = "#a8c0d8"
 
 [[fighters]]
+id = "mariah"
+side = "villain"
+part = 3
+name = "MARIAH"
+kit = "mariah"
+sprite = "mariah/mariah"
+stand_name = "BASTET"
+role = "PIÉGEUSE - AIMANT"
+role_en = "TRAPPER - MAGNET"
+blurb = "Touche Bastet et tu deviens un aimant : chaque niveau, et tout le métal de l'arène vient pour toi."
+blurb_en = "Touch Bastet and you become a magnet: every level, and all the metal in the arena comes for you."
+color = "#8a2c48"
+aura = "#c060e0"
+
+[[fighters]]
 id = "mannequin_red"
 name = "MANNEQUIN ROUGE"
 name_en = "RED DUMMY"

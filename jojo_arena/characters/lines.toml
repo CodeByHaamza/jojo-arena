@@ -354,6 +354,97 @@ text_en = "I stick by the strongest I find. That's it!"
 text = "Tu me plais. Jamais une goutte de sueur, jamais perdu le rythme. Tu es froid comme la glace, Hol Horse."
 text_en = "I like you. You never sweated, never lost your rhythm. You are cool as ice, Hol Horse."
 
+# Mariah: All-Star Battle R ★ Mariah, "Dialogue" (read 17/11/2026): the match entrances
+# of ASBR and the victory quotes against each of them.
+
+[[exchanges]]
+fighters = ["hol_horse", "mariah"]
+source = "ASBR, entrée en matière et citations de victoire de Hol Horse et de Mariah"
+
+[[exchanges.intro]]
+by = "hol_horse"
+text = "Je me lasserai jamais de ces jambes !"
+text_en = "I never get tired of seeing those legs!"
+
+[[exchanges.intro]]
+by = "mariah"
+text = "Ah oui, Hol Horse... Le manieur de Stand qui n'a jamais servi à rien au seigneur DIO..."
+text_en = "Oh right, Hol Horse... The Stand user who never manages to be of any help to Lord DIO..."
+
+[exchanges.victory.mariah]
+text = "Voilà pourquoi tu ne gagnes jamais tes combats..."
+text_en = "This is why you never win your battles..."
+
+[exchanges.victory.hol_horse]
+text = "J'adore les filles qui ont la langue bien pendue comme toi, ma belle !"
+text_en = "I sure do love a girl with a sharp tongue like yours, baby!"
+
+[[exchanges]]
+fighters = ["mariah", "joseph_p3"]
+source = "ASBR, entrée en matière et citations de victoire de Mariah et de Joseph âgé"
+
+[[exchanges.intro]]
+by = "mariah"
+text = "Joseph Joestar ! Tu es bien plus vieux que moi, mais j'ai pensé à faire de toi mon petit ami. Hé hé hé."
+text_en = "Joseph Joestar! You're much older than me, but I did think about making a boyfriend out of you. Heh heh heh."
+
+[[exchanges.intro]]
+by = "joseph_p3"
+text = "Comme c'est gentil. Alors arrête d'essayer de me faire du mal !"
+text_en = "Well isn't that nice. Stop trying to hurt me, then!"
+
+[exchanges.victory.mariah]
+text = "Laisse tomber. Tu n'es rien à côté du charme du seigneur DIO."
+text_en = "Forget it. You're nothing compared to the charm of Lord DIO."
+
+[exchanges.victory.joseph_p3]
+text = "Tu as perdu, ma chère."
+text_en = "You lose, my dear."
+
+[[exchanges]]
+fighters = ["mariah", "avdol"]
+source = "ASBR, entrée en matière et citations de victoire de Mariah et d'Avdol"
+
+[[exchanges.intro]]
+by = "avdol"
+text = "Femme ! Mes flammes vont te réduire en cendres !"
+text_en = "Woman! My flames will burn you right up!"
+
+[[exchanges.intro]]
+by = "mariah"
+text = "Hé hé hé... Je vais t'apprendre l'horreur du magnétisme !"
+text_en = "Heh heh heh... Time to teach you about the horrors of magnetism!"
+
+[exchanges.victory.mariah]
+text = "J'ai besoin d'une cigarette... Tu me donnerais du feu ?"
+text_en = "I need a smoke... Mind giving me a light?"
+
+[exchanges.victory.avdol]
+text = "C'était vraiment une adversaire redoutable..."
+text_en = "She really was a fearsome opponent..."
+
+[[exchanges]]
+fighters = ["mariah", "dio_p3"]
+source = "ASBR, entrée en matière et citations de victoire de Mariah et de DIO"
+
+[[exchanges.intro]]
+by = "dio_p3"
+text = "Viens, Mariah. Je vais te mettre à l'épreuve."
+text_en = "Come, Mariah. I will test you."
+
+[[exchanges.intro]]
+by = "mariah"
+text = "Quel honneur de croiser le fer avec vous, seigneur DIO !"
+text_en = "I'm honored to be able to spar with you like this, Lord DIO!"
+
+[exchanges.victory.mariah]
+text = "J'écraserai les Joestar avec ce pouvoir !"
+text_en = "I'll crush the Joestars with this power of mine!"
+
+[exchanges.victory.dio_p3]
+text = "L'aimantation s'estompe... Qu'y a-t-il ? Déjà fini ?"
+text_en = "The magnetism is wearing off... What's wrong? Finished already?"
+
 # Part 1 -----------------------------------------------------------------------------------
 
 [[exchanges]]
@@ -565,3 +656,8 @@ victory = { text = "C'est moi qui sers le grand DIO ! Pas toi !", text_en = "I a
 source = "ASBR, sa réplique d'entrée par défaut et sa première citation de victoire"
 intro = { text = "Tu sais comment je travaille, maintenant. Pas vrai, J. Geil ?", text_en = "You know how I work by now. Right, J. Geil?" }
 victory = { text = "La mort, c'est rarement bien spectaculaire, hein ?", text_en = "I guess death is pretty anticlimactic most of the time, huh?" }
+
+[solo.mariah]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Personne ne peut arrêter mon magnétisme...", text_en = "No one can stop my magnetism..." }
+victory = { text = "Ton pouvoir magnétique n'était qu'une plaisanterie.", text_en = "Your magnetic power was an absolute joke." }
