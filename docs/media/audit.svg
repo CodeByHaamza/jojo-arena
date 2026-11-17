@@ -10,7 +10,7 @@
   <text x="18" y="46" font-family="monospace" font-size="13" fill="#f0c23c" xml:space="preserve" opacity="0">$ python tools/audit_kits.py
     <animate attributeName="opacity" values="0;1" dur="0.2s" begin="0.0s" fill="freeze"/>
   </text>
-  <text x="18" y="64" font-family="monospace" font-size="13" fill="#fff6d0" xml:space="preserve" opacity="0">21 persos jouables
+  <text x="18" y="64" font-family="monospace" font-size="13" fill="#fff6d0" xml:space="preserve" opacity="0">22 persos jouables
     <animate attributeName="opacity" values="0;1" dur="0.2s" begin="0.12s" fill="freeze"/>
   </text>
   <text x="18" y="82" font-family="monospace" font-size="13" fill="#f0c23c" xml:space="preserve" opacity="0">== Noms portés par plusieurs persos ==
@@ -19,37 +19,37 @@
   <text x="18" y="100" font-family="monospace" font-size="13" fill="#cdbbe8" xml:space="preserve" opacity="0">  ABSORPTION                         dio_p1, kars, wamuu                (partagé dans l'œuvre)
     <animate attributeName="opacity" values="0;1" dur="0.2s" begin="0.36s" fill="freeze"/>
   </text>
-  <text x="18" y="118" font-family="monospace" font-size="13" fill="#cdbbe8" xml:space="preserve" opacity="0">  OVERDRIVE                          jonathan, zeppeli                  (partagé dans l'œuvre)
+  <text x="18" y="118" font-family="monospace" font-size="13" fill="#fff6d0" xml:space="preserve" opacity="0">  COUP DE PIED                       kakyoin, vanilla_ice               &lt;-- à revoir
     <animate attributeName="opacity" values="0;1" dur="0.2s" begin="0.48s" fill="freeze"/>
   </text>
-  <text x="18" y="136" font-family="monospace" font-size="13" fill="#cdbbe8" xml:space="preserve" opacity="0">  SPACE RIPPER STINGY EYES           dio_p1, straizo                    (partagé dans l'œuvre)
+  <text x="18" y="136" font-family="monospace" font-size="13" fill="#cdbbe8" xml:space="preserve" opacity="0">  OVERDRIVE                          jonathan, zeppeli                  (partagé dans l'œuvre)
     <animate attributeName="opacity" values="0;1" dur="0.2s" begin="0.6s" fill="freeze"/>
   </text>
-  <text x="18" y="154" font-family="monospace" font-size="13" fill="#cdbbe8" xml:space="preserve" opacity="0">  ZOOM PUNCH                         jonathan, zeppeli                  (partagé dans l'œuvre)
+  <text x="18" y="154" font-family="monospace" font-size="13" fill="#fff6d0" xml:space="preserve" opacity="0">  REVERS                             vanilla_ice, wamuu                 &lt;-- à revoir
     <animate attributeName="opacity" values="0;1" dur="0.2s" begin="0.72s" fill="freeze"/>
   </text>
-  <text x="18" y="172" font-family="monospace" font-size="13" fill="#f0c23c" xml:space="preserve" opacity="0">== Coups identiques au chiffre près entre deux persos : 0 ==
+  <text x="18" y="172" font-family="monospace" font-size="13" fill="#cdbbe8" xml:space="preserve" opacity="0">  SPACE RIPPER STINGY EYES           dio_p1, straizo                    (partagé dans l'œuvre)
     <animate attributeName="opacity" values="0;1" dur="0.2s" begin="0.84s" fill="freeze"/>
   </text>
-  <text x="18" y="190" font-family="monospace" font-size="13" fill="#f0c23c" xml:space="preserve" opacity="0">== Variété et identité visuelle ==
+  <text x="18" y="190" font-family="monospace" font-size="13" fill="#cdbbe8" xml:space="preserve" opacity="0">  ZOOM PUNCH                         jonathan, zeppeli                  (partagé dans l'œuvre)
     <animate attributeName="opacity" values="0;1" dur="0.2s" begin="0.96s" fill="freeze"/>
   </text>
-  <text x="18" y="208" font-family="monospace" font-size="13" fill="#fff6d0" xml:space="preserve" opacity="0">  perso          coups  noms plats  avec effet  portée max  postures
+  <text x="18" y="208" font-family="monospace" font-size="13" fill="#f0c23c" xml:space="preserve" opacity="0">== Coups identiques au chiffre près entre deux persos : 0 ==
     <animate attributeName="opacity" values="0;1" dur="0.2s" begin="1.08s" fill="freeze"/>
   </text>
-  <text x="18" y="226" font-family="monospace" font-size="13" fill="#fff6d0" xml:space="preserve" opacity="0">  avdol             15           0           5         120         2
+  <text x="18" y="226" font-family="monospace" font-size="13" fill="#f0c23c" xml:space="preserve" opacity="0">== Variété et identité visuelle ==
     <animate attributeName="opacity" values="0;1" dur="0.2s" begin="1.2s" fill="freeze"/>
   </text>
-  <text x="18" y="244" font-family="monospace" font-size="13" fill="#fff6d0" xml:space="preserve" opacity="0">  bruford            9           0           9         112         1
+  <text x="18" y="244" font-family="monospace" font-size="13" fill="#fff6d0" xml:space="preserve" opacity="0">  perso          coups  noms plats  avec effet  portée max  postures
     <animate attributeName="opacity" values="0;1" dur="0.2s" begin="1.3199999999999998s" fill="freeze"/>
   </text>
-  <text x="18" y="262" font-family="monospace" font-size="13" fill="#fff6d0" xml:space="preserve" opacity="0">  caesar             8           0           2         110         1
+  <text x="18" y="262" font-family="monospace" font-size="13" fill="#fff6d0" xml:space="preserve" opacity="0">  avdol             15           0           5         120         2
     <animate attributeName="opacity" values="0;1" dur="0.2s" begin="1.44s" fill="freeze"/>
   </text>
-  <text x="18" y="280" font-family="monospace" font-size="13" fill="#fff6d0" xml:space="preserve" opacity="0">  dio_p1            15           0           3         300         2
+  <text x="18" y="280" font-family="monospace" font-size="13" fill="#fff6d0" xml:space="preserve" opacity="0">  bruford            9           0           9         112         1
     <animate attributeName="opacity" values="0;1" dur="0.2s" begin="1.56s" fill="freeze"/>
   </text>
-  <text x="18" y="298" font-family="monospace" font-size="13" fill="#fff6d0" xml:space="preserve" opacity="0">  dio_p3            15           0           0          80         2
+  <text x="18" y="298" font-family="monospace" font-size="13" fill="#fff6d0" xml:space="preserve" opacity="0">  caesar             8           0           2         110         1
     <animate attributeName="opacity" values="0;1" dur="0.2s" begin="1.68s" fill="freeze"/>
   </text>
 </svg>

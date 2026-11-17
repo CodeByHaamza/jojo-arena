@@ -1,0 +1,198 @@
+# Cream (Vanilla Ice's Stand, Part 3): look file for tools/make_sprites.py.
+#
+# JoJo Wiki, "Cream", Appearance (read 17/11/2026, https://jojowiki.com/Cream): an
+# exceptionally tall, skull-faced humanoid with an executioner's cowl for a mask, two
+# horns jutting from it, heart motifs over the body (as Atum and The World), drawn after
+# the executioners of medieval France and Death itself. The panels of chapters 238 to 244
+# add what the page does not say: the skull's bared teeth, a heart on the brow of the
+# cowl, spirals on the black shoulders, long clawed hands.
+# Colours: the anime's ("Color Schemes"): a white body, a black cowl with purple
+# highlights, gold eyes, black shoulders, gun-metal grey horns, magenta hearts.
+
+name = "Cream"
+
+# Very tall, long in the arm, the hands big and clawed.
+# Signature pose (Pose key): see tools/spritegen/skeleton.py.
+pose = "spread"
+
+[build]
+head_r = 6.0
+neck = 0.8
+torso = 15
+legs = 18
+arms = 17
+shoulders = 10.0
+hips = 3.8
+torso_r = 7.0
+arm_r = 2.9
+leg_r = 2.9
+hand_r = 3.2
+foot_r = 2.7
+
+[palette]
+body = ["#6c6878", "#b4b0c0", "#e6e2ec", "#ffffff"]
+cowl = ["#100e1a", "#221e36", "#3a3060", "#6a58a0"]  # black, purple in the light
+bone = ["#8c8478", "#c8c0b0", "#ece6d8", "#fffaf0"]  # the skull's face
+horn = "#5c606c"
+heart = "#d03a9c"
+eyes = "#f0c030"
+
+[body]
+head = "cowl"
+torso = "body"
+arms = "body"
+hands = "body"
+legs = "body"
+feet = "body"
+
+[face]
+eyes = "eyes"
+eye_style = "wide"
+
+# The skull under the cowl, its teeth bared.
+[[parts]]
+type = "mask"
+material = "bone"
+top = -1.5
+grill = "cowl"
+
+[[parts]]
+type = "horns"
+material = "horn"
+size = 0.8
+
+# The heart on the brow of the cowl.
+[[parts]]
+type = "headband"
+material = "cowl"
+gem = "heart"
+gem_shape = "heart"
+
+[[parts]]
+type = "pauldrons"
+material = "cowl"
+size = 4.6
+spiral = "body"
+
+[[parts]]
+type = "claws"
+material = "bone"
+
+[[parts]]
+type = "belt"
+material = "cowl"
+buckle = "heart"
+buckle_shape = "heart"
+
+[[parts]]
+type = "emblem"
+material = "heart"
+shape = "heart"
+on = "knees"
+
+[[parts]]
+type = "emblem"
+material = "heart"
+shape = "heart"
+on = "elbows"
+
+# Poses with Vanilla Ice (the ids of vanilla_ice.toml's duo poses; sources there) --------
+
+# Behind him, hunched over him, the long arms hanging.
+[[poses.derriere_lui.down]]
+bob = 1
+lean = 1.5
+head = [0, 2]
+hand_l = [-5, 6]
+elbow_l = [-4, 1]
+hand_r = [5, 6]
+elbow_r = [4, 1]
+
+[[poses.derriere_lui.right]]
+bob = 1
+lean = 2
+head = [1, 2]
+hand_r = [4, 6]
+hand_l = [1, 6]
+
+# Rising out of the dark: the open hands up on either side of the skull.
+[[poses.premiere_apparition.down]]
+lean = 0.5
+hand_l = [-8, -18]
+elbow_l = [-5, -3]
+hand_r = [8, -18]
+elbow_r = [5, -3]
+
+[[poses.premiere_apparition.right]]
+lean = 1
+hand_r = [7, -18]
+hand_l = [-3, -18]
+
+# The sneak attack: lunging forward, the claws thrown out ahead.
+[[poses.attaque_surprise.down]]
+bob = 2
+lean = 2
+head = [0, 1]
+hand_l = [-9, -8]
+elbow_l = [-5, -2]
+hand_r = [9, -8]
+elbow_r = [5, -2]
+knee_l = [-3, -1]
+knee_r = [3, -1]
+
+[[poses.attaque_surprise.right]]
+bob = 2
+lean = 3
+head = [2, 1]
+hand_r = [12, -8]
+hand_l = [9, -4]
+foot_r = [4, 0]
+foot_l = [-4, 0]
+
+# Its colours ------------------------------------------------------------------------------
+# JoJo Wiki, "Cream", "Color Schemes" (read 17/11/2026; the page warns they "may or may
+# not be canon"). Each worn with the same medium's colours of Vanilla Ice.
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "JoJo Wiki, Cream, Color Schemes : l'anime"
+
+# A white body tinted violet, a black cowl with blue highlights, yellow eyes, pink horns,
+# purple hearts.
+[colors.manga]
+label = "Manga en couleur"
+label_en = "Coloured manga"
+source = "JoJo Wiki, Cream, Color Schemes : le manga en couleur"
+
+[colors.manga.palette]
+body = ["#6a6080", "#ac9ec4", "#dcd0ec", "#faf4ff"]
+cowl = ["#0e1020", "#1c2240", "#2c3c70", "#5a7ab0"]
+horn = "#e86aa4"
+heart = "#8a4ac8"
+eyes = "#f4d040"
+
+# A white body, a black cowl, yellow eyes, silver horns, indigo hearts.
+[colors.asb]
+label = "All-Star Battle"
+label_en = "All-Star Battle"
+source = "JoJo Wiki, Cream, Color Schemes : All-Star Battle"
+
+[colors.asb.palette]
+cowl = ["#101014", "#1e1e26", "#30303c", "#54546a"]
+horn = "#b8bcc8"
+heart = "#4a3aa0"
+eyes = "#f4d040"
+
+# A white body tinted violet, a black cowl with purple highlights, light yellow eyes, dark
+# grey horns, purple hearts.
+[colors.eoh]
+label = "Eyes of Heaven"
+label_en = "Eyes of Heaven"
+source = "JoJo Wiki, Cream, Color Schemes : Eyes of Heaven"
+
+[colors.eoh.palette]
+body = ["#6a6080", "#ac9ec4", "#dcd0ec", "#faf4ff"]
+horn = "#44464e"
+heart = "#8a4ac8"
+eyes = "#f8e890"

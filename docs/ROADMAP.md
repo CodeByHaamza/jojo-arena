@@ -32,7 +32,7 @@ faites et fusionnées dans `develop` ; **on reprend à l'étape 3**.
      tenues du manga qui ne sont dans aucun jeu.
 4. [ ] **Partie 3**, dans l'ordre de [PARTIE3.md](PARTIE3.md) : ~~Joseph âgé~~ (fait le
    15/11/2026, avant les costumes, à la demande du propriétaire), ~~le manoir de
-   DIO (Nukesaku, rideaux)~~ (fait le 17/11/2026 ; reste sa sortie par le trou du mur), Iggy, Pet Shop, Vanilla Ice, Hol Horse (et Calcutta, J. Geil),
+   DIO (Nukesaku, rideaux)~~ (fait le 17/11/2026 ; reste sa sortie par le trou du mur), ~~Vanilla Ice~~ (fait le 17/11/2026), Iggy, Pet Shop, Hol Horse (et Calcutta, J. Geil),
    Mariah, N'Doul (et le désert), puis les éveils de Jotaro et DIO. Chaque perso arrive
    avec ses poses, ses costumes et ses sons.
 5. [ ] **Sons** : bruitages réels sous licence CC0 (Kenney, OpenGameArt) avec crédits, et

@@ -5,7 +5,7 @@
 **Un arena fighter 1v1 en temps réel, en pixel art vu de dessus.**
 
 Fan game non officiel de JoJo's Bizarre Adventure — Python 3.12, pygame-ce
-**Parties 1 et 2 complètes** · 21 persos · 6 arènes · simulation déterministe à 60 images par seconde
+**Parties 1 et 2 complètes** · 22 persos · 6 arènes · simulation déterministe à 60 images par seconde
 
 [![CI](https://github.com/CodeByHaamza/jojo-arena/actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-1038-2ea24a.svg)](tests/)
@@ -110,12 +110,12 @@ chacun de leur côté. C'est ce qui rend les replays exacts et le rollback possi
 > *Un jeu qui tourne n'est pas un jeu juste.*
 
 <div align="center">
-<img src="docs/media/chiffres.svg" alt="21 persos, 6 arènes, 1335 tests, 94 % de couverture, 60 images par seconde" width="100%">
+<img src="docs/media/chiffres.svg" alt="22 persos, 6 arènes, 1397 tests, 94 % de couverture, 60 images par seconde" width="100%">
 </div>
 
 | Critère | Mesure | Comment |
 | --- | --- | --- |
-| **Déterminisme** | identique au bit près, **21/21 persos** | mêmes entrées rejouées deux fois : positions, jauges, projectiles et événements comparés ([test](tests/test_determinism.py)) |
+| **Déterminisme** | identique au bit près, **22/22 persos** | mêmes entrées rejouées deux fois : positions, jauges, projectiles et événements comparés ([test](tests/test_determinism.py)) |
 | **Données de frames** | **mesuré = annoncé** | la frise mesure l'avantage sur un vrai échange, `framedata` le calcule : les deux doivent tomber pareil ([test](tests/test_framemeter.py)) |
 | **Coups positifs en garde** | **0** | un coup léger qui laisse l'avantage en garde verrouille l'adversaire ; refusé pour tout le roster |
 | **Coups identiques entre deux persos** | **0** | mêmes images **et** mêmes dégâts = le même perso deux fois (`tools/audit_kits.py`) |
@@ -160,6 +160,7 @@ mais dans la partie 2 il se bat aux côtés de Joseph — il se range donc de ce
 | <img src="docs/media/faces/joseph_p2.png" width="54"><br><sub>Joseph</sub> | <img src="docs/media/faces/caesar.png" width="54"><br><sub>Caesar</sub> | <img src="docs/media/faces/lisa_lisa.png" width="54"><br><sub>Lisa Lisa</sub> | <img src="docs/media/faces/straizo.png" width="54"><br><sub>Straizo</sub> | <img src="docs/media/faces/stroheim.png" width="54"><br><sub>Stroheim</sub> | |
 | <img src="docs/media/faces/wamuu.png" width="54"><br><sub>Wamuu</sub> | <img src="docs/media/faces/esidisi.png" width="54"><br><sub>Esidisi</sub> | <img src="docs/media/faces/kars.png" width="54"><br><sub>Kars</sub> | <img src="docs/media/faces/santana.png" width="54"><br><sub>Santana</sub> | | |
 | <img src="docs/media/faces/jotaro_p3.png" width="54"><br><sub>Jotaro</sub> | <img src="docs/media/faces/kakyoin.png" width="54"><br><sub>Kakyoin</sub> | <img src="docs/media/faces/dio_p3.png" width="54"><br><sub>DIO</sub> | <img src="docs/media/faces/polnareff.png" width="54"><br><sub>Polnareff</sub> | <img src="docs/media/faces/avdol.png" width="54"><br><sub>Avdol</sub> | <img src="docs/media/faces/joseph_p3.png" width="54"><br><sub>Joseph âgé</sub> |
+| <img src="docs/media/faces/vanilla_ice.png" width="54"><br><sub>Vanilla Ice</sub> | | | | | |
 
 <sub>Partie 1 · Partie 2 (complète) · Partie 3 — les visages sortent du générateur de sprites du jeu.</sub>
 
@@ -226,7 +227,7 @@ icônes et les animations de ce README sont générés par le code du dépôt.
 | 3 | Partie 2 : Joseph, Caesar, Lisa Lisa, Straizo, les Hommes du Pilier, Stroheim | ✅ complète |
 | 4 | Éveil (Power Up), objets portés et lancés, bilan de fin de combat | ✅ |
 | 5 | Altérations d'état : feu, gel, courant | ✅ |
-| 6 | Partie 3 complète : Avdol ✅, Joseph âgé ✅, Iggy, Pet Shop, Vanilla Ice, Hol Horse, Mariah, N'Doul ([plan](docs/PARTIE3.md)) | ⏳ |
+| 6 | Partie 3 complète : Avdol ✅, Joseph âgé ✅, Vanilla Ice ✅, Iggy, Pet Shop, Hol Horse, Mariah, N'Doul ([plan](docs/PARTIE3.md)) | ⏳ |
 | 7 | Partie 4 : Josuke, Okuyasu, Kira et leurs Stands | ⏳ |
 | 8 | Mode histoire, arène par partie | ⏳ |
 | 9 | En ligne en rollback — la simulation déterministe le prépare | ⏳ |

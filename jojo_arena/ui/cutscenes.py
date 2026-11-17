@@ -1910,6 +1910,131 @@ class HermitOverdrive(CutscenePlayer):
             world.set_at((round(spark.x), round(spark.y)), self.HAMON)
 
 
+# Vanilla Ice: the Miasma of the Void --------------------------------------------------------
+
+
+def draw_void(surface: pygame.Surface, center: Vec2, radius: float, f: int) -> None:
+    """Cream having swallowed itself: a ball of nothing. Black inside, a thin rim that
+    shivers, and the specks of whatever it is erasing drifting into it."""
+    x, y = center.as_ints()
+    r = max(2, round(radius))
+    pygame.draw.circle(surface, OUTLINE, (x, y), r + 1)
+    pygame.draw.circle(surface, VoidMiasma.NOTHING, (x, y), r)
+    for i in range(10):
+        angle = i * math.tau / 10 + f * 0.11
+        wobble = r + (1 if (f + i) % 4 < 2 else 0)
+        dot = (round(x + math.cos(angle) * wobble), round(y + math.sin(angle) * wobble))
+        surface.set_at(dot, VoidMiasma.RIM)
+
+
+class VoidMiasma(CutscenePlayer):
+    """Cream opens its mouth and swallows itself, Vanilla Ice with it: the void is all
+    that is left. It closes on the opponent and turns round them in a circle that takes
+    them off the floor, round and round in its spiral, until the last blow throws them
+    up; and then he peeks out of the void."""
+
+    length = 270
+    SWALLOW = 40  # Cream has swallowed itself: only the void is left
+    CIRCLE = 70  # the void reaches the opponent and starts turning round them
+    BLOW = 206  # the last blow, upward
+    PEEK = 236  # he puts his head out of the void
+    NOTHING = (14, 10, 22)
+    RIM = (150, 96, 220)
+    SPECK = (120, 112, 132)
+
+    def orbit(self, f: int) -> Vec2:
+        """Where the void is at frame `f`."""
+        if f < self.SWALLOW:
+            return self.u + Vec2(0, -14)
+        if f < self.CIRCLE:
+            t = (f - self.SWALLOW) / (self.CIRCLE - self.SWALLOW)
+            start, end = self.u + Vec2(0, -14), self.v + Vec2(0, 8)
+            return start + (end - start) * (t * t)
+        if f < self.BLOW:
+            # Round and round them, the circle closing a little each turn.
+            t = (f - self.CIRCLE) / (self.BLOW - self.CIRCLE)
+            angle = math.pi / 2 + t * math.tau * 3
+            radius = 30 - 12 * t
+            return self.v + Vec2(
+                math.cos(angle) * radius, -14 - self.lift(f) + math.sin(angle) * radius
+            )
+        return self.v + Vec2(0, -6)
+
+    def lift(self, f: int) -> float:
+        """How high off the floor the opponent is, caught in the spiral."""
+        if f < self.CIRCLE:
+            return 0.0
+        if f < self.BLOW:
+            return 18 * (f - self.CIRCLE) / (self.BLOW - self.CIRCLE)
+        t = (f - self.BLOW) / (self.length - self.BLOW)
+        return max(0.0, 18 + 60 * t - 140 * t * t)  # thrown up, then down
+
+    def camera(self, f):
+        if f < self.SWALLOW:
+            return self.u + Vec2(0, -20), 3  # close on Cream opening its mouth
+        return self.v + Vec2(0, -20), 2
+
+    def cue(self, f):
+        fx = self.fx
+        if f == 1:
+            self.shout(text.VOID_MIASMA_LINE, scale=2, life=50)
+        if f == self.SWALLOW:
+            fx.add(vfx.Ring(self.orbit(f), self.RIM, 2.0, 18, 1))
+            self.world_words.menace(self.head(self.scene.user, self.u), 1)
+        if self.CIRCLE <= f < self.BLOW and f % 3 == 0:
+            # What it passes through is gone: specks of floor and cloth drift into it.
+            drift = Vec2(self.rng.uniform(-0.6, 0.6), self.rng.uniform(-0.6, 0.6))
+            spot = self.orbit(f) + Vec2(self.rng.randint(-10, 10), self.rng.randint(-8, 8))
+            fx.add(vfx.Dust(spot, drift, 1, 14, self.SPECK))
+        if self.CIRCLE <= f < self.BLOW and (f - self.CIRCLE) % 22 == 0:
+            hit = self.chest(self.scene.target, self.v, lift=self.lift(f))
+            self.world_words.add(sfx.GA, hit + Vec2(0, -10), "impact", 2, 20, 0.3, 2)
+            self.shake = 4
+        if f == self.BLOW:
+            hit = self.chest(self.scene.target, self.v, lift=self.lift(f))
+            fx.add(vfx.Flash(hit, 44, self.RIM, 12))
+            fx.add(vfx.Ring(hit, self.RIM, 5.0, 26, 3))
+            fx.focus(hit, heavy=True)
+            self.world_words.add(sfx.DOGO, hit + Vec2(0, -16), "impact", 3, 46, 0.2, 2)
+            self.flash, self.shake = 12, 18
+        if f == self.PEEK:
+            self.world_words.menace(self.orbit(f) + Vec2(0, -18), 1)
+
+    def negative(self, f):
+        return self.BLOW <= f < self.BLOW + 3
+
+    def scene_draw(self, world, f):
+        user, target, right = self.scene.user, self.scene.target, self.side > 0
+        if f < self.SWALLOW:
+            # Cream behind him opens its mouth, and him and Cream go into it, feet last.
+            fade = max(0, 255 - round(255 * f / self.SWALLOW))
+            self.body(world, user, self.u, "pose", 2, right, alpha=fade)
+            self.body(
+                world,
+                user,
+                self.u + Vec2(-self.side * 8, -6),
+                "special",
+                2,
+                right,
+                stand=True,
+                alpha=fade,
+            )
+            draw_void(world, self.orbit(f), 2 + 10 * f / self.SWALLOW, f)
+        lift = self.lift(f)
+        jitter = Vec2(self.rng.choice((-1, 0, 1)), 0) if f % 4 < 2 else Vec2()
+        spinning = self.CIRCLE <= f < self.BLOW + 20
+        face = (f // 6) % 2 == 0 if spinning else self.side < 0
+        self.body(world, target, self.v + jitter, "hurt", 0, face, lift=lift)
+        if self.SWALLOW <= f < self.PEEK:
+            draw_void(world, self.orbit(f), 12, f)
+        if f >= self.PEEK:
+            # He peeks out of it to look: his head, then the rest of him.
+            spot = self.orbit(f)
+            draw_void(world, spot, max(2.0, 12 - (f - self.PEEK) * 0.6), f)
+            if f >= self.PEEK + 10:
+                self.body(world, user, spot + Vec2(-self.side * 18, 10), "pose", 2, right)
+
+
 CUTSCENES = {
     "hermit_overdrive": HermitOverdrive,
     "road_roller": RoadRoller,
@@ -1932,6 +2057,7 @@ CUTSCENES = {
     "overdrive_beat": OverdriveBeat,
     "self_destruct": SelfDestruct,
     "crossfire_special": CrossfireSpecial,
+    "void_miasma": VoidMiasma,
 }
 
 

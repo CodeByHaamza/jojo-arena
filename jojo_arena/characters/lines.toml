@@ -193,6 +193,75 @@ text_en = "A Stand, you say? Interesting. Try it on me!"
 text = "Ton Stand m'a surpris d'abord, mais je sais maintenant qu'il n'y a rien à craindre !"
 text_en = "Your Stand was surprising at first, but now I know it's nothing to fear!"
 
+# Vanilla Ice: All-Star Battle R ★ Vanilla Ice, "Dialogue" (read 17/11/2026): the match
+# entrances of ASBR and the victory quotes against each of them.
+
+[[exchanges]]
+fighters = ["vanilla_ice", "avdol"]
+source = "ASBR, entrée en matière et citations de victoire de Vanilla Ice et d'Avdol"
+
+[[exchanges.intro]]
+by = "vanilla_ice"
+text = "Mon vide va souffler ta misérable petite flamme jusqu'au néant !"
+text_en = "My void will blow your puny little fire into oblivion!"
+
+[[exchanges.intro]]
+by = "avdol"
+text = "Espèce de... monstre immonde ! Je vais te réduire en cendres !"
+text_en = "Why-- you vile monster! I'll raze you to cinders!"
+
+[exchanges.victory.vanilla_ice]
+text = "À quoi bon le feu contre le vide ?!"
+text_en = "What good is fire against the void?!"
+
+[exchanges.victory.avdol]
+text = "Il faudra te lever de bonne heure pour me battre !"
+text_en = "You'd have to get up pretty early in the morning to beat me!"
+
+[[exchanges]]
+fighters = ["vanilla_ice", "polnareff"]
+source = "ASBR, entrée en matière et citations de victoire de Vanilla Ice et de Polnareff"
+
+[[exchanges.intro]]
+by = "vanilla_ice"
+text = "Polnareff, tu peux surmonter bien des choses... Mais tu ne me surmonteras pas."
+text_en = "Polnareff, you can overcome much... But you won't overcome me."
+
+[[exchanges.intro]]
+by = "polnareff"
+text = "Viens, sale chien ! Je vais te découper en tranches !"
+text_en = "Come at me, you cur! I'll slice you up!"
+
+[exchanges.victory.vanilla_ice]
+text = "Ton épée n'est qu'un jouet d'enfant aux yeux de mon Stand..."
+text_en = "Your sword is but a child's toy in the eyes of my Stand..."
+
+[exchanges.victory.polnareff]
+text = "Ton âme elle-même est aussi creuse que le vide !"
+text_en = "Your very soul is as empty as a void!"
+
+[[exchanges]]
+fighters = ["vanilla_ice", "dio_p3"]
+source = "ASBR, entrée en matière et citations de victoire de Vanilla Ice et de DIO"
+
+[[exchanges.intro]]
+by = "dio_p3"
+text = "Ice... Je veux éprouver les pouvoirs de The World. Sers-moi de cobaye !"
+text_en = "Ice... I wish to test The World's powers. Be my guinea pig!"
+
+[[exchanges.intro]]
+by = "vanilla_ice"
+text = "À vos ordres, Seigneur DIO."
+text_en = "As you wish, Lord DIO."
+
+[exchanges.victory.vanilla_ice]
+text = "Tout ce que je fais, je le fais pour vous, Seigneur DIO..."
+text_en = "Everything I do, I do for you, Lord DIO..."
+
+[exchanges.victory.dio_p3]
+text = "Tu n'as pas à mourir ici... Mon sang te ressuscitera."
+text_en = "You needn't die here... My blood will resurrect you."
+
 # Part 1 -----------------------------------------------------------------------------------
 
 [[exchanges]]

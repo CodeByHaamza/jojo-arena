@@ -8,6 +8,13 @@ des corrections seules une patch.
 
 ### Ajouté
 
+- **Nouveau perso : Vanilla Ice**, et Cream. Il se cache dans le vide de son Stand :
+  invisible, intouchable, imparable, et tout ce qu'il traverse disparaît, caisses et
+  piliers compris. Avec une direction, tu le guides au stick tout du long. Mais il doit
+  sortir la tête pour voir : c'est là qu'on le frappe. Sans Cream, il boit le sang
+  (« Lord DIO! ») et fait jaillir Cream du sol sous tes pieds. Vampire : le soleil et le
+  Hamon le brûlent. Cinq couleurs (anime, manga, OVA, All-Star Battle, Eyes of Heaven), six
+  poses tirées du manga, et ses répliques face à Avdol, Polnareff et DIO.
 - **Nouvelle arène : le manoir de DIO.** Il fait grand jour dehors, mais les rideaux gardent le
   soleil à la porte : arrache-les et la lumière brûle les vampires qui se tiennent dessous.
   Et Nukesaku saute du plafond pile sur toi, encore et encore (comme dans All-Star Battle R).

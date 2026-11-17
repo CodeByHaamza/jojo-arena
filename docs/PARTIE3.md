@@ -16,10 +16,10 @@ Ce qui n'est pas sûr est marqué **à vérifier**. Une source manque, se contre
 
 ## Où on en est
 
-- **Jouables** : Jotaro, Kakyoin, Polnareff, DIO, **Avdol** (fait le 24/10/2026) et **Joseph âgé** (fait le 15/11/2026).
+- **Jouables** : Jotaro, Kakyoin, Polnareff, DIO, **Avdol** (fait le 24/10/2026), **Joseph âgé** (fait le 15/11/2026) et **Vanilla Ice** (fait le 17/11/2026).
 - **Arène** : Le Caire, rue de nuit.
 - Le moteur **sait déjà** faire : Stand on/off, mode contrôle, temps arrêté, pièges, projectiles (`count`, `ring`), visée libre, saisies inbloquables, Hamon, vampire et soleil, `stance_cycle`, éveil, objets à lancer.
-- Il **ne sait pas encore** faire : brûlure, vol, invisibilité, états qui s'accumulent, décor effacé, et Stand + Hamon ensemble.
+- Il **ne sait pas encore** faire : vol, états qui s'accumulent. (Brûlure, Stand + Hamon, invisibilité et décor effacé : faits.)
 
 ---
 
@@ -167,6 +167,36 @@ Le nom officiel du coup est entre guillemets. La forme de la hitbox suit la règ
 | **GHA** | **« Serves you right! »** : une immense vague de sable devant lui. The Fool roue l'adversaire de coups, et Iggy finit en le mordant au nez. Stand rentré seulement | gros `radius` en cône devant lui |
 
 ### Vanilla Ice (Cream)
+
+**Fait le 17/11/2026** (`characters/vanilla_ice.toml`, `looks/vanilla_ice.toml`,
+`looks/cream.toml`). La page ASBR tranche le plan ci-dessous :
+
+- **Le vide est Stand sorti**, comme dans ASBR (« Once and for all! » est sa seule spéciale
+  avec Cream). Deux versions, comme les deux entrées d'ASBR : **droit** (spécial seul,
+  plus rapide, plus court) et **guidé** (spécial + direction : il suit le stick tout du
+  long). Trois champs génériques nouveaux : `steer` (l'élan suit la direction tenue),
+  `vanish` (ni dessiné ni touchable jusqu'à la récupération) et `erase` (ce qu'il traverse
+  est détruit). À la fin il sort la tête : là, on peut le frapper.
+- **Cream depuis le sol** (« Now I've taken your legs! ») est Stand rentré, spécial +
+  direction : `at_target`, quatre coups imparables ; le sol se fend sous l'adversaire
+  (nouveau `fx = "rise"`).
+- Stand rentré : revers, coup de pied, puis **« You foul creature! »** (Cream piétine six
+  fois) ; **« Lord DIO! »** (saisie qui boit le sang) ; **« How dare you! »** (l'uppercut
+  qui avance, intouchable au départ) ; **« This vicious arm! »** (trois tranchants de Cream
+  en avançant). Stand sorti : les mains de Cream, **« I swear I'll kill you! »** (la
+  projection d'ASBR, en saisie) et Cream qui s'abat (sa Reversal Assist).
+- HHA **« The great void rises! »** : il entre dans Cream et fonce, imparable. GHA
+  **« Miasma of the Void »** : le vide traverse l'arène en ligne, puis la cinématique
+  (la boule de vide tourne autour de l'adversaire, l'emporte dans sa spirale, le coup
+  final vers le haut, et il sort la tête).
+- **Écarts avec ASBR** : pas de jauge de Stand (le vide et Cream depuis le sol ont une
+  recharge à la place) ; « You foul creature! » ne frappe qu'un adversaire au sol dans
+  ASBR, ici elle finit son enchaînement.
+- **Décor effacé** : un objet traversé par le vide est brisé comme sous un coup, et
+  revient au même rythme que les autres. Ta proposition (« deux fois plus lentement »)
+  attend toujours ta décision.
+- **Pas encore fait** : le Flaming Detector d'Avdol et Hermit Purple qui le révèlent ; la
+  trace de sable de Polnareff.
 
 **Rôle** : assassin, invisible, inbloquable, lent à viser.
 

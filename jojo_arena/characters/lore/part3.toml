@@ -100,6 +100,16 @@ text_en = "The hero of Part 2, fifty years on: gray hair, a trimmed beard, a fed
 family = "Petit-fils de Jonathan Joestar. Père de Holly Kujo, grand-père de Jotaro."
 family_en = "Grandson of Jonathan Joestar. Father of Holly Kujo, grandfather of Jotaro."
 
+[[characters]]
+id = "vanilla_ice"
+name = "VANILLA ICE"
+fighter = "vanilla_ice"
+stand = "CREAM"
+text = "Le serviteur le plus fidèle de DIO : pour lui offrir son sang, il s'est tranché la tête de ses propres mains, et DIO l'a ramené en vampire. Il garde le manoir du Caire. Caché dans le vide de Cream, il efface Avdol, puis Iggy, et fond sur Polnareff à travers les murs. Polnareff comprend qu'il est un vampire et le traîne au soleil."
+text_en = "DIO's most loyal servant: to offer him his blood, he cut off his own head, and DIO brought him back a vampire. He guards the mansion in Cairo. Hidden in Cream's void, he erases Avdol, then Iggy, and bears down on Polnareff through the walls. Polnareff realises he is a vampire and drags him into the sun."
+name_origin = "D'après le rappeur américain Vanilla Ice. Avec son Stand, Cream, le tout fait vanilla ice cream, une glace à la vanille."
+name_origin_en = "After the American rapper Vanilla Ice. With his Stand, Cream, it makes vanilla ice cream."
+
 [[stands]]
 id = "star_platinum"
 name = "STAR PLATINUM"
@@ -165,3 +175,14 @@ text = "Des ronces violettes couvertes d'épines qui sortent des mains de Joseph
 text_en = "Purple vines covered in thorns that grow from Joseph's hands: no body, no face. They are strong enough to bear his weight and long enough to bind someone: he swings on them from place to place, ties people up, and sends the Ripple down them as down an extension of his arm. Its true power is divination: a photograph that shows what he is looking for when he smashes a camera, thoughts on a television screen, a map drawn in the dust."
 name_origin = "D'après l'arcane IX du tarot, l'Ermite : l'introspection et la contemplation, comme son pouvoir de divination. Violet dans le manga comme dans l'anime."
 name_origin_en = "After tarot card IX, The Hermit: introspection and contemplation, like its power of divination. Purple in the manga and the anime alike."
+
+[[stands]]
+id = "cream"
+name = "CREAM"
+user = "VANILLA ICE"
+sprite = "cream/cream"
+stats = "BBDCCD"
+text = "Un Stand de combat rapproché, immense, au visage de crâne sous une cagoule de bourreau, assez fort pour décapiter d'un tranchant de la main. Sa bouche ouvre sur le vide : en s'avalant lui-même avec son maître, il devient une boule invisible qui efface tout ce qu'elle traverse, mur ou homme. Mais de l'intérieur Vanilla Ice ne voit rien : il doit sortir la tête pour regarder, et c'est là qu'on peut le frapper. Polnareff le suit à la trace en semant du sable."
+text_en = "A huge close-range Stand with a skull's face under an executioner's cowl, strong enough to behead with a chop. Its mouth opens on the void: swallowing itself along with its master, it becomes an unseen ball that erases whatever it passes through, wall or man. But from inside Vanilla Ice sees nothing: he has to put his head out to look, and that is when he can be struck. Polnareff tracks him by scattering sand."
+name_origin = "D'après le groupe de rock britannique Cream (cité dans le Shueisha Jump Remix). Avec Vanilla Ice, son maître : vanilla ice cream."
+name_origin_en = "After the British rock band Cream (cited in the Shueisha Jump Remix). With Vanilla Ice, its master: vanilla ice cream."

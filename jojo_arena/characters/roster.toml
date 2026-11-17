@@ -331,6 +331,22 @@ color = "#b89a5a"
 aura = "#a060e0"
 
 [[fighters]]
+id = "vanilla_ice"
+side = "villain"
+part = 3
+name = "VANILLA ICE"
+kit = "vanilla_ice"
+sprite = "vanilla_ice/vanilla_ice"
+stand_sprite = "cream/cream"
+stand_name = "CREAM"
+role = "CHASSEUR INVISIBLE - VAMPIRE"
+role_en = "UNSEEN HUNTER - VAMPIRE"
+blurb = "Le vide de Cream : invisible, intouchable, il efface tout sur son passage. Mais il doit ressortir pour regarder."
+blurb_en = "Cream's void: unseen, untouchable, it erases everything in its way. But he has to peek out to look."
+color = "#4a3c9c"
+aura = "#9a4ae0"
+
+[[fighters]]
 id = "mannequin_red"
 name = "MANNEQUIN ROUGE"
 name_en = "RED DUMMY"
