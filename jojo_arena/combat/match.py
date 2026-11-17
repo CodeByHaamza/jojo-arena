@@ -74,11 +74,32 @@ class Match:
         self.clash: Clash | None = None
         self.time_stop: interactions.TimeStop | None = None
         self.time_stops_endured = [0, 0]  # per fighter, for the time stopper rule
+        self.heard: list[Vec2 | None] = [None, None]  # where each was last heard (by ear)
         self.tick = 0
         self.dawn_announced = False
 
     def opponent(self, fighter: Fighter) -> Fighter:
         return self.fighters[1 - fighter.index]
+
+    # What makes a sound: a body that walks, dashes, strikes, is struck or is locked in a
+    # clash. One that stands still or only guards is silent.
+    NOISY = (State.WALK, State.DASH, State.ATTACK, State.HITSTUN, State.CLASH)
+
+    def target_for(self, fighter: Fighter) -> Vec2:
+        """Where this fighter aims: at the opponent, or - for one that aims by ear - at
+        the spot it last heard the opponent on."""
+        other = self.opponent(fighter)
+        if not fighter.kit.hears:
+            return other.pos
+        if self.heard[other.index] is None:
+            self.heard[other.index] = other.pos.copy()
+        return self.heard[other.index]
+
+    def _listen(self) -> None:
+        """Whoever made a sound this step is heard where they now stand."""
+        for fighter in self.fighters:
+            if self.heard[fighter.index] is not None and fighter.state in self.NOISY:
+                self.heard[fighter.index] = fighter.pos.copy()
 
     @property
     def cinematic(self) -> bool:
@@ -119,7 +140,7 @@ class Match:
         events += prop_events
         moving = [f for f in self.fighters if not f.frozen]
         for fighter in moving:
-            for event in fighter.control(inputs[fighter.index], self.opponent(fighter).pos):
+            for event in fighter.control(inputs[fighter.index], self.target_for(fighter)):
                 if event.kind in ("hha", "gha", "awaken"):
                     self.super_freeze = self.rules.super_freeze_f
                     self.super_user = fighter.index
@@ -139,6 +160,7 @@ class Match:
             if not fighter.frozen:
                 moved += fighter.integrate(self.arena)
         events += moved
+        self._listen()
         events += self._take_exits(moved)
         for fighter in self.fighters:
             if fighter.possessed_f > 0 and fighter.possessor is not None:

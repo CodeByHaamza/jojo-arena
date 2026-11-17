@@ -23,6 +23,7 @@ Unités : les durées en `_f` sont en images (60 par seconde) ; celles en `_s` e
 | `pose_counter`, `pose_counter_ready_s` | Après avoir posé ce nombre de secondes (0,33 par défaut), le perso prédit que l'adversaire refera son dernier coup (la même touche) : s'il a raison, ce coup est attrapé et il répond avec ce coup du kit (« Ta prochaine réplique sera... » de Joseph) ; s'il a tort, il prend le coup |
 | `nature` | `human` par défaut ; `vampire`, `zombie` ou `pillar_man` : le Hamon fait double dégâts et bloque leur régénération, le soleil les brûle |
 | `style = { type = "move", move = "style" }` | La touche Stand lance un coup du kit (dans la posture, ou parmi les coups partagés) : Hol Horse fait tourner Emperor (« Gun beats sword. »). L'aura s'allume tant qu'une charge est prête |
+| `hears` | Aveugle, il vise à l'oreille : ses coups vont là où l'adversaire a fait du bruit pour la dernière fois (marcher, dasher, frapper, être frappé ; rester immobile ou garder ne fait pas de bruit). N'Doul |
 | `tags` | Des mots libres sur le perso (`["woman"]` pour Lisa Lisa), que le `passive` d'un autre perso peut viser |
 | `passive` | Table `[passive]`, toujours active contre un adversaire qui porte l'étiquette `vs_tag` : `damage_dealt_mult` (dégâts infligés), `hh_gain_mult` (Heart Heat gagnée). « Hol Horse loves the ladies! » : 10 % de dégâts en plus contre les femmes, la Heart Heat un peu plus lente |
 
