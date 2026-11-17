@@ -6,6 +6,16 @@ chest = 28
 height = 46
 directions = ["down", "up", "right"]
 
+[costume]
+label = "Tenue de Stardust Crusaders"
+label_en = "Stardust Crusaders attire"
+source = "Sa tenue principale de Stardust Crusaders (ASBR, costume normal)"
+
+[recolor]
+uniform = [[13, 12, 17], [38, 38, 47], [65, 66, 76], [109, 109, 109]]
+shirt = [[80, 101, 74], [111, 128, 104], [142, 152, 136], [182, 182, 182]]
+shoes = [[12, 11, 16], [38, 37, 46], [65, 64, 75], [108, 108, 108]]
+
 [anims.idle]
 row = 0
 frames = 4
@@ -234,3 +244,42 @@ label_en = "Star Platinum emerges"
 source = "Première apparition de Star Platinum (manga), galerie Star Platinum de JoJo Wiki"
 stand = true
 stand_offset = [-6.0, -9.0]
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+stand = ""
+
+[colors.tome16]
+label = "Tome 16"
+label_en = "Volume 16"
+source = "ASBR, couleur B : la couverture du tome 16"
+stand = "tome17"
+
+[colors.tome16.palette]
+uniform = [[30, 101, 71], [47, 140, 92], [65, 178, 113], [124, 196, 150]]
+shirt = [[120, 57, 173], [138, 92, 194], [163, 135, 207], [204, 194, 225]]
+shoes = [[40, 71, 140], [58, 106, 178], [94, 142, 198], [157, 185, 212]]
+
+[colors.tome26]
+label = "Tome 26"
+label_en = "Volume 26"
+source = "ASBR, couleur C : la couverture du tome 26"
+stand = ""
+
+[colors.tome26.palette]
+uniform = [[131, 41, 118], [168, 60, 162], [192, 92, 192], [203, 154, 207]]
+shirt = [[44, 65, 176], [74, 106, 202], [120, 149, 212], [183, 199, 226]]
+shoes = [[89, 51, 153], [106, 74, 186], [136, 118, 199], [183, 177, 216]]
+
+[colors.tome24]
+label = "Tome 24"
+label_en = "Volume 24"
+source = "ASBR, couleur D : la couverture du tome 24"
+stand = ""
+
+[colors.tome24.palette]
+uniform = [[29, 50, 129], [44, 82, 170], [68, 116, 202], [135, 167, 212]]
+shirt = [[124, 58, 182], [142, 98, 198], [168, 142, 211], [209, 200, 228]]
+shoes = [[75, 51, 143], [90, 72, 178], [122, 113, 193], [174, 172, 211]]

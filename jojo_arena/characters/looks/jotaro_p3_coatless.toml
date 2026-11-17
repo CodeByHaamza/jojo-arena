@@ -1,0 +1,69 @@
+# Jotaro Kujo without his coat: a costume of looks/jotaro_p3.toml (it says only what
+# changes).
+#
+# Sources, read on 16/11/2026:
+# - JoJo Wiki, Eyes of Heaven ★ Jotaro Kujo, "Costumes": Special Costume E is "Jotaro's
+#   coatless look in Chapter 153, with colours from the anime (SC Episode 13) and manga
+#   respectively" (Wheel of Fortune has burnt his coat). All-Star Battle R does not have
+#   it.
+# - The game's render of that costume, looked at for the shapes and the tones: the cap,
+#   the sleeveless shirt, bare arms, the two belts, and trousers that are no longer the
+#   black of the coat: khaki brown in the anime's colours; in the manga's, a violet shirt
+#   and blue trousers under a blue cap.
+
+base = "jotaro_p3"
+
+[costume]
+label = "Sans manteau"
+label_en = "Coatless"
+source = "Eyes of Heaven, costume spécial E : chapitre 153, épisode 13"
+
+[palette]
+trousers = "#6e5c46"     # khaki brown: no longer the coat's black
+
+# Bare arms, and trousers of their own.
+[body]
+arms = "skin"
+legs = "trousers"
+
+# The cap and the belts stay; the coat and the chain that hung from its collar go.
+[[parts]]
+type = "hair"
+material = "hair"
+style = "short"
+volume = 8.2
+
+[[parts]]
+type = "cap"
+material = "uniform"
+height = 1.5
+ragged_back = true
+ragged_color = "hair"
+band = "gold"
+badge = "gold"
+badges = 2
+plate = true
+
+[[parts]]
+type = "belt"
+material = "belt"
+count = 2
+second = "belt2"
+studs = "lining"
+buckle = "gold"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "Eyes of Heaven, spécial E, couleur A : les couleurs de l'épisode 13"
+
+[colors.manga]
+label = "Manga"
+label_en = "Manga"
+source = "Eyes of Heaven, spécial E, couleur B : les couleurs du manga (Weekly Shonen Jump 1991 n° 24)"
+
+[colors.manga.palette]
+uniform = "#2c52aa"
+shirt = "#8a5cc2"
+trousers = "#2f68ba"
+shoes = "#3a5a9c"

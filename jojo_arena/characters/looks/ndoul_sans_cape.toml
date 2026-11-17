@@ -1,0 +1,72 @@
+# N'Doul without his drape: a costume of looks/ndoul.toml (it says only what changes).
+#
+# Source, read on 17/11/2026: JoJo Wiki, Eyes of Heaven ★ N'Doul, "Costumes": Special
+# Costume A, "his appearance without his cloak". The game's render of it, looked at for
+# the shapes and the tones, shows it in two colours: the anime's, and the purple vest and
+# grey trousers of his tint B (JoJo 6251).
+
+base = "ndoul"
+
+[costume]
+label = "Sans cape"
+label_en = "Without his cloak"
+source = "Eyes of Heaven, costume spécial A : sans sa cape"
+
+# Everything but the drape.
+[[parts]]
+type = "hair"
+material = "hair"
+style = "mane"
+volume = 7.6
+flare = 0.5
+back_length = 3
+
+[[parts]]
+type = "headband"
+material = "band"
+
+[[parts]]
+type = "earring"
+material = "gold"
+style = "stud"
+
+[[parts]]
+type = "coat"
+material = "vest"
+length = 0
+open = true
+opening = 4
+collar = false
+
+[[parts]]
+type = "bracelets"
+material = "cuffs"
+width = 2.2
+
+[[parts]]
+type = "boots"
+material = "shoes"
+length = 0.25
+
+[[parts]]
+type = "sword"
+material = "cane"
+length = 15
+guard = "gold"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "Eyes of Heaven, spécial A, première couleur : celles de l'anime"
+
+[colors.jojo6251]
+label = "JoJo 6251"
+label_en = "JoJo 6251"
+source = "Eyes of Heaven, spécial A, seconde couleur : celles de JoJo 6251 (sa couleur B)"
+
+[colors.jojo6251.palette]
+vest = "#6a5aa8"
+trousers = "#9a9aa2"
+band = "#c8462c"
+cuffs = "#d8b440"
+cane = "#e6e6ec"

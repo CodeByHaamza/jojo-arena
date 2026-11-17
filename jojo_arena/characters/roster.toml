@@ -24,6 +24,7 @@ part = 1
 name = "JONATHAN JOESTAR"
 kit = "jonathan"
 sprite = "jonathan/jonathan"
+costumes = { shirtless = "jonathan_shirtless/jonathan_shirtless", inherited_soul = "jonathan_inherited_soul/jonathan_inherited_soul" }
 role = "TANK - HAMON"
 blurb = "Coups lourds, grosse vie et Hamon à courte portée : il encaisse, puis il écrase."
 blurb_en = "Heavy blows, a big life and short-range Hamon: he takes it, then he crushes."
@@ -236,6 +237,7 @@ part = 3
 name = "JOTARO KUJO"
 kit = "jotaro_p3"
 sprite = "jotaro_p3/jotaro_p3"
+costumes = { coatless = "jotaro_p3_coatless/jotaro_p3_coatless", inherited_soul = "jotaro_p3_inherited_soul/jotaro_p3_inherited_soul" }
 stand_sprite = "star_platinum/star_platinum"
 stand_name = "STAR PLATINUM"
 role = "BAGARREUR - COURTE PORTÉE"
@@ -268,6 +270,7 @@ part = 3
 name = "DIO"
 kit = "dio_p3"
 sprite = "dio_p3/dio_p3"
+costumes = { shadow = "dio_p3_shadow/dio_p3_shadow" }
 stand_sprite = "the_world/the_world"
 stand_name = "THE WORLD"
 role = "FRAPPE ET FUITE - VAMPIRE"
@@ -300,6 +303,7 @@ part = 3
 name = "MUHAMMAD AVDOL"
 kit = "avdol"
 sprite = "avdol/avdol"
+costumes = { father = "avdol_father/avdol_father" }
 stand_sprite = "magicians_red/magicians_red"
 stand_name = "MAGICIAN'S RED"
 role = "ZONER - FEU"
@@ -308,6 +312,101 @@ blurb = "Ankhs de feu, pièges qui jaillissent et cordes qui ligotent : tout ce 
 blurb_en = "Fire ankhs, traps that erupt and ropes that bind: everything he touches keeps burning after the blow."
 color = "#c4462a"
 aura = "#ff6a2a"
+
+# Hermit Purple has no body: no stand_sprite. His moves draw the vines.
+[[fighters]]
+id = "joseph_p3"
+side = "hero"
+part = 3
+name = "JOSEPH JOESTAR ÂGÉ"
+name_en = "OLD JOSEPH JOESTAR"
+kit = "joseph_p3"
+sprite = "joseph_p3/joseph_p3"
+stand_name = "HERMIT PURPLE"
+role = "GRAPPLER - STAND + HAMON"
+role_en = "GRAPPLER - STAND + RIPPLE"
+blurb = "Des ronces qui attrapent de loin et ramènent à lui, et le Hamon qui descend le long des ronces."
+blurb_en = "Vines that catch from afar and drag you to him, and the Ripple running down the vines."
+color = "#b89a5a"
+aura = "#a060e0"
+
+[[fighters]]
+id = "vanilla_ice"
+side = "villain"
+part = 3
+name = "VANILLA ICE"
+kit = "vanilla_ice"
+sprite = "vanilla_ice/vanilla_ice"
+stand_sprite = "cream/cream"
+stand_name = "CREAM"
+role = "CHASSEUR INVISIBLE - VAMPIRE"
+role_en = "UNSEEN HUNTER - VAMPIRE"
+blurb = "Le vide de Cream : invisible, intouchable, il efface tout sur son passage. Mais il doit ressortir pour regarder."
+blurb_en = "Cream's void: unseen, untouchable, it erases everything in its way. But he has to peek out to look."
+color = "#4a3c9c"
+aura = "#9a4ae0"
+
+[[fighters]]
+id = "hol_horse"
+side = "villain"
+part = 3
+name = "HOL HORSE"
+kit = "hol_horse"
+sprite = "hol_horse/hol_horse"
+stand_name = "EMPEROR"
+role = "TIREUR - PIÈGES"
+role_en = "GUNSLINGER - TRAPS"
+blurb = "Des balles qu'il pilote en plein vol pendant qu'il court, et la flaque où J. Geil attend son tour."
+blurb_en = "Bullets he steers in mid-flight while he runs, and the puddle where J. Geil waits his turn."
+color = "#c8b06a"
+aura = "#a8c0d8"
+
+[[fighters]]
+id = "mariah"
+side = "villain"
+part = 3
+name = "MARIAH"
+kit = "mariah"
+sprite = "mariah/mariah"
+stand_name = "BASTET"
+role = "PIÉGEUSE - AIMANT"
+role_en = "TRAPPER - MAGNET"
+blurb = "Touche Bastet et tu deviens un aimant : chaque niveau, et tout le métal de l'arène vient pour toi."
+blurb_en = "Touch Bastet and you become a magnet: every level, and all the metal in the arena comes for you."
+color = "#8a2c48"
+aura = "#c060e0"
+
+[[fighters]]
+id = "ndoul"
+side = "villain"
+part = 3
+name = "N'DOUL"
+kit = "ndoul"
+sprite = "ndoul/ndoul"
+costumes = { sans_cape = "ndoul_sans_cape/ndoul_sans_cape" }
+stand_name = "GEB"
+role = "TIREUR AVEUGLE - LONGUE PORTÉE"
+role_en = "BLIND SNIPER - LONG RANGE"
+blurb = "Aveugle, il frappe là où il t'entend : Geb sort du sol à l'autre bout de l'arène. Reste immobile, et il te perd."
+blurb_en = "Blind, he strikes where he hears you: Geb comes out of the floor across the arena. Stand still, and he loses you."
+color = "#8a6440"
+aura = "#4aa0e0"
+
+[[fighters]]
+id = "anubis"
+side = "villain"
+part = 3
+name = "ANUBIS"
+kit = "anubis"
+sprite = "anubis/anubis"
+costumes = { khan = "anubis_khan/anubis_khan" }
+stand_name = "ANUBIS"
+role = "SABRE QUI APPREND"
+role_en = "THE SWORD THAT LEARNS"
+blurb = "Un sabre qui possède qui le dégaine. Chaque coup qu'il prend, il le retient : jamais deux fois. Exclusif à JoJo Arena."
+blurb_en = "A sword that possesses whoever draws it. Every blow it takes, it remembers: never twice. Only in JoJo Arena."
+color = "#c8a040"
+aura = "#8a4ab0"
 
 [[fighters]]
 id = "mannequin_red"

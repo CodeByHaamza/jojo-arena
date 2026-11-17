@@ -1,5 +1,6 @@
 """Background music: small chiptune loops rendered from a description (no music files),
-and a player that keeps one of them looping on its own mixer channel.
+and a player that keeps one of them looping on its own mixer channel. A folder of music
+files (a sound pack) can stand in for any of them, or add tracks of its own.
 
 A track is a key, a scale, a chord progression (one chord per bar) and a short lead
 motif; the renderer adds a bass line, arpeggios and drums. Tracks render in a
@@ -13,10 +14,11 @@ import random
 import threading
 from array import array
 from dataclasses import dataclass, field
+from pathlib import Path
 
 import pygame
 
-from jojo_arena.engine.audio import RATE
+from jojo_arena.engine.audio import RATE, SOUND_FILES
 
 PEAK = 22000
 
@@ -119,6 +121,7 @@ class MusicPlayer:
     tracks: dict[str, Track]
     volume: float = 0.5
     _sounds: dict[str, pygame.mixer.Sound] = field(default_factory=dict)
+    _files: dict[str, pygame.mixer.Sound] = field(default_factory=dict)  # from a folder
     _wanted: str | None = None
     _playing: str | None = None
     _channel: pygame.mixer.Channel | None = None
@@ -150,6 +153,27 @@ class MusicPlayer:
             with self._lock:
                 self._sounds[name] = sound
 
+    def load_folder(self, folder: Path) -> list[str]:
+        """Read every music file of `folder`: each one is the track of its file name, in
+        place of the rendered one if there is one. Returns the names read, sorted."""
+        if self._channel is None or not folder.is_dir():
+            return []
+        loaded = []
+        for path in sorted(folder.iterdir()):
+            if path.suffix.lower() not in SOUND_FILES or not path.is_file():
+                continue
+            try:
+                sound = pygame.mixer.Sound(str(path))
+            except pygame.error:
+                continue
+            with self._lock:
+                self._files[path.stem] = sound
+            loaded.append(path.stem)
+        return loaded
+
+    def has(self, name: str) -> bool:
+        return name in self.tracks or name in self._files
+
     def request(self, name: str | None) -> None:
         """Ask for a track (None: silence); it starts as soon as it is rendered."""
         self._wanted = name
@@ -165,7 +189,7 @@ class MusicPlayer:
             self._playing = None
             return
         with self._lock:
-            sound = self._sounds.get(self._wanted)
+            sound = self._files.get(self._wanted) or self._sounds.get(self._wanted)
         if sound is None:
             return  # still rendering
         self._channel.set_volume(self.volume)
@@ -184,6 +208,16 @@ def set_player(player: MusicPlayer | None) -> None:
 def request(name: str | None) -> None:
     if _player is not None:
         _player.request(name)
+
+
+def has(name: str) -> bool:
+    """A track of that name exists (rendered, or read from a folder)."""
+    return _player is not None and _player.has(name)
+
+
+def load_folder(folder: Path) -> list[str]:
+    """Read a folder of music files into the player that is set up (see MusicPlayer)."""
+    return _player.load_folder(folder) if _player is not None else []
 
 
 def tick() -> None:

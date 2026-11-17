@@ -37,6 +37,15 @@ CHAIN_DARK = (100, 100, 112)
 HAMON_EDGE = (255, 220, 110)
 SCARF = (168, 40, 58)
 SCARF_LIGHT = (226, 96, 104)
+VINE = (146, 84, 196)  # thorny vines: purple in the manga and the anime
+VINE_LIGHT = (208, 156, 240)
+TAR = (30, 26, 36)
+TAR_SHEEN = (92, 84, 116)
+MAGNET = (176, 96, 236)  # a body made a magnet: purple ripples round its feet
+OUTLET, OUTLET_RIM = (232, 226, 186), (86, 128, 70)  # Bastet: a cream plate, a green rim
+WATER = (86, 120, 156)  # a puddle of water on the floor
+WATER_SHEEN = (176, 206, 230)
+BANDAGE = (206, 194, 168)  # Hanged Man's wrappings
 
 
 def _side(d: Vec2) -> Vec2:
@@ -82,8 +91,18 @@ def draw_projectile(
         _draw_ankh(surface, pos, d)
     elif look == "flame":
         _draw_flame(surface, pos, 1.0)
+    elif look == "tar":
+        _draw_tar_splash(surface, pos, radius)
     elif look == "eruption":
         draw_eruption(surface, pos, radius)
+    elif look == "reflection":
+        draw_reflection_stab(surface, pos, radius)
+    elif look == "wire":
+        _draw_wire(surface, pos, d)
+    elif look == "bolt":
+        _draw_bolt(surface, pos)
+    elif look in ("live_wire", "outlet"):
+        draw_discharge(surface, pos, radius)
     else:
         _draw_orb(surface, pos, radius, aura)
 
@@ -389,6 +408,155 @@ def draw_eruption(surface: pygame.Surface, pos: Vec2, radius: float) -> None:
     _draw_flame(surface, Vec2(column.centerx, column.top), 1.6)
 
 
+def _draw_wire(surface, pos: Vec2, d: Vec2) -> None:
+    """A metal wire shot out: a thin steel line with a hook at its head."""
+    head, tail = pos + d * 3, pos - d * 9
+    pygame.draw.line(surface, OUTLINE, _ints(head), _ints(tail), 3)
+    pygame.draw.line(surface, STEEL, _ints(head), _ints(tail), 1)
+    hook = head + _side(d) * 2 - d
+    pygame.draw.line(surface, STEEL, _ints(head), _ints(hook), 1)
+
+
+def _draw_bolt(surface, pos: Vec2) -> None:
+    """A nut or a bolt, flying."""
+    x, y = _ints(pos)
+    surface.fill(OUTLINE, (x - 2, y - 2, 4, 4))
+    surface.fill(STEEL_DARK, (x - 1, y - 1, 2, 2))
+    surface.set_at((x - 1, y - 1), STEEL)
+
+
+def draw_discharge(surface: pygame.Surface, pos: Vec2, radius: float) -> None:
+    """A current let loose on whoever touched it: a flash and arcs all round."""
+    blit_glow(surface, radial_glow(round(radius * 1.4), (70, 60, 12)), (pos.x, pos.y))
+    rng = random.Random(round(pos.x) * 31 + round(pos.y))
+    for _ in range(5):
+        point = pos
+        for _step in range(3):
+            nxt = point + Vec2(
+                rng.uniform(-radius, radius) * 0.5, rng.uniform(-radius, radius) * 0.5
+            )
+            pygame.draw.line(surface, CURRENT[0], _ints(point), _ints(nxt), 1)
+            point = nxt
+    surface.set_at(_ints(pos), CURRENT[1])
+
+
+def draw_outlet(surface: pygame.Surface, center: Vec2, tick: int) -> None:
+    """Bastet, laid on the floor: an electrical outlet, a cream plate in a green frame, two
+    slots and a mouth that look like a face, its cable trailing behind."""
+    plate = pygame.Rect(0, 0, 11, 13)
+    plate.center = _ints(center)
+    pygame.draw.line(
+        surface, OUTLINE, (plate.centerx, plate.bottom), (plate.centerx + 3, plate.bottom + 5), 3
+    )
+    pygame.draw.line(
+        surface,
+        (110, 150, 80),
+        (plate.centerx, plate.bottom),
+        (plate.centerx + 3, plate.bottom + 5),
+        1,
+    )
+    surface.fill(OUTLINE, plate.inflate(2, 2))
+    surface.fill(OUTLET_RIM, plate)
+    face = plate.inflate(-4, -4)
+    surface.fill(OUTLET, face)
+    surface.fill(OUTLINE, (face.x + 1, face.y + 2, 1, 3))  # the two slots
+    surface.fill(OUTLINE, (face.right - 2, face.y + 2, 1, 3))
+    surface.fill(OUTLINE, (face.centerx - 1, face.bottom - 2, 3, 1))  # the mouth
+    if (tick // 12) % 5 == 0:
+        surface.set_at((face.centerx, face.y), (255, 244, 170))
+
+
+def draw_power_line(surface: pygame.Surface, end: Vec2, reach: float, tick: int) -> None:
+    """A power line cut down, hanging live: the cable comes down from above and its torn
+    end spits sparks; round it, the pull it has on whoever comes near."""
+    top = end + Vec2(-6, -70)
+    sway = math.sin(tick * 0.1) * 2
+    mid = (top + end) * 0.5 + Vec2(sway, 0)
+    for a, b in ((top, mid), (mid, end)):
+        pygame.draw.line(surface, OUTLINE, _ints(a), _ints(b), 3)
+        pygame.draw.line(surface, (60, 60, 70), _ints(a), _ints(b), 1)
+    if tick % 4 < 2:
+        rng = random.Random(tick)
+        for _ in range(3):
+            spark = end + Vec2(rng.uniform(-5, 5), rng.uniform(-4, 4))
+            pygame.draw.line(surface, CURRENT[0], _ints(end), _ints(spark), 1)
+    ring = pygame.Rect(0, 0, round(reach * 2), round(reach))
+    ring.center = _ints(end + Vec2(0, 8))
+    if (tick // 8) % 2 == 0:
+        pygame.draw.ellipse(surface, shade(CURRENT[0], -120), ring, 1)
+
+
+def draw_magnetized(surface: pygame.Surface, center: Vec2, height: float, tick: int) -> None:
+    """A body made a magnet: purple ripples running out from its feet."""
+    for i in range(2):
+        grow = ((tick + i * 12) % 24) / 24
+        box = pygame.Rect(0, 0, round(10 + 14 * grow), round(4 + 6 * grow))
+        box.center = _ints(center + Vec2(0, 2))
+        pygame.draw.ellipse(surface, shade(MAGNET, round(-90 * grow)), box, 1)
+
+
+def draw_water_puddle(surface: pygame.Surface, center: Vec2, radius: float, tick: int) -> None:
+    """A puddle of water from a burst bottle: flat and grey-blue, the light trembling on
+    it; now and then a shape that is not there passes across the reflection."""
+    box = pygame.Rect(0, 0, round(radius * 2), max(4, round(radius * 1.0)))
+    box.center = (round(center.x), round(center.y))
+    pygame.draw.ellipse(surface, OUTLINE, box.inflate(2, 2))
+    pygame.draw.ellipse(surface, WATER, box)
+    shine = pygame.Rect(0, 0, max(3, round(radius * 0.8)), 1)
+    shine.center = (round(center.x + math.sin(tick * 0.09) * 2), round(center.y - box.height * 0.2))
+    pygame.draw.ellipse(surface, WATER_SHEEN, shine)
+    if (tick // 30) % 4 == 0:
+        # Something in the reflection, and nothing above it.
+        x = round(center.x + math.sin(tick * 0.2) * radius * 0.4)
+        surface.fill(BANDAGE, (x, round(center.y) - 1, 1, 3))
+
+
+def draw_reflection_stab(surface: pygame.Surface, pos: Vec2, radius: float) -> None:
+    """Hanged Man out of the reflection: a wrapped forearm and the blade on its wrist,
+    thrust up out of the water."""
+    foot = pos + Vec2(0, 8)
+    for i in range(5):  # the splash
+        out = Vec2.from_angle(i * math.tau / 5 + 0.3, radius * 0.6)
+        drop = (round(foot.x + out.x), round(foot.y + out.y * 0.4))
+        pygame.draw.circle(surface, OUTLINE, drop, 2)
+        surface.set_at(drop, WATER_SHEEN)
+    arm = pygame.Rect(0, 0, 4, round(radius * 1.1))
+    arm.midbottom = _ints(foot)
+    surface.fill(OUTLINE, arm.inflate(2, 2))
+    surface.fill(BANDAGE, arm)
+    for y in range(arm.top + 1, arm.bottom, 3):
+        surface.fill(shade(BANDAGE, -40), (arm.x, y, arm.w, 1))
+    tip = (arm.centerx + 2, arm.top - round(radius * 1.1))
+    pygame.draw.line(surface, OUTLINE, (arm.centerx + 2, arm.top), tip, 3)
+    pygame.draw.line(surface, STEEL, (arm.centerx + 2, arm.top), tip, 1)
+
+
+def draw_tar_puddle(surface: pygame.Surface, center: Vec2, radius: float, tick: int) -> None:
+    """A puddle of coal tar spilled on the floor: black, flat, a slow sheen across it."""
+    box = pygame.Rect(0, 0, round(radius * 2), max(4, round(radius * 1.1)))
+    box.center = (round(center.x), round(center.y))
+    pygame.draw.ellipse(surface, OUTLINE, box.inflate(2, 2))
+    pygame.draw.ellipse(surface, TAR, box)
+    # The sheen slides from one end to the other and comes back.
+    slide = math.sin(tick * 0.04) * radius * 0.45
+    shine = pygame.Rect(0, 0, max(3, round(radius * 0.7)), 2)
+    shine.center = (round(center.x + slide), round(center.y - box.height * 0.18))
+    pygame.draw.ellipse(surface, TAR_SHEEN, shine)
+    for dx, dy in ((-0.9, 0.5), (0.95, 0.35)):  # two drops that ran off
+        drop = (round(center.x + dx * radius), round(center.y + dy * radius * 0.55))
+        pygame.draw.circle(surface, OUTLINE, drop, 2)
+        surface.set_at(drop, TAR)
+
+
+def _draw_tar_splash(surface: pygame.Surface, pos: Vec2, radius: float) -> None:
+    """Someone going down in the tar: black drops thrown up all round."""
+    for i in range(6):
+        out = Vec2.from_angle(i * math.tau / 6 + 0.4, radius * 0.6)
+        drop = (round(pos.x + out.x), round(pos.y + 8 + out.y * 0.5))
+        pygame.draw.circle(surface, OUTLINE, drop, 2)
+        surface.set_at(drop, TAR_SHEEN)
+
+
 def draw_floor_ankh(surface: pygame.Surface, center: Vec2, tick: int, color) -> None:
     """A Variation ankh waiting on the floor: drawn into the ground, smouldering."""
     glow = 60 + round(30 * math.sin(tick * 0.15))
@@ -427,6 +595,38 @@ def draw_flame_burst(surface: pygame.Surface, center: Vec2, radius: float, tick:
         angle = math.tau * i / count + tick * 0.08
         spot = center + Vec2(math.cos(angle) * radius * 0.8, math.sin(angle) * radius * 0.55)
         _draw_flame(surface, spot, 1.0 + 0.3 * ((i + tick // 3) % 2))
+
+
+def draw_water_shell(surface: pygame.Surface, center: Vec2, radius: float, tick: int) -> None:
+    """Water wrapped all round a body: a turning ring of it, drops thrown off its rim."""
+    for ring in range(2):
+        box = pygame.Rect(0, 0, round(radius * 2 - ring * 6), round(radius * 1.2 - ring * 4))
+        box.center = _ints(center)
+        pygame.draw.ellipse(surface, OUTLINE, box.inflate(2, 2), 3)
+        pygame.draw.ellipse(surface, WATER_SHEEN if ring == 0 else WATER, box, 1)
+    for i in range(8):
+        angle = math.tau * i / 8 + tick * 0.12
+        drop = center + Vec2(math.cos(angle) * radius, math.sin(angle) * radius * 0.6)
+        pygame.draw.circle(surface, OUTLINE, _ints(drop), 2)
+        surface.set_at(_ints(drop), WATER_SHEEN)
+
+
+def draw_water_stand(surface: pygame.Surface, spot: Vec2, tick: int) -> None:
+    """A Stand made of water, steered far from its user: a moving pool on the floor, and
+    the tentacle that rears out of it, a clawed hand at its end."""
+    draw_water_puddle(surface, spot + Vec2(0, 4), 9, tick)
+    sway = math.sin(tick * 0.15) * 2
+    points = [
+        spot + Vec2(0, 3),
+        spot + Vec2(sway, -6),
+        spot + Vec2(-sway, -14),
+        spot + Vec2(sway * 0.5, -20),
+    ]
+    pygame.draw.lines(surface, OUTLINE, False, [_ints(p) for p in points], 4)
+    pygame.draw.lines(surface, WATER, False, [_ints(p) for p in points], 2)
+    hand = points[-1]
+    for dx in (-2, 0, 2):  # the claws
+        pygame.draw.line(surface, WATER_SHEEN, _ints(hand), _ints(hand + Vec2(dx, -3)), 1)
 
 
 def draw_body_ablaze(
@@ -510,6 +710,27 @@ def draw_reach(
         return
     if kind == "chain":
         draw_chain(surface, start, tip)
+        return
+    if kind == "vine":
+        # A thorny vine: it winds a little on its way, a thorn now on one side, now on
+        # the other. Purple whoever throws it: the colour is the vine's, not the user's.
+        d = (tip - start).normalized()
+        side = _side(d)
+        length = (tip - start).length()
+        steps = max(3, round(length / 3))
+        points = []
+        for i in range(steps + 1):
+            t = i / steps
+            wave = math.sin(t * length / 6) * 1.8 * min(1.0, 4 * t * (1 - t) + 0.2)
+            points.append(start + (tip - start) * t + side * wave)
+        ints = [_ints(p) for p in points]
+        pygame.draw.lines(surface, OUTLINE, False, ints, width + 2)
+        pygame.draw.lines(surface, VINE, False, ints, width)
+        pygame.draw.lines(surface, VINE_LIGHT, False, ints[: len(ints) * 2 // 3], 1)
+        for i in range(2, steps, 3):
+            out = side * (2.6 if (i // 3) % 2 else -2.6)
+            pygame.draw.line(surface, OUTLINE, _ints(points[i]), _ints(points[i] + out * 1.3), 1)
+            surface.set_at(_ints(points[i] + out), VINE_LIGHT)
         return
     if kind == "lens":
         # A bubble held up as a lens: sunlight focused through it into one hot ray.
@@ -1236,7 +1457,12 @@ def draw_current(surface: pygame.Surface, center: Vec2, height: float, tick: int
         )
 
 
-STATUS_DRAWINGS = {"burn": draw_burning, "chill": draw_frozen, "shock": draw_current}
+STATUS_DRAWINGS = {
+    "burn": draw_burning,
+    "chill": draw_frozen,
+    "shock": draw_current,
+    "magnet": draw_magnetized,
+}
 
 
 def draw_statuses(surface: pygame.Surface, center: Vec2, height: float, names, tick: int) -> None:
@@ -1313,8 +1539,180 @@ def draw_snow_wreck(surface: pygame.Surface, spot: Vec2, seed: int) -> None:
         pygame.draw.ellipse(surface, SNOW, (piece.x, piece.y, size, size // 2 + 1))
 
 
-DROP_LOOKS = {"chandelier": draw_chandelier, "snow_slab": draw_snow_slab}
-WRECK_LOOKS = {"chandelier": draw_chandelier_wreck, "snow_slab": draw_snow_wreck}
+# Nukesaku (JoJo Wiki, "Nukesaku", anime colours): small and pale, long black hair swept
+# back, an orange cap with black stripes, dark burgundy tights under a tan vest, a light
+# purple scarf. He comes down arms and legs spread, then crouches where he landed.
+NUKE_SKIN = (232, 226, 236)
+NUKE_HAIR = (26, 22, 32)
+NUKE_CAP = (232, 138, 48)
+NUKE_TIGHTS = (96, 30, 48)
+NUKE_VEST = (196, 164, 112)
+NUKE_SCARF = (196, 168, 226)
+
+
+def _draw_nukesaku_body(surface: pygame.Surface, center: Vec2, spread: float) -> None:
+    x, y = round(center.x), round(center.y)
+    reach = round(5 + 3 * spread)
+    for dx in (-reach, reach):  # arms and legs, thrown out
+        pygame.draw.line(surface, OUTLINE, (x, y - 2), (x + dx, y - 5), 3)
+        pygame.draw.line(surface, NUKE_TIGHTS, (x, y - 2), (x + dx, y - 5), 1)
+        pygame.draw.line(surface, OUTLINE, (x, y + 3), (x + dx, y + 7), 3)
+        pygame.draw.line(surface, NUKE_TIGHTS, (x, y + 3), (x + dx, y + 7), 1)
+    body = pygame.Rect(x - 3, y - 4, 7, 9)
+    surface.fill(OUTLINE, body.inflate(2, 2))
+    surface.fill(NUKE_TIGHTS, body)
+    surface.fill(NUKE_VEST, (body.x, body.y, body.w, 4))
+    surface.fill(NUKE_SCARF, (body.x, body.y, body.w, 1))
+    pygame.draw.circle(surface, OUTLINE, (x, y - 8), 4)
+    pygame.draw.circle(surface, NUKE_SKIN, (x, y - 8), 3)
+    surface.fill(NUKE_HAIR, (x - 3, y - 10, 7, 2))  # swept back
+    surface.fill(NUKE_HAIR, (x - 2, y - 6, 1, 3))
+    surface.fill(NUKE_CAP, (x - 2, y - 12, 5, 2))
+    surface.set_at((x, y - 12), NUKE_HAIR)  # a black stripe
+
+
+def draw_nukesaku(surface: pygame.Surface, center: Vec2, scale: float = 1.0) -> None:
+    """Nukesaku jumping down from the gallery, arms and legs spread."""
+    _draw_nukesaku_body(surface, center, scale)
+
+
+def draw_nukesaku_landed(surface: pygame.Surface, spot: Vec2, seed: int) -> None:
+    """Crouched where he landed, a moment, before he scurries off again."""
+    _draw_nukesaku_body(surface, spot + Vec2(0, -6), 0.0)
+
+
+def draw_knife_volley(surface: pygame.Surface, center: Vec2, scale: float = 1.0) -> None:
+    """A volley of knives thrown in stopped time: a ring of them, points down, hanging."""
+    for i in range(8):
+        angle = math.tau * i / 8
+        spot = center + Vec2(math.cos(angle) * 12 * scale, math.sin(angle) * 6 * scale)
+        _draw_knife(surface, spot, Vec2(0, 1))
+
+
+def draw_knives_stuck(surface: pygame.Surface, spot: Vec2, seed: int) -> None:
+    """The knives after they came down: stuck in the floor, handles up."""
+    rng = random.Random(seed)
+    for _ in range(7):
+        x = spot.x + rng.uniform(-14, 14)
+        y = spot.y + rng.uniform(-6, 6)
+        pygame.draw.line(surface, OUTLINE, (round(x), round(y)), (round(x), round(y) - 5), 3)
+        pygame.draw.line(surface, LEATHER, (round(x), round(y) - 2), (round(x), round(y) - 5), 1)
+        surface.set_at((round(x), round(y) - 1), STEEL)
+
+
+MASK, MASK_RED = (226, 222, 230), (190, 40, 60)
+ROBE, ROBE_DARK = (70, 36, 96), (44, 22, 62)
+GOLD_TRIM, GAUNTLET = (220, 184, 70), (190, 194, 206)
+
+
+def draw_death13(
+    surface: pygame.Surface, foot: Vec2, facing: Vec2, raised: float, swing: int, flash: bool
+) -> None:
+    """Death Thirteen: no body under the cloak, a carnival mask with a fixed smile and a
+    clown's nose, a mitre-like hat, metal arms, and the great scythe. `raised` 0 to 1 while
+    it lifts the scythe; `swing` the frames left of the sweep."""
+    blit_shadow(surface, (foot.x, foot.y), 18, 6)
+    float_y = foot.y - 6
+    side = 1 if facing.x >= 0 else -1
+    # The cloak, floating, frayed at the hem.
+    cloak = [
+        (foot.x - 9, float_y - 22),
+        (foot.x + 9, float_y - 22),
+        (foot.x + 11, float_y),
+        (foot.x + 5, float_y - 3),
+        (foot.x, float_y + 1),
+        (foot.x - 5, float_y - 3),
+        (foot.x - 11, float_y),
+    ]
+    pygame.draw.polygon(surface, OUTLINE, [(round(x), round(y)) for x, y in cloak])
+    inner = [(x * 0.92 + foot.x * 0.08, y + 1) for x, y in cloak]
+    pygame.draw.polygon(
+        surface, ROBE_DARK if flash else ROBE, [(round(x), round(y)) for x, y in inner]
+    )
+    surface.fill(GOLD_TRIM, (round(foot.x) - 8, round(float_y) - 22, 16, 2))  # the collar rings
+    # The mask and the mitre.
+    head = Vec2(foot.x, float_y - 28)
+    pygame.draw.circle(surface, OUTLINE, head.as_ints(), 7)
+    pygame.draw.circle(surface, (255, 255, 255) if flash else MASK, head.as_ints(), 6)
+    surface.fill(OUTLINE, (round(head.x) - 3, round(head.y) - 1, 2, 2))  # the empty eyes
+    surface.fill(OUTLINE, (round(head.x) + 2, round(head.y) - 1, 2, 2))
+    surface.set_at((round(head.x), round(head.y) + 1), MASK_RED)  # the clown's nose
+    pygame.draw.arc(
+        surface, MASK_RED, (round(head.x) - 3, round(head.y) + 1, 7, 4), math.pi, math.tau, 1
+    )
+    mitre = [(head.x - 6, head.y - 4), (head.x, head.y - 17), (head.x + 6, head.y - 4)]
+    pygame.draw.polygon(surface, OUTLINE, [(round(x), round(y)) for x, y in mitre])
+    pygame.draw.polygon(
+        surface,
+        ROBE,
+        [
+            (round(x), round(y))
+            for x, y in ((head.x - 4, head.y - 5), (head.x, head.y - 15), (head.x + 4, head.y - 5))
+        ],
+    )
+    surface.fill(GOLD_TRIM, (round(head.x) - 5, round(head.y) - 5, 11, 2))
+    # The metal arm and the scythe: raised behind it, then swept round in front.
+    hand = Vec2(foot.x + side * 9, float_y - 16 - raised * 10)
+    pygame.draw.line(
+        surface, OUTLINE, (round(foot.x + side * 5), round(float_y - 20)), hand.as_ints(), 4
+    )
+    pygame.draw.line(
+        surface, GAUNTLET, (round(foot.x + side * 5), round(float_y - 20)), hand.as_ints(), 2
+    )
+    if swing:
+        angle = math.atan2(facing.y, facing.x) + (swing / 10 - 0.5) * 2.2
+        blade_end = hand + Vec2.from_angle(angle, 26)
+        pygame.draw.arc(
+            surface,
+            STEEL,
+            (round(hand.x) - 24, round(hand.y) - 24, 48, 48),
+            -angle - 0.6,
+            -angle + 0.6,
+            2,
+        )
+    else:
+        blade_end = hand + Vec2(side * 4, -22 - raised * 6)
+    pygame.draw.line(surface, OUTLINE, hand.as_ints(), blade_end.as_ints(), 3)
+    pygame.draw.line(surface, GOLD_TRIM, hand.as_ints(), blade_end.as_ints(), 1)
+    tip = blade_end + Vec2(-side * 12, 4)
+    pygame.draw.polygon(
+        surface, OUTLINE, [blade_end.as_ints(), (blade_end + Vec2(0, 4)).as_ints(), tip.as_ints()]
+    )
+    pygame.draw.line(surface, STEEL, blade_end.as_ints(), tip.as_ints(), 2)
+
+
+ROAMER_LOOKS = {"death13": draw_death13}
+
+
+def draw_roamer(surface: pygame.Surface, roamer) -> None:
+    """Whatever walks the arena on its own, and its life above it once it is hurt."""
+    drawing = ROAMER_LOOKS.get(roamer.defn.look)
+    if drawing is None:
+        return
+    raised = 0.0
+    if roamer.windup > 0 and roamer.defn.windup_f > 0:
+        raised = 1.0 - roamer.windup / roamer.defn.windup_f
+    drawing(surface, roamer.pos, roamer.facing, raised, roamer.swing, roamer.flash % 2 == 1)
+    if roamer.hp < roamer.defn.hp:
+        bar = pygame.Rect(0, 0, 24, 3)
+        bar.midbottom = (round(roamer.pos.x), round(roamer.pos.y) - 56)
+        surface.fill(OUTLINE, bar.inflate(2, 2))
+        filled = round(bar.w * max(0, roamer.hp) / roamer.defn.hp)
+        surface.fill((200, 60, 90), (bar.x, bar.y, filled, bar.h))
+
+
+DROP_LOOKS = {
+    "chandelier": draw_chandelier,
+    "snow_slab": draw_snow_slab,
+    "nukesaku": draw_nukesaku,
+    "knives": draw_knife_volley,
+}
+WRECK_LOOKS = {
+    "chandelier": draw_chandelier_wreck,
+    "snow_slab": draw_snow_wreck,
+    "nukesaku": draw_nukesaku_landed,
+    "knives": draw_knives_stuck,
+}
 DROP_FALL = 0.35  # the last share of the warning, the thing is visibly falling
 
 

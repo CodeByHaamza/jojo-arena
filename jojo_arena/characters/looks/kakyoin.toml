@@ -323,3 +323,52 @@ hand_r = [5, -17]
 elbow_r = [2, 1]
 hand_l = [1, -5]
 elbow_l = [-3, 0]
+
+# The outfit and its colours ---------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ Noriaki Kakyoin, "Costumes & Tints" (read 17/11/2026): the
+# normal costume is "Kakyoin's main Stardust Crusaders attire"; its tints are the anime's
+# colours (A), the Catchphrase Grand Prix image of Weekly Shonen Jump 1990 #25 (B), the
+# cover of Weekly Shonen Jump 1990 #9 (C) and Title Page A of Weekly Shonen Jump 1992 #7
+# (D). The tones were read off the game's renders of the tints and brought to this
+# sprite's brightness. Hierophant Green has two tints there; the blue one goes with the
+# blue uniform.
+
+[costume]
+label = "Tenue de Stardust Crusaders"
+label_en = "Stardust Crusaders attire"
+source = "Sa tenue principale de Stardust Crusaders (ASBR, costume normal)"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+
+# A blue uniform, the hair gone grey.
+[colors.jump25]
+label = "Jump 1990 n° 25"
+label_en = "Jump 1990 #25"
+source = "ASBR, couleur B : le Catchphrase Grand Prix du Weekly Shonen Jump 1990 n° 25"
+stand = "sfr"
+
+[colors.jump25.palette]
+uniform = "#2e4a82"
+hair = "#a8a4ac"
+
+# A magenta uniform.
+[colors.jump9]
+label = "Jump 1990 n° 9"
+label_en = "Jump 1990 #9"
+source = "ASBR, couleur C : la couverture du Weekly Shonen Jump 1990 n° 9"
+
+[colors.jump9.palette]
+uniform = "#8c2468"
+
+# A dark violet uniform, the hair navy.
+[colors.jump7]
+label = "Jump 1992 n° 7"
+label_en = "Jump 1992 #7"
+source = "ASBR, couleur D : la page de titre A du Weekly Shonen Jump 1992 n° 7"
+
+[colors.jump7.palette]
+uniform = "#46387a"
+hair = "#2e3050"

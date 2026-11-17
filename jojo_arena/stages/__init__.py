@@ -9,7 +9,16 @@ from jojo_arena.stages.base import StageDef, load_stage_def
 _DIR = Path(__file__).parent
 
 # Explicit list (no dynamic import) so PyInstaller bundles every stage.
-STAGE_IDS = ("joestar_mansion", "swiss_castle", "air_supplena", "cairo_night")
+STAGE_IDS = (
+    "joestar_mansion",
+    "swiss_castle",
+    "air_supplena",
+    "cairo_night",
+    "dio_mansion",
+    "cairo_bridge",
+    "cairo_rooftops",
+    "death13_dream",
+)
 # Arenas that are never picked, only reached: the courtyard the Swiss castle opens on.
 REACHED_IDS = ("st_moritz",)
 
@@ -30,13 +39,21 @@ def stage_for_part(part: int) -> str:
 
 def stage_renderer(stage: StageDef):
     from jojo_arena.stages.air_supplena import AirSupplenaRenderer
+    from jojo_arena.stages.cairo_bridge import CairoBridgeRenderer
     from jojo_arena.stages.cairo_night import CairoNightRenderer
+    from jojo_arena.stages.cairo_rooftops import CairoRooftopsRenderer
+    from jojo_arena.stages.death13_dream import Death13DreamRenderer
+    from jojo_arena.stages.dio_mansion import DioMansionRenderer
     from jojo_arena.stages.joestar_mansion import JoestarMansionRenderer
     from jojo_arena.stages.st_moritz import StMoritzRenderer
     from jojo_arena.stages.swiss_castle import SwissCastleRenderer
 
     renderers = {
         "cairo_night": CairoNightRenderer,
+        "dio_mansion": DioMansionRenderer,
+        "cairo_bridge": CairoBridgeRenderer,
+        "cairo_rooftops": CairoRooftopsRenderer,
+        "death13_dream": Death13DreamRenderer,
         "joestar_mansion": JoestarMansionRenderer,
         "swiss_castle": SwissCastleRenderer,
         "air_supplena": AirSupplenaRenderer,

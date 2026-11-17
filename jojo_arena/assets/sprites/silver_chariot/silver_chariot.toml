@@ -6,6 +6,9 @@ chest = 28
 height = 44
 directions = ["down", "up", "right"]
 
+[recolor]
+trim = [[54, 59, 80], [102, 109, 140], [149, 156, 184], [205, 210, 226]]
+
 [anims.idle]
 row = 0
 frames = 4
@@ -175,3 +178,18 @@ label_en = ""
 source = ""
 stand = false
 stand_offset = [-14.0, -8.0]
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, Silver Chariot, couleur A : son apparence dans l'anime"
+stand = ""
+
+[colors.ova]
+label = "OVA"
+label_en = "OVA"
+source = "ASBR, Silver Chariot, couleur B : les couleurs de l'OVA"
+stand = ""
+
+[colors.ova.palette]
+trim = [[92, 68, 24], [160, 122, 44], [210, 170, 72], [242, 220, 148]]

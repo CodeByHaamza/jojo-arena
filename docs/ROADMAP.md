@@ -17,18 +17,32 @@ faites et fusionnées dans `develop` ; **on reprend à l'étape 3**.
 2. [x] **Poses** (PR #9) : 3 poses seules par perso, 3 avec le Stand pour ses manieurs,
    choisies à l'écran de sélection ; coudes et genoux dans le générateur ; les planches
    chargées une seule fois. Design : `docs/superpowers/specs/2026-11-15-poses-design.md`.
-3. [ ] **Costumes et couleurs** (comme ASBR et EoH : Jonathan torse nu, tenues blanches de
-   *JOESTAR The Inherited Soul*, le « père d'Avdol ? », tenues du manga qui ne sont dans
-   aucun jeu), plusieurs couleurs par costume, l'adversaire d'un match miroir dans une
-   autre couleur. Une ligne de plus dans le panneau de sélection des poses. Rien n'est
-   écrit pour l'instant : on commence par le design.
-4. [ ] **Partie 3**, dans l'ordre de [PARTIE3.md](PARTIE3.md) : Joseph âgé, le manoir de
-   DIO (Nukesaku, rideaux), Iggy, Pet Shop, Vanilla Ice, Hol Horse (et Calcutta, J. Geil),
+3. [x] **Costumes et couleurs** (16/11/2026) : comme ASBR et EoH, un perso a plusieurs
+   costumes et plusieurs couleurs par costume, choisis à l'écran de sélection avec les
+   poses ; en match miroir, le second prend une autre couleur. Premier lot : Jonathan
+   (torse nu, *JOESTAR The Inherited Soul*), Jotaro (sans manteau, *The Inherited Soul*),
+   DIO (dans l'ombre), Avdol (le « père d'Avdol ? »), et les couleurs de leurs Stands :
+   7 costumes, 32 couleurs, toutes sourcées. Design :
+   `docs/superpowers/specs/2026-11-15-costumes-couleurs-design.md`.
+   - [x] Les couleurs de toute la partie 3 (17/11/2026) : Kakyoin, Polnareff, Joseph âgé,
+     Hierophant Green, Silver Chariot.
+   - [x] Les couleurs des parties 1 et 2 (17/11/2026) : les teintes d'ASBR, et pour Bruford,
+     Tarkus, Straizo et Santana (dans aucun jeu) les « Color Schemes » de JoJo Wiki.
+   - [ ] D'autres costumes : ceux d'ASBR pour Kakyoin, Polnareff, Zeppeli, Joseph... et les
+     tenues du manga qui ne sont dans aucun jeu.
+4. [ ] **Partie 3**, dans l'ordre de [PARTIE3.md](PARTIE3.md) : ~~Joseph âgé~~ (fait le
+   15/11/2026, avant les costumes, à la demande du propriétaire), ~~le manoir de
+   DIO (Nukesaku, rideaux)~~ (fait le 17/11/2026 ; reste sa sortie par le trou du mur), ~~Vanilla Ice~~, ~~Hol Horse (et J. Geil)~~, ~~Mariah~~, ~~N'Doul~~, ~~Anubis (exclusif)~~ (faits le 17/11/2026), Iggy, Pet Shop,
    Mariah, N'Doul (et le désert), puis les éveils de Jotaro et DIO. Chaque perso arrive
    avec ses poses, ses costumes et ses sons.
 5. [ ] **Sons** : bruitages réels sous licence CC0 (Kenney, OpenGameArt) avec crédits, et
    un pack de voix **local**, hors du dépôt et ignoré par git (jamais de voix de l'anime
    ou des jeux dans le dépôt).
+   - [x] **Le pack de sons** (15/11/2026) : le jeu lit `sound_pack/` à côté des réglages du
+     joueur (bruitages, musiques, voix), `tools/sound_pack.py` dit quoi y mettre
+     (271 emplacements), vérifie et coupe. Voir le README.
+   - [ ] Remplir le pack (au propriétaire de fournir les fichiers), et les bruitages CC0
+     par défaut.
 6. [ ] **Optimisation mesurée** : un test de budget (1000 pas de simulation), puis le
    profilage d'un combat chargé.
 

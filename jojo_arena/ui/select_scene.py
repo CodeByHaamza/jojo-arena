@@ -6,6 +6,9 @@ Player 1 picks first, then player 2 (or the training dummy). Back undoes the las
 
 from __future__ import annotations
 
+import random
+from dataclasses import replace
+
 import pygame
 
 from jojo_arena.characters import FighterDef, PartDef, load_parts, load_roster
@@ -18,7 +21,7 @@ from jojo_arena.ui import text
 from jojo_arena.ui.backdrop import MenuBackdrop
 from jojo_arena.ui.icons import draw_icon, draw_part_tabs
 from jojo_arena.ui.labels import menu_key
-from jojo_arena.ui.loadout import Loadout, resolve_loadout
+from jojo_arena.ui.loadout import Loadout, distinct, random_outfit, resolve_loadout
 from jojo_arena.ui.movelist import MoveListPanel
 from jojo_arena.ui.portraits import FighterLook
 from jojo_arena.ui.widgets import (
@@ -76,10 +79,18 @@ class CharacterSelectScene(Scene):
         if self.roster:
             self._show(first)
         self.move_list: MoveListPanel | None = None
-        # The pose step: the side choosing its poses for the fighter it just picked.
+        # The outfit step: the side choosing the costume, the colour and the poses of the
+        # fighter it just picked.
         self.choosing: int | None = None
         self.loadout = Loadout()
-        self.row = 0  # index in self.pose_rows()
+        self.row = 0  # index in self.outfit_rows()
+        self.preview: FighterLook | None = None  # the fighter in the outfit being tried
+        self.worn: dict[int, FighterLook] = {}  # each side that picked, dressed as it picked
+        for side, index in enumerate(self.picks):
+            # Already picked (back from the arena screen): still in what it chose.
+            loadout = ctx.loadouts[side]
+            if loadout.costume or loadout.color:
+                self.worn[side] = FighterLook(self.roster[index], loadout)
         self.toast_f = 0
         self.flash_f = [0, 0]
         self.tick = 0
@@ -179,7 +190,7 @@ class CharacterSelectScene(Scene):
                 self.move_list = None
             return
         if self.choosing is not None:
-            self._update_poses(frame)
+            self._update_outfit(frame)
             return
         step = frame.presses("next") - frame.presses("prev")
         if step:
@@ -196,6 +207,7 @@ class CharacterSelectScene(Scene):
             self._pick()
         elif frame.was_pressed("back"):
             if self.picks:
+                self.worn.pop(len(self.picks) - 1, None)
                 self._show(self.picks.pop())
             else:
                 from jojo_arena.ui.main_menu import MainMenuScene
@@ -213,59 +225,114 @@ class CharacterSelectScene(Scene):
                 self.ctx.inputs,
             )
 
-    # The pose step ----------------------------------------------------------------------
+    # The outfit step --------------------------------------------------------------------
+
+    def step_look(self) -> FighterLook | None:
+        """The hovered fighter as the step shows it: in the outfit being tried."""
+        if self.cursor is None:
+            return None
+        return self.preview or self.looks[self.cursor]
 
     def _poses(self, stand: bool) -> list[str]:
-        sprites = self.looks[self.cursor].sprites if self.cursor is not None else None
-        if sprites is None:
+        look = self.step_look()
+        if look is None:
             return []
-        return [i for i, info in sprites.poses.items() if info.stand == stand]
+        return [i for i, info in look.sprites.poses.items() if info.stand == stand]
 
-    def pose_rows(self) -> list[bool]:
-        """The lines of the pose step: False for the pose alone, True with the Stand."""
-        return [stand for stand in (False, True) if self._poses(stand)]
+    def _rival(self) -> Loadout | None:
+        """What player 1 wears, when player 2 is picking the very same fighter."""
+        if self.choosing != 1 or self.mode != "versus" or not self.picks:
+            return None
+        return self.ctx.loadouts[0] if self.picks[0] == self.cursor else None
 
-    def _wants_poses(self, side: int) -> bool:
+    def choices(self, row: str) -> list[str]:
+        """The ids one line of the step cycles through."""
+        look = self.step_look()
+        if look is None:
+            return []
+        if row == "costume":
+            return ["", *self.roster[self.cursor].costumes]
+        if row == "color":
+            colors = list(look.sprites.colors)
+            rival = self._rival()
+            if rival is not None and rival.costume == self.loadout.costume and len(colors) > 1:
+                taken = rival.color if rival.color in colors else colors[0]
+                colors.remove(taken)  # player 1's: not player 2's to take
+            return colors
+        return self._poses(row == "stand_pose")
+
+    def outfit_rows(self) -> list[str]:
+        """The lines of the step: a costume or a colour only when there is a choice, a
+        pose line whenever the sheet has poses of that kind."""
+        rows = [row for row in ("costume", "color") if len(self.choices(row)) > 1]
+        return rows + [row for row in ("pose", "stand_pose") if self.choices(row)]
+
+    def _wants_outfit(self, side: int) -> bool:
         """A person picks for this side (not the computer, not the training dummy), and
-        the hovered fighter has poses to choose from."""
+        the hovered fighter has something to choose."""
         human = side == 0 or (side == 1 and self.mode == "versus")
-        return human and bool(self.pose_rows())
+        return human and bool(self.outfit_rows())
 
-    def _open_poses(self, side: int) -> None:
+    def _wear(self, loadout: Loadout) -> None:
+        """Try this outfit on: the preview is dressed, and what its sheet cannot play (a
+        pose the costume lacks, a colour it does not have) falls back."""
+        fdef = self.roster[self.cursor]
+        if loadout.costume not in fdef.costumes:
+            loadout = replace(loadout, costume="")
+        plain = self.looks[self.cursor]
+        first = next(iter(plain.sprites.colors), "")
+        as_drawn = not loadout.costume and loadout.color in ("", first)
+        self.preview = None if as_drawn else FighterLook(fdef, loadout)
+        look = self.step_look()
+        loadout = resolve_loadout(look.sprites, loadout)
+        rival = self._rival()
+        if rival is not None:
+            moved = distinct(rival, loadout, list(look.sprites.colors))
+            if moved != loadout:
+                self._wear(moved)  # off player 1's colour: dressed again, once
+                return
+        self.loadout = loadout
+
+    def _open_outfit(self, side: int) -> None:
         fighter_id = self.roster[self.cursor].id
-        saved = self.ctx.settings.poses.get(fighter_id, ["", ""])
-        sprites = self.looks[self.cursor].sprites
-        self.loadout = resolve_loadout(sprites, Loadout(saved[0], saved[1]))
+        poses = self.ctx.settings.poses.get(fighter_id, ["", ""])
+        outfit = self.ctx.settings.outfits.get(fighter_id, ["", ""])
         self.choosing = side
         self.row = 0
+        self._wear(Loadout(poses[0], poses[1], outfit[0], outfit[1]))
 
-    def _update_poses(self, frame) -> None:
-        rows = self.pose_rows()
+    def _update_outfit(self, frame) -> None:
+        rows = self.outfit_rows()
         down = frame.presses("down") - frame.presses("up")
         if down and len(rows) > 1:
             self.row = (self.row + down) % len(rows)
             audio.play("menu_move")
         turn = frame.presses("right") - frame.presses("left")
-        if turn:
-            stand = rows[self.row]
-            ids = self._poses(stand)
-            current = self.loadout.stand_pose if stand else self.loadout.pose
+        if turn and rows:
+            row = rows[self.row]
+            ids = self.choices(row)
+            current = getattr(self.loadout, row)
             at = ids.index(current) if current in ids else 0
             chosen = ids[(at + turn) % len(ids)]
-            if stand:
-                self.loadout = Loadout(self.loadout.pose, chosen)
+            if row == "costume":
+                # Another costume: in its first colour, the poses kept if it has them.
+                self._wear(replace(self.loadout, costume=chosen, color=""))
+                self.row = self.outfit_rows().index("costume")
             else:
-                self.loadout = Loadout(chosen, self.loadout.stand_pose)
+                self._wear(replace(self.loadout, **{row: chosen}))
             audio.play("menu_move")
         if frame.was_pressed("confirm"):
             side, fighter_id = self.choosing, self.roster[self.cursor].id
-            self.ctx.settings.poses[fighter_id] = [self.loadout.pose, self.loadout.stand_pose]
+            worn = self.loadout
+            self.ctx.settings.poses[fighter_id] = [worn.pose, worn.stand_pose]
+            self.ctx.settings.outfits[fighter_id] = [worn.costume, worn.color]
             self.ctx.save_settings()
-            self.choosing = None
-            self._commit(side, self.loadout)
+            look = self.step_look()
+            self.choosing, self.preview = None, None
+            self._commit(side, worn, look)
         elif frame.was_pressed("back"):
             audio.play("menu_back")
-            self.choosing = None
+            self.choosing, self.preview = None, None
 
     def _pick(self) -> None:
         if self._hovered() is None:
@@ -273,16 +340,27 @@ class CharacterSelectScene(Scene):
             audio.play("menu_locked")
             return
         side = self.picking
-        if self._wants_poses(side):
+        self.choosing = side  # for the time of the question: who is asking matters
+        wanted = self._wants_outfit(side)
+        self.choosing = None
+        if wanted:
             audio.play("menu_ok")
-            self._open_poses(side)
+            self._open_outfit(side)
+            return
+        if side == 1 and self.mode == "vs_cpu":
+            # The computer dresses itself, here, so the VS screen already shows it.
+            self._commit(side, random_outfit(self._hovered(), random.Random()))
             return
         self._commit(side, Loadout())
 
-    def _commit(self, side: int, loadout: Loadout) -> None:
-        """The fighter under the cursor is this side's, with these poses."""
+    def _commit(self, side: int, loadout: Loadout, look: FighterLook | None = None) -> None:
+        """The fighter under the cursor is this side's, in this outfit and these poses."""
         audio.play("menu_ok")
         self.ctx.loadouts[side] = loadout
+        if look is None and (loadout.costume or loadout.color):
+            look = FighterLook(self.roster[self.cursor], loadout)
+        if look is not None:
+            self.worn[side] = look
         self.flash_f[side] = PICK_FLASH_F
         self.picks.append(self.cursor)  # not None: a fighter is hovered
         if len(self.picks) < self.picks_needed:
@@ -401,13 +479,20 @@ class CharacterSelectScene(Scene):
             # The fighter faces the middle; its Stand looms behind, towards the edge.
             feet_x = center + 12 if side == 0 else center - 12
             anim, with_stand, offset = "idle", True, None
+            look = self.worn.get(side, self.looks[index]) if side < self.picking else None
+            look = look or self.looks[index]
             if side == self.choosing:
-                with_stand = self.pose_rows()[self.row]
-                pose_id = self.loadout.stand_pose if with_stand else self.loadout.pose
-                anim = f"pose_{pose_id}"
-                info = self.looks[index].sprites.poses.get(pose_id)
-                offset = info.stand_offset if info is not None and with_stand else None
-            self.looks[index].draw(
+                # Dressed as picked; in the pose on a pose line, standing on the others.
+                look = self.step_look()
+                rows = self.outfit_rows()
+                row = rows[min(self.row, len(rows) - 1)] if rows else ""
+                if row in ("pose", "stand_pose"):
+                    with_stand = row == "stand_pose"
+                    pose_id = getattr(self.loadout, row)
+                    anim = f"pose_{pose_id}"
+                    info = look.sprites.poses.get(pose_id)
+                    offset = info.stand_offset if info is not None and with_stand else None
+            look.draw(
                 surface,
                 (feet_x, FEET_Y),
                 self.tick,
@@ -442,6 +527,11 @@ class CharacterSelectScene(Scene):
 
         fdef = self.roster[index]
         y = box.y + 5
+        if side == self.choosing:
+            # The step needs the room: the name in small, then its lines.
+            font.draw(surface, fdef.name, (box.x + 5, y), shade(fdef.color, 60))
+            self._draw_outfit_lines(surface, box, y + 12)
+            return
         name_scale = 2 if font.text_width(fdef.name, 2) <= SIDE_W - 8 else 1
         font.draw(surface, fdef.name, (box.x + 5, y), shade(fdef.color, 60), scale=name_scale)
         y += 10 * name_scale + 2
@@ -458,34 +548,53 @@ class CharacterSelectScene(Scene):
         surface.fill((40, 34, 56), (bar_x, y + 2, 60, 5))
         surface.fill((240, 200, 70), (bar_x, y + 2, bar_w, 5))
         y += 12
-        if side == self.choosing:
-            self._draw_pose_lines(surface, box, y, index)
-            return
         lines = font.wrap(fdef.blurb, SIDE_W - 10)[: max(0, (box.bottom - y) // 10)]
         draw_wrapped(surface, " ".join(lines), (box.x + 5, y), SIDE_W - 10)
 
-    def _draw_pose_lines(
-        self, surface: pygame.Surface, box: pygame.Rect, y: int, index: int
-    ) -> None:
-        """The lines (POSE 1/4, POSE STAND 2/3), the chosen pose's full name with its
-        arrows, then where it comes from."""
-        poses = self.looks[index].sprites.poses
+    def _named(self, row: str) -> tuple[str, str]:
+        """(the name, the source) of what the step has picked on one of its lines."""
+        sprites = self.step_look().sprites
         english = i18n.language() == "en"
-        x = box.x + 5
-        for row, stand in enumerate(self.pose_rows()):
-            ids = self._poses(stand)
-            pose_id = self.loadout.stand_pose if stand else self.loadout.pose
-            at = ids.index(pose_id) + 1 if pose_id in ids else 0
-            title = text.POSE_STAND_ROW if stand else text.POSE_ROW
-            label = f"{title} {at}/{len(ids)}"
-            font.draw(surface, label, (x, y), WHITE if row == self.row else DIM)
-            x += font.text_width(label) + 10
-        y += 11
-        stand = self.pose_rows()[self.row]
-        info = poses.get(self.loadout.stand_pose if stand else self.loadout.pose)
+        if row == "costume":
+            label, label_en, source = sprites.costume
+            return (label_en if english else label) or text.COSTUME_NORMAL, source
+        if row == "color":
+            color = sprites.colors.get(self.loadout.color) or next(
+                iter(sprites.colors.values()), None
+            )
+            if color is None:
+                return "", ""
+            return color.label_en if english else color.label, color.source
+        info = sprites.poses.get(getattr(self.loadout, row))
         if info is None:
+            return "", ""
+        return info.label_en if english else info.label, info.source
+
+    def _draw_outfit_lines(self, surface: pygame.Surface, box: pygame.Rect, y: int) -> None:
+        """One line per choice (COSTUME 2/3, COULEUR 1/4, POSE 1/3...), the active one lit;
+        under them the full name of what the active line has picked, between its arrows,
+        then where it comes from."""
+        rows = self.outfit_rows()
+        if not rows:
             return
-        name = info.label_en if english else info.label
-        y = draw_wrapped(surface, f"< {name} >", (box.x + 5, y), SIDE_W - 10, GOLD)
-        lines = font.wrap(info.source, SIDE_W - 10)[: max(0, (box.bottom - y) // 10)]
+        titles = {
+            "costume": text.COSTUME_ROW,
+            "color": text.COLOR_ROW,
+            "pose": text.POSE_ROW,
+            "stand_pose": text.POSE_STAND_ROW,
+        }
+        active = rows[min(self.row, len(rows) - 1)]
+        for row in rows:
+            ids = self.choices(row)
+            current = getattr(self.loadout, row)
+            at = ids.index(current) + 1 if current in ids else 1
+            lit = WHITE if row == active else DIM
+            font.draw(surface, titles[row], (box.x + 5, y), lit)
+            font.draw(surface, f"{at}/{len(ids)}", (box.right - 5, y), lit, align="right")
+            y += 10
+        name, source = self._named(active)
+        if not name:
+            return
+        y = draw_wrapped(surface, f"< {name} >", (box.x + 5, y + 1), SIDE_W - 10, GOLD)
+        lines = font.wrap(source, SIDE_W - 10)[: max(0, (box.bottom - y) // 10)]
         draw_wrapped(surface, " ".join(lines), (box.x + 5, y), SIDE_W - 10, DIM)

@@ -46,6 +46,9 @@ class Strike:
     freeze_f: int = 0  # frozen solid this long on a clean hit
     status: str = ""  # left burning, frozen stiff or crackling on a clean hit
     status_f: int = 0
+    bonus_status: str = ""  # hits harder for each level of this status on the defender
+    bonus_per_level: float = 0.0
+    blow: str = ""  # which blow it is (stance and move of a melee strike), to be learned
 
 
 class Match:
@@ -56,6 +59,8 @@ class Match:
             Fighter(0, kits[0], rules, arena.spawns[0], Vec2(1, 0)),
             Fighter(1, kits[1], rules, arena.spawns[1], Vec2(-1, 0)),
         ]
+        for fighter in self.fighters:
+            fighter.foe_tags = self.fighters[1 - fighter.index].kit.tags
         self.projectiles: list[Projectile] = []
         self.traps: list[Trap] = []
         self.webs: list[Web] = []
@@ -70,11 +75,32 @@ class Match:
         self.clash: Clash | None = None
         self.time_stop: interactions.TimeStop | None = None
         self.time_stops_endured = [0, 0]  # per fighter, for the time stopper rule
+        self.heard: list[Vec2 | None] = [None, None]  # where each was last heard (by ear)
         self.tick = 0
         self.dawn_announced = False
 
     def opponent(self, fighter: Fighter) -> Fighter:
         return self.fighters[1 - fighter.index]
+
+    # What makes a sound: a body that walks, dashes, strikes, is struck or is locked in a
+    # clash. One that stands still or only guards is silent.
+    NOISY = (State.WALK, State.DASH, State.ATTACK, State.HITSTUN, State.CLASH)
+
+    def target_for(self, fighter: Fighter) -> Vec2:
+        """Where this fighter aims: at the opponent, or - for one that aims by ear - at
+        the spot it last heard the opponent on."""
+        other = self.opponent(fighter)
+        if not fighter.kit.hears:
+            return other.pos
+        if self.heard[other.index] is None:
+            self.heard[other.index] = other.pos.copy()
+        return self.heard[other.index]
+
+    def _listen(self) -> None:
+        """Whoever made a sound this step is heard where they now stand."""
+        for fighter in self.fighters:
+            if self.heard[fighter.index] is not None and fighter.state in self.NOISY:
+                self.heard[fighter.index] = fighter.pos.copy()
 
     @property
     def cinematic(self) -> bool:
@@ -115,7 +141,7 @@ class Match:
         events += prop_events
         moving = [f for f in self.fighters if not f.frozen]
         for fighter in moving:
-            for event in fighter.control(inputs[fighter.index], self.opponent(fighter).pos):
+            for event in fighter.control(inputs[fighter.index], self.target_for(fighter)):
                 if event.kind in ("hha", "gha", "awaken"):
                     self.super_freeze = self.rules.super_freeze_f
                     self.super_user = fighter.index
@@ -135,6 +161,7 @@ class Match:
             if not fighter.frozen:
                 moved += fighter.integrate(self.arena)
         events += moved
+        self._listen()
         events += self._take_exits(moved)
         for fighter in self.fighters:
             if fighter.possessed_f > 0 and fighter.possessor is not None:
@@ -151,6 +178,8 @@ class Match:
         events += self._update_webs()
         events += self._resolve_melee()
         events += self._resolve_projectile_hits()
+        if self.arena.hazards.roamers and self.time_stop is None:
+            events += self._strike_roamers()
         events += self._apply_sunlight()
         events += self._apply_statuses()
         events += self._update_hazards()
@@ -344,6 +373,14 @@ class Match:
                 # A bubble is a bubble: one blow on Caesar and every lens pops, empty.
                 events.append(Event("trap_popped", trap.pos, trap.owner))
                 continue
+            if trap.defn.pull and target.alive and not target.frozen and not target.vanished:
+                # It draws the opponent in: a live wire, a magnet.
+                gap = trap.pos - target.pos
+                if 0 < gap.length() < trap.defn.pull_range:
+                    step = gap.normalized() * min(trap.defn.pull, gap.length())
+                    target.pos, _, _ = self.arena.constrain(
+                        target.pos + step, self.rules.body_radius
+                    )
             if target.alive and trap.touched_by(target.pos, self.rules.hurt_radius):
                 aim = trap.pos.copy()
                 direction = (target.pos - aim).normalized()
@@ -381,6 +418,8 @@ class Match:
             status=defn.status,
             status_f=defn.status_f,
             drain=defn.drain,
+            bonus_status=defn.bonus_status,
+            bonus_per_level=defn.bonus_per_level,
         )
         _, events = self._strike(self.fighters[projectile.owner], target, strike)
         return events
@@ -406,11 +445,21 @@ class Match:
     def _update_projectiles(self) -> list[Event]:
         events: list[Event] = []
         for projectile in self.projectiles:
-            if self.fighters[projectile.owner].frozen:
+            owner = self.fighters[projectile.owner]
+            if owner.frozen:
+                continue
+            if projectile.defn.fragile and owner.state in (State.HITSTUN, State.GUARD_BROKEN):
+                # Its owner is struck: the shot goes out where it is, without hitting.
+                projectile.alive = False
+                events.append(Event("trap_popped", projectile.pos, projectile.owner))
                 continue
             if projectile.defn.homing and self._projectile_moves(projectile):
                 target = self.fighters[1 - projectile.owner]
                 projectile.steer(target.pos, projectile.defn.homing)
+            if projectile.defn.steer and self._projectile_moves(projectile):
+                point = owner.steer_point(projectile.pos)
+                if point is not None:
+                    projectile.steer(point, projectile.defn.steer)
             if projectile.defn.returns and self._projectile_moves(projectile):
                 events += self._fly_home(projectile)
                 if not projectile.alive:
@@ -471,6 +520,8 @@ class Match:
                 status=defn.status,
                 status_f=defn.status_f,
                 drain=defn.drain,
+                bonus_status=defn.bonus_status,
+                bonus_per_level=defn.bonus_per_level,
             )
             landed, strike_events = self._strike(self.fighters[projectile.owner], target, strike)
             events += strike_events
@@ -542,6 +593,9 @@ class Match:
                 status_f=move.status_f,
                 key=(attacker.index, attack.serial),
                 super_move=move.name in ("hha", "gha"),
+                bonus_status=move.bonus_status,
+                bonus_per_level=move.bonus_per_level,
+                blow=f"{attacker.stance}/{move.name}",
             )
             landed, strike_events = self._strike(attacker, defender, strike)
             events += strike_events
@@ -725,7 +779,7 @@ class Match:
                 raw = inputs[victim.index]
                 mash = sum(raw.presses(a) for a in (*ATTACK_SLOTS, "dash", "guard", "stand"))
                 if mash:
-                    hamon = victim.kit.style == "hamon"
+                    hamon = victim.kit.breathes
                     cut = self.rules.struggle_f * (self.rules.hamon_struggle_mult if hamon else 1)
                     user.inside_f -= round(mash * cut)
                     user.expelled_by_hamon = hamon and user.inside_f <= 0
@@ -861,9 +915,96 @@ class Match:
             return []
         events: list[Event] = []
         for drop in hazards.drops:
+            if any(f.kit.id in drop.defn.not_with for f in self.fighters):
+                continue  # who would send it is fighting: it does not come
             events += self._update_drop(drop)
         for zone in hazards.zones:
             events += self._update_trap_zone(zone)
+        for roamer in hazards.roamers:
+            events += self._update_roamer(roamer)
+        return events
+
+    def _update_roamer(self, roamer) -> list[Event]:
+        """It walks to the nearest fighter, raises its weapon, strikes, rests; beaten,
+        it is gone a while and comes back whole."""
+        defn = roamer.defn
+        roamer.flash = max(0, roamer.flash - 1)
+        roamer.swing = max(0, roamer.swing - 1)
+        if roamer.away > 0:
+            roamer.away -= 1
+            if roamer.away == 0:
+                roamer.pos, roamer.hp = defn.start.copy(), defn.hp
+                roamer.windup = roamer.rest = 0
+                roamer.struck_by.clear()
+                return [Event("roamer_in", roamer.pos.copy(), None)]
+            return []
+        alive = [f for f in self.fighters if f.alive]
+        if not alive:
+            return []
+        target = min(alive, key=lambda f: ((f.pos - roamer.pos).length_sq(), f.index))
+        gap = target.pos - roamer.pos
+        if roamer.windup > 0:
+            roamer.windup -= 1
+            if roamer.windup > 0:
+                return []
+            # The blow comes down where it was facing.
+            roamer.rest, roamer.swing = defn.rest_f, 10
+            center = roamer.pos + roamer.facing * defn.reach
+            events = [Event("roamer_swing", center, None, defn.radius)]
+            reach = defn.radius + self.rules.hurt_radius
+            for fighter in self.fighters:
+                if not fighter.alive or fighter.invincible:
+                    continue
+                if (fighter.pos - center).length_sq() > reach * reach:
+                    continue
+                events += self._hazard_hit(
+                    fighter, defn.damage, defn.hitstun_f, roamer.facing * defn.knockback
+                )
+            return events
+        if gap.length_sq() > 1e-6:
+            roamer.facing = gap.normalized()
+        if roamer.rest > 0:
+            roamer.rest -= 1
+            return []
+        if gap.length() <= defn.reach + defn.radius * 0.5:
+            roamer.windup = defn.windup_f
+            return [Event("roamer_windup", roamer.pos.copy(), None)]
+        step = roamer.facing * min(defn.speed, gap.length())
+        roamer.pos, _, _ = self.arena.constrain(roamer.pos + step, defn.body)
+        return []
+
+    def _strike_roamers(self) -> list[Event]:
+        """The fighters' blows and shots land on a roamer in their way."""
+        events: list[Event] = []
+        for roamer in self.arena.hazards.roamers:
+            if not roamer.present:
+                continue
+            hits: list[tuple[int, Vec2]] = []
+            for fighter in self.fighters:
+                attack = fighter.attack
+                if attack is None or (fighter.index, attack.serial) in roamer.struck_by:
+                    continue
+                for center, radius in fighter.hitboxes():
+                    reach = radius + roamer.defn.body
+                    if (center - roamer.pos).length_sq() <= reach * reach:
+                        roamer.struck_by.add((fighter.index, attack.serial))
+                        hits.append((attack.move.damage or 10, center))
+                        break
+            for projectile in self.projectiles:
+                if not projectile.alive:
+                    continue
+                reach = projectile.radius + roamer.defn.body
+                if (projectile.pos - roamer.pos).length_sq() <= reach * reach:
+                    projectile.alive = False
+                    hits.append((projectile.defn.damage, projectile.pos.copy()))
+            for damage, where in hits:
+                roamer.hp -= damage
+                roamer.flash = 8
+                events.append(Event("roamer_hit", where, None, damage))
+                if roamer.hp <= 0:
+                    roamer.away = roamer.defn.banish_f
+                    events.append(Event("roamer_banished", roamer.pos.copy(), None))
+                    break
         return events
 
     def _take_exits(self, moved: list[Event]) -> list[Event]:
@@ -906,7 +1047,10 @@ class Match:
             # It starts to give: over whoever's turn it is, its shadow on the floor.
             aimed = self.fighters[drop.turn % 2].pos
             drop.turn += 1
-            drop.spot = min(defn.spots, key=lambda spot: (spot - aimed).length_sq())
+            if defn.on_fighter:
+                drop.spot = aimed.copy()
+            else:
+                drop.spot = min(defn.spots, key=lambda spot: (spot - aimed).length_sq())
             return [Event("hazard_warn", drop.spot.copy(), None, defn.radius)]
         if drop.countdown > 0 or drop.spot is None:
             if drop.countdown <= 0:
@@ -939,7 +1083,7 @@ class Match:
                 continue
             zone.rearm_left, zone.sprung_left = defn.rearm_f, defn.rearm_f
             events = [Event("hazard_spikes", fighter.pos.copy(), fighter.index)]
-            if defn.spare_style and fighter.kit.style == defn.spare_style:
+            if defn.spare_style and defn.spare_style in fighter.kit.styles:
                 return events  # it springs, and does not bite this one
             out = fighter.pos - defn.rect.center
             push = out.normalized() if out.length_sq() > 1e-6 else Vec2(0, 1)
@@ -1044,6 +1188,8 @@ class Match:
                 hamon=move.hamon,
                 status=move.status,
                 status_f=move.status_f,
+                bonus_status=move.bonus_status,
+                bonus_per_level=move.bonus_per_level,
             )
             _, strike_events = self._strike(user, target, strike)
             events += strike_events
@@ -1212,6 +1358,13 @@ class Match:
         rules = self.rules
         if strike.melee and defender.countering and self._foreseen(defender, attacker):
             return False, self._counter(defender, attacker)
+        if strike.melee and defender.kit.learns and defender.knows(strike.blow):
+            # It has taken this one before: it never loses twice to the same blow. Met
+            # steel on steel, the attacker is thrown off balance.
+            self.hitstop = max(self.hitstop, rules.counter_freeze_f // 2)
+            if defender.kit.learn_stun_f:
+                attacker.take_hit(0, defender.kit.learn_stun_f, Vec2(), False)
+            return False, [Event("learned", strike.where, defender.index)]
         if defender.invincible:
             if defender.in_stylish_window():
                 defender.evaded = True
@@ -1220,6 +1373,8 @@ class Match:
                 return False, [Event("stylish", defender.pos, defender.index)]
             return False, []
         damage = strike.damage * attacker.damage_dealt_mult * defender.damage_taken_mult
+        if strike.bonus_per_level:
+            damage *= 1 + strike.bonus_per_level * defender.statuses.level(strike.bonus_status)
         if attacker.in_resolve:
             damage *= 1 + rules.resolve_damage_bonus
         burns = strike.hamon and defender.kit.nature in rules.hamon_weak_natures
@@ -1245,6 +1400,7 @@ class Match:
             return True, events
         damage = round(damage * self._combo_scale(defender, strike))
         armored = defender.take_hit(damage, strike.hitstun_f, strike.knockback, strike.wall_bounce)
+        learnt = strike.melee and defender.learn(strike.blow)
         if burns:
             # Hamon in an undead body: the wound will not close for a while.
             defender.regen_wait = max(defender.regen_wait, rules.hamon_regen_block_f)
@@ -1259,6 +1415,8 @@ class Match:
         events = [Event("hit", strike.where, defender.index, damage), *sparks]
         if armored:
             events.append(Event("armor", defender.pos, defender.index))
+        if learnt:
+            events.append(Event("learn", defender.pos, defender.index, len(defender.learned)))
         caught = strike.status and not armored and defender.alive
         if caught and defender.statuses.apply(strike.status, strike.status_f):
             # It took: the kind of status is the kind of the event, and the value is how

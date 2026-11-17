@@ -32,6 +32,9 @@ class ProjectileDef:
     origin: str = "self"  # "self", or "ring": around the target, flying inward
     ring_radius: float = 0.0
     homing: float = 0.0  # radians per frame it turns toward the target (0 = straight)
+    # Radians per frame it turns toward where its owner aims now (mouse or right stick):
+    # steered in flight, while the owner keeps moving. Flies straight with no free aim.
+    steer: float = 0.0
     wall_bounce: bool = False  # what it hits rebounds off the walls
     bounces: int = 0  # times the shot itself comes off a wall and keeps going
     waves: int = 1  # volleys thrown one after the other...
@@ -44,6 +47,10 @@ class ProjectileDef:
     status_f: int = 0
     hamon: bool = False  # it carries the Ripple itself (sunlight through a lens)
     drain: float = 0.0  # share of its damage given back to its owner as life
+    fragile: bool = False  # a blow landed on its owner puts it out in mid-flight
+    phasing: bool = False  # it passes through props as if they were not there
+    bonus_status: str = ""  # hits harder for each level of this status on the target...
+    bonus_per_level: float = 0.0  # ...by this share of its damage per level
 
     @classmethod
     def from_data(cls, data: dict) -> ProjectileDef:
@@ -61,6 +68,7 @@ class ProjectileDef:
             origin=data.get("origin", "self"),
             ring_radius=data.get("ring_radius", 0.0),
             homing=math.radians(data.get("homing_deg_s", 0.0)) / HZ,
+            steer=math.radians(data.get("steer_deg_s", 0.0)) / HZ,
             wall_bounce=data.get("wall_bounce", False),
             bounces=data.get("bounces", 0),
             waves=data.get("waves", 1),
@@ -72,7 +80,11 @@ class ProjectileDef:
             status_f=seconds_to_frames(data.get("status_s", 0)),
             hamon=data.get("hamon", False),
             drain=data.get("drain", 0.0),
+            fragile=data.get("fragile", False),
             drag=data.get("drag", 1.0),
+            bonus_status=data.get("bonus_status", ""),
+            bonus_per_level=data.get("bonus_per_level", 0.0),
+            phasing=data.get("phasing", False),
         )
 
 
@@ -87,6 +99,8 @@ class TrapDef:
     projectile: ProjectileDef  # what it fires at the opponent when triggered
     fragile: bool = False  # a blow landed on its owner pops it where it stands
     at_cursor: bool = False  # laid on the aimed point (mouse, right stick, held direction)
+    pull: float = 0.0  # px/frame it draws the opponent toward itself...
+    pull_range: float = 0.0  # ...from this far away
 
     @classmethod
     def from_data(cls, data: dict) -> TrapDef:
@@ -98,6 +112,8 @@ class TrapDef:
             projectile=ProjectileDef.from_data(data["projectile"]),
             fragile=data.get("fragile", False),
             at_cursor=data.get("at_cursor", False),
+            pull=per_frame(data.get("pull", 0)),
+            pull_range=data.get("pull_range", 0),
         )
 
 
@@ -136,6 +152,9 @@ class BuffDef:
     damage_taken_mult: float = 1.0
     afterimages: bool = False
     heal_per_s: float = 0.0  # life regained per second while it lasts
+    # A charge: the next move that has a `boosted` version comes out as that version, and
+    # that spends the buff.
+    charge: bool = False
 
     @classmethod
     def from_data(cls, data: dict) -> BuffDef:
@@ -146,6 +165,7 @@ class BuffDef:
             damage_taken_mult=data.get("damage_taken_mult", 1.0),
             afterimages=data.get("afterimages", False),
             heal_per_s=data.get("heal_per_s", 0.0),
+            charge=data.get("charge", False),
         )
 
 
@@ -186,6 +206,7 @@ class MoveDef:
     trap: TrapDef | None = None
     disarm_f: int = 0  # the Stand's own moves are unavailable this long afterwards
     buff: str = ""  # name of a buff (kit [buffs]) started by this move
+    boosted: str = ""  # with a charge (buff with `charge`) on, this move comes out instead
     chain: str = ""  # the same button, once this connects, continues into this move
     # ...or a choice of buttons, each leading somewhere else (Lisa Lisa's Ripple Chain).
     # Pairs, not a dict: a move is frozen and used as a key (cooldowns), so it must hash.
@@ -206,12 +227,22 @@ class MoveDef:
     leap_to: str = "target"  # ...toward the opponent ("target") or the aimed point ("cursor")
     leap_height: float = 0.0  # px: height of the jump arc, for the view (0 = slide)
     armor: int = 0  # hits taken without flinching during startup and active frames
+    # A blow absorbed by that armor during the startup lets the attack go at once.
+    armor_release: bool = False
     possess_f: int = 0  # on a clean hit, the user steers the opponent's walk this long
     # On a clean hit, the user's whole body slips inside the opponent's: hidden in there
     # for this long, it walks them about and eats them (`inside_dps`, `drain` of it).
     infiltrate_f: int = 0
     inside_dps: float = 0.0
     burrow: bool = False  # the view: the user travels under the floor through its startup
+    # A lunge steered by hand: through startup and active frames it goes where the player
+    # pushes (the held direction), not only where it was aimed when it began.
+    steer: bool = False
+    # Through startup and active frames the user is gone from sight and from reach: not
+    # drawn (a faint shimmer at most) and untouchable. It reappears for its recovery.
+    vanish: bool = False
+    # Solid things in the user's way are destroyed rather than stopping it.
+    erase: bool = False
     guard_damage: float = 1.0  # multiplies the guard gauge damage when blocked
     stand_flash: bool = False  # the Stand appears for this move even when called back
     fx: str = ""  # drawn while active: "limb", "tentacle" or "blade" out to `reach`
@@ -228,6 +259,8 @@ class MoveDef:
     cage_radius: float = 0.0
     detonate: bool = False  # sets off every trap and grenade the user has laid
     reflect: bool = False  # while active, projectiles that reach the user fly back
+    bonus_status: str = ""  # hits harder for each level of this status on the target...
+    bonus_per_level: float = 0.0  # ...by this share of its damage per level
     shout: str = ""  # written on screen when used (each hit of a rush: "ORA", "MUDA")
     label: str = ""  # display name in the move list
     info: str = ""  # one-line description in the move list
@@ -284,6 +317,7 @@ class MoveDef:
             trap=TrapDef.from_data(trap) if trap else None,
             disarm_f=seconds_to_frames(data.get("disarm_s", 0)),
             buff=data.get("buff", ""),
+            boosted=data.get("boosted", ""),
             chain=data.get("chain", ""),
             chains=tuple(sorted(data.get("chains", {}).items())),
             cinematic=data.get("cinematic", ""),
@@ -299,10 +333,16 @@ class MoveDef:
             leap_to=data.get("leap_to", "target"),
             leap_height=data.get("leap_height", 0.0),
             armor=data.get("armor", 0),
+            armor_release=data.get("armor_release", False),
             possess_f=seconds_to_frames(data.get("possess_s", 0)),
             infiltrate_f=seconds_to_frames(data.get("infiltrate_s", 0)),
             inside_dps=data.get("inside_dps", 0.0),
             burrow=data.get("burrow", False),
+            steer=data.get("steer", False),
+            vanish=data.get("vanish", False),
+            erase=data.get("erase", False),
+            bonus_status=data.get("bonus_status", ""),
+            bonus_per_level=data.get("bonus_per_level", 0.0),
             guard_damage=data.get("guard_damage", 1.0),
             stand_flash=data.get("stand_flash", False),
             fx=data.get("fx", ""),
@@ -369,6 +409,23 @@ class Stance:
 
 
 @dataclass(frozen=True)
+class PassiveDef:
+    """Always on, against an opponent whose kit carries a tag (`vs_tag`)."""
+
+    vs_tag: str
+    damage_dealt_mult: float = 1.0
+    hh_gain_mult: float = 1.0  # Heart Heat gained
+
+    @classmethod
+    def from_data(cls, data: dict) -> PassiveDef:
+        return cls(
+            vs_tag=data["vs_tag"],
+            damage_dealt_mult=data.get("damage_dealt_mult", 1.0),
+            hh_gain_mult=data.get("hh_gain_mult", 1.0),
+        )
+
+
+@dataclass(frozen=True)
 class Kit:
     id: str
     name: str
@@ -382,9 +439,35 @@ class Kit:
     stance_labels: dict[str, str] = field(default_factory=dict)  # move list headings
     stance_tags: dict[str, str] = field(default_factory=dict)  # short name for the HUD
     awakening: AwakeningDef | None = None  # what the Power Up key turns them into
+
+    @property
+    def styles(self) -> frozenset[str]:
+        """Every style the fighter has: its own, and the Ripple too for one whose style
+        says `breath = true` (a Stand user who still breathes it)."""
+        extra = {"hamon"} if self.style_params.get("breath") else set()
+        return frozenset({self.style} | extra)
+
+    @property
+    def breathes(self) -> bool:
+        """Has the Hamon gauge: fills it by breathing, spends it on `hamon_cost`."""
+        return "hamon" in self.styles
+
     strength: float = 1.0  # the Stand's raw power: how fast and hard it throws props
     prop_hold: str = "hands"  # "hair": his hair carries and swings what he picks up
     nature: str = "human"  # "vampire", "pillar_man"...: what Hamon burns
+    tags: frozenset[str] = frozenset()  # free words other kits' passives can look for
+    # Blind, it aims by ear: where the opponent was when it last made a sound (walking,
+    # dashing, striking, struck). Standing still, or only guarding, fools it.
+    hears: bool = False
+    # It learns: each blow it takes is remembered, and, free to move, it parries a blow it
+    # has taken before; each new one makes it stronger (`learn_damage`) and faster
+    # (`learn_speed`), up to `learn_max` blows remembered.
+    learns: bool = False
+    learn_damage: float = 0.0
+    learn_speed: float = 0.0
+    learn_max: int = 8
+    learn_stun_f: int = 0  # a blow it parries leaves the attacker staggered this long
+    passive: PassiveDef | None = None
     pose_heal_per_s: float = 0.0  # posing heals this much life per second
     pose_counter: str = ""  # posing a moment, the next blow is answered with this move
     pose_counter_ready_f: int = 20  # posing this long arms the pose counter
@@ -433,7 +516,7 @@ def parse_kit(data: dict, kit_id: str, source: str = "kit", hh_bar: float = 100.
     buffs = {name: BuffDef.from_data(b) for name, b in data.get("buffs", {}).items()}
     for stance_name, stance in stances.items():
         for move in [*stance.moves.values(), *shared.values()]:
-            for link in (move.chain, move.counter, *(n for _, n in move.chains)):
+            for link in (move.chain, move.counter, move.boosted, *(n for _, n in move.chains)):
                 if link and link not in stance.moves and link not in shared:
                     raise ValueError(
                         f"{source}: move '{move.name}' leads to unknown move '{link}' "
@@ -469,6 +552,14 @@ def parse_kit(data: dict, kit_id: str, source: str = "kit", hh_bar: float = 100.
         strength=data.get("strength", 1.0),
         prop_hold=data.get("prop_hold", "hands"),
         nature=data.get("nature", "human"),
+        tags=frozenset(data.get("tags", ())),
+        hears=data.get("hears", False),
+        learns="learn" in data,
+        learn_damage=data.get("learn", {}).get("damage", 0.0),
+        learn_speed=data.get("learn", {}).get("speed", 0.0),
+        learn_max=data.get("learn", {}).get("max", 8),
+        learn_stun_f=seconds_to_frames(data.get("learn", {}).get("stun_s", 0)),
+        passive=PassiveDef.from_data(data["passive"]) if "passive" in data else None,
         pose_heal_per_s=data.get("pose_heal_per_s", 0.0),
         pose_counter=pose_counter,
         pose_counter_ready_f=round(data.get("pose_counter_ready_s", 0.33) * HZ),

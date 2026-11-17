@@ -1,0 +1,27 @@
+# Geb: a tentacle of water rearing up from a pool, a clawed hand at its end. The Stand has
+# no body, so its glossary page shows this instead of a sprite (JoJo Wiki, "Geb": "usually
+# takes the form of a tentacle ending in a clawed hand").
+
+pixels = [
+    "................",
+    "......o.o.o.....",
+    ".....oWoWoWo....",
+    ".....oBWBWBo....",
+    "......oBBBo.....",
+    ".......oBo......",
+    "......oBBo......",
+    ".....oBBo.......",
+    ".....oBBo.......",
+    "......oBBo......",
+    ".......oBBo.....",
+    "......oBBo......",
+    "..ooooBBBBoooo..",
+    ".oBBWWBBBBWWBBo.",
+    "..ooBBBBBBBBoo..",
+    "....oooooooo....",
+]
+
+[palette]
+o = "#17121f"
+B = "#5678a0"
+W = "#b0cee6"

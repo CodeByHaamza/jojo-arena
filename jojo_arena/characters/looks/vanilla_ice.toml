@@ -1,0 +1,333 @@
+# Vanilla Ice (Part 3): look file for tools/make_sprites.py.
+#
+# JoJo Wiki, "Vanilla Ice", Appearance (read 17/11/2026,
+# https://jojowiki.com/Vanilla_Ice): a tall, muscular man with long, wavy hair down to
+# the shoulders, long thin eyebrows and a large bang on his left side that reaches past
+# his chin. A circlet with a heart locket across the forehead, metallic heart-shaped
+# earrings. A leotard (with sleeves in his first appearances, which the coloured manga
+# and the anime keep) under an open, sleeveless leather vest whose back panel falls like
+# a cloak to his calves. A belt with a heart at the centre, as DIO's. A metallic strap on
+# his right shoulder holds a large heart. His legs are bare above dark mid-calf boots.
+# Colours: the anime's (section "Color Schemes"): fair skin, brown hair, gold eyes, an
+# indigo leotard, a black vest and shoes, purple accessories and a gold belt. The
+# anime gives him no gloves: his hands are his skin's tone, a shade apart so the
+# coloured manga's white gloves can be put on them. Same for his bare legs, which the
+# OVA covers in mauve leggings.
+
+name = "Vanilla Ice"
+
+# Stiff, upright, the arms hanging: he stands like a soldier waiting for an order.
+# Signature pose (Pose key): see tools/spritegen/skeleton.py.
+pose = "arch"
+
+[build]
+head_r = 5.6
+neck = 1.2
+torso = 14.5
+legs = 18
+arms = 15
+shoulders = 9.6
+hips = 3.4
+torso_r = 6.6
+arm_r = 2.8
+leg_r = 2.6
+hand_r = 2.4
+foot_r = 2.4
+
+[palette]
+skin = "#f0cdb2"
+gloves = "#eac8ae"       # his bare hands (anime): the skin's tone, a shade apart
+legs = "#f4d1b6"         # his bare legs (anime): the same
+hair = "#7a4e36"         # brown, as in the anime
+leotard = "#3c3684"      # indigo
+vest = "#26232c"         # black leather
+shoes = "#1c1a22"
+metal = "#8e4ab4"        # the anime's purple accessories: circlet, earrings, strap
+belt = "#d8aa3a"         # and its gold belt
+eyes = "#d8a830"
+
+[body]
+head = "skin"
+torso = "leotard"
+arms = "leotard"         # the leotard's sleeves
+hands = "gloves"
+legs = "legs"
+feet = "shoes"
+
+[face]
+eyes = "eyes"
+eye_style = "wide"
+brows = true
+nose = true
+
+# Long wavy hair to the shoulders, and the big bang on his left side, past the chin.
+[[parts]]
+type = "hair"
+material = "hair"
+style = "long"
+length = 10
+volume = 7.6
+bangs = "curl"
+bangs_side = "right"     # his left, seen from the front
+bangs_length = 8.0
+bangs_width = 1.3
+bangs_spread = 0.4
+
+# The circlet with its heart locket across the forehead.
+[[parts]]
+type = "headband"
+material = "metal"
+gem = "metal"
+gem_shape = "heart"
+
+[[parts]]
+type = "earring"
+material = "metal"
+style = "heart"
+
+# The open sleeveless vest, its back panel falling like a cloak to the calves.
+[[parts]]
+type = "coat"
+material = "vest"
+length = 0.78
+open = true
+opening = 7
+collar = false
+trail = 4
+
+# The strap on his right shoulder, a chain of metal hearts.
+[[parts]]
+type = "chain"
+material = "metal"
+side = "right"
+length = 6
+
+[[parts]]
+type = "belt"
+material = "belt"
+buckle = "belt"
+buckle_shape = "heart"
+
+[[parts]]
+type = "boots"
+material = "shoes"
+length = 0.27
+
+# JoJo poses ---------------------------------------------------------------------------
+# Picked on the select screen; the Pose key plays the one picked. Each was drawn from the
+# panel named in `source`, looked at on JoJo Wiki (the galleries of Vanilla Ice and of
+# Cream) on 17/11/2026. A pose with `stand = true` is struck with Cream out: Cream
+# strikes the pose of the same name in its own look file, `stand_offset` [ahead, aside]
+# away.
+
+# Kneeling before DIO, the head bowed, a fist on the floor and a forearm on the knee.
+[poses.a_genoux]
+label = "À genoux devant DIO"
+label_en = "Kneeling before DIO"
+source = "Ch. 238, Le Miasme du Vide, Vanilla Ice (1) : il s'agenouille devant DIO (« VanillaIceKneeling », galerie de JoJo Wiki)"
+
+[[poses.a_genoux.down]]
+bob = 4
+lean = 1.5
+head = [0, 2]
+hand_l = [-6, 2]
+elbow_l = [-4, 1]
+hand_r = [5, -6]
+elbow_r = [4, 0]
+knee_r = [3, -6]
+foot_r = [3, -2]
+knee_l = [-3, 0]
+
+[[poses.a_genoux.right]]
+bob = 4
+lean = 2
+head = [1, 2]
+hand_r = [7, 2]
+hand_l = [4, -6]
+knee_r = [6, -6]
+foot_r = [5, -1]
+knee_l = [-2, 0]
+foot_l = [-7, 0]
+
+# Wounded, a hand pressed to his torn chest, the other hand up before it, the head bowed
+# toward them.
+[poses.monologue]
+label = "La main sur la blessure"
+label_en = "A hand on the wound"
+source = "Ch. 244, Le Miasme du Vide, Vanilla Ice (7) (« VanillaIceMonologue », galerie de JoJo Wiki)"
+
+[[poses.monologue.down]]
+lean = 1
+head = [1, 1]
+hand_r = [-2, -15]
+elbow_r = [5, -1]
+hand_l = [2, -10]
+elbow_l = [-5, 0]
+
+[[poses.monologue.right]]
+lean = 1.5
+head = [1, 1]
+hand_r = [4, -15]
+elbow_r = [3, -1]
+hand_l = [3, -10]
+
+# Before the DIO made of sand: a hand raised to his brow, the other arm hanging.
+[poses.faux_dio]
+label = "Devant le faux DIO"
+label_en = "Before the false DIO"
+source = "Ch. 241, Le Miasme du Vide, Vanilla Ice (4) : le DIO de sable d'Iggy (« Vanilla_Ice_Sand_DIO_chop », galerie de JoJo Wiki)"
+
+[[poses.faux_dio.down]]
+head = [0, -1]
+hand_r = [-1, -21]
+elbow_r = [5, -3]
+hand_l = [-1, 3]
+
+[[poses.faux_dio.right]]
+head = [0, -1]
+hand_r = [4, -21]
+elbow_r = [3, -3]
+hand_l = [-2, 2]
+
+# Cream looming behind him as he swears DIO will not be disappointed: he stands straight,
+# the arms hanging a little away from the body.
+[poses.derriere_lui]
+label = "Cream derrière lui"
+label_en = "Cream behind him"
+source = "Ch. 238, Le Miasme du Vide, Vanilla Ice (1) : « DIO-sama... » (« CreamandVanilla », galerie de Cream sur JoJo Wiki)"
+stand = true
+stand_offset = [-9, -6]
+
+[[poses.derriere_lui.down]]
+hand_l = [-3, 2]
+elbow_l = [-3, 0]
+hand_r = [3, 2]
+elbow_r = [3, 0]
+
+[[poses.derriere_lui.right]]
+hand_r = [1, 2]
+hand_l = [-2, 2]
+
+# Cream's first appearance: it rises out of the dark behind him, its open hands up; he
+# looks ahead, the arms down.
+[poses.premiere_apparition]
+label = "La première apparition de Cream"
+label_en = "Cream's first appearance"
+source = "Ch. 238, Le Miasme du Vide, Vanilla Ice (1) : Cream apparaît (« Vanilla_Ice_Cream_first », galerie de JoJo Wiki)"
+stand = true
+stand_offset = [-7, -8]
+
+[[poses.premiere_apparition.down]]
+lean = 0.5
+head = [0, 1]
+hand_l = [-3, 1]
+hand_r = [3, 1]
+
+[[poses.premiere_apparition.right]]
+lean = 1
+head = [1, 1]
+hand_r = [2, 1]
+hand_l = [-1, 1]
+
+# Cream's sneak attack: it lunges past him, the mouth of the void wide open, the claws
+# out; he stands beside it, a hand at his belt.
+[poses.attaque_surprise]
+label = "L'attaque surprise de Cream"
+label_en = "Cream's sneak attack"
+source = "Ch. 238 : Cream surgit, gueule ouverte, sur Avdol (« Cream_sneak_attack », galerie de Cream sur JoJo Wiki)"
+stand = true
+stand_offset = [6, -9]
+
+[[poses.attaque_surprise.down]]
+hand_r = [-3, -4]
+elbow_r = [4, 0]
+hand_l = [-2, 2]
+
+[[poses.attaque_surprise.right]]
+hand_r = [2, -4]
+elbow_r = [2, 1]
+hand_l = [-2, 2]
+
+# The outfit and its colours ---------------------------------------------------------------
+# Vanilla Ice's All-Star Battle R page has no "Costumes & Tints" section (read 17/11/2026:
+# only a "Color Tint C" reward, without its origin). His JoJo Wiki page, "Color Schemes",
+# gives the colours of each medium; the page itself warns they "may or may not be
+# canon". Each colour below is one of them; Cream, where its page gives the same
+# medium, wears that medium's colours with him.
+
+[costume]
+label = "Sa tenue"
+label_en = "His outfit"
+source = "JoJo Wiki, Vanilla Ice, Appearance"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "JoJo Wiki, Vanilla Ice, Color Schemes : l'anime"
+
+# Fair skin, light blue hair, red eyes; a blue-gray leotard, a green vest and shoes,
+# white gloves, gold accessories.
+[colors.manga]
+label = "Manga en couleur"
+label_en = "Coloured manga"
+source = "JoJo Wiki, Vanilla Ice, Color Schemes : le manga en couleur"
+stand = "manga"
+
+[colors.manga.palette]
+skin = "#f6dcc6"
+legs = "#f6dcc7"
+gloves = "#ecebf2"
+hair = "#8cc2dc"
+eyes = "#c43a3a"
+leotard = "#6e7ca8"
+vest = "#2f6a3e"
+shoes = "#2c6438"
+metal = "#e8c04a"
+belt = "#e8c04b"
+
+# Tan skin, white hair, black eyes; a maroon leotard, a navy vest, mauve leggings, white
+# gloves, gold accessories.
+[colors.ova]
+label = "OVA"
+label_en = "OVA"
+source = "JoJo Wiki, Vanilla Ice, Color Schemes : l'OVA"
+
+[colors.ova.palette]
+skin = "#c8946c"
+gloves = "#ecebf2"
+legs = "#a8789a"
+hair = "#e6e6ec"
+eyes = "#2a2630"
+leotard = "#7a2a3c"
+vest = "#2a2e5c"
+metal = "#e8c04a"
+belt = "#e8c04b"
+
+# Tan skin, burnt orange hair, dark magenta eyes; an indigo leotard, a black vest and
+# shoes, pink accessories, a gold belt.
+[colors.asb]
+label = "All-Star Battle"
+label_en = "All-Star Battle"
+source = "JoJo Wiki, Vanilla Ice, Color Schemes : All-Star Battle"
+stand = "asb"
+
+[colors.asb.palette]
+skin = "#c8946c"
+gloves = "#c8946d"
+legs = "#c9946c"
+hair = "#c4622c"
+eyes = "#8a2a6a"
+metal = "#e05aa0"
+
+# Fair skin, light brown hair, brown eyes; an indigo leotard, a black vest and shoes, pink
+# accessories, a gold belt.
+[colors.eoh]
+label = "Eyes of Heaven"
+label_en = "Eyes of Heaven"
+source = "JoJo Wiki, Vanilla Ice, Color Schemes : Eyes of Heaven"
+stand = "eoh"
+
+[colors.eoh.palette]
+hair = "#b08a5c"
+eyes = "#6a4a30"
+metal = "#e05aa0"

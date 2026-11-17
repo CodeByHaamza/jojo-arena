@@ -5,8 +5,8 @@ description: Use when adding a playable character to JoJo Arena, or when asked "
 
 # Adding a fighter
 
-A character is **data**. Nine files, in this order; skipping one is how a character ends
-up half in the game.
+A character is **data**. Nine files, in this order (and one more per costume); skipping
+one is how a character ends up half in the game.
 
 ## 1. Decide who they are (before any file)
 
@@ -45,6 +45,35 @@ costume parts (the README lists them all). Then:
 
 and look at `build/sprite_previews/<id>.png` and `<id>_sheet.png`. If the silhouette is
 not instantly recognisable, fix the build before anything else.
+
+Then the poses (`[poses.<id>]`, see CONTRIBUTING, "Les poses JoJo"): three alone and, for
+a Stand user, three with the Stand, the Stand's look giving the pose of the same id. Look
+at the reference images themselves (JoJo Wiki covers, Eyes of Heaven renders, ASBR
+taunts): the pages name poses but never describe the body. Elbows, knees and `sway` make
+a pose read at 48 px. Cite the source in `source`; a pose invented where nothing is found
+says so (owner's rule of 15/11/2026).
+
+### Costumes and colours
+
+Look up the fighter's "Costumes & Tints" on its All-Star Battle R and Eyes of Heaven pages
+(JoJo Wiki): each costume and each tint is listed with what it is based on.
+
+- **Colours of the normal outfit**: a `[costume]` block (`label`, `label_en`, `source`) and
+  one `[colors.<id>]` per tint in the look file, the first one without a palette (it is the
+  look itself), the others with `[colors.<id>.palette]` naming only the materials that
+  change. Read the tones off the game's render of that tint (download it to the
+  scratchpad, never into the repository) and bring them to the sprite's brightness.
+- **Another costume**: `looks/<id>_<costume>.toml` starting with `base = "<id>"`: its
+  `[palette]`, `[body]`, `[[parts]]` (the whole list, when it changes) and its own
+  `[costume]` and `[colors.*]`. Then `costumes = { <costume> = "<dir>/<name>" }` in
+  `roster.toml`. Two colours at least per costume, so a mirror match can be told apart.
+- **The Stand**: its own `[colors.*]`, and `stand = "<id>"` in the colour of its user that
+  goes with it.
+
+Every costume and colour has a source. An invented colour only when the games give none,
+and its `source` says so. The generator refuses two materials that share a tone when one
+of them is repainted: give one of them its four tones by hand. `tests/test_outfits.py`
+checks that every costume of the roster is named, sourced and comes in two colours.
 
 ## 4. The roster - `jojo_arena/characters/roster.toml`
 

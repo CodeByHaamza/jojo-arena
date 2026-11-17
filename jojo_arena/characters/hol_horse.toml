@@ -1,0 +1,363 @@
+# Hol Horse (Part 3) - Emperor. A hired gun of DIO's who would rather be number two.
+#
+# Sources, read on 17/11/2026:
+# - JoJo Wiki, "Hol Horse" (https://jojowiki.com/Hol_Horse): a cowboy hitman, bold, a
+#   womanizer, quick-witted but easily frightened; "Why be number one when you can be
+#   number two?". He works with J. Geil (Hanged Man), then with Boingo. Named after Hall &
+#   Oates (Shueisha Jump Remix).
+# - JoJo Wiki, "Emperor" (https://jojowiki.com/Emperor): a gun summoned straight into his
+#   hand. Its bullets are part of the Stand: he steers them in flight (round Silver
+#   Chariot's sword, a U-turn, down a pipe he cannot see), within its range. Stats
+#   B B B C E E.
+# - JoJo Wiki, All-Star Battle R ★ Hol Horse (https://jojowiki.com/All-Star_Battle_R/Hol_Horse):
+#   Style "Gun beats sword." spins Emperor and powers up the next ☆ skill (more hits, more
+#   damage). "You lose, loser!" (☆, a fast bullet that vanishes if he is hit), "Even my
+#   bullets are part of my Stand!" (☆, slower, stronger, redirected in flight), "Come get
+#   us!" (a water bottle tossed and shot: a puddle that lasts 15 s), "You're up, J.
+#   Geil!" (Hanged Man stabs out of the puddle, the opponent crumples, 54). Throw "Now
+#   I've got ya!" (he lifts them by the collar and Hanged Man stabs them, 120). HHA "Eat
+#   this!" (☆, he spits his cigarette and fires 4 to 10 bullets that come back to hit
+#   again, 8 to 20 hits). GHA "Hol Horse is gonna kill ya!" (bottles shattered in a
+#   shockwave; Hanged Man stabs from the mirror world and pins them; Emperor's bullet
+#   curves through the glass into the forehead, 320). Passive "Hol Horse loves the
+#   ladies!" (against women: 10 % more damage, Heart Heat a little slower).
+#
+# What changes here, and why:
+# - "Even my bullets...": in ASBR he stands still and redirects it twice while the Style
+#   button is held. Here (decided with the owner on 24/10/2026) it follows the free aim,
+#   mouse or right stick, the whole way, and he keeps moving: that is Emperor's power as
+#   the manga shows it, and it reads from above.
+# - J. Geil: "Come get us!" throws the bottle where he aims (EoH's DHA throws it too), the
+#   puddle stays, and Hanged Man stabs out of the reflection when the opponent steps on
+#   it: "You're up, J. Geil!" is that stab. No button of its own: there is no free slot.
+# - "Eat this!": a bullet here hits once; ten of them, curving in at the target, stand in
+#   for the bullets that come back.
+# - "I'll be right back!" (he runs off) is left out: the dash already steps back.
+# - Normals: ASBR names none. Emperor's butt, a kick, and the point-blank shot the wiki
+#   gives Emperor ("instant summoning enables sneak attacks").
+# Feel: always moving, always shooting from an angle; the puddle and the curving bullet
+# make the opponent come to him, and he never wants them close.
+
+name = "Hol Horse"
+max_hp = 950
+walk_speed = 112
+strength = 1.1
+style = { type = "move", move = "style" }
+
+[passive]
+vs_tag = "woman"  # "Hol Horse loves the ladies!"
+damage_dealt_mult = 1.1
+hh_gain_mult = 0.9
+
+# "Gun beats sword.": the charge lasts this long if no starred move spends it.
+[buffs.gun_beats_sword]
+duration_s = 8
+charge = true
+
+[stances.base]
+label = "AVEC EMPEROR"
+label_en = "WITH EMPEROR"
+
+# Emperor's butt, a kick, then a shot point-blank: the same button three times.
+[stances.base.moves.light]
+label = "CROSSE D'EMPEROR"
+label_en = "EMPEROR'S BUTT"
+info = "Rapide. Encore : coup de pied, puis un tir à bout portant"
+info_en = "Fast. Again: a kick, then a point-blank shot"
+startup_f = 5
+active_f = 3
+recovery_f = 11
+damage = 30
+reach = 15
+radius = 10
+hitstun_f = 19
+knockback = 80
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.base.moves.light2]
+label = "COUP DE PIED"
+label_en = "KICK"
+info = "S'enchaîne sur la crosse"
+info_en = "Follows the gun butt"
+startup_f = 6
+active_f = 3
+recovery_f = 12
+damage = 34
+reach = 17
+radius = 11
+hitstun_f = 21
+knockback = 110
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "kick"
+
+[stances.base.moves.light3]
+shout = "BANG !"
+label = "À BOUT PORTANT"
+label_en = "POINT-BLANK"
+info = "Fin de l'enchaînement : Emperor apparaît dans sa main et tire, envoie loin"
+info_en = "Chain ender: Emperor appears in his hand and fires, sends far"
+startup_f = 8
+active_f = 3
+recovery_f = 18
+damage = 52
+reach = 24
+radius = 9
+shape = "line"
+hitstun_f = 28
+knockback = 380
+hitstop_f = 8
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "light"
+
+# ASBR throw: "Now I've got ya!" - by the collar, and Hanged Man stabs them away.
+[stances.base.moves.heavy]
+shout = "JE TE TIENS !"
+label = "JE TE TIENS !"
+label_en = "NOW I'VE GOT YA!"
+info = "Saisie imparable : il les soulève par le col, Hanged Man les poignarde"
+info_en = "Unblockable grab: he lifts them by the collar, Hanged Man stabs them"
+startup_f = 10
+active_f = 3
+recovery_f = 30
+damage = 120
+reach = 12
+radius = 10
+hitstun_f = 34
+knockback = 320
+hitstop_f = 12
+unblockable = true
+clashable = false
+anim = "grab"
+
+# ASBR: "Come get us!" - a water bottle thrown where he aims, shot: a puddle. Step on it,
+# and Hanged Man stabs out of the reflection ("You're up, J. Geil!").
+[stances.base.moves.heavy_alt]
+shout = "VENEZ DONC !"
+label = "VENEZ DONC NOUS CHERCHER !"
+label_en = "COME GET US!"
+info = "Avec une direction : une bouteille d'eau là où il vise, une balle, une flaque (15 s). Qui marche dedans : Hanged Man le poignarde depuis le reflet (recharge 6 s)"
+info_en = "With a direction: a water bottle where he aims, a bullet, a puddle (15 s). Whoever steps in it: Hanged Man stabs them from the reflection (6 s cooldown)"
+startup_f = 14
+active_f = 1
+recovery_f = 18
+cooldown_s = 6
+anim = "special"
+
+[stances.base.moves.heavy_alt.trap]
+at_cursor = true
+distance = 170
+radius = 14
+lifetime_s = 15
+max_count = 2
+
+# "You're up, J. Geil!": Hanged Man out of the puddle, under whoever stepped in.
+[stances.base.moves.heavy_alt.trap.projectile]
+look = "reflection"
+origin = "ring"
+ring_radius = 0
+speed = 0
+radius = 16
+damage = 54
+lifetime_s = 0.3
+hitstun_f = 44
+knockback = 40
+hitstop_f = 10
+
+# ASBR: "You lose, loser!" ☆ - a fast bullet. It vanishes if he is hit.
+[stances.base.moves.special]
+shout = "T'AS PERDU !"
+label = "T'AS PERDU, LOSER !"
+label_en = "YOU LOSE, LOSER!"
+info = "Une balle rapide ; elle disparaît s'il est touché. Chargée : deux balles qui envoient loin"
+info_en = "A fast bullet; it vanishes if he is hit. Charged: two bullets that send far"
+startup_f = 9
+active_f = 1
+recovery_f = 19
+boosted = "special_boosted"
+anim = "light"
+
+[stances.base.moves.special.projectile]
+look = "bullet"
+speed = 460
+radius = 3
+damage = 45
+lifetime_s = 0.75
+hitstun_f = 18
+knockback = 80
+hitstop_f = 4
+fragile = true
+
+[stances.base.moves.special_boosted]
+shout = "T'AS PERDU !"
+label = "T'AS PERDU, LOSER ! (CHARGÉE)"
+label_en = "YOU LOSE, LOSER! (CHARGED)"
+info = "Chargée par Gun beats sword : deux balles, la seconde envoie loin"
+info_en = "Charged by Gun beats sword: two bullets, the second sends far"
+startup_f = 9
+active_f = 1
+recovery_f = 19
+anim = "light"
+
+[stances.base.moves.special_boosted.projectile]
+look = "bullet"
+speed = 500
+radius = 3
+damage = 36
+lifetime_s = 0.8
+hitstun_f = 26
+knockback = 300
+hitstop_f = 6
+waves = 2
+wave_every_f = 4
+fragile = true
+
+# ASBR: "Even my bullets are part of my Stand!" ☆ - slower, stronger, and it goes where
+# he aims for as long as it flies.
+[stances.base.moves.special_alt]
+shout = "MÊME MES BALLES !"
+label = "MÊME MES BALLES SONT MON STAND !"
+label_en = "EVEN MY BULLETS ARE PART OF MY STAND!"
+info = "Avec une direction : une balle plus lente qui suit la visée (souris ou stick droit) tout du long, pendant qu'il bouge. Chargée : plus forte, plus vive"
+info_en = "With a direction: a slower bullet that follows the aim (mouse or right stick) the whole way while he moves. Charged: stronger, quicker to turn"
+startup_f = 12
+active_f = 1
+recovery_f = 18
+boosted = "special_alt_boosted"
+anim = "light"
+
+[stances.base.moves.special_alt.projectile]
+look = "bullet"
+speed = 200
+radius = 3
+damage = 55
+lifetime_s = 2.0
+hitstun_f = 24
+knockback = 140
+hitstop_f = 6
+steer_deg_s = 300
+fragile = true
+
+[stances.base.moves.special_alt_boosted]
+shout = "MÊME MES BALLES !"
+label = "MÊME MES BALLES SONT MON STAND ! (CHARGÉE)"
+label_en = "EVEN MY BULLETS ARE PART OF MY STAND! (CHARGED)"
+info = "Chargée par Gun beats sword : plus forte, plus rapide, elle tourne plus sec et envoie loin"
+info_en = "Charged by Gun beats sword: stronger, faster, it turns tighter and sends far"
+startup_f = 12
+active_f = 1
+recovery_f = 14
+anim = "light"
+
+[stances.base.moves.special_alt_boosted.projectile]
+look = "bullet"
+speed = 240
+radius = 3
+damage = 85
+lifetime_s = 2.4
+hitstun_f = 30
+knockback = 320
+hitstop_f = 8
+steer_deg_s = 440
+fragile = true
+
+# Style button: "Gun beats sword." - Emperor spun round his finger. The next ☆ move comes
+# out charged.
+[moves.style]
+label = "GUN BEATS SWORD."
+info = "Il fait tourner Emperor : le prochain coup marqué d'une étoile dans ASBR sort chargé (balles, Tiens bouffe ça) (8 s pour s'en servir)"
+info_en = "He spins Emperor: the next move ASBR marks with a star comes out charged (bullets, Eat this) (8 s to use it)"
+startup_f = 6
+active_f = 1
+recovery_f = 22
+buff = "gun_beats_sword"
+anim = "pose"
+
+# Super moves ----------------------------------------------------------------------------
+
+# Heart Heat Attack (1 bar): "Eat this!" ☆ - the cigarette spat out, and the bullets come
+# one after the other, curving in.
+[moves.hha]
+shout = "TIENS, BOUFFE ÇA !"
+label = "TIENS, BOUFFE ÇA !"
+label_en = "EAT THIS!"
+info = "Il crache sa cigarette et vide Emperor : dix balles qui reviennent vers l'adversaire. Chargée : douze, plus fortes"
+info_en = "He spits his cigarette and empties Emperor: ten bullets curving in at the opponent. Charged: twelve, stronger"
+startup_f = 14
+active_f = 40
+recovery_f = 24
+invincible_f = 14
+boosted = "hha_boosted"
+clashable = false
+anim = "light"
+
+[moves.hha.projectile]
+look = "bullet"
+speed = 320
+radius = 4
+damage = 15
+lifetime_s = 1.2
+hitstun_f = 16
+knockback = 30
+hitstop_f = 2
+waves = 10
+wave_every_f = 4
+spread_deg = 30
+homing_deg_s = 260
+
+[moves.hha_boosted]
+shout = "TIENS, BOUFFE ÇA !"
+label = "TIENS, BOUFFE ÇA ! (CHARGÉE)"
+label_en = "EAT THIS! (CHARGED)"
+info = "Chargée par Gun beats sword : douze balles, plus fortes"
+info_en = "Charged by Gun beats sword: twelve bullets, stronger"
+startup_f = 14
+active_f = 48
+recovery_f = 24
+invincible_f = 14
+clashable = false
+anim = "light"
+
+[moves.hha_boosted.projectile]
+look = "bullet"
+speed = 340
+radius = 4
+damage = 17
+lifetime_s = 1.2
+hitstun_f = 16
+knockback = 30
+hitstop_f = 2
+waves = 12
+wave_every_f = 4
+spread_deg = 30
+homing_deg_s = 300
+
+# Great Heat Attack (2 bars): "Hol Horse is gonna kill ya!" - the bottles burst all round
+# him; caught in the shockwave, Hanged Man comes out of the glass and the bullet follows.
+[moves.gha]
+shout = "HOL HORSE VA TE BUTER !"
+label = "HOL HORSE VA TE BUTER !"
+label_en = "HOL HORSE IS GONNA KILL YA!"
+info = "Les bouteilles éclatent tout autour de lui ; pris dans l'onde, Hanged Man surgit des éclats et la balle d'Emperor suit"
+info_en = "The bottles burst all round him; caught in the blast, Hanged Man comes out of the shards and Emperor's bullet follows"
+startup_f = 14
+active_f = 6
+recovery_f = 30
+invincible_f = 14
+damage = 40
+reach = 0
+radius = 52
+hitstun_f = 40
+hitstop_f = 10
+clashable = false
+anim = "special"
+cinematic = "emperor_hanged_man"
+cinematic_s = 5
+finish_damage = 280
+finish_hitstun_f = 50
+finish_knockback = 380
+finish_wall_bounce = true

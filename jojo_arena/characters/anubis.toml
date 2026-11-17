@@ -1,0 +1,262 @@
+# Anubis (Part 3) - the sword that possesses whoever draws it. A fighter of our own: it is
+# in neither All-Star Battle R nor Eyes of Heaven (Capcom's JoJo's Venture, 1998, had it).
+# Asked for by the owner on 17/11/2026, as a fighter only this game has.
+#
+# Sources, read on 17/11/2026:
+# - JoJo Wiki, "Anubis" (https://jojowiki.com/Anubis): a curved, double-edged Shamshir
+#   blade with a jewelled cross-guard. It controls whoever draws it, whatever their will.
+#   It remembers the attacks used against it and counters them: the same tactic fails
+#   twice; it grows faster and stronger during a fight. Its blade passes through stone,
+#   walls and bodies without harming them, and cuts a target hidden behind a pillar
+#   without touching the pillar. It does not improve its wielder's technique (Chaka swings
+#   it like an amateur). A broken blade keeps working. Stats B B E A E C. Its users: Chaka,
+#   Khan, Polnareff; a boy who threw it, past his targets; a cow.
+#   "I know all your moves now. Even with a different wielder... Once I've fought someone
+#   once, I n-n-n-n-NEVER lose twice!" (Khan, chapter 196).
+# - JoJo Wiki, "Chaka" (https://jojowiki.com/Chaka): the farmhand who drew it first, near
+#   the Nile; Polnareff beat him at Kom Ombo. "Khan" (https://jojowiki.com/Khan): the barber
+#   of Edfu who drew it next; Jotaro broke the blade in two.
+#
+# How it fights here, and why:
+# - It learns (kit table [learn]): a blow it takes is remembered; the next time, if it is
+#   free to move, it parries that blow, and each new blow remembered makes it stronger and
+#   faster. A combo still lands: in hitstun it is not free. That is its power, and its
+#   weakness: show it something new every time.
+# - The blade passes through: its thrust goes through a guard (unblockable), its thrown
+#   blade through props (`phasing`), its long cut reaches behind what stands in the way.
+# - Its wielder fights like an amateur: plain slashes, nothing fancy.
+# - The Heart Heat Attack is Khan's "I NEVER lose twice!": a counter. The Great Heat
+#   Attack: the blade straight through the pillar and into whoever hides behind it.
+# - The Stand key does nothing: Anubis has no other form to call; it is the sword.
+# Feel: the longer the fight lasts, the worse it gets for you.
+
+name = "Anubis"
+max_hp = 1000
+walk_speed = 104
+strength = 1.2
+
+[learn]
+damage = 0.06   # +6 % damage per blow remembered
+speed = 0.03    # +3 % speed per blow remembered
+max = 8
+stun_s = 0.35   # a blow parried leaves the attacker staggered: the opening is Anubis's
+
+[stances.base]
+label = "ANUBIS DÉGAINÉ"
+label_en = "ANUBIS DRAWN"
+
+# Plain slashes: the wielder is no swordsman.
+[stances.base.moves.light]
+label = "TAILLADE"
+label_en = "SLASH"
+info = "Rapide. Encore : un revers, puis un coup de haut en bas"
+info_en = "Fast. Again: a backhand, then a downward cut"
+startup_f = 6
+active_f = 3
+recovery_f = 11
+damage = 30
+reach = 20
+radius = 11
+hitstun_f = 19
+knockback = 80
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+fx = "blade"
+
+[stances.base.moves.light2]
+label = "REVERS DE LAME"
+label_en = "BACKHAND CUT"
+info = "S'enchaîne sur la taillade"
+info_en = "Follows the slash"
+startup_f = 6
+active_f = 3
+recovery_f = 12
+damage = 34
+reach = 21
+radius = 12
+hitstun_f = 21
+knockback = 100
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+fx = "blade"
+anim = "heavy"
+
+[stances.base.moves.light3]
+shout = "OUSHAAA !"
+label = "COUP DE HAUT EN BAS"
+label_en = "DOWNWARD CUT"
+info = "Fin de l'enchaînement : envoie contre le mur"
+info_en = "Chain ender: sends into the wall"
+startup_f = 9
+active_f = 4
+recovery_f = 20
+damage = 56
+reach = 22
+radius = 14
+hitstun_f = 30
+knockback = 400
+hitstop_f = 9
+wall_bounce = true
+cancel_on_hit = ["special"]
+fx = "blade"
+anim = "heel_drop"
+
+# The blade goes through a guard as through a wall: nothing stops it.
+[stances.base.moves.heavy]
+label = "LA LAME TRAVERSE"
+label_en = "THE BLADE GOES THROUGH"
+info = "Un estoc que rien n'arrête : il traverse la garde"
+info_en = "A thrust nothing stops: it goes through the guard"
+startup_f = 11
+active_f = 4
+recovery_f = 22
+shape = "line"
+damage = 62
+reach = 28
+radius = 7
+hitstun_f = 28
+knockback = 260
+hitstop_f = 8
+unblockable = true
+clashable = false
+fx = "blade"
+anim = "light"
+
+# With a direction: a lunge, the point first.
+[stances.base.moves.heavy_alt]
+label = "FENTE"
+label_en = "LUNGE"
+info = "Avec une direction : il fonce la pointe en avant"
+info_en = "With a direction: he charges point first"
+startup_f = 10
+active_f = 6
+recovery_f = 20
+lunge = 230
+shape = "line"
+damage = 52
+reach = 24
+radius = 8
+hitstun_f = 26
+knockback = 320
+hitstop_f = 8
+wall_bounce = true
+cancel_on_hit = ["special"]
+fx = "blade"
+anim = "dash"
+
+# The boy who threw it, past his targets, and the blade went through the wall.
+[stances.base.moves.special]
+label = "LA LAME LANCÉE"
+label_en = "THE BLADE THROWN"
+info = "Le sabre lancé : il traverse le décor sans le toucher, et revient dans la main (recharge 2 s)"
+info_en = "The sword thrown: it goes through the props without touching them, and comes back to hand (2 s cooldown)"
+startup_f = 11
+active_f = 1
+recovery_f = 16
+cooldown_s = 1.4
+anim = "special"
+
+[stances.base.moves.special.projectile]
+look = "blade"
+speed = 300
+radius = 5
+damage = 46
+lifetime_s = 1.0
+hitstun_f = 24
+knockback = 200
+hitstop_f = 6
+phasing = true
+returns = true
+
+# The cut behind the pillar: long, and through whatever is in the way.
+[stances.base.moves.special_alt]
+label = "DERRIÈRE LE PILIER"
+label_en = "BEHIND THE PILLAR"
+info = "Avec une direction : une longue entaille qui passe à travers ce qui se tient entre eux (recharge 3 s)"
+info_en = "With a direction: a long cut that passes through whatever stands between them (3 s cooldown)"
+startup_f = 12
+active_f = 4
+recovery_f = 20
+shape = "line"
+damage = 64
+reach = 58
+radius = 8
+hitstun_f = 30
+knockback = 300
+hitstop_f = 9
+clashable = false
+cooldown_s = 3
+fx = "blade"
+anim = "heavy"
+
+# Super moves ----------------------------------------------------------------------------
+
+# Heart Heat Attack (1 bar): "I n-n-n-n-NEVER lose twice!" - it waits for the blow, and
+# answers it at once.
+[moves.hha]
+shout = "JE NE PERDS JAMAIS DEUX FOIS !"
+label = "JE NE PERDS JAMAIS DEUX FOIS !"
+label_en = "I NEVER LOSE TWICE!"
+info = "Un contre : il attend le coup. Frappé, il répond aussitôt par une volée de tailles"
+info_en = "A counter: it waits for the blow. Struck, it answers at once with a volley of cuts"
+startup_f = 3
+active_f = 34
+recovery_f = 20
+counter = "never_twice_answer"
+anim = "counter"
+
+[moves.never_twice_answer]
+shout = "JAMAIS !"
+label = "JAMAIS DEUX FOIS (CONTRE)"
+label_en = "NEVER TWICE (COUNTER)"
+info = "La réponse du contre : sept tailles, la dernière envoie au mur"
+info_en = "The counter's answer: seven cuts, the last sends into the wall"
+startup_f = 2
+active_f = 28
+recovery_f = 20
+invincible_f = 30
+hits = 7
+hit_every_f = 4
+damage = 18
+last_damage = 60
+reach = 20
+radius = 16
+hitstun_f = 18
+knockback = 30
+last_knockback = 440
+last_wall_bounce = true
+hitstop_f = 3
+clashable = false
+fx = "blade"
+anim = "heavy"
+
+# Great Heat Attack (2 bars): the blade through the pillar - straight through everything
+# between them, and into them.
+[moves.gha]
+shout = "À TRAVERS TOUT !"
+label = "À TRAVERS TOUT"
+label_en = "THROUGH EVERYTHING"
+info = "La lame passe à travers tout ce qui se tient entre eux, garde comprise"
+info_en = "The blade passes through everything between them, the guard included"
+startup_f = 16
+active_f = 6
+recovery_f = 30
+invincible_f = 16
+shape = "line"
+damage = 40
+reach = 110
+radius = 10
+hitstun_f = 40
+hitstop_f = 10
+unblockable = true
+clashable = false
+fx = "blade"
+anim = "light"
+cinematic = "anubis_through"
+cinematic_s = 4.5
+finish_damage = 290
+finish_hitstun_f = 50
+finish_knockback = 420
+finish_wall_bounce = true

@@ -63,10 +63,15 @@ class Seen:
 
 def move_reach(move: MoveDef) -> float:
     """How far a move threatens, in px from the user's body."""
-    if move.projectile is not None or move.trap is not None or move.at_target:
+    # A blow that also leaves a trap behind (a drum swung, then its puddle) reaches as
+    # far as the blow: only a move that is nothing but a trap is laid from anywhere.
+    lays_only = move.trap is not None and not (move.radius > 0 and move.damage > 0)
+    if move.projectile is not None or lays_only or move.at_target:
         return 260.0
     if move.leap:
-        return move.leap + move.radius
+        # A leap that strikes threatens where it lands; one that only carries the user
+        # away (a grapple, a pull on a vine) is a way out, not a blow.
+        return move.leap + move.radius if move.radius or move.damage else 0.0
     if move.time_stop_f or move.buff or (move.radius == 0 and move.reach == 0):
         return 0.0  # not a blow: time stop, buff...
     return move.reach + move.radius + move.lunge * max(1, move.startup_f) * 0.5
@@ -120,6 +125,14 @@ class CpuPlayer:
         slot, variant, _ = self.rng.choice(options)
         return slot, variant
 
+    def _super_counters(self, me: Fighter) -> bool:
+        """The super the meter would buy right now is a counter: it waits for a blow."""
+        if me.hh < me.rules.hha_cost:
+            return False
+        slot = "gha" if me.hh >= me.rules.gha_cost else "hha"
+        move = me.kit.move(me.stance, slot)
+        return move is not None and bool(move.counter)
+
     def _move(self, me: Fighter, slot: str, variant: bool) -> MoveDef | None:
         stance = me.kit.stances.get(me.stance)
         if stance is None:
@@ -160,6 +173,9 @@ class CpuPlayer:
             self.guard_f -= 1
             return InputFrame((0.0, 0.0), frozenset({"guard"}), {})
         if threat and me.can_act() and rng.random() < level.defend:
+            if level.supers and self._super_counters(me) and rng.random() < 0.5:
+                # A super that is a counter is an answer, not an opening: now is when.
+                return InputFrame((0.0, 0.0), frozenset(), {"heart_heat": 1})
             if rng.random() < 0.35:
                 presses["dash"] = 1
                 side = Vec2(-toward.y, toward.x) * rng.choice((-1, 1))
@@ -183,7 +199,7 @@ class CpuPlayer:
             if distance > 90 and self.breath_f:
                 return InputFrame((0.0, 0.0), frozenset({"stand"}), {})
             self.breath_f = 0
-        if style == "hamon" and me.hamon < 40 and distance > 120 and rng.random() < 0.05:
+        if me.kit.breathes and me.hamon < 40 and distance > 120 and rng.random() < 0.05:
             self.breath_f = rng.randint(40, 90)
             return InputFrame((0.0, 0.0), frozenset({"stand"}), {"stand": 1})
         stance_on = me.style.params.get("on")
@@ -197,8 +213,9 @@ class CpuPlayer:
         if style == "vampire" and me.stance != stance_on and me.blood > 50 and rng.random() < 0.01:
             return InputFrame(press_counts={"stand": 1})
 
-        # Supers: when the opponent is open and close.
-        if level.supers and me.hh >= me.rules.hha_cost and distance < 70 and rng.random() < 0.04:
+        # Supers: when the opponent is open and close (never a counter: nothing to catch).
+        ready = level.supers and me.hh >= me.rules.hha_cost and not self._super_counters(me)
+        if ready and distance < 70 and rng.random() < 0.04:
             direction = toward if me.hh >= me.rules.gha_cost else Vec2()
             return InputFrame(
                 quantize_8(direction.x, direction.y, 0.1), frozenset(), {"heart_heat": 1}

@@ -7,7 +7,8 @@ placeholder for real art only means dropping new files with the same names.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from collections import OrderedDict
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import pygame
@@ -16,6 +17,7 @@ from .data import load_toml
 
 OUTLINE = (23, 18, 31)
 Color = tuple[int, int, int]
+STAND_IN_ALPHA = 254  # recolor: the alpha of its stand-in colours (see there)
 
 
 def parse_color(value: str | list[int] | tuple[int, ...]) -> Color:
@@ -81,10 +83,28 @@ class PoseInfo:
     stand_offset: tuple[float, float]  # where the Stand stands then: ahead, aside (px)
 
 
-NO_POSES: dict[str, PoseInfo] = {}
+@dataclass(frozen=True)
+class ColorInfo:
+    """A colour a sheet can be repainted in when it is loaded, and where it comes from."""
 
-# Sheets already decoded (see SheetSprites.load).
+    id: str
+    label: str
+    label_en: str
+    source: str
+    stand: str = ""  # the colour of the same name its Stand's sheet goes with ("": its own)
+    # Material -> its tones in this colour. Empty: the sheet as it is drawn.
+    palette: dict[str, list[Color]] = field(default_factory=dict)
+
+
+NO_POSES: dict[str, PoseInfo] = {}
+NO_COLORS: dict[str, ColorInfo] = {}
+
+# Sheets already decoded (see SheetSprites.load). A sheet as it is drawn stays for good;
+# a repainted one weighs as much and is asked for far less often (a colour tried on the
+# select screen), so only the last few are kept.
 _LOADED: dict[tuple, SheetSprites] = {}
+_REPAINTED: OrderedDict[tuple, SheetSprites] = OrderedDict()
+REPAINTED_KEPT = 8
 
 
 class SpriteSet:
@@ -92,6 +112,8 @@ class SpriteSet:
     chest: int = 16  # pixels above the feet where hits and effects should appear
     height: int = 38  # pixels above the feet to the top of the head
     poses: dict[str, PoseInfo] = NO_POSES  # in the order of the look file; read only
+    colors: dict[str, ColorInfo] = NO_COLORS  # the first one is the sheet as it is drawn
+    costume: tuple[str, str, str] = ("", "", "")  # its name in both languages, its source
 
     def spec(self, anim: str) -> AnimSpec | None:
         raise NotImplementedError
@@ -120,6 +142,26 @@ class SheetSprites(SpriteSet):
             )
             for pose_id, info in spec_data.get("poses", {}).items()
         }
+        self.colors = {
+            color_id: ColorInfo(
+                color_id,
+                info.get("label", ""),
+                info.get("label_en", ""),
+                info.get("source", ""),
+                info.get("stand", ""),
+                {
+                    slot: [parse_color(tone) for tone in tones]
+                    for slot, tones in info.get("palette", {}).items()
+                },
+            )
+            for color_id, info in spec_data.get("colors", {}).items()
+        }
+        outfit = spec_data.get("costume", {})
+        self.costume = (
+            outfit.get("label", ""),
+            outfit.get("label_en", ""),
+            outfit.get("source", ""),
+        )
         self.specs: dict[str, AnimSpec] = {}
         self._frames: dict[tuple[str, str], list[pygame.Surface]] = {}
         self._flipped: dict[tuple[str, str, int], pygame.Surface] = {}
@@ -138,17 +180,23 @@ class SheetSprites(SpriteSet):
 
     @classmethod
     def load(
-        cls, png_path: Path, spec_path: Path, palette: dict[str, list[Color]] | None = None
+        cls,
+        png_path: Path,
+        spec_path: Path,
+        palette: dict[str, list[Color]] | None = None,
+        color: str = "",
     ) -> SheetSprites | None:
-        """Load a sheet, recolored with `palette`. Returns None when the files are missing.
+        """Load a sheet, recolored with `palette` and then in the sheet's own colour named
+        `color` (a colour it does not have is the sheet as it is). Returns None when the
+        files are missing.
 
         A sheet is decoded once and shared: every menu and every fight asks for the same
         ones, and a sheet is only ever read once built. A file changed on disk, another
-        palette, or a display opened since, is another sheet."""
+        palette or colour, or a display opened since, is another sheet."""
         if not png_path.exists() or not spec_path.exists():
             return None
         converting = pygame.display.get_init() and pygame.display.get_surface() is not None
-        key = (
+        stamp = (
             str(png_path),
             str(spec_path),
             png_path.stat().st_mtime_ns,
@@ -158,17 +206,39 @@ class SheetSprites(SpriteSet):
             ),
             converting,
         )
-        cached = _LOADED.get(key)
-        if cached is not None:
-            return cached
+        plain = _LOADED.get(stamp)
+        if plain is not None and not plain.colors.get(color, ColorInfo("", "", "", "")).palette:
+            return plain  # no such colour, or the one the sheet is drawn in
+        key = (*stamp, color)
+        if key in _REPAINTED:
+            _REPAINTED.move_to_end(key)
+            return _REPAINTED[key]
         spec_data = load_toml(spec_path)
+        painted = dict(palette or {})
+        painted.update(
+            {
+                slot: [parse_color(tone) for tone in tones]
+                for slot, tones in spec_data.get("colors", {})
+                .get(color, {})
+                .get("palette", {})
+                .items()
+            }
+        )
+        repainted = painted != (palette or {})
+        if not repainted and plain is not None:
+            return plain
         sheet = pygame.image.load(str(png_path))
-        if palette:
-            sheet = recolor(sheet, spec_data.get("recolor", {}), palette)
+        if painted:
+            sheet = recolor(sheet, spec_data.get("recolor", {}), painted)
         if converting:
             sheet = sheet.convert_alpha()
         loaded = cls(sheet, spec_data)
-        _LOADED[key] = loaded
+        if not repainted:
+            _LOADED[stamp] = loaded
+            return loaded
+        _REPAINTED[key] = loaded
+        while len(_REPAINTED) > REPAINTED_KEPT:
+            _REPAINTED.popitem(last=False)
         return loaded
 
     def spec(self, anim: str) -> AnimSpec | None:
@@ -188,15 +258,27 @@ class SheetSprites(SpriteSet):
 def recolor(
     sheet: pygame.Surface, keys: dict[str, list], palette: dict[str, list[Color]]
 ) -> pygame.Surface:
-    """Replace each key color with the matching tone of the palette slot."""
-    result = sheet.copy()
-    pixels = pygame.PixelArray(result)
+    """Replace each key color with the matching tone of the palette slot, all at once:
+    a tone a material was just painted with is never taken for another material's key (a
+    white shirt turned the grey the trousers had stays that grey)."""
+    # An exact copy that always has an alpha channel (the stand-ins below rely on it).
+    result = pygame.Surface(sheet.get_size(), pygame.SRCALPHA)
+    result.blit(sheet, (0, 0), special_flags=pygame.BLEND_RGBA_MAX)
+    swaps: list[tuple[Color, Color]] = []
     for slot, key_colors in keys.items():
         tones = palette.get(slot)
         if not tones:
             continue
         for i, key in enumerate(key_colors):
-            pixels.replace(parse_color(key), tones[min(i, len(tones) - 1)])
+            swaps.append((parse_color(key), tuple(tones[min(i, len(tones) - 1)])[:3]))
+    pixels = pygame.PixelArray(result)
+    # Two rounds. Every key goes to a stand-in no drawn pixel can be (a sprite's pixels
+    # are fully opaque or fully clear: these are neither), then every stand-in to its
+    # tone. No tone is ever on the image while keys are still being looked for.
+    for n, (key, _) in enumerate(swaps):
+        pixels.replace((*key, 255), (n % 256, n // 256, 0, STAND_IN_ALPHA))
+    for n, (_, tone) in enumerate(swaps):
+        pixels.replace((n % 256, n // 256, 0, STAND_IN_ALPHA), (*tone, 255))
     pixels.close()
     return result
 

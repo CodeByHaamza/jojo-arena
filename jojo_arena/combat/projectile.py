@@ -68,8 +68,8 @@ class Projectile:
                 kind = "explosion" if self.defn.explode_radius >= BIG_BLAST else "burst"
                 return [Event(kind, self.pos, self.owner, self.defn.explode_radius)]
             return [Event("projectile_fade", self.pos)]
-        blocked = arena.outside_walls(self.pos, self.radius) or arena.obstacle_at(
-            self.pos, self.radius
+        blocked = arena.outside_walls(self.pos, self.radius) or (
+            not self.defn.phasing and arena.obstacle_at(self.pos, self.radius)
         )
         if self.defn.explode_radius and blocked:
             self.pos = self.pos - self.velocity  # a grenade stops against walls and props
@@ -82,7 +82,7 @@ class Projectile:
                 return self.ricochet(arena)  # a blade thrown flat keeps going
             self.alive = False
             return [Event("projectile_wall", self.pos)]
-        obstacle = arena.obstacle_at(self.pos, self.radius)
+        obstacle = None if self.defn.phasing else arena.obstacle_at(self.pos, self.radius)
         if obstacle is not None:
             broke = obstacle.damage(self.defn.damage)
             if self.defn.returns and not self.returning:

@@ -1,12 +1,13 @@
 """Status effects: what a blow leaves behind once it has landed.
 
-Three of them, because three things in this fight keep working after the impact: fire,
-cold and a current running through a body. The engine knows no character: a move names
-a status and how long it lasts, the numbers live in rules.toml, and whoever has one
-carries it until it runs out.
+Four of them, because four things in this fight keep working after the impact: fire,
+cold, a current running through a body, and a body made a magnet (it builds up in levels:
+each new touch adds one, up to its ceiling, and blows that look for it hit harder). The
+engine knows no character: a move names a status and how long it lasts, the numbers live
+in rules.toml, and whoever has one carries it until it runs out.
 
-A second hit does not stack - it refreshes, up to that status's own ceiling - so a
-zoner cannot cook someone to death from across the arena by holding one button.
+A second hit does not stack the time - it refreshes it, up to that status's own ceiling -
+so a zoner cannot cook someone to death from across the arena by holding one button.
 """
 
 from __future__ import annotations
@@ -22,7 +23,8 @@ _HZ = 60  # the fixed step; kept here so this module needs nothing from the rule
 BURN = "burn"
 CHILL = "chill"
 SHOCK = "shock"
-KINDS: tuple[str, ...] = (BURN, CHILL, SHOCK)
+MAGNET = "magnet"
+KINDS: tuple[str, ...] = (BURN, CHILL, SHOCK, MAGNET)
 
 
 @dataclass(frozen=True)
@@ -37,6 +39,7 @@ class StatusDef:
     no_breath: bool  # no Hamon breathed in, no blood drunk
     no_meter: bool  # no Heart Heat gained
     guard_drain_per_f: float  # the guard gauge shakes apart on its own
+    max_level: int = 1  # above 1: each touch while it holds adds a level, up to this
 
     @classmethod
     def from_data(cls, name: str, data: dict) -> StatusDef:
@@ -49,6 +52,7 @@ class StatusDef:
             no_breath=data.get("no_breath", False),
             no_meter=data.get("no_meter", False),
             guard_drain_per_f=data.get("guard_drain_per_s", 0.0) / _HZ,
+            max_level=data.get("max_level", 1),
         )
 
 
@@ -66,6 +70,7 @@ class Statuses:
     def __init__(self, defs: Mapping[str, StatusDef]) -> None:
         self._defs = defs
         self.left: dict[str, int] = {}
+        self.levels: dict[str, int] = {}  # how far a status with levels has built up
         self._damage_carry = 0.0
 
     # Reading ---------------------------------------------------------------------------
@@ -75,6 +80,10 @@ class Statuses:
 
     def frames(self, name: str) -> int:
         return self.left.get(name, 0)
+
+    def level(self, name: str) -> int:
+        """How far it has built up: 0 when it does not hold, 1 on the first touch..."""
+        return self.levels.get(name, 0) if name in self else 0
 
     @property
     def active(self) -> tuple[str, ...]:
@@ -117,10 +126,13 @@ class Statuses:
             return False
         fresh = self.left.get(name, 0) <= 0
         self.left[name] = min(defn.max_f, max(self.left.get(name, 0), frames))
+        if defn.max_level > 1:
+            self.levels[name] = 1 if fresh else min(defn.max_level, self.levels.get(name, 0) + 1)
         return fresh
 
     def clear(self) -> None:
         self.left.clear()
+        self.levels.clear()
         self._damage_carry = 0.0
 
     def tick(self) -> None:
@@ -129,6 +141,7 @@ class Statuses:
             self.left[name] -= 1
             if self.left[name] <= 0:
                 del self.left[name]
+                self.levels.pop(name, None)
 
     def damage_this_frame(self) -> int:
         """Whole points of life the statuses take this frame (fractions carry over)."""

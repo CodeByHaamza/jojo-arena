@@ -87,6 +87,69 @@ text_en = "A fortune teller in the Khan el-Khalili bazaar in Cairo, and a Stand 
 family = "Égyptien, né dans les années 1960. Ami de Joseph Joestar, qui l'avait mis en garde contre DIO."
 family_en = "Egyptian, born in the 1960s. A friend of Joseph Joestar, who had warned him about DIO."
 
+[[characters]]
+id = "joseph_p3"
+name = "JOSEPH JOESTAR ÂGÉ"
+name_en = "OLD JOSEPH JOESTAR"
+fighter = "joseph_p3"
+stand = "HERMIT PURPLE"
+power = "ONDE (HAMON)"
+power_en = "RIPPLE (HAMON)"
+text = "Le héros de la partie 2, cinquante ans plus tard : cheveux gris, barbe taillée, un fedora, et sous son gant blanc la main mécanique qui remplace celle que Kars lui a tranchée. Quand DIO se réveille, un Stand lui vient comme à toute sa lignée, et sa fille Holly en tombe malade : il vient chercher Jotaro et mène le voyage jusqu'en Égypte. Il se bat encore par la ruse, avec ses ronces et l'onde qu'il y fait courir. DIO lui prend son sang ; Jotaro le lui rend."
+text_en = "The hero of Part 2, fifty years on: gray hair, a trimmed beard, a fedora, and under his white glove the mechanical hand that replaces the one Kars cut off. When DIO wakes, a Stand comes to him as to his whole bloodline, and his daughter Holly falls ill from it: he comes for Jotaro and leads the journey all the way to Egypt. He still fights by cunning, with his vines and the Ripple he sends down them. DIO takes his blood; Jotaro gives it back."
+family = "Petit-fils de Jonathan Joestar. Père de Holly Kujo, grand-père de Jotaro."
+family_en = "Grandson of Jonathan Joestar. Father of Holly Kujo, grandfather of Jotaro."
+
+[[characters]]
+id = "vanilla_ice"
+name = "VANILLA ICE"
+fighter = "vanilla_ice"
+stand = "CREAM"
+text = "Le serviteur le plus fidèle de DIO : pour lui offrir son sang, il s'est tranché la tête de ses propres mains, et DIO l'a ramené en vampire. Il garde le manoir du Caire. Caché dans le vide de Cream, il efface Avdol, puis Iggy, et fond sur Polnareff à travers les murs. Polnareff comprend qu'il est un vampire et le traîne au soleil."
+text_en = "DIO's most loyal servant: to offer him his blood, he cut off his own head, and DIO brought him back a vampire. He guards the mansion in Cairo. Hidden in Cream's void, he erases Avdol, then Iggy, and bears down on Polnareff through the walls. Polnareff realises he is a vampire and drags him into the sun."
+name_origin = "D'après le rappeur américain Vanilla Ice. Avec son Stand, Cream, le tout fait vanilla ice cream, une glace à la vanille."
+name_origin_en = "After the American rapper Vanilla Ice. With his Stand, Cream, it makes vanilla ice cream."
+
+[[characters]]
+id = "hol_horse"
+name = "HOL HORSE"
+fighter = "hol_horse"
+stand = "EMPEROR"
+text = "Un tueur à gages au chapeau de cow-boy, engagé par DIO : hardi, coureur de jupons, vif d'esprit, mais vite pris de panique. Il préfère être le numéro deux que le numéro un, et toujours avec un partenaire : J. Geil et son Stand Hanged Man, qui tue depuis les reflets, puis le petit Boingo. Il affronte Polnareff et Avdol, fuit à cheval quand J. Geil tombe, essaie même d'abattre DIO, et s'en sort toujours de justesse."
+text_en = "A cowboy-hatted hitman hired by DIO: bold, a womanizer, quick-witted, but quick to panic. He would rather be number two than number one, and always with a partner: J. Geil and his Stand Hanged Man, who kills from reflections, then little Boingo. He fights Polnareff and Avdol, flees on horseback when J. Geil falls, even tries to shoot DIO, and always gets away by a hair."
+name_origin = "D'après le duo pop américain Hall & Oates (cité dans le Shueisha Jump Remix)."
+name_origin_en = "After the American pop duo Hall & Oates (cited in the Shueisha Jump Remix)."
+
+[[characters]]
+id = "mariah"
+name = "MARIAH"
+fighter = "mariah"
+stand = "BASTET"
+text = "L'une des Neuf Divinités d'Égypte envoyées par DIO : calme, sûre de son Stand, rusée et charmeuse, mais vite déstabilisée quand les choses tournent mal. Elle aimante Joseph et Avdol et les entraîne de piège en piège à travers une ville, jusqu'à ce que Joseph retourne contre elle tout le métal qui l'entoure."
+text_en = "One of the Nine Egyptian Glory Gods sent by DIO: calm, sure of her Stand, devious and flirtatious, but quick to lose her composure when things go wrong. She magnetizes Joseph and Avdol and leads them from trap to trap through a town, until Joseph turns all the metal around her against her."
+name_origin = "D'après la chanteuse américaine Mariah Carey."
+name_origin_en = "After the American singer Mariah Carey."
+
+[[characters]]
+id = "ndoul"
+name = "N'DOUL"
+fighter = "ndoul"
+stand = "GEB"
+text = "L'une des Neuf Divinités d'Égypte, aveugle, d'une loyauté absolue envers DIO, qu'il idolâtre tout en le sachant mauvais. Il repère ses ennemis à l'oreille : les pas, les grains de sable qui retombent, les vibrations du sol que lui transmet sa canne, et frappe avec Geb à des kilomètres. Avdol attire Geb à découvert ; Jotaro lui lance Iggy pour briser sa concentration. Vaincu, il se tue avec son propre Stand plutôt que de livrer ses souvenirs. Le mal aussi a besoin d'un sauveur, dit-il."
+text_en = "One of the Nine Egyptian Glory Gods, blind, utterly loyal to DIO, whom he idolizes while knowing him evil. He finds his enemies by ear: footsteps, grains of sand falling back, the vibrations of the ground his cane picks up, and strikes with Geb from kilometres away. Avdol lures Geb into the open; Jotaro throws Iggy at him to break his focus. Beaten, he kills himself with his own Stand rather than give up his memories. Evil needs a savior as well, he says."
+name_origin = "D'après le chanteur sénégalais Youssou N'Dour (cité dans le Shueisha Jump Remix)."
+name_origin_en = "After the Senegalese singer Youssou N'Dour (cited in the Shueisha Jump Remix)."
+
+[[characters]]
+id = "anubis"
+name = "ANUBIS"
+fighter = "anubis"
+stand = "ANUBIS"
+text = "Un sabre forgé il y a cinq siècles, au service de DIO, qui possède quiconque le dégaine. Chaka, un garçon de ferme, le tire du sable au bord du Nil ; Polnareff le bat au temple de Kom Ombo. Khan, un barbier d'Edfou, le dégaine ensuite ; Jotaro brise la lame en deux, mais elle continue. Puis Polnareff lui-même... Dans JoJo Arena, il se bat dans le corps de Chaka, ou de Khan."
+text_en = "A sword forged five centuries ago, in DIO's service, that possesses whoever draws it. Chaka, a farmhand, pulls it from the sand by the Nile; Polnareff beats him at the temple of Kom Ombo. Khan, a barber of Edfu, draws it next; Jotaro breaks the blade in two, but it keeps going. Then Polnareff himself... In JoJo Arena, it fights in Chaka's body, or Khan's."
+name_origin = "D'après Anubis, le dieu égyptien de la mort ; l'une des Neuf Divinités d'Égypte."
+name_origin_en = "After Anubis, the Egyptian god of death; one of the Nine Egyptian Glory Gods."
+
 [[stands]]
 id = "star_platinum"
 name = "STAR PLATINUM"
@@ -141,3 +204,69 @@ text = "Un Stand de combat rapproché à tête d'oiseau, faite d'après le phén
 text_en = "A close-range Stand with a bird's head, modeled on the phoenix, that makes and shapes fire at will: flames hot enough to melt metal in mid-air. Crossfire Hurricane throws fire ankhs, Red Bind ties with a rope of flame, and its flames can detect life around it. A single kick broke Judgement's armor."
 name_origin = "D'après l'arcane I du tarot, le Magicien, ou Bateleur. Araki lui a donné une tête d'oiseau pour que les silhouettes des héros, côte à côte, ne se ressemblent pas."
 name_origin_en = "After tarot card I, The Magician. Araki gave it a bird's head so that the heroes' silhouettes, side by side, would not look alike."
+
+[[stands]]
+id = "hermit_purple"
+name = "HERMIT PURPLE"
+user = "JOSEPH JOESTAR"
+icon = "glossary_hermit_purple"  # no body: vines out of a hand
+stats = "DCDADE"
+text = "Des ronces violettes couvertes d'épines qui sortent des mains de Joseph : pas de corps, pas de visage. Elles sont assez solides pour porter son poids et assez longues pour ligoter quelqu'un : il s'y balance d'un endroit à l'autre, il attache, et il y fait courir l'onde comme dans un prolongement de son bras. Son vrai pouvoir est la divination : une photo qui montre ce qu'il cherche en fracassant un appareil, des pensées sur un écran de télévision, une carte tracée dans la poussière."
+text_en = "Purple vines covered in thorns that grow from Joseph's hands: no body, no face. They are strong enough to bear his weight and long enough to bind someone: he swings on them from place to place, ties people up, and sends the Ripple down them as down an extension of his arm. Its true power is divination: a photograph that shows what he is looking for when he smashes a camera, thoughts on a television screen, a map drawn in the dust."
+name_origin = "D'après l'arcane IX du tarot, l'Ermite : l'introspection et la contemplation, comme son pouvoir de divination. Violet dans le manga comme dans l'anime."
+name_origin_en = "After tarot card IX, The Hermit: introspection and contemplation, like its power of divination. Purple in the manga and the anime alike."
+
+[[stands]]
+id = "cream"
+name = "CREAM"
+user = "VANILLA ICE"
+sprite = "cream/cream"
+stats = "BBDCCD"
+text = "Un Stand de combat rapproché, immense, au visage de crâne sous une cagoule de bourreau, assez fort pour décapiter d'un tranchant de la main. Sa bouche ouvre sur le vide : en s'avalant lui-même avec son maître, il devient une boule invisible qui efface tout ce qu'elle traverse, mur ou homme. Mais de l'intérieur Vanilla Ice ne voit rien : il doit sortir la tête pour regarder, et c'est là qu'on peut le frapper. Polnareff le suit à la trace en semant du sable."
+text_en = "A huge close-range Stand with a skull's face under an executioner's cowl, strong enough to behead with a chop. Its mouth opens on the void: swallowing itself along with its master, it becomes an unseen ball that erases whatever it passes through, wall or man. But from inside Vanilla Ice sees nothing: he has to put his head out to look, and that is when he can be struck. Polnareff tracks him by scattering sand."
+name_origin = "D'après le groupe de rock britannique Cream (cité dans le Shueisha Jump Remix). Avec Vanilla Ice, son maître : vanilla ice cream."
+name_origin_en = "After the British rock band Cream (cited in the Shueisha Jump Remix). With Vanilla Ice, its master: vanilla ice cream."
+
+[[stands]]
+id = "emperor"
+name = "EMPEROR"
+user = "HOL HORSE"
+icon = "glossary_emperor"  # no body: a gun in his hand
+stats = "BBBCEE"
+text = "Un revolver qui apparaît directement dans la main de Hol Horse : un long canon sous un cadre de métal, un barillet dessous qui n'est relié à rien, une grosse bille dans le cadre. Ses balles font partie du Stand : il les pilote en plein vol, autour de l'épée de Silver Chariot, en demi-tour, ou dans un tuyau qu'il ne voit pas. Elles restent tenues par la portée d'Emperor."
+text_en = "A revolver that appears straight in Hol Horse's hand: a long barrel under a metal frame, a cylinder below it connected to nothing, a big ball set in the frame. Its bullets are part of the Stand: he steers them in flight, round Silver Chariot's sword, in a U-turn, or down a pipe he cannot see. They stay held by Emperor's range."
+name_origin = "D'après l'arcane IV du tarot, l'Empereur, symbole d'ordre et d'autorité."
+name_origin_en = "After tarot card IV, The Emperor, a symbol of order and authority."
+
+[[stands]]
+id = "bastet"
+name = "BASTET"
+user = "MARIAH"
+icon = "glossary_bastet"  # no body: an outlet on a wall or on the floor
+stats = "EEBAEE"
+text = "Une prise électrique, un câble dessous, posée sur n'importe quelle surface. Qui la touche reçoit une décharge et devient un aimant : le métal vient à lui, de plus en plus lourd à mesure que le temps passe, jusqu'aux voitures, et peut l'écraser ou l'empaler. Plusieurs victimes s'attirent entre elles. Si Mariah s'éloigne trop, l'aimantation s'éteint. Aucune force de combat : c'est un piège."
+text_en = "An electrical outlet, a cable under it, laid on any surface. Whoever touches it gets a shock and becomes a magnet: metal comes for them, heavier and heavier as time passes, up to cars, and can crush or impale them. Several victims draw each other in. If Mariah goes too far, the magnetism wears off. No fighting power of its own: it is a trap."
+name_origin = "D'après Bastet, la déesse égyptienne protectrice ; c'est la quatrième des Neuf Divinités d'Égypte."
+name_origin_en = "After Bastet, the Egyptian goddess of protection; it is the fourth of the Nine Egyptian Glory Gods."
+
+[[stands]]
+id = "geb"
+name = "GEB"
+user = "N'DOUL"
+icon = "glossary_geb"  # no body: water, a tentacle with a clawed hand
+stats = "CBABDD"
+text = "Une petite masse d'eau sans forme, qui tiendrait dans une gourde, le plus souvent un tentacule terminé par une main griffue. N'Doul la dirige avec précision jusqu'à quatre kilomètres, cachée sous le sable pour surgir par surprise ; sa griffe tranche la chair et le métal, et l'eau arrête les projectiles. Sa faiblesse : la chaleur. Les flammes de Magician's Red l'évaporent en partie."
+text_en = "A small, shapeless mass of water that would fit in a canteen, most often a tentacle ending in a clawed hand. N'Doul steers it precisely up to four kilometres away, hidden under the sand to strike by surprise; its claw cuts flesh and metal, and the water stops projectiles. Its weakness: heat. Magician's Red's flames partly boil it away."
+name_origin = "D'après Geb, le dieu égyptien de la terre ; c'est l'une des Neuf Divinités d'Égypte."
+name_origin_en = "After Geb, the Egyptian god of the earth; it is one of the Nine Egyptian Glory Gods."
+
+[[stands]]
+id = "anubis_sword"
+name = "ANUBIS"
+user = "CHAKA, KHAN, POLNAREFF"
+icon = "glossary_anubis"  # a sword: its body is whoever holds it
+stats = "BBEAEC"
+text = "Un sabre courbe à double tranchant, la garde sertie de joyaux. Il contrôle quiconque le dégaine, quelle que soit sa volonté. Il retient chaque attaque qu'on lui porte et la contre ensuite : la même ruse ne marche jamais deux fois, et il devient plus rapide et plus fort au fil du combat. Sa lame passe à travers la pierre, les murs et les corps sans les abîmer, et tranche un ennemi caché derrière un pilier. Il n'apprend pourtant rien à son porteur : Chaka le manie en amateur."
+text_en = "A curved, double-edged sword, its guard set with jewels. It controls whoever draws it, whatever their will. It remembers every attack used on it and counters it afterwards: the same trick never works twice, and it grows faster and stronger as the fight goes on. Its blade passes through stone, walls and bodies without harming them, and cuts an enemy hidden behind a pillar. Yet it teaches its wielder nothing: Chaka swings it like an amateur."
+name_origin = "D'après Anubis, le dieu égyptien de la mort. Seul JoJo's Venture de Capcom l'avait rendu jouable ; JoJo Arena le refait à sa façon."
+name_origin_en = "After Anubis, the Egyptian god of death. Only Capcom's JoJo's Venture had made it playable; JoJo Arena makes it its own way."

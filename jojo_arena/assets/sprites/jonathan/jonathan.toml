@@ -6,6 +6,19 @@ chest = 30
 height = 48
 directions = ["down", "up", "right"]
 
+[costume]
+label = "Tenue de Phantom Blood"
+label_en = "Phantom Blood attire"
+source = "Sa tenue principale de Phantom Blood (ASBR, costume normal)"
+
+[recolor]
+hair = [[48, 41, 121], [60, 60, 158], [88, 94, 187], [149, 155, 202]]
+top = [[40, 63, 165], [61, 99, 200], [108, 142, 209], [171, 191, 222]]
+pad = [[100, 65, 30], [138, 85, 48], [176, 105, 66], [194, 145, 124]]
+belt = [[192, 121, 22], [224, 134, 46], [228, 154, 98], [235, 193, 168]]
+trousers = [[105, 109, 137], [140, 144, 158], [173, 175, 181], [215, 215, 215]]
+boots = [[26, 19, 16], [58, 44, 40], [89, 69, 65], [123, 109, 108]]
+
 [anims.idle]
 row = 0
 frames = 4
@@ -188,3 +201,49 @@ label_en = "Raised fist"
 source = "Couverture du tome 2"
 stand = false
 stand_offset = [-14.0, -8.0]
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+stand = ""
+
+[colors.tome4]
+label = "Tome 4"
+label_en = "Volume 4"
+source = "ASBR, couleur B : la couverture du tome 4"
+stand = ""
+
+[colors.tome4.palette]
+top = [[28, 75, 33], [47, 112, 48], [70, 148, 67], [121, 177, 114]]
+trousers = [[58, 120, 44], [90, 156, 64], [124, 183, 93], [172, 200, 153]]
+pad = [[103, 136, 32], [147, 176, 48], [182, 202, 78], [206, 213, 144]]
+boots = [[69, 101, 19], [111, 144, 32], [153, 186, 46], [188, 206, 102]]
+belt = [[93, 111, 35], [134, 148, 54], [174, 184, 74], [196, 198, 137]]
+
+[colors.tome3]
+label = "Tome 3"
+label_en = "Volume 3"
+source = "ASBR, couleur C : la couverture du tome 3"
+stand = ""
+
+[colors.tome3.palette]
+top = [[135, 29, 45], [176, 44, 76], [205, 71, 112], [214, 139, 166]]
+trousers = [[178, 50, 67], [200, 84, 110], [211, 129, 152], [227, 190, 203]]
+pad = [[124, 123, 42], [160, 150, 62], [187, 171, 91], [202, 191, 152]]
+boots = [[82, 83, 29], [120, 114, 48], [157, 144, 67], [183, 169, 118]]
+belt = [[139, 117, 41], [176, 140, 60], [196, 159, 96], [211, 188, 158]]
+hair = [[56, 24, 40], [92, 44, 72], [127, 65, 105], [162, 106, 146]]
+
+[colors.j534]
+label = "Carte J-534"
+label_en = "Card J-534"
+source = "ASBR, couleur D : la carte Adventure Battle J-534"
+stand = ""
+
+[colors.j534.palette]
+top = [[75, 53, 155], [92, 78, 186], [127, 121, 199], [181, 180, 216]]
+trousers = [[60, 47, 131], [74, 68, 166], [102, 102, 188], [162, 164, 205]]
+pad = [[159, 101, 31], [200, 116, 46], [213, 138, 89], [223, 178, 156]]
+boots = [[96, 56, 20], [138, 74, 34], [180, 91, 49], [202, 129, 103]]
+belt = [[125, 88, 41], [162, 108, 60], [189, 130, 89], [204, 169, 151]]

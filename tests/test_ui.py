@@ -143,7 +143,12 @@ def test_title_to_local_fight_to_pause_and_back(ctx):
     fight = ctx.scenes.current
     assert isinstance(fight, FightScene)
     assert fight.rounds_to_win == 3 and fight.fighter_ids == setup.fighter_ids
-    steps(ctx, 150)
+    # Let the entrance play out: pausing during it would only skip it.
+    for _ in range(600):
+        if fight.entrance is None and not fight.wants_entrance:
+            break
+        steps(ctx, 1)
+    steps(ctx, 30)
     keys(ctx, "Escape")
     assert fight.pause_menu is not None
     frozen = fight.rounds.phase_f
@@ -248,7 +253,8 @@ def test_result_menu_offers_a_rematch(ctx):
     ctx.scenes.apply_pending()
     steps(ctx, ctx.scenes.current.rules.round_intro_f + 1)
     scene.rounds.match.fighters[1].hurt(10_000)
-    steps(ctx, scene.rules.round_outro_f + 130)
+    # The winner has the screen for a moment (its pose, its line) before the summary.
+    steps(ctx, scene.rules.round_outro_f + scene.winner_moment_f() + 10)
     assert scene.result_menu is not None
     tap(ctx, "Return")
     steps(ctx)

@@ -160,3 +160,45 @@ elbow_l = [-3, 1]
 hand_r = [4, -16]
 elbow_r = [2, 1]
 hand_l = [-2, -4]
+
+# The outfit and its colours ---------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ Esidisi, "Costumes & Tints" (read 17/11/2026):
+# https://jojowiki.com/All-Star_Battle_R/Esidisi . Each colour below is one of the
+# game's tints, with the origin the page gives it; the tones were read off the game's render of each tint and brought to this sprite's brightness.
+
+[costume]
+label = "Tenue de Battle Tendency"
+label_en = "Battle Tendency attire"
+source = "Sa tenue principale (ASBR, costume normal)"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+
+[colors.j064]
+label = "Carte J-064"
+label_en = "Card J-064"
+source = "ASBR, couleur B : la carte Adventure Battle J-064"
+
+[colors.j064.palette]
+cloth = "#2c4c8e"
+leather = "#3a5a7a"
+
+[colors.agogo]
+label = "JOJO A-GO!GO!"
+label_en = "JOJO A-GO!GO!"
+source = "ASBR, couleur C : JOJO A-GO!GO!"
+
+[colors.agogo.palette]
+cloth = "#2f7a3c"
+leather = "#4a6a34"
+
+[colors.asb]
+label = "All-Star Battle"
+label_en = "All-Star Battle"
+source = "ASBR, couleur D : les couleurs d'All-Star Battle"
+
+[colors.asb.palette]
+cloth = "#b0442a"
+leather = "#a05a2a"

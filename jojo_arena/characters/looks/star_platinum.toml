@@ -161,3 +161,22 @@ lean = 2
 hand_r = [15, -11]
 hand_l = [4, -6]
 elbow_l = [-2, 2]
+
+# Its colours ------------------------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ Jotaro Kujo, "Costumes & Tints": Star Platinum's tint A
+# is "Star Platinum's anime colours", its tint B the cover of volume 17 (a green body).
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, Star Platinum, couleur A : les couleurs de l'anime"
+
+[colors.tome17]
+label = "Tome 17"
+label_en = "Volume 17"
+source = "ASBR, Star Platinum, couleur B : la couverture du tome 17"
+
+[colors.tome17.palette]
+skin = "#5cb87e"
+hair = "#2a3830"
+scarf = "#93a840"

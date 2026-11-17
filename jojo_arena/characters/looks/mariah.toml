@@ -1,0 +1,269 @@
+# Mariah (Part 3): look file for tools/make_sprites.py.
+#
+# JoJo Wiki, "Mariah", Appearance (read 17/11/2026, https://jojowiki.com/Mariah): a
+# beautiful woman with striking legs, dark skin and short, light hair. A hooded jacket
+# with short sleeves, like Red Riding Hood's, over a low-cut top; a high-waisted mini
+# skirt; dark satin stockings; flat shoes with bows; gloves, and sunglasses up on her head.
+# Colours: the anime's ("Color Schemes"): light brown skin, white hair, yellow eyes; a
+# yellow top (striped orange in the anime); a velvet hood and shoes; brown gloves; a black
+# skirt; dark stockings.
+# Left out at this size: the stripes of the top, the bows on the shoes, the sunglasses.
+
+name = "Mariah"
+
+# Slim, long in the leg, a hand on the hip.
+# Signature pose (Pose key): see tools/spritegen/skeleton.py.
+pose = "frame_face"
+
+[build]
+head_r = 5.3
+neck = 1.4
+torso = 13
+legs = 19
+arms = 14
+shoulders = 6.4
+hips = 3.6
+torso_r = 4.5
+arm_r = 1.9
+leg_r = 2.2
+hand_r = 1.7
+foot_r = 1.9
+
+[palette]
+skin = "#c8946c"
+hair = "#e8e4ee"         # white
+hood = "#8c2c3c"         # velvet
+top = "#e2c878"          # yellow
+skirt = "#2a2834"        # black
+stockings = "#3a3040"    # dark satin
+gloves = "#7a4a34"       # brown
+shoes = "#962e40"        # velvet too, a shade apart from the hood
+eyes = "#e8c040"
+
+[body]
+head = "skin"
+torso = "top"
+arms = "skin"
+hands = "gloves"
+legs = "stockings"
+feet = "shoes"
+
+[face]
+eyes = "eyes"
+eye_style = "wide"
+brows = true
+mouth = true
+
+# Her short white hair, the fringe showing under the hood.
+[[parts]]
+type = "hair"
+material = "hair"
+style = "short"
+volume = 6.8
+bangs = "fringe"
+
+# The hood, up over her head: drawn as a mass that frames the face and falls behind.
+[[parts]]
+type = "hair"
+material = "hood"
+style = "long"
+length = 7
+volume = 8.6
+
+# The short jacket of the hood, open on the top, with short sleeves.
+[[parts]]
+type = "coat"
+material = "hood"
+length = 0
+open = true
+opening = 5
+collar = false
+
+[[parts]]
+type = "sleeves"
+material = "hood"
+length = 0.38
+
+[[parts]]
+type = "gloves"
+material = "gloves"
+length = 0.3
+
+# The high-waisted mini skirt.
+[[parts]]
+type = "loincloth"
+material = "skirt"
+length = 0.22
+
+[[parts]]
+type = "belt"
+material = "skirt"
+
+# JoJo poses ---------------------------------------------------------------------------
+# Picked on the select screen; the Pose key plays the one picked. Each was drawn from the
+# panel named in `source`: the panels All-Star Battle R took her poses from (JoJo Wiki,
+# All-Star Battle R ★ Mariah, "Stylish Evade", "Taunt" and "Victory"), looked at on
+# 17/11/2026. Bastet is an outlet: there is no Stand to pose beside her.
+
+# Her first appearance: sitting, the knees drawn up, the arms round them, a cigarette.
+[poses.premiere_apparition]
+label = "Assise, les genoux serrés"
+label_en = "Sitting, hugging her knees"
+source = "Ch. 199, Bastet, Mariah (1) : sa première apparition (« MariahFirst ») ; ASBR, victoire A"
+
+[[poses.premiere_apparition.down]]
+bob = 8
+head = [0, 1]
+hand_l = [-3, -6]
+elbow_l = [-4, -1]
+hand_r = [3, -6]
+elbow_r = [4, -1]
+knee_l = [-2, -9]
+knee_r = [2, -9]
+foot_l = [-2, -1]
+foot_r = [2, -1]
+
+[[poses.premiere_apparition.right]]
+bob = 8
+head = [1, 1]
+hand_r = [6, -6]
+hand_l = [4, -6]
+knee_r = [6, -8]
+knee_l = [5, -8]
+foot_r = [5, 0]
+foot_l = [4, 0]
+
+# "You were quite nice": a gloved hand raised by her mouth, the hip out.
+[poses.charmeuse]
+label = "« Tu étais plutôt pas mal »"
+label_en = "\"You were one fine specimen\""
+source = "Ch. 204, Bastet, Mariah (6) (« MariahFlirtingManga ») ; ASBR, esquive stylée 1 et victoire C"
+
+[[poses.charmeuse.down]]
+lean = -0.5
+head = [-1, 0]
+hand_r = [-2, -17]
+elbow_r = [4, -2]
+hand_l = [-5, -4]
+elbow_l = [-4, -1]
+
+[[poses.charmeuse.right]]
+lean = -1
+hand_r = [5, -17]
+elbow_r = [3, -3]
+hand_l = [-3, -4]
+
+# The power of Bastet: the arms flung open, the knives and the cables flying round her.
+[poses.lignes_electriques]
+label = "La puissance de Bastet"
+label_en = "The power of Bastet"
+source = "Ch. 204, Bastet, Mariah (6) : les lignes électriques (« MariahPowerLinesManga ») ; ASBR, esquive stylée 3 et provocation A"
+
+[[poses.lignes_electriques.down]]
+lean = -1
+head = [0, -1]
+hand_l = [-10, -10]
+elbow_l = [-5, -4]
+hand_r = [10, -8]
+elbow_r = [5, -3]
+
+[[poses.lignes_electriques.right]]
+lean = -1.5
+head = [0, -1]
+hand_r = [10, -9]
+hand_l = [-7, -10]
+
+# "You can't follow me anymore": an arm straight up at the sky, and the metal comes.
+[poses.le_doigt_au_ciel]
+label = "Le doigt vers le ciel"
+label_en = "Pointing at the sky"
+source = "Ch. 204, Bastet, Mariah (6) (« MariahPointingUpward ») ; ASBR, esquive stylée 4"
+
+[[poses.le_doigt_au_ciel.down]]
+hand_r = [-2, -27]
+elbow_r = [4, -6]
+hand_l = [-4, -3]
+elbow_l = [-3, -1]
+
+[[poses.le_doigt_au_ciel.right]]
+hand_r = [2, -27]
+elbow_r = [2, -6]
+hand_l = [-3, -3]
+
+# "Your flesh will be crushed": a gloved hand thrust out, the fingers curled like claws.
+[poses.provocation]
+label = "« Ta chair sera écrasée »"
+label_en = "\"Your flesh will be crushed\""
+source = "Ch. 203, Bastet, Mariah (5) (« MariahTauntingManga ») ; ASBR, esquive stylée 5 et provocation C"
+
+[[poses.provocation.down]]
+lean = 1
+hand_r = [-2, -12]
+elbow_r = [5, -3]
+hand_l = [-4, 1]
+
+[[poses.provocation.right]]
+lean = 1.5
+hand_r = [12, -12]
+elbow_r = [6, -10]
+hand_l = [-2, 1]
+
+# The outfit and its colours ---------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ Mariah, "Costumes & Tints" (read 17/11/2026): one
+# costume, "Mariah's main Stardust Crusaders attire", and four tints: the anime's colours
+# (A), the Adventure Battle card J-245 (B), JOJO A-GO!GO!'s inside illustration (C), the
+# Chara Heroes figure (D). The tones were read off the game's render of each tint and
+# brought to this sprite's brightness.
+
+[costume]
+label = "Tenue de Stardust Crusaders"
+label_en = "Stardust Crusaders attire"
+source = "Sa tenue principale de Stardust Crusaders (ASBR, costume normal)"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+
+# Lavender and purple, the hair blond, the gloves white.
+[colors.j245]
+label = "Carte J-245"
+label_en = "Card J-245"
+source = "ASBR, couleur B : la carte Adventure Battle J-245"
+
+[colors.j245.palette]
+hood = "#a85aa8"
+top = "#aca4cc"
+skirt = "#4a2c8c"
+stockings = "#5a2c7a"
+gloves = "#e8e2ec"
+shoes = "#5a2a70"
+hair = "#e8cc72"
+
+# An orange hood, a teal skirt, pink hair and pink gloves.
+[colors.agogo]
+label = "JOJO A-GO!GO!"
+label_en = "JOJO A-GO!GO!"
+source = "ASBR, couleur C : l'illustration intérieure de JOJO A-GO!GO!"
+
+[colors.agogo.palette]
+hood = "#d8702c"
+top = "#bcb066"
+skirt = "#1c6c74"
+gloves = "#e0609c"
+shoes = "#c06422"
+hair = "#e0729c"
+
+# A brown hood, purple stockings, golden shoes, the hair blond.
+[colors.chara_heroes]
+label = "Chara Heroes"
+label_en = "Chara Heroes"
+source = "ASBR, couleur D : la figurine Chara Heroes"
+
+[colors.chara_heroes.palette]
+hood = "#9a6c42"
+top = "#c4b0b0"
+stockings = "#5c2c6c"
+gloves = "#e8e2dc"
+shoes = "#c08c32"
+hair = "#e2c274"

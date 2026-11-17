@@ -13,7 +13,7 @@ Unités : les durées en `_f` sont en images (60 par seconde) ; celles en `_s` e
 | `walk_speed` | Vitesse de marche |
 | `strength` | Force physique du Stand (1 = normale). Multiplie la vitesse, les dégâts et le recul des objets qu'il lance ; à partir de 1,5 l'objet fait rebondir sur les murs (Star Platinum, The World : 1,8) |
 | `prop_hold` | Qui porte les objets ramassés : `hands` (par défaut ; sans Stand, le perso lève les deux mains au-dessus de la tête), `hair` (ses cheveux s'enroulent autour de l'objet, qu'il tient derrière lui — Bruford) ou `tendrils` (les tentacules du Stand — Hierophant Green). Avec `hair` ou `tendrils`, ses mains restent libres et le coup d'objet porte beaucoup plus loin (`[prop_swing]` des règles) — mais il **lance moins fort** (`wrapped_throw`) : des cheveux ne mettent pas un corps derrière un jet |
-| `style` | Ce que fait la touche Stand. `{ type = "stance_toggle", off = "base", on = "stand", stand_body = true }` : bascule entre deux postures, et `stand_body` donne au Stand un corps qui peut être touché |
+| `style` | Ce que fait la touche Stand. `{ type = "stance_toggle", off = "base", on = "stand", stand_body = true }` : bascule entre deux postures, et `stand_body` donne au Stand un corps qui peut être touché. Avec `breath = true`, le perso respire aussi le Hamon (il en a la jauge et ses coups à `hamon_cost` la dépensent) : la touche lâchée tout de suite appelle le Stand, la touche tenue (`hold_s` dans `[hamon]` de `rules.toml`) respire. C'est Joseph âgé : Hermit Purple et l'Onde |
 | `awakening` | Table `[awakening]`, la touche Power Up : `stance` (la posture où il bascule), `bars` (coût en barres de Heart Heat), `sun_immune` (le soleil ne le brûle plus), `label`/`label_en` (nom affiché). Une fois par round, sans retour possible : la touche Stand ne peut plus l'en sortir |
 | `style` (suite) | `{ type = "stance_cycle", stances = ["base", "tattoo", "amato"] }` : la touche fait défiler plusieurs postures l'une après l'autre, pour un perso qui appelle plusieurs alliés ou un Homme du Pilier à plusieurs Modes |
 | `remote`, `remote_range`, `remote_speed` | Dans `style` : maintenir la touche Stand envoie le Stand seul, dans cette posture, jusqu'à cette distance, à cette vitesse (mode contrôle) |
@@ -22,6 +22,11 @@ Unités : les durées en `_f` sont en images (60 par seconde) ; celles en `_s` e
 | `pose_heal_per_s` | La pose soigne autant de vie par seconde (le cri de Speedwagon) |
 | `pose_counter`, `pose_counter_ready_s` | Après avoir posé ce nombre de secondes (0,33 par défaut), le perso prédit que l'adversaire refera son dernier coup (la même touche) : s'il a raison, ce coup est attrapé et il répond avec ce coup du kit (« Ta prochaine réplique sera... » de Joseph) ; s'il a tort, il prend le coup |
 | `nature` | `human` par défaut ; `vampire`, `zombie` ou `pillar_man` : le Hamon fait double dégâts et bloque leur régénération, le soleil les brûle |
+| `style = { type = "move", move = "style" }` | La touche Stand lance un coup du kit (dans la posture, ou parmi les coups partagés) : Hol Horse fait tourner Emperor (« Gun beats sword. »). L'aura s'allume tant qu'une charge est prête |
+| `hears` | Aveugle, il vise à l'oreille : ses coups vont là où l'adversaire a fait du bruit pour la dernière fois (marcher, dasher, frapper, être frappé ; rester immobile ou garder ne fait pas de bruit). N'Doul |
+| `learn` | Table `[learn]` : il apprend (Anubis) : chaque coup qu'il prend est retenu, et la fois suivante, s'il est libre de bouger, il le pare ; chaque nouveau coup retenu le rend plus fort (`damage`, par coup) et plus rapide (`speed`), jusqu'à `max` coups ; `stun_s` : un coup paré déséquilibre l'attaquant ce temps-là. Une combo passe quand même : en hitstun, il n'est pas libre |
+| `tags` | Des mots libres sur le perso (`["woman"]` pour Lisa Lisa), que le `passive` d'un autre perso peut viser |
+| `passive` | Table `[passive]`, toujours active contre un adversaire qui porte l'étiquette `vs_tag` : `damage_dealt_mult` (dégâts infligés), `hh_gain_mult` (Heart Heat gagnée). « Hol Horse loves the ladies! » : 10 % de dégâts en plus contre les femmes, la Heart Heat un peu plus lente |
 
 ## Les postures
 
@@ -46,7 +51,7 @@ Les coups d'une posture : `[stances.<nom>.moves.<touche>]`, où la touche est `l
 | `anim` | Animation à jouer (par défaut, le nom de la touche). Une variante `famille_nom` (`special_splash`) se dessine dans la fiche de look ; une planche qui ne l'a pas (le Stand) joue la famille (`special`) |
 | `shout` | Cri écrit à l'écran quand le coup sort ; pour une rafale, à chaque coup (`ORA`, `MUDA`) |
 | `stand_flash` | Le Stand apparaît le temps de ce coup, même rangé |
-| `fx` | Dessin pendant la phase active : `limb` (doigt, bras), `tentacle`, `blade`, `hair` (mèches), `chain` (chaîne), `beam` (jets des yeux), `lens` (rayon à travers une bulle), `scarf` (écharpe ondulante) ou `scarf_spear` (écharpe rigide), `blade_hair` (la lame et les mèches ensemble), `vortex` (deux tornades devant lui, Divine Sandstorm), `wind_beam` (le rayon d'air qui sort de la corne), `cables` (des câbles lancés en éventail), `blood_jet` (du sang bouillant pompé dans une veine), `blade_fan` (une nappe de lames de lumière), `gun` (une mitraillette tenue à la hanche), `fire_rope` (deux cordes de feu tressées, Red Bind) ou `flame_burst` (des flammes qui jaillissent tout autour du coup), jusqu'à `reach`. `vortex`, `cables` et `gun` sont dessinés pendant tout le coup, pas seulement quand il peut toucher. Avec `at_target` : `beam` (une colonne de lumière qui tombe sur place), `lenses` (des loupes qui se referment en cercle puis tirent), `bubbles` (un dôme de bulles qui gonfle et éclate), `ankhs` (des ankhs de feu qui se referment en anneau), `tentacle`/`hair` (qui jaillissent du sol) ; sans `fx`, un objet lourd qui tombe du ciel |
+| `fx` | Dessin pendant la phase active : `limb` (doigt, bras), `tentacle`, `blade`, `hair` (mèches), `chain` (chaîne), `beam` (jets des yeux), `lens` (rayon à travers une bulle), `scarf` (écharpe ondulante) ou `scarf_spear` (écharpe rigide), `blade_hair` (la lame et les mèches ensemble), `vortex` (deux tornades devant lui, Divine Sandstorm), `wind_beam` (le rayon d'air qui sort de la corne), `cables` (des câbles lancés en éventail), `blood_jet` (du sang bouillant pompé dans une veine), `blade_fan` (une nappe de lames de lumière), `gun` (une mitraillette tenue à la hanche), `fire_rope` (deux cordes de feu tressées, Red Bind), `vine` (une ronce violette à épines, Hermit Purple) ou `flame_burst` (des flammes qui jaillissent tout autour du coup), jusqu'à `reach`. `vortex`, `cables` et `gun` sont dessinés pendant tout le coup, pas seulement quand il peut toucher. Avec `at_target` : `beam` (une colonne de lumière qui tombe sur place), `lenses` (des loupes qui se referment en cercle puis tirent), `bubbles` (un dôme de bulles qui gonfle et éclate), `ankhs` (des ankhs de feu qui se referment en anneau), `tentacle`/`hair`/`vine` (qui jaillissent du sol), `rise` (le sol se fend sous lui et les coups en sortent, Cream) ; sans `fx`, un objet lourd qui tombe du ciel |
 
 Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de même `label_en` pour une posture, et `role_en`, `blurb_en`, `name_en` dans le roster). Sans traduction, le texte français s'affiche.
 
@@ -73,6 +78,10 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `at_target` | La zone tombe là où se trouvait l'adversaire au début du coup ; `reach` sert alors de **distance maximale** de largage (0 = sans limite) |
 | `leap` | Bond pendant le démarrage, jusqu'à cette distance |
 | `burrow` | Avec `leap` : le perso file sous le sol pendant le démarrage (seule une bosse du sol est dessinée) ; à combiner avec `invincible_f` |
+| `boosted` | Le nom d'un autre coup du kit : si une charge est prête (un buff avec `charge`), c'est lui qui sort à la place, et la charge est dépensée (« Gun beats sword. » de Hol Horse) |
+| `steer` | Avec `lunge` : pendant le démarrage et les images actives, l'élan va où le joueur pousse (la direction tenue), et tourne avec lui (le vide de Cream) |
+| `vanish` | Pendant le démarrage et les images actives, le perso a disparu : ni dessiné (un frémissement au sol, tout au plus) ni touchable. Il réapparaît pour la récupération, et là on peut le frapper |
+| `erase` | Avec `lunge` : ce qui est solide sur son passage est détruit au lieu de l'arrêter (caisses, piliers, rideaux) |
 | `leap_to` | Vers l'adversaire (`target`, s'arrête à côté de lui) ou vers le point visé (`cursor` : souris, sinon stick droit, sinon direction tenue) |
 | `leap_height` | Hauteur du saut à l'écran (0 = glisse au sol, comme un grappin) |
 | `pull` | Aspire l'adversaire vers le perso à chaque image active (vitesse) : tornade, veines autour de la cheville |
@@ -98,7 +107,8 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `blood_cost` | Style vampire : le coup ne sort qu'avec assez de sang, et le dépense |
 | `hp_cost` | Le coup s'arrache à son auteur : il ne sort que s'il reste plus de vie que ça, et la prend au départ (Final Mode de Wamuu) |
 | `freeze_f` | Touché net, l'adversaire est gelé sur place ce nombre d'images (gel vaporisant) |
-| `status`, `status_s` | Touché net (jamais gardé), le coup laisse une altération d'état pendant cette durée : `burn` (le feu : des dégâts par seconde et aucune régénération tant que ça brûle), `chill` (le froid : marche ralentie, plus de respiration du Hamon ni de sang bu) ou `shock` (le courant : dégâts, marche ralentie, plus de Heart Heat gagné, et la jauge de garde qui se défait). Les durées et les effets sont dans `[status]` de `combat/rules.toml`, et la page du glossaire les décrit au joueur. Un deuxième coup relance l'altération, il ne l'empile pas |
+| `status`, `status_s` | Touché net (jamais gardé), le coup laisse une altération d'état pendant cette durée : `burn` (le feu : des dégâts par seconde et aucune régénération tant que ça brûle), `chill` (le froid : marche ralentie, plus de respiration du Hamon ni de sang bu) `shock` (le courant : dégâts, marche ralentie, plus de Heart Heat gagné, et la jauge de garde qui se défait) ou `magnet` (l'aimant : rien par lui-même, mais chaque nouveau contact ajoute un niveau, jusqu'à 3, et les coups qui le cherchent frappent plus fort ; Bastet de Mariah). Les durées et les effets sont dans `[status]` de `combat/rules.toml`, et la page du glossaire les décrit au joueur. Un deuxième coup relance l'altération, il ne l'empile pas (sauf les niveaux de `magnet`) |
+| `bonus_status`, `bonus_per_level` | Le coup frappe plus fort pour chaque niveau de cette altération sur l'adversaire : `bonus_per_level = 0.3` fait +30 % par niveau. Aussi dans un projectile (les couteaux et les boulons de Mariah) |
 | `finish_drain` | Part des dégâts du coup final d'une cinématique rendue en vie |
 | `detonate` | Au premier tir de son projectile, tous les pièges du perso explosent (avec ce même projectile) et ses grenades encore au sol sautent aussitôt (le plan caché de Joseph) |
 | `cage_s`, `cage_radius` | Touché net : un anneau de chaînes de ce rayon se ferme autour des deux combattants, ce nombre de secondes ; personne n'en sort (Tarkus) |
@@ -115,6 +125,7 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `infiltrate_s` | Le corps entier du perso entre dans celui de l'adversaire s'il touche (Santana) : il disparaît (plus de hitbox, le soleil ne l'atteint plus), dirige la marche de l'hôte pendant cette durée et le mange. L'hôte le chasse plus vite en martelant n'importe quel bouton ; l'Onde le chasse encore plus vite et le brûle (`[infiltration]` dans `rules.toml`) |
 | `inside_dps` | Avec `infiltrate_s` : dégâts par seconde infligés de l'intérieur ; `drain` en rend cette part au perso |
 | `armor` | Nombre de coups encaissés sans broncher pendant le démarrage et la phase active (on prend les dégâts) |
+| `armor_release` | Avec `armor` : un coup encaissé pendant le démarrage fait partir l'attaque aussitôt, sans attendre la fin de l'élan (« Now's my chance! » d'Avdol : « single-hit attacks against it release the punch early ») |
 
 ### Rafales
 
@@ -157,15 +168,18 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `origin`, `ring_radius` | `self` (depuis le perso) ou `ring` (en cercle autour de la cible, vers elle) |
 | `waves`, `wave_every_f` | Plusieurs salves, à N images d'écart (chaque salve comble les trous de la précédente) |
 | `homing_deg_s` | Tête chercheuse : degrés par seconde dont il tourne vers la cible |
+| `phasing` | Il passe à travers le décor sans le toucher (le sabre lancé d'Anubis) |
+| `steer_deg_s` | Piloté : degrés par seconde dont il tourne vers là où son tireur vise **maintenant** (souris, sinon stick droit), pendant que le tireur continue de bouger. Sans visée libre, il file droit (les balles d'Emperor) |
 | `returns` | Boomerang : à mi-course (ou contre un mur, ou après avoir touché) il revient dans la main de son lanceur |
 | `explode_radius` | Grenade : ne touche pas au contact, roule, s'arrête contre les murs et les objets, et explose en fin de vie ; l'adversaire à ce rayon (plus son corps) est touché |
 | `drag` | Part de sa vitesse gardée à chaque image (sous 1 : il ralentit jusqu'à s'arrêter) |
 | `wall_bounce` | Ce qu'il touche rebondit contre les murs |
 | `bounces` | Ricochet : le tir lui-même repart du mur, ce nombre de fois (lame lancée de Kars) |
-| `look` | Dessin : `orb`, `knife`, `gem`, `blade`, `wine`, `hat`, `clacker`, `grenade`, `bubble`, `bullet`, `spark`, `jet`, `ray` (un rayon de lumière focalisée), `ankh` (un ankh de feu), `flame` (une flamme), `eruption` (une colonne de feu qui sort du sol ; un piège qui tire une `eruption` se dessine comme un ankh gravé au sol) |
+| `look` | Dessin : `orb`, `knife`, `gem`, `blade`, `wine`, `hat`, `clacker`, `grenade`, `bubble`, `bullet`, `spark`, `jet`, `ray` (un rayon de lumière focalisée), `ankh` (un ankh de feu), `flame` (une flamme), `eruption` (une colonne de feu qui sort du sol ; un piège qui tire une `eruption` se dessine comme un ankh gravé au sol), `tar` (des gouttes de goudron ; un piège qui tire du `tar` se dessine comme une flaque noire) |
 | `hamon` | Le projectile lui-même porte l'onde : il brûle double sur les vampires, zombies et Hommes du Pilier, même tiré par un piège (les lentilles de Caesar concentrent la lumière du soleil) |
 | `status`, `status_s` | Comme pour un coup : ce qu'il laisse sur qui il touche |
 | `drain` | Part des dégâts rendue en vie à son lanceur (l'écureuil carnivore de Kars mange ce qu'il mord) |
+| `fragile` | Un coup encaissé par son lanceur éteint le projectile en plein vol, sans qu'il touche (l'ankh et le Flaming Detector d'Avdol dans ASBR : « disappears if Avdol takes damage ») |
 
 ## Pièges
 
@@ -175,6 +189,7 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | --- | --- |
 | `distance` | Distance devant le perso ; avec `at_cursor`, distance maximale |
 | `at_cursor` | Posé au point visé (souris, sinon stick droit, sinon direction tenue, sinon droit devant) |
+| `pull`, `pull_range` | Le piège attire l'adversaire vers lui (vitesse) quand il passe à moins de `pull_range` (la ligne électrique de Mariah) |
 | `radius` | Rayon de détection |
 | `lifetime_s` | Durée de vie |
 | `max_count` | Nombre maximum ; le plus ancien disparaît |
@@ -205,3 +220,4 @@ Traductions : `label_en`, `info_en` et `shout_en` donnent le texte anglais (de m
 | `damage_dealt_mult`, `damage_taken_mult` | Multiplie les dégâts infligés et reçus |
 | `afterimages` | Images rémanentes derrière le perso |
 | `heal_per_s` | Vie regagnée par seconde tant que l'état dure |
+| `charge` | Une charge : le prochain coup qui a une version `boosted` sort dans cette version, et ça dépense le bonus |

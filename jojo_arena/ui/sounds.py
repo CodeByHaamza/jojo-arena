@@ -309,8 +309,11 @@ FX_SOUNDS: dict[str, str] = {
     "limb": "whoosh",
     "chain": "chain",
     "fire_rope": "sizzle",
+    "vine": "whoosh",
     "flame_burst": "boom",
+    "water_shell": "whoosh",
     "ankhs": "sizzle",
+    "rise": "boom",  # the floor bursting open
 }
 
 
@@ -344,6 +347,10 @@ EVENT_SOUNDS: dict[str, Callable[[Event], str]] = {
     "trap_popped": lambda e: "pop",
     "reflect": lambda e: "hamon",
     "foreseen": lambda e: "stylish",
+    "learned": lambda e: "block",
+    "roamer_swing": lambda e: "whoosh",
+    "roamer_hit": lambda e: "hit",
+    "roamer_banished": lambda e: "boom",
     "hazard_warn": lambda e: "chain",
     "hazard_drop": lambda e: "boom",
     "hazard_spikes": lambda e: "blade",

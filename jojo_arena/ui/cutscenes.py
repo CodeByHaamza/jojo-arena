@@ -1817,7 +1817,602 @@ class CrossfireSpecial(CutscenePlayer):
             vfx.draw_body_ablaze(world, self.v, 40, f, 3)
 
 
+# Old Joseph: Hermit Purple and Ripple ---------------------------------------------------------
+
+
+class HermitOverdrive(CutscenePlayer):
+    """The vine has caught. Hermit Purple winds round the opponent, lifts them and brings
+    them down on the floor; the Ripple runs along the vine; one pull, and they arrive
+    under the edge of his hand."""
+
+    length = 240
+    BOUND = 34
+    LIFT = 52
+    SLAM = 84
+    PULSE = 100
+    PULL = 160
+    FINISH = 200
+    HAMON = (255, 228, 120)
+
+    def where(self, f) -> tuple[Vec2, float]:
+        """The opponent's feet and how high off the floor they are, at frame `f`."""
+        if f < self.LIFT:
+            return self.v, 0.0
+        if f < self.SLAM:
+            t = (f - self.LIFT) / (self.SLAM - self.LIFT)
+            return self.v, 34 * math.sin(t * math.pi) if t < 0.8 else 34 * (1 - t) * 3
+        if f < self.PULL:
+            return self.v, 0.0
+        t = min(1.0, (f - self.PULL) / (self.FINISH - self.PULL - 6))
+        arrive = self.u + Vec2(self.side * 18, 0)
+        return self.v + (arrive - self.v) * (t * t), 0.0
+
+    def camera(self, f):
+        if f < self.BOUND:
+            return self.v + Vec2(0, -10), 3  # the vines closing round them
+        if f < self.PULL:
+            return (self.u + self.v) * 0.5, 2
+        return self.u + Vec2(self.side * 10, -12), 3
+
+    def cue(self, f):
+        fx = self.fx
+        pos, _ = self.where(f)
+        hit = self.chest(self.scene.target, pos)
+        if f == 1:
+            self.shout(text.HERMIT_BIND_LINE, scale=2, life=44)
+        if f == self.BOUND:
+            self.world_words.add(sfx.GA, hit + Vec2(0, -8), "impact", 2, 26, 0.3, 2)
+            self.shake = 4
+        if f == self.SLAM:
+            fx.add(vfx.Ring(self.v, (220, 214, 232), 4.0, 20, 2))
+            self.world_words.add(sfx.DOGO, self.v + Vec2(0, -14), "impact", 3, 40, 0.2, 2)
+            self.shake = 14
+        if self.PULSE <= f < self.PULL and (f - self.PULSE) % 14 == 0:
+            fx.add(vfx.Flash(hit, 10, self.HAMON, 6))
+            self.world_words.add(sfx.CRACKLE, hit + Vec2(0, -10), "impact", 2, 20, 0.35, 2)
+        if f == self.PULL:
+            self.shout(text.HERMIT_RIPPLE_LINE, scale=2, life=40)
+            fx.add(vfx.Ring(self.chest(self.scene.user, self.u), self.HAMON, 2.4, 18, 2))
+        if f == self.FINISH:
+            fx.add(vfx.Flash(hit, 54, self.HAMON, 14))
+            fx.add(vfx.Ring(hit, self.HAMON, 5.0, 26, 3))
+            fx.focus(hit, heavy=True)
+            self.world_words.add(sfx.BAKI, hit + Vec2(0, -16), "impact", 3, 48, 0.2, 2)
+            self.flash, self.shake = 14, 18
+
+    def negative(self, f):
+        return self.FINISH <= f < self.FINISH + 3
+
+    def scene_draw(self, world, f):
+        user, target, right = self.scene.user, self.scene.target, self.side > 0
+        pos, lift = self.where(f)
+        anim = "heavy" if f >= self.FINISH - 6 else "special"
+        self.body(world, user, self.u, anim, 2, right)
+        jitter = Vec2(self.rng.choice((-1, 0, 1)), 0) if f % 4 < 2 else Vec2()
+        self.body(world, target, pos + jitter, "hurt", 0, self.side < 0, lift=lift)
+        if f >= self.FINISH:
+            return  # let go: the chop is all there is to see
+        hand = self.chest(user, self.u) + Vec2(self.side * 6, 2)
+        held = self.chest(target, pos, lift=lift)
+        vfx.draw_reach(world, hand, held, vfx.VINE, "vine", 2)
+        # The coils round the body, tighter as they close.
+        coils = 1 if f < self.BOUND // 2 else (2 if f < self.BOUND else 3)
+        for i in range(coils):
+            box = pygame.Rect(0, 0, 15, 5)
+            box.center = (round(held.x), round(held.y - 6 + i * 6))
+            pygame.draw.ellipse(world, OUTLINE, box.inflate(2, 2), 3)
+            pygame.draw.ellipse(world, vfx.VINE, box, 1)
+        if self.PULSE <= f < self.PULL:
+            # The Ripple on its way down the vine, one spark after another.
+            t = ((f - self.PULSE) % 14) / 14
+            spark = hand + (held - hand) * t
+            blit_glow(world, radial_glow(7, (150, 120, 30)), (spark.x, spark.y))
+            world.set_at((round(spark.x), round(spark.y)), self.HAMON)
+
+
+# Vanilla Ice: the Miasma of the Void --------------------------------------------------------
+
+
+def draw_void(surface: pygame.Surface, center: Vec2, radius: float, f: int) -> None:
+    """Cream having swallowed itself: a ball of nothing. Black inside, a thin rim that
+    shivers, and the specks of whatever it is erasing drifting into it."""
+    x, y = center.as_ints()
+    r = max(2, round(radius))
+    pygame.draw.circle(surface, OUTLINE, (x, y), r + 1)
+    pygame.draw.circle(surface, VoidMiasma.NOTHING, (x, y), r)
+    for i in range(10):
+        angle = i * math.tau / 10 + f * 0.11
+        wobble = r + (1 if (f + i) % 4 < 2 else 0)
+        dot = (round(x + math.cos(angle) * wobble), round(y + math.sin(angle) * wobble))
+        surface.set_at(dot, VoidMiasma.RIM)
+
+
+class VoidMiasma(CutscenePlayer):
+    """Cream opens its mouth and swallows itself, Vanilla Ice with it: the void is all
+    that is left. It closes on the opponent and turns round them in a circle that takes
+    them off the floor, round and round in its spiral, until the last blow throws them
+    up; and then he peeks out of the void."""
+
+    length = 270
+    SWALLOW = 40  # Cream has swallowed itself: only the void is left
+    CIRCLE = 70  # the void reaches the opponent and starts turning round them
+    BLOW = 206  # the last blow, upward
+    PEEK = 236  # he puts his head out of the void
+    NOTHING = (14, 10, 22)
+    RIM = (150, 96, 220)
+    SPECK = (120, 112, 132)
+
+    def orbit(self, f: int) -> Vec2:
+        """Where the void is at frame `f`."""
+        if f < self.SWALLOW:
+            return self.u + Vec2(0, -14)
+        if f < self.CIRCLE:
+            t = (f - self.SWALLOW) / (self.CIRCLE - self.SWALLOW)
+            start, end = self.u + Vec2(0, -14), self.v + Vec2(0, 8)
+            return start + (end - start) * (t * t)
+        if f < self.BLOW:
+            # Round and round them, the circle closing a little each turn.
+            t = (f - self.CIRCLE) / (self.BLOW - self.CIRCLE)
+            angle = math.pi / 2 + t * math.tau * 3
+            radius = 30 - 12 * t
+            return self.v + Vec2(
+                math.cos(angle) * radius, -14 - self.lift(f) + math.sin(angle) * radius
+            )
+        return self.v + Vec2(0, -6)
+
+    def lift(self, f: int) -> float:
+        """How high off the floor the opponent is, caught in the spiral."""
+        if f < self.CIRCLE:
+            return 0.0
+        if f < self.BLOW:
+            return 18 * (f - self.CIRCLE) / (self.BLOW - self.CIRCLE)
+        t = (f - self.BLOW) / (self.length - self.BLOW)
+        return max(0.0, 18 + 60 * t - 140 * t * t)  # thrown up, then down
+
+    def camera(self, f):
+        if f < self.SWALLOW:
+            return self.u + Vec2(0, -20), 3  # close on Cream opening its mouth
+        return self.v + Vec2(0, -20), 2
+
+    def cue(self, f):
+        fx = self.fx
+        if f == 1:
+            self.shout(text.VOID_MIASMA_LINE, scale=2, life=50)
+        if f == self.SWALLOW:
+            fx.add(vfx.Ring(self.orbit(f), self.RIM, 2.0, 18, 1))
+            self.world_words.menace(self.head(self.scene.user, self.u), 1)
+        if self.CIRCLE <= f < self.BLOW and f % 3 == 0:
+            # What it passes through is gone: specks of floor and cloth drift into it.
+            drift = Vec2(self.rng.uniform(-0.6, 0.6), self.rng.uniform(-0.6, 0.6))
+            spot = self.orbit(f) + Vec2(self.rng.randint(-10, 10), self.rng.randint(-8, 8))
+            fx.add(vfx.Dust(spot, drift, 1, 14, self.SPECK))
+        if self.CIRCLE <= f < self.BLOW and (f - self.CIRCLE) % 22 == 0:
+            hit = self.chest(self.scene.target, self.v, lift=self.lift(f))
+            self.world_words.add(sfx.GA, hit + Vec2(0, -10), "impact", 2, 20, 0.3, 2)
+            self.shake = 4
+        if f == self.BLOW:
+            hit = self.chest(self.scene.target, self.v, lift=self.lift(f))
+            fx.add(vfx.Flash(hit, 44, self.RIM, 12))
+            fx.add(vfx.Ring(hit, self.RIM, 5.0, 26, 3))
+            fx.focus(hit, heavy=True)
+            self.world_words.add(sfx.DOGO, hit + Vec2(0, -16), "impact", 3, 46, 0.2, 2)
+            self.flash, self.shake = 12, 18
+        if f == self.PEEK:
+            self.world_words.menace(self.orbit(f) + Vec2(0, -18), 1)
+
+    def negative(self, f):
+        return self.BLOW <= f < self.BLOW + 3
+
+    def scene_draw(self, world, f):
+        user, target, right = self.scene.user, self.scene.target, self.side > 0
+        if f < self.SWALLOW:
+            # Cream behind him opens its mouth, and him and Cream go into it, feet last.
+            fade = max(0, 255 - round(255 * f / self.SWALLOW))
+            self.body(world, user, self.u, "pose", 2, right, alpha=fade)
+            self.body(
+                world,
+                user,
+                self.u + Vec2(-self.side * 8, -6),
+                "special",
+                2,
+                right,
+                stand=True,
+                alpha=fade,
+            )
+            draw_void(world, self.orbit(f), 2 + 10 * f / self.SWALLOW, f)
+        lift = self.lift(f)
+        jitter = Vec2(self.rng.choice((-1, 0, 1)), 0) if f % 4 < 2 else Vec2()
+        spinning = self.CIRCLE <= f < self.BLOW + 20
+        face = (f // 6) % 2 == 0 if spinning else self.side < 0
+        self.body(world, target, self.v + jitter, "hurt", 0, face, lift=lift)
+        if self.SWALLOW <= f < self.PEEK:
+            draw_void(world, self.orbit(f), 12, f)
+        if f >= self.PEEK:
+            # He peeks out of it to look: his head, then the rest of him.
+            spot = self.orbit(f)
+            draw_void(world, spot, max(2.0, 12 - (f - self.PEEK) * 0.6), f)
+            if f >= self.PEEK + 10:
+                self.body(world, user, spot + Vec2(-self.side * 18, 10), "pose", 2, right)
+
+
+# Hol Horse: Hol Horse is gonna kill ya! ------------------------------------------------------
+
+
+class EmperorHangedMan(CutscenePlayer):
+    """The bottles have burst: their shards hang in the air round the opponent. In one of
+    them, Hanged Man; it comes out of the reflection and stabs them in the shoulder,
+    pinning them. Hol Horse raises Emperor and fires; the bullet curves from shard to
+    shard, and goes into the forehead."""
+
+    length = 300
+    SHARDS = 30  # the glass hangs round them
+    STAB = 70  # Hanged Man out of a shard
+    AIM = 120  # Emperor raised
+    SHOT = 150  # the bullet leaves
+    HIT = 206  # and arrives
+    GLASS = (196, 226, 240)
+    BANDAGE = (206, 194, 168)
+
+    def shards(self) -> list[Vec2]:
+        """Where the shards hang: a loose ring round the opponent's head."""
+        head = self.head(self.scene.target, self.v)
+        rng = random.Random(self.scene.serial)
+        spots = []
+        for i in range(9):
+            angle = i * math.tau / 9 + rng.uniform(-0.2, 0.2)
+            reach = rng.uniform(16, 30)
+            spots.append(head + Vec2(math.cos(angle) * reach, math.sin(angle) * reach * 0.7))
+        return spots
+
+    def bullet(self, f: int) -> Vec2:
+        """The bullet on its way: from the muzzle, through three shards, to the brow."""
+        shards = self.shards()
+        path = [self.chest(self.scene.user, self.u) + Vec2(self.side * 10, -2)]
+        path += [shards[2], shards[6], shards[4], self.head(self.scene.target, self.v)]
+        t = min(1.0, max(0.0, (f - self.SHOT) / (self.HIT - self.SHOT)))
+        leg = min(len(path) - 2, int(t * (len(path) - 1)))
+        local = t * (len(path) - 1) - leg
+        return path[leg] + (path[leg + 1] - path[leg]) * local
+
+    def camera(self, f):
+        if f < self.SHARDS:
+            return self.u + Vec2(0, -16), 2
+        if f < self.AIM:
+            return self.v + Vec2(0, -24), 3  # the shards, and what is in them
+        if f < self.SHOT:
+            return self.u + Vec2(0, -20), 3  # Emperor raised
+        return (self.u + self.v) * 0.5 + Vec2(0, -16), 2
+
+    def cue(self, f):
+        fx = self.fx
+        if f == 1:
+            self.shout(text.HOL_HORSE_KILL_LINE, scale=2, life=50)
+            fx.add(vfx.Ring(self.u, self.GLASS, 4.0, 24, 2))
+            self.shake = 8
+        if f < self.SHARDS and f % 2 == 0:
+            drift = Vec2.from_angle(self.rng.uniform(0, math.tau), self.rng.uniform(1.0, 2.4))
+            fx.add(vfx.Dust(self.u + Vec2(0, -10), drift, 1, 16, self.GLASS))
+        if f == self.STAB:
+            hit = self.chest(self.scene.target, self.v) + Vec2(-self.side * 4, -4)
+            fx.add(vfx.Flash(hit, 16, self.GLASS, 6))
+            self.world_words.add(sfx.GA, hit + Vec2(0, -10), "impact", 2, 30, 0.3, 2)
+            self.shake = 6
+        if f == self.SHOT:
+            muzzle = self.bullet(f)
+            fx.add(vfx.Flash(muzzle, 14, (255, 236, 160), 5))
+            self.world_words.add(sfx.DON, muzzle + Vec2(0, -12), "impact", 2, 30, 0.2, 2)
+        if f == self.HIT:
+            brow = self.head(self.scene.target, self.v)
+            fx.add(vfx.Flash(brow, 44, (255, 236, 160), 12))
+            fx.add(vfx.Ring(brow, self.GLASS, 5.0, 26, 3))
+            fx.focus(brow, heavy=True)
+            self.world_words.add(sfx.BAKI, brow + Vec2(0, -16), "impact", 3, 46, 0.2, 2)
+            self.flash, self.shake = 12, 18
+
+    def negative(self, f):
+        return self.HIT <= f < self.HIT + 3
+
+    def scene_draw(self, world, f):
+        user, target, right = self.scene.user, self.scene.target, self.side > 0
+        anim = "light" if self.AIM <= f < self.HIT + 30 else "pose"
+        self.body(world, user, self.u, anim, 2, right)
+        self.victim(world, f)
+        if f >= self.SHARDS and f < self.HIT + 10:
+            # The shards hanging in the air, glinting one after the other.
+            for i, spot in enumerate(self.shards()):
+                color = (255, 255, 255) if (f // 4 + i) % 9 == 0 else self.GLASS
+                world.fill(OUTLINE, (round(spot.x) - 1, round(spot.y) - 1, 3, 3))
+                world.set_at(spot.as_ints(), color)
+        if self.STAB - 14 <= f < self.HIT:
+            # Hanged Man: out of the nearest shard, its blade in the shoulder.
+            shard = self.shards()[0]
+            shoulder = self.chest(target, self.v) + Vec2(-self.side * 4, -4)
+            reach = min(1.0, max(0.0, (f - self.STAB + 14) / 14))
+            tip = shard + (shoulder - shard) * reach
+            pygame.draw.line(world, OUTLINE, shard.as_ints(), tip.as_ints(), 4)
+            pygame.draw.line(world, self.BANDAGE, shard.as_ints(), tip.as_ints(), 2)
+            pygame.draw.line(
+                world,
+                (214, 220, 234),
+                tip.as_ints(),
+                (tip + (shoulder - shard).normalized() * 4).as_ints(),
+                1,
+            )
+        if self.SHOT <= f < self.HIT:
+            spot = self.bullet(f)
+            back = self.bullet(max(self.SHOT, f - 3))
+            pygame.draw.line(world, (255, 236, 160), back.as_ints(), spot.as_ints(), 1)
+            vfx.draw_projectile(world, "bullet", spot, spot - back, 3, self.aura(user))
+
+
+# Mariah: You little turds! ------------------------------------------------------------------
+
+
+def draw_car(surface: pygame.Surface, foot: Vec2, face_right: bool, color) -> None:
+    """A car seen from the side, bottom centre at `foot`: body, cabin, two wheels."""
+    x, y = round(foot.x), round(foot.y)
+    d = 1 if face_right else -1
+    body = pygame.Rect(0, 0, 40, 11)
+    body.midbottom = (x, y - 4)
+    cabin = pygame.Rect(0, 0, 20, 9)
+    cabin.midbottom = (x - d * 3, body.top + 1)
+    for rect in (body, cabin):
+        pygame.draw.rect(surface, OUTLINE, rect.inflate(2, 2), border_radius=3)
+    pygame.draw.rect(surface, color, body, border_radius=3)
+    pygame.draw.rect(surface, color, cabin, border_radius=3)
+    surface.fill((150, 190, 220), cabin.inflate(-6, -4))
+    surface.fill(tuple(min(255, c + 50) for c in color), (body.x + 2, body.y + 1, body.w - 4, 1))
+    for wx in (x - 12, x + 12):
+        pygame.draw.circle(surface, OUTLINE, (wx, y - 4), 5)
+        pygame.draw.circle(surface, (60, 60, 70), (wx, y - 4), 3)
+
+
+class BastetCars(CutscenePlayer):
+    """Bastet has come up under them: they are a magnet now, as strong as it gets. The
+    live wires find them first, then the nuts and bolts, then everything heavier; and two
+    cars, drawn from either side, meet where they stand."""
+
+    length = 300
+    WIRES = 30  # the cables whip in
+    BOLTS = 90  # the hardware hails in
+    CARS = 170  # the cars start rolling
+    CRASH = 220  # and meet
+    METAL = (150, 150, 162)
+    RED_CAR, BLUE_CAR = (190, 50, 50), (60, 90, 170)
+
+    def camera(self, f):
+        if f < self.CARS:
+            return self.v + Vec2(0, -18), 3
+        return self.v + Vec2(0, -12), 2
+
+    def car_x(self, f: int) -> float:
+        """How far each car still is from them."""
+        t = min(1.0, max(0.0, (f - self.CARS) / (self.CRASH - self.CARS)))
+        return 200 * (1 - t * t)
+
+    def cue(self, f):
+        fx = self.fx
+        hit = self.chest(self.scene.target, self.v)
+        if f == 1:
+            self.shout(text.MARIAH_GHA_LINE, scale=2, life=50)
+            fx.add(vfx.Ring(self.v, vfx.MAGNET, 3.0, 22, 2))
+        if f == self.WIRES:
+            fx.add(vfx.Flash(hit, 20, (255, 244, 170), 8))
+            self.world_words.add(sfx.CRACKLE, hit + Vec2(0, -14), sfx.HAMON, 2, 30, 0.3, 2)
+            self.shake = 6
+        if self.BOLTS <= f < self.CARS and f % 3 == 0:
+            angle = self.rng.uniform(0, math.tau)
+            fx.add(
+                vfx.Dust(
+                    hit + Vec2.from_angle(angle, 4), Vec2.from_angle(angle, 1.2), 1, 12, self.METAL
+                )
+            )
+        if self.BOLTS <= f < self.CARS and (f - self.BOLTS) % 16 == 0:
+            self.world_words.add(
+                sfx.GA, hit + Vec2(self.rng.randint(-8, 8), -12), "impact", 2, 20, 0.3, 2
+            )
+            self.shake = 3
+        if f == self.CRASH:
+            fx.add(vfx.Flash(hit, 54, (255, 200, 120), 14))
+            fx.add(vfx.Ring(hit, (255, 200, 120), 5.0, 28, 3))
+            fx.add(vfx.Fireball(hit, 16, self.scene.serial, 30))
+            fx.focus(hit, heavy=True)
+            self.world_words.add(sfx.BOOM, hit + Vec2(0, -18), "impact", 3, 48, 0.2, 2)
+            self.flash, self.shake = 14, 20
+
+    def negative(self, f):
+        return self.CRASH <= f < self.CRASH + 3
+
+    def scene_draw(self, world, f):
+        target = self.scene.target
+        vfx.draw_outlet(world, self.v + Vec2(0, 4), f)
+        self.victim(world, f)
+        hit = self.chest(target, self.v)
+        if self.WIRES - 12 <= f < self.CRASH:
+            # The live wires, whipping in from above and wrapping round them.
+            for i, side in enumerate((-1, 1, -0.4)):
+                top = hit + Vec2(side * 40, -50 - i * 6)
+                reach = min(1.0, max(0.0, (f - self.WIRES + 12) / 12))
+                end = top + (hit - top) * reach
+                pygame.draw.line(world, OUTLINE, top.as_ints(), end.as_ints(), 3)
+                pygame.draw.line(world, (60, 60, 70), top.as_ints(), end.as_ints(), 1)
+        if self.BOLTS <= f < self.CRASH:
+            # Nuts and bolts stuck all over them, more and more.
+            count = min(14, (f - self.BOLTS) // 5)
+            rng = random.Random(self.scene.serial)
+            for _ in range(count):
+                spot = hit + Vec2(rng.uniform(-6, 6), rng.uniform(-14, 10))
+                world.fill(OUTLINE, (round(spot.x) - 1, round(spot.y) - 1, 3, 3))
+                world.set_at(spot.as_ints(), self.METAL)
+        if self.CARS <= f < self.CRASH + 8:
+            gap = self.car_x(f)
+            draw_car(world, self.v + Vec2(-gap - 18, 6), True, self.RED_CAR)
+            draw_car(world, self.v + Vec2(gap + 18, 6), False, self.BLUE_CAR)
+
+
+# N'Doul: Shoot him! ---------------------------------------------------------------------------
+
+
+class GebSpike(CutscenePlayer):
+    """Geb has them. The water hand closes round them and lifts them, slams them into the
+    floor; it strikes again and again from underneath; then the water hardens into a spike
+    and goes in. N'Doul has not moved: he listens."""
+
+    length = 270
+    LIFT = 40  # up off the floor
+    SLAM = 70  # and down
+    BELOW = 90  # the blows from under the floor
+    SPIKE = 190  # the spike
+    WATER, SHEEN = (86, 120, 156), (176, 206, 230)
+
+    def where(self, f: int) -> tuple[Vec2, float]:
+        if f < self.LIFT:
+            return self.v, 0.0
+        if f < self.SLAM:
+            t = (f - self.LIFT) / (self.SLAM - self.LIFT)
+            return self.v, 40 * math.sin(t * math.pi * 0.5) if t < 0.85 else 40 * (1 - t) * 6
+        return self.v, 0.0
+
+    def camera(self, f):
+        if f < self.BELOW:
+            return self.v + Vec2(0, -24), 3
+        if f < self.SPIKE - 20:
+            return self.v + Vec2(0, -16), 2
+        return self.v + Vec2(0, -20), 3
+
+    def cue(self, f):
+        fx = self.fx
+        pos, lift = self.where(f)
+        hit = self.chest(self.scene.target, pos, lift=lift)
+        if f == 1:
+            self.shout(text.NDOUL_GHA_LINE, scale=2, life=46)
+        if f == self.SLAM:
+            fx.add(vfx.Ring(self.v, self.SHEEN, 4.0, 22, 2))
+            self.world_words.add(sfx.DOGO, self.v + Vec2(0, -14), "impact", 3, 40, 0.2, 2)
+            self.shake = 14
+        if self.BELOW <= f < self.SPIKE and (f - self.BELOW) % 14 == 0:
+            fx.add(vfx.Flash(hit, 10, self.SHEEN, 5))
+            self.world_words.add(
+                sfx.GA, hit + Vec2(self.rng.randint(-6, 6), -10), "impact", 2, 20, 0.3, 2
+            )
+            self.shake = 4
+        if f == self.SPIKE:
+            fx.add(vfx.Flash(hit, 46, self.SHEEN, 12))
+            fx.add(vfx.Ring(hit, self.SHEEN, 5.0, 26, 3))
+            fx.focus(hit, heavy=True)
+            self.world_words.add(sfx.BAKI, hit + Vec2(0, -16), "impact", 3, 46, 0.2, 2)
+            self.flash, self.shake = 12, 18
+
+    def negative(self, f):
+        return self.SPIKE <= f < self.SPIKE + 3
+
+    def scene_draw(self, world, f):
+        target = self.scene.target
+        pos, lift = self.where(f)
+        vfx.draw_water_puddle(world, self.v + Vec2(0, 4), 16, f)
+        jitter = Vec2(self.rng.choice((-1, 0, 1)), 0) if f % 4 < 2 else Vec2()
+        self.body(world, target, pos + jitter, "hurt", 0, self.side < 0, lift=lift)
+        held = self.chest(target, pos, lift=lift)
+        if f < self.SLAM + 6:
+            # The water hand round them.
+            base = self.v + Vec2(0, 2)
+            pygame.draw.line(world, OUTLINE, base.as_ints(), held.as_ints(), 6)
+            pygame.draw.line(world, self.WATER, base.as_ints(), held.as_ints(), 4)
+            box = pygame.Rect(0, 0, 14, 6)
+            box.center = held.as_ints()
+            pygame.draw.ellipse(world, OUTLINE, box.inflate(2, 2), 3)
+            pygame.draw.ellipse(world, self.SHEEN, box, 1)
+        if f >= self.SPIKE - 6:
+            # The spike of hardened water, up out of the floor and through them.
+            grow = min(1.0, (f - self.SPIKE + 6) / 6)
+            base = self.v + Vec2(0, 4)
+            tip = base + (held + Vec2(0, -10) - base) * grow
+            pygame.draw.polygon(
+                world,
+                OUTLINE,
+                [(base + Vec2(-4, 0)).as_ints(), (base + Vec2(4, 0)).as_ints(), tip.as_ints()],
+            )
+            pygame.draw.polygon(
+                world,
+                self.SHEEN,
+                [(base + Vec2(-2, 0)).as_ints(), (base + Vec2(2, 0)).as_ints(), tip.as_ints()],
+            )
+
+
+# Anubis: through everything ----------------------------------------------------------------
+
+
+class AnubisThrough(CutscenePlayer):
+    """The blade has found them. A pillar rises between the two: the sword goes into the
+    stone, and out the other side, and the stone has not a scratch. Then the cut, all the
+    way through."""
+
+    length = 270
+    PILLAR = 20  # the pillar between them
+    INTO = 80  # the blade into the stone
+    OUT = 130  # and out the other side, into them
+    CUT = 190  # the cut
+    STONE, STONE_DARK, STONE_LIGHT = (168, 160, 150), (110, 104, 98), (210, 204, 196)
+    STEEL = (214, 220, 234)
+
+    def pillar(self) -> pygame.Rect:
+        mid = (self.u + self.v) * 0.5
+        rect = pygame.Rect(0, 0, 14, 40)
+        rect.midbottom = (round(mid.x), round(mid.y + 4))
+        return rect
+
+    def camera(self, f):
+        if f < self.OUT:
+            return (self.u + self.v) * 0.5 + Vec2(0, -18), 3
+        return (self.u + self.v) * 0.5 + Vec2(0, -14), 2
+
+    def cue(self, f):
+        fx = self.fx
+        hit = self.chest(self.scene.target, self.v)
+        if f == 1:
+            self.shout(text.ANUBIS_GHA_LINE, scale=2, life=48)
+        if f == self.INTO:
+            self.world_words.menace(Vec2(*self.pillar().midtop), 1)
+        if f == self.OUT:
+            fx.add(vfx.Flash(hit, 16, self.STEEL, 6))
+            self.world_words.add(sfx.GA, hit + Vec2(0, -10), "impact", 2, 26, 0.3, 2)
+            self.shake = 6
+        if f == self.CUT:
+            fx.add(vfx.Flash(hit, 50, self.STEEL, 12))
+            fx.add(vfx.Ring(hit, self.STEEL, 5.0, 26, 3))
+            fx.focus(hit, heavy=True)
+            self.world_words.add(sfx.BAKI, hit + Vec2(0, -16), "impact", 3, 46, 0.2, 2)
+            self.flash, self.shake = 12, 18
+
+    def negative(self, f):
+        return self.CUT <= f < self.CUT + 3
+
+    def scene_draw(self, world, f):
+        user, right = self.scene.user, self.side > 0
+        anim = "light" if f >= self.INTO - 10 else "pose"
+        self.body(world, user, self.u, anim, 2, right)
+        self.victim(world, f)
+        pillar = self.pillar()
+        if f >= self.PILLAR:
+            world.fill(OUTLINE, pillar.inflate(2, 2))
+            world.fill(self.STONE, pillar)
+            world.fill(self.STONE_LIGHT, (pillar.x + 2, pillar.y, 3, pillar.h))
+            world.fill(self.STONE_DARK, (pillar.right - 3, pillar.y, 3, pillar.h))
+        if self.INTO - 10 <= f < self.CUT + 20:
+            # The blade, from his hand, through the stone without a mark, into them.
+            hand = self.chest(user, self.u) + Vec2(self.side * 8, 0)
+            hit = self.chest(self.scene.target, self.v)
+            reach = min(1.0, max(0.0, (f - self.INTO + 10) / (self.OUT - self.INTO + 10)))
+            tip = hand + (hit - hand) * reach
+            pygame.draw.line(world, OUTLINE, hand.as_ints(), tip.as_ints(), 3)
+            pygame.draw.line(world, self.STEEL, hand.as_ints(), tip.as_ints(), 1)
+            if pillar.collidepoint(tip.as_ints()):
+                # Inside the stone: only a faint shimmer shows where it passes.
+                world.set_at(tip.as_ints(), (255, 255, 255))
+
+
 CUTSCENES = {
+    "hermit_overdrive": HermitOverdrive,
     "road_roller": RoadRoller,
     "star_finish": StarFinish,
     "chariot_clones": ChariotClones,
@@ -1838,6 +2433,11 @@ CUTSCENES = {
     "overdrive_beat": OverdriveBeat,
     "self_destruct": SelfDestruct,
     "crossfire_special": CrossfireSpecial,
+    "void_miasma": VoidMiasma,
+    "emperor_hanged_man": EmperorHangedMan,
+    "bastet_cars": BastetCars,
+    "geb_spike": GebSpike,
+    "anubis_through": AnubisThrough,
 }
 
 

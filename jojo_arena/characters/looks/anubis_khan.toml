@@ -1,0 +1,92 @@
+# Anubis in Khan's hands: a costume of looks/anubis.toml (it says only what changes).
+#
+# Source, read on 17/11/2026: JoJo Wiki, "Khan" (https://jojowiki.com/Khan): the barber of
+# Edfu, Anubis's second wielder. Large and muscular, a tall head, sharp cheekbones, no
+# eyebrows; short dark hair under a small cylindrical cap; a tunic over an undershirt with
+# dark short sleeves, small wristbands, trousers, sandals. Colours ("Color Schemes"): in the
+# anime, tan skin, brown hair, a grey cap and tunic over a dark grey undershirt, dark grey
+# trousers, brown wristbands and sandals; in the coloured manga, fair skin, dark brown hair,
+# a white cap and tunic over a blue undershirt, grey wristbands, baby blue trousers.
+
+base = "anubis"
+
+[costume]
+label = "Khan"
+label_en = "Khan"
+source = "JoJo Wiki, Khan, Appearance : le barbier d'Edfou, son deuxième porteur"
+
+[build]
+head_r = 5.8
+shoulders = 9.6
+torso_r = 6.6
+arm_r = 2.9
+leg_r = 2.7
+hand_r = 2.5
+
+[palette]
+skin = "#a8784e"
+hair = "#4a3426"
+tunic = "#9a9aa0"        # grey
+hat = "#a2a2a8"          # the cap, grey too
+under = "#4a4a52"        # the dark undershirt
+trousers = "#56565e"
+bands = "#6a4630"
+sandals = "#6e4a30"
+
+[body]
+legs = "trousers"
+feet = "sandals"
+
+[face]
+eyes = "eyes"
+eye_style = "wide"
+brows = false            # no eyebrows
+nose = true
+
+[[parts]]
+type = "hair"
+material = "hair"
+style = "short"
+volume = 6.6
+
+# The small cylindrical cap.
+[[parts]]
+type = "cap"
+material = "hat"
+brim = false
+height = 1.2
+
+# The undershirt's dark short sleeves.
+[[parts]]
+type = "sleeves"
+material = "under"
+length = 0.35
+
+[[parts]]
+type = "bracelets"
+material = "bands"
+width = 1.6
+
+[[parts]]
+type = "sword"
+material = "blade"
+length = 16
+guard = "gold"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "JoJo Wiki, Khan, Color Schemes : l'anime"
+
+[colors.manga]
+label = "Manga en couleur"
+label_en = "Coloured manga"
+source = "JoJo Wiki, Khan, Color Schemes : le manga en couleur"
+
+[colors.manga.palette]
+skin = "#f0d0b4"
+tunic = "#ecebf0"
+hat = "#f2f2f6"
+under = "#3a5ab0"
+trousers = "#9ac2e8"
+bands = "#9a9aa2"

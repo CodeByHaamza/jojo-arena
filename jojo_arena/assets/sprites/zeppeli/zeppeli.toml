@@ -6,6 +6,17 @@ chest = 27
 height = 44
 directions = ["down", "up", "right"]
 
+[costume]
+label = "Tenue de Phantom Blood"
+label_en = "Phantom Blood attire"
+source = "Sa tenue principale (ASBR, costume normal)"
+
+[recolor]
+suit = [[206, 197, 223], [236, 234, 242], [244, 243, 247], [244, 244, 246]]
+trim = [[24, 31, 72], [42, 58, 110], [61, 86, 147], [105, 132, 179]]
+vest = [[164, 60, 40], [200, 70, 60], [209, 108, 107], [222, 170, 173]]
+check = [[213, 203, 227], [242, 240, 246], [245, 244, 248], [244, 243, 246]]
+
 [anims.idle]
 row = 0
 frames = 4
@@ -175,3 +186,40 @@ label_en = "The wine glass"
 source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : le vin chargé de Hamon du Hamon Cutter"
 stand = false
 stand_offset = [-14.0, -8.0]
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+stand = ""
+
+[colors.film]
+label = "Film"
+label_en = "Movie"
+source = "ASBR, couleur B : le film Phantom Blood et la Super Figure Revolution"
+stand = ""
+
+[colors.film.palette]
+suit = [[142, 72, 56], [176, 88, 78], [191, 122, 119], [210, 177, 177]]
+vest = [[171, 107, 33], [208, 122, 52], [216, 145, 100], [226, 186, 167]]
+
+[colors.j071]
+label = "Carte J-071"
+label_en = "Card J-071"
+source = "ASBR, couleur C : la carte Adventure Battle J-071"
+stand = ""
+
+[colors.j071.palette]
+suit = [[97, 139, 199], [142, 176, 210], [184, 206, 224], [238, 243, 246]]
+vest = [[30, 110, 115], [47, 154, 150], [65, 192, 180], [130, 203, 192]]
+check = [[189, 49, 31], [216, 64, 60], [223, 109, 113], [232, 177, 182]]
+
+[colors.j436]
+label = "Carte J-436"
+label_en = "Card J-436"
+source = "ASBR, couleur D : la carte Adventure Battle J-436"
+stand = ""
+
+[colors.j436.palette]
+vest = [[39, 117, 72], [58, 154, 90], [83, 185, 111], [145, 200, 157]]
+trim = [[35, 72, 51], [58, 106, 74], [81, 139, 97], [130, 167, 138]]

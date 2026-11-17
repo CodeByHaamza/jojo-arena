@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from jojo_arena.engine import music
 from jojo_arena.engine.music import Track
 
 NATURAL_MINOR = (0, 2, 3, 5, 7, 8, 10)
@@ -43,9 +44,46 @@ TRACKS = {
         motif=((0, 4, 4), (4, 3, 2), (6, 2, 2), (8, 6, 6), (14, 7, 2)),
         lead_wave="organ",
     ),
+    # DIO's mansion: slow, low, a heartbeat of a bass under a chromatic organ line.
+    "dio_mansion": Track(
+        tempo=92,
+        root=45,  # A
+        scale=PHRYGIAN_DOMINANT,
+        progression=(0, 1, 0, 5),
+        motif=((0, 4, 3), (4, 5, 1), (5, 4, 3), (8, 1, 6), (14, 0, 2)),
+        lead_wave="organ",
+    ),
+    # The bridge at the end of the journey: the same mode as the mansion, faster, lower.
+    # A dream that is a nightmare: a fairground waltz gone wrong.
+    "death13_dream": Track(
+        tempo=84,
+        root=50,  # D
+        scale=PHRYGIAN_DOMINANT,
+        progression=(0, 0, 1, 5),
+        motif=((0, 7, 2), (2, 6, 2), (4, 4, 4), (8, 2, 2), (10, 1, 2), (12, 0, 4)),
+        lead_wave="organ",
+    ),
+    # Above the city at night: the bridge's mode, a little slower, higher.
+    "cairo_rooftops": Track(
+        tempo=104,
+        root=47,  # B
+        scale=PHRYGIAN_DOMINANT,
+        progression=(0, 1, 5, 1),
+        motif=((0, 4, 2), (2, 5, 2), (4, 2, 4), (8, 4, 2), (10, 1, 4)),
+        lead_wave="organ",
+    ),
+    "cairo_bridge": Track(
+        tempo=118,
+        root=43,  # G
+        scale=PHRYGIAN_DOMINANT,
+        progression=(0, 5, 1, 0),
+        motif=((0, 2, 4), (2, 3, 2), (4, 4, 4), (6, 1, 2), (8, 0, 6), (14, 5, 2)),
+        lead_wave="organ",
+    ),
 }
 
 
 def track_for_stage(stage_id: str) -> str:
-    """The music of an arena (the menu theme when it has none of its own)."""
-    return stage_id if stage_id in TRACKS else "menu"
+    """The music of an arena (the menu theme when it has none of its own): a rendered
+    track, or one the player's sound pack brings for that arena."""
+    return stage_id if stage_id in TRACKS or music.has(stage_id) else "menu"

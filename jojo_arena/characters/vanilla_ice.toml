@@ -1,0 +1,428 @@
+# Vanilla Ice (Part 3) - Cream. DIO's most loyal servant, made a vampire by his blood.
+#
+# Sources, read on 17/11/2026:
+# - JoJo Wiki, "Vanilla Ice" (https://jojowiki.com/Vanilla_Ice): he cut off his own head
+#   to give DIO his blood, and DIO raised him a vampire. Cream erased Avdol, then Iggy;
+#   Polnareff saw he was a vampire and dragged him into the sun.
+# - JoJo Wiki, "Cream" (https://jojowiki.com/Cream): a close-range Stand strong enough to
+#   behead with a chop. Its mouth opens on the void: it swallows itself and its user and
+#   becomes a ball that erases whatever it passes through, unseen, untouchable, fast
+#   enough to run Polnareff down. Inside, Ice cannot see out: he has to peek out, and
+#   that is when he can be struck. Stats B B D C C D.
+# - JoJo Wiki, All-Star Battle R ★ Vanilla Ice (https://jojowiki.com/All-Star_Battle_R/Vanilla_Ice):
+#   Stand and vampirism styles. Without Cream: "You foul creature!" (Cream kicks a downed
+#   opponent, then launches), "How dare you!" (a rising uppercut that moves forward, a
+#   reversal and an anti-air), "This vicious arm!" (Cream chops several times as Ice
+#   advances), "Lord DIO!" (he drains the opponent's blood, heals a little, kicks them
+#   away: a command throw), "Now I've taken your legs!" (Cream bursts out of the ground
+#   in a moving assault, unblockable as it comes up). Throw: "I swear I'll kill you!"
+#   (Ice holds them by the neck while Cream collides with them). With Cream: "Once and
+#   for all!" (Cream swallows itself and flies forward, unblockable and invincible; "the
+#   direction and attack button change its path and speed"). HHA "The great void rises!"
+#   (he enters Cream and lunges; Cream swallows the opponent and spits them out,
+#   unblockable, 190). GHA "Miasma of the Void" (inside Cream he flies in a vertical
+#   circle, the opponent caught in its spiral, a last blow upward; unblockable, 340).
+#
+# What changes here, and why:
+# - ASBR's Stand Power Gauge (spent by the void and by Cream from the floor, it refills
+#   with Cream called back) is not in our engine: those moves have a cooldown instead.
+# - "You foul creature!" only hits a downed opponent in ASBR; with no knockdown game here,
+#   it ends his chain, Cream's kicks raining on whoever the chain has already staggered.
+# - The void: two versions of "Once and for all!", as the ASBR input gives two. Straight
+#   (no direction): faster and shorter. Steered (a direction): slower, longer, and it
+#   goes where the stick pushes it the whole way. Both erase the props they pass through,
+#   and he peeks out at the end, open to a blow.
+# - "Miasma of the Void": the vertical circle cannot be seen from above. The void crosses
+#   the arena in a line (shape = "line", reach across it), and the circle and the spiral
+#   play in its cutscene.
+# Feel: a hunter you cannot see. He goes into the void, comes at you through the walls
+# and the crates, and peeks out to look for you: that moment is yours.
+
+name = "Vanilla Ice"
+max_hp = 950
+walk_speed = 100
+strength = 1.6  # Cream: strong enough to behead with one chop
+nature = "vampire"  # the sun and the Ripple burn him
+style = { type = "stance_toggle", off = "base", on = "stand", stand_body = true }
+
+# Vanilla Ice: Cream comes out only to strike -----------------------------------------------
+
+[stances.base]
+label = "SANS CREAM"
+label_en = "NO CREAM"
+
+# A back-fist, a kick, then Cream's kicks: the same button three times.
+[stances.base.moves.light]
+label = "REVERS"
+label_en = "BACKHAND"
+info = "Rapide. Encore : coup de pied, puis les coups de pied de Cream"
+info_en = "Fast. Again: a kick, then Cream's kicks"
+startup_f = 5
+active_f = 3
+recovery_f = 11
+damage = 30
+reach = 15
+radius = 10
+hitstun_f = 19
+knockback = 80
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.base.moves.light2]
+label = "COUP DE PIED"
+label_en = "KICK"
+info = "S'enchaîne sur le revers"
+info_en = "Follows the backhand"
+startup_f = 6
+active_f = 3
+recovery_f = 12
+damage = 34
+reach = 17
+radius = 11
+hitstun_f = 21
+knockback = 100
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "kick"
+
+# ASBR: "You foul creature!" - Cream's kicks, one after the other, and the last launches.
+[stances.base.moves.light3]
+shout = "SALE BÊTE !"
+label = "SALE BÊTE !"
+label_en = "YOU FOUL CREATURE!"
+info = "Fin de l'enchaînement : Cream piétine six fois, le dernier coup envoie au mur"
+info_en = "Chain ender: Cream stamps six times, the last blow sends into the wall"
+stand_flash = true
+startup_f = 8
+active_f = 24
+recovery_f = 20
+hits = 6
+hit_every_f = 4
+damage = 8
+last_damage = 30
+reach = 18
+radius = 13
+hitstun_f = 16
+knockback = 30
+last_knockback = 380
+last_wall_bounce = true
+hitstop_f = 2
+cancel_on_hit = ["special"]
+anim = "kick_high"
+
+# ASBR: "Lord DIO!" - his vampire's grab: he drains their blood, heals, kicks them away.
+[stances.base.moves.heavy]
+shout = "DIO... SAMA !"
+label = "SEIGNEUR DIO !"
+label_en = "LORD DIO!"
+info = "Saisie imparable : boit leur sang (un tiers des dégâts en vie), puis les repousse"
+info_en = "Unblockable grab: drinks their blood (a third of the damage as life), then kicks them off"
+startup_f = 12
+active_f = 3
+recovery_f = 32
+damage = 100
+reach = 12
+radius = 10
+hitstun_f = 32
+knockback = 260
+hitstop_f = 8
+unblockable = true
+drain = 0.33
+clashable = false
+anim = "grab"
+
+# ASBR: "How dare you!" - a rising uppercut that carries him forward: his reversal.
+[stances.base.moves.heavy_alt]
+shout = "COMMENT OSES-TU !"
+label = "COMMENT OSES-TU !"
+label_en = "HOW DARE YOU!"
+info = "Avec une direction : uppercut de Cream en avançant, intouchable au départ"
+info_en = "With a direction: Cream's uppercut as he moves in, untouchable as it starts"
+stand_flash = true
+startup_f = 7
+active_f = 5
+recovery_f = 26
+invincible_f = 9
+lunge = 150
+damage = 70
+reach = 18
+radius = 13
+hitstun_f = 30
+knockback = 320
+hitstop_f = 9
+clashable = false
+anim = "uppercut"
+
+# ASBR: "This vicious arm!" - Cream chops, and chops, and chops, as he walks in.
+[stances.base.moves.special]
+shout = "C'EST CE BRAS ?!"
+label = "C'EST CE BRAS LE FAUTIF ?!"
+label_en = "THIS VICIOUS ARM!"
+info = "Cream abat trois fois le tranchant de la main en avançant, la dernière envoie loin"
+info_en = "Cream chops three times as he moves in, the last sends far"
+stand_flash = true
+startup_f = 10
+active_f = 14
+recovery_f = 18
+lunge = 140
+hits = 3
+hit_every_f = 6
+damage = 22
+last_damage = 36
+reach = 20
+radius = 13
+hitstun_f = 20
+knockback = 50
+last_knockback = 320
+hitstop_f = 4
+cancel_on_hit = ["heavy"]
+anim = "heavy"
+
+# ASBR: "Now I've taken your legs!" - Cream comes up through the floor under them,
+# strikes on its way, and goes back under. Unblockable as it comes up.
+[stances.base.moves.special_alt]
+shout = "D'ABORD TES JAMBES !"
+label = "D'ABORD, TES JAMBES !"
+label_en = "NOW I'VE TAKEN YOUR LEGS!"
+info = "Avec une direction : Cream jaillit du sol sous l'adversaire, quatre coups imparables (recharge 8 s)"
+info_en = "With a direction: Cream bursts out of the floor under the opponent, four unblockable blows (8 s cooldown)"
+stand_flash = true
+startup_f = 20
+active_f = 26
+recovery_f = 22
+at_target = true
+reach = 170  # how far from him Cream can come up
+hits = 4
+hit_every_f = 7
+damage = 32
+last_damage = 46
+radius = 16
+hitstun_f = 22
+knockback = 40
+last_knockback = 300
+hitstop_f = 4
+unblockable = true
+clashable = false
+cooldown_s = 8
+anim = "special"
+fx = "rise"  # the floor cracks open under them and Cream's blows come up out of it
+
+# Cream out ----------------------------------------------------------------------------
+
+[stances.stand]
+label = "AVEC CREAM"
+label_en = "WITH CREAM"
+walk_speed_mult = 0.9
+
+# Cream's hands: a chop, a backhand, then both fists brought down.
+[stances.stand.moves.light]
+label = "TRANCHANT DE CREAM"
+label_en = "CREAM'S CHOP"
+info = "Le tranchant de la main de Cream. Encore : revers, puis les deux poings"
+info_en = "The edge of Cream's hand. Again: a backhand, then both fists"
+startup_f = 6
+active_f = 3
+recovery_f = 12
+damage = 38
+reach = 23
+radius = 12
+hitstun_f = 20
+knockback = 100
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.stand.moves.light2]
+label = "REVERS DE CREAM"
+label_en = "CREAM'S BACKHAND"
+info = "S'enchaîne sur le tranchant"
+info_en = "Follows the chop"
+startup_f = 6
+active_f = 3
+recovery_f = 13
+damage = 42
+reach = 24
+radius = 13
+hitstun_f = 22
+knockback = 120
+hitstop_f = 6
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "heavy"
+
+[stances.stand.moves.light3]
+label = "MASSE DE CREAM"
+label_en = "CREAM'S HAMMER"
+info = "Les deux poings joints abattus : envoie contre le mur"
+info_en = "Both fists joined and brought down: sends into the wall"
+startup_f = 10
+active_f = 4
+recovery_f = 22
+damage = 64
+reach = 24
+radius = 15
+hitstun_f = 32
+knockback = 420
+hitstop_f = 10
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "heel_drop"
+
+# ASBR throw: "I swear I'll kill you!" - he holds them by the neck, Cream rams into them.
+[stances.stand.moves.heavy]
+shout = "JE T'ACHÈVERAI !"
+label = "JE T'ACHÈVERAI, C'EST SÛR !"
+label_en = "I SWEAR I'LL KILL YOU!"
+info = "Saisie imparable : il les tient par le cou, Cream les percute"
+info_en = "Unblockable grab: he holds them by the neck, Cream rams into them"
+startup_f = 10
+active_f = 3
+recovery_f = 30
+damage = 110
+reach = 12
+radius = 10
+hitstun_f = 34
+knockback = 360
+hitstop_f = 12
+wall_bounce = true
+unblockable = true
+clashable = false
+anim = "grab"
+
+# ASBR's Reversal Assist: Cream chops down at the opponent and knocks them away.
+[stances.stand.moves.heavy_alt]
+label = "CREAM S'ABAT"
+label_en = "CREAM CHOPS DOWN"
+info = "Avec une direction : Cream fonce et abat le tranchant de la main, envoie loin"
+info_en = "With a direction: Cream rushes in and chops down, sends far"
+startup_f = 12
+active_f = 5
+recovery_f = 22
+lunge = 200
+damage = 70
+reach = 22
+radius = 14
+hitstun_f = 30
+knockback = 400
+hitstop_f = 10
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "heavy"
+
+# ASBR: "Once and for all!" - Cream swallows itself and him, and the void flies straight
+# ahead: unseen, untouchable, unblockable, and what it passes through is gone.
+[stances.stand.moves.special]
+shout = "UNE FOIS POUR TOUTES !"
+label = "UNE FOIS POUR TOUTES !"
+label_en = "ONCE AND FOR ALL!"
+info = "Le vide fonce droit devant : invisible, intouchable, imparable, il efface le décor. Il ressort pour regarder : là, il est à découvert (recharge 4 s)"
+info_en = "The void rushes straight ahead: unseen, untouchable, unblockable, it erases the props. He peeks out to look: then he is open (4 s cooldown)"
+startup_f = 8
+active_f = 24
+recovery_f = 24
+lunge = 330
+vanish = true
+erase = true
+hits = 2
+hit_every_f = 10
+damage = 40
+reach = 0
+radius = 16
+hitstun_f = 26
+knockback = 60
+last_knockback = 300
+hitstop_f = 6
+unblockable = true
+clashable = false
+cooldown_s = 4
+anim = "dash"
+
+# The same void, steered: a direction sends it, and it follows the stick the whole way.
+[stances.stand.moves.special_alt]
+shout = "UNE FOIS POUR TOUTES !"
+label = "LE VIDE, GUIDÉ"
+label_en = "THE VOID, STEERED"
+info = "Avec une direction : le vide part, et va où on le pousse tout du long. Plus lent, plus long, trois morsures (recharge 7 s)"
+info_en = "With a direction: the void sets off and goes wherever it is pushed the whole way. Slower, longer, three bites (7 s cooldown)"
+startup_f = 6
+active_f = 60
+recovery_f = 26
+lunge = 210
+steer = true
+vanish = true
+erase = true
+hits = 3
+hit_every_f = 12
+damage = 30
+last_damage = 40
+reach = 0
+radius = 16
+hitstun_f = 24
+knockback = 60
+last_knockback = 280
+hitstop_f = 5
+unblockable = true
+clashable = false
+cooldown_s = 7
+anim = "dash"
+
+# Super moves ----------------------------------------------------------------------------
+
+# Heart Heat Attack (1 bar): "The great void rises!" - into Cream, and a lunge; the void
+# swallows them and spits them out.
+[moves.hha]
+shout = "LE GRAND VIDE !"
+label = "LE GRAND VIDE S'ÉLÈVE !"
+label_en = "THE GREAT VOID RISES!"
+info = "Il entre dans Cream et fonce : le vide les avale et les recrache. Imparable"
+info_en = "He enters Cream and lunges: the void swallows them and spits them out. Unblockable"
+stand_flash = true
+startup_f = 10
+active_f = 16
+recovery_f = 30
+lunge = 300
+vanish = true
+erase = true
+shape = "line"
+damage = 190
+reach = 40
+radius = 14
+hitstun_f = 44
+knockback = 400
+hitstop_f = 14
+wall_bounce = true
+unblockable = true
+clashable = false
+anim = "dash"
+
+# Great Heat Attack (2 bars): "Miasma of the Void" - the void crosses the arena; caught,
+# they spin in its spiral before the last blow.
+[moves.gha]
+shout = "LE MIASME DU VIDE !"
+label = "LE MIASME DU VIDE"
+label_en = "MIASMA OF THE VOID"
+info = "Le vide traverse l'arène d'un bout à l'autre ; pris, l'adversaire tourne dans sa spirale. Imparable"
+info_en = "The void crosses the arena end to end; caught, the opponent spins in its spiral. Unblockable"
+stand_flash = true
+startup_f = 16
+active_f = 10
+recovery_f = 30
+invincible_f = 16
+vanish = true
+shape = "line"
+damage = 40
+reach = 240
+radius = 16
+hitstun_f = 40
+hitstop_f = 10
+unblockable = true
+clashable = false
+anim = "dash"
+cinematic = "void_miasma"
+cinematic_s = 4.5
+finish_damage = 300
+finish_hitstun_f = 50
+finish_knockback = 400
+finish_wall_bounce = true

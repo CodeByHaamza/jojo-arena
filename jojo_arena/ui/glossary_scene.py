@@ -263,7 +263,8 @@ class GlossaryScene(Scene):
                     ax, ay = sheet.anchor
                     surface.blit(image, (feet[0] - ax, feet[1] - ay))
                 else:
-                    draw_icon(surface, "", VISUAL.center, scale=3, size=16, center=True)
+                    # A Stand with no body (vines, a plug, a gun): its icon.
+                    draw_icon(surface, entry.icon, VISUAL.center, scale=3, size=16, center=True)
         finally:
             surface.set_clip(None)
 

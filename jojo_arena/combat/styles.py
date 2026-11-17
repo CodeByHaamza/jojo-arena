@@ -121,8 +121,34 @@ class Hamon(Style):
         return fighter.breathing
 
 
+class MoveStyle(Style):
+    """The style button starts one move of the kit (spinning a weapon, a taunt...): the
+    move named `move`, from the current stance or the moves shared by every stance.
+
+    Example in a character file:
+        style = { type = "move", move = "style" }
+    """
+
+    event = "style_move"
+
+    def __init__(self, params: dict) -> None:
+        super().__init__(params)
+        self.move = params.get("move", "style")
+
+    def on_pressed(self, fighter: Fighter) -> bool:
+        move = fighter.kit.move(fighter.stance, self.move)
+        if move is None or fighter.cooldowns.get(move, 0) > 0:
+            return False
+        fighter.start_attack(move, fighter.pos + fighter.facing * 10)
+        return True
+
+    def aura_active(self, fighter: Fighter) -> bool:
+        return fighter.buff is not None and fighter.buff.charge
+
+
 STYLES: dict[str, type[Style]] = {
     "none": Style,
+    "move": MoveStyle,
     "stance_toggle": StanceToggle,
     "stance_cycle": StanceCycle,
     "hamon": Hamon,

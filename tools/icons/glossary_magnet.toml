@@ -1,0 +1,27 @@
+# A body made a magnet: a horseshoe magnet, red and silver-tipped, and the ripples that
+# run out from it (Bastet's magnetism, JoJo Wiki "Bastet").
+
+pixels = [
+    "................",
+    "...oooo..oooo...",
+    "...oSSo..oSSo...",
+    "...oSSo..oSSo...",
+    "...oRRo..oRRo...",
+    "...oRRo..oRRo...",
+    "...oRRo..oRRo...",
+    "...oRRo..oRRo...",
+    "...oRRoooooRRo..",
+    "...oRRRRRRRRRo..",
+    "....oRRRRRRRo...",
+    ".....ooooooo....",
+    "................",
+    "..P..........P..",
+    "...PP......PP...",
+    ".....PPPPPP.....",
+]
+
+[palette]
+o = "#17121f"
+R = "#d03a3a"
+S = "#dce2ec"
+P = "#b060ec"

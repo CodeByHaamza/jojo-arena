@@ -6,6 +6,18 @@ chest = 29
 height = 48
 directions = ["down", "up", "right"]
 
+[costume]
+label = "Sa tenue"
+label_en = "His outfit"
+source = "JoJo Wiki, Tarkus, Appearance"
+
+[recolor]
+skin = [[93, 81, 61], [122, 106, 88], [149, 132, 117], [175, 171, 168]]
+armor = [[46, 45, 57], [74, 74, 84], [103, 104, 111], [145, 145, 145]]
+armor_light = [[106, 104, 126], [138, 138, 148], [170, 170, 172], [209, 209, 209]]
+hair = [[83, 42, 25], [122, 58, 42], [160, 74, 60], [188, 115, 109]]
+cloth = [[76, 64, 46], [106, 90, 72], [136, 116, 98], [162, 154, 148]]
+
 [anims.idle]
 row = 0
 frames = 4
@@ -175,3 +187,34 @@ label_en = "Ready to crush"
 source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : ses poings qui écrasent tout ce qu'ils frappent"
 stand = false
 stand_offset = [-14.0, -8.0]
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "JoJo Wiki, Tarkus, Color Schemes : l'anime"
+stand = ""
+
+[colors.manga]
+label = "Manga en couleur"
+label_en = "Coloured manga"
+source = "JoJo Wiki, Tarkus, Color Schemes : le manga en couleur"
+stand = ""
+
+[colors.manga.palette]
+hair = [[68, 50, 24], [106, 74, 42], [143, 97, 61], [176, 132, 104]]
+armor = [[76, 64, 46], [106, 90, 72], [136, 116, 98], [162, 154, 148]]
+armor_light = [[140, 132, 106], [160, 154, 142], [183, 180, 175], [217, 217, 217]]
+cloth = [[15, 12, 17], [42, 38, 48], [69, 65, 77], [109, 109, 109]]
+
+[colors.film]
+label = "Film"
+label_en = "Movie"
+source = "JoJo Wiki, Tarkus, Color Schemes : le film"
+stand = ""
+
+[colors.film.palette]
+skin = [[63, 62, 74], [92, 92, 100], [123, 123, 125], [162, 162, 162]]
+hair = [[7, 7, 9], [30, 28, 34], [57, 55, 63], [97, 97, 97]]
+armor = [[40, 32, 22], [74, 58, 44], [107, 83, 68], [142, 120, 108]]
+armor_light = [[167, 141, 41], [200, 160, 64], [210, 175, 110], [223, 203, 174]]
+cloth = [[188, 166, 94], [200, 180, 138], [216, 202, 178], [240, 236, 231]]

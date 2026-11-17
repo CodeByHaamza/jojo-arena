@@ -149,3 +149,22 @@ elbow_r = [3, -3]
 [[poses.road_roller.right]]
 hand_r = [4, -20]
 hand_l = [-3, -20]
+
+# Its colours ------------------------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ DIO, "Costumes & Tints": The World's tint A is "The
+# World's anime colours", its tint B the Super Action Statue (a pale, bone-white body).
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, The World, couleur A : les couleurs de l'anime"
+
+[colors.sas]
+label = "Super Action Statue"
+label_en = "Super Action Statue"
+source = "ASBR, The World, couleur B : la Super Action Statue"
+
+[colors.sas.palette]
+gold = ["#6c6458", "#b8ac98", "#e0d6c2", "#f8f2e6"]
+deep = ["#5a5248", "#9c9080", "#c8bca8", "#ece4d6"]
+rib = ["#5e5c54", "#a09c8e", "#cfcabc", "#f0ece0"]

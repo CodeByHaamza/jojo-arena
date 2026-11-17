@@ -1,0 +1,30 @@
+# Emperor: Hol Horse's gun, seen from the side, pointing right. The Stand has no body, so
+# its glossary page shows this instead of a sprite (JoJo Wiki, "Emperor": a long barrel
+# under a metal frame, a cylinder below that is connected to nothing, a large sphere set
+# in the frame, wooden grip panels).
+
+pixels = [
+    "................",
+    "................",
+    "................",
+    "....oooooooooo..",
+    "...oLLLLLLLLLLo.",
+    "...oSSSSSSSSSSo.",
+    "..oSoDDoSSooooo.",
+    "..oSoDDoSo......",
+    "..oSSooSSo......",
+    "..ooSSSSoo......",
+    "...oGGo.ooo.....",
+    "...oGGo.oSSo....",
+    "..oGGGo..ooo....",
+    "..oGGo..........",
+    "..oooo..........",
+    "................",
+]
+
+[palette]
+o = "#17121f"
+L = "#eef2f8"
+S = "#b8c0cc"
+D = "#6c7688"
+G = "#7a4a2a"

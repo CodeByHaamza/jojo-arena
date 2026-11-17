@@ -1,0 +1,66 @@
+# Jonathan Joestar, shirtless: a costume of looks/jonathan.toml (it says only what changes).
+#
+# Sources, read on 16/11/2026:
+# - JoJo Wiki, Eyes of Heaven ★ Jonathan Joestar, "Costumes": Special Costume F is "based
+#   on Jonathan shirtless in Chapter 35 and Episode 7" (the fight in the burning mansion
+#   is over; he trains with Zeppeli). All-Star Battle R does not have it.
+# - The game's render of that costume, looked at for the shapes and the tones: bare
+#   chest, dark wraps at the wrists, a dark belt with gold studs, brown trousers, brown
+#   boots; and its second tint, the same with every colour turned over (teal trousers,
+#   blue-grey boots, pale blue wraps, a paler skin, the hair gone brown).
+
+base = "jonathan"
+
+[costume]
+label = "Torse nu"
+label_en = "Shirtless"
+source = "Eyes of Heaven, costume spécial F : chapitre 35, épisode 7"
+
+[palette]
+trousers = "#6a4238"   # dark brown
+boots = "#7a4a2c"
+belt = "#3c2e2c"
+wrap = "#4c3228"       # the wraps at his wrists
+
+# No top and no shoulder pads: the chest is bare.
+[[parts]]
+type = "hair"
+material = "hair"
+style = "mane"
+volume = 7.4
+flare = 0.5
+fill = 0.55
+
+[[parts]]
+type = "gloves"
+material = "wrap"
+length = 0.2
+
+[[parts]]
+type = "belt"
+material = "belt"
+buckle = "gold"
+below = "trousers"
+
+[[parts]]
+type = "boots"
+material = "boots"
+length = 0.3
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "Eyes of Heaven, spécial F, couleur A : les couleurs de l'épisode 7"
+
+[colors.inverse]
+label = "Inversé"
+label_en = "Inverted"
+source = "Eyes of Heaven, spécial F, couleur B : la couleur A inversée"
+
+[colors.inverse.palette]
+skin = "#f6d8bc"
+hair = "#4c4234"
+trousers = "#3f5c5a"
+boots = "#365262"
+belt = "#2c4a6c"
+wrap = "#5c9cb2"

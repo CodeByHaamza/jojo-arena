@@ -128,6 +128,8 @@ spacing = 46                  # the two step apart so their barrages meet betwee
 max = 100
 start = 40                    # each round starts with this much Hamon
 breath_per_s = 25             # breathing fills the gauge, standing still and open to hits
+hold_s = 0.25                 # a Stand user who also breathes: the key held this long is a
+                              # breath, let go sooner it calls the Stand
 boost_mult = 1.4              # a boosted move (its hamon_cost paid) hits this much harder
 weak_natures = ["vampire", "zombie", "pillar_man"]
 vs_weak_mult = 2.0            # Hamon on vampires, zombies and Pillar Men
@@ -180,6 +182,13 @@ damage_per_s = 10
 walk_mult = 0.85
 no_meter = true               # no Heart Heat while the body is not his own
 guard_drain_per_s = 18
+
+[status.magnet]
+# A body made a magnet: it does nothing by itself, but metal comes for it, and the blows
+# that look for it (`bonus_status` in a kit) hit harder for each level. Each new touch
+# while it holds adds a level, up to the third; it all goes once it runs out.
+max_s = 9
+max_level = 3
 
 [stance]
 switch_f = 12                 # time to bring the Stand out or call it back

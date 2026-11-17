@@ -5,7 +5,7 @@
 **Un arena fighter 1v1 en temps réel, en pixel art vu de dessus.**
 
 Fan game non officiel de JoJo's Bizarre Adventure — Python 3.12, pygame-ce
-**Parties 1 et 2 complètes** · 20 persos · 5 arènes · simulation déterministe à 60 images par seconde
+**Parties 1 et 2 complètes** · 26 persos · 9 arènes · simulation déterministe à 60 images par seconde
 
 [![CI](https://github.com/CodeByHaamza/jojo-arena/actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-1038-2ea24a.svg)](tests/)
@@ -110,12 +110,12 @@ chacun de leur côté. C'est ce qui rend les replays exacts et le rollback possi
 > *Un jeu qui tourne n'est pas un jeu juste.*
 
 <div align="center">
-<img src="docs/media/chiffres.svg" alt="20 persos, 5 arènes, 1038 tests, 94 % de couverture, 60 images par seconde" width="100%">
+<img src="docs/media/chiffres.svg" alt="26 persos, 9 arènes, 1667 tests, 94 % de couverture, 60 images par seconde" width="100%">
 </div>
 
 | Critère | Mesure | Comment |
 | --- | --- | --- |
-| **Déterminisme** | identique au bit près, **20/20 persos** | mêmes entrées rejouées deux fois : positions, jauges, projectiles et événements comparés ([test](tests/test_determinism.py)) |
+| **Déterminisme** | identique au bit près, **26/26 persos** | mêmes entrées rejouées deux fois : positions, jauges, projectiles et événements comparés ([test](tests/test_determinism.py)) |
 | **Données de frames** | **mesuré = annoncé** | la frise mesure l'avantage sur un vrai échange, `framedata` le calcule : les deux doivent tomber pareil ([test](tests/test_framemeter.py)) |
 | **Coups positifs en garde** | **0** | un coup léger qui laisse l'avantage en garde verrouille l'adversaire ; refusé pour tout le roster |
 | **Coups identiques entre deux persos** | **0** | mêmes images **et** mêmes dégâts = le même perso deux fois (`tools/audit_kits.py`) |
@@ -159,7 +159,8 @@ mais dans la partie 2 il se bat aux côtés de Joseph — il se range donc de ce
 | <img src="docs/media/faces/jonathan.png" width="54"><br><sub>Jonathan</sub> | <img src="docs/media/faces/zeppeli.png" width="54"><br><sub>Zeppeli</sub> | <img src="docs/media/faces/dio_p1.png" width="54"><br><sub>DIO</sub> | <img src="docs/media/faces/bruford.png" width="54"><br><sub>Bruford</sub> | <img src="docs/media/faces/tarkus.png" width="54"><br><sub>Tarkus</sub> | <img src="docs/media/faces/speedwagon.png" width="54"><br><sub>Speedwagon</sub> |
 | <img src="docs/media/faces/joseph_p2.png" width="54"><br><sub>Joseph</sub> | <img src="docs/media/faces/caesar.png" width="54"><br><sub>Caesar</sub> | <img src="docs/media/faces/lisa_lisa.png" width="54"><br><sub>Lisa Lisa</sub> | <img src="docs/media/faces/straizo.png" width="54"><br><sub>Straizo</sub> | <img src="docs/media/faces/stroheim.png" width="54"><br><sub>Stroheim</sub> | |
 | <img src="docs/media/faces/wamuu.png" width="54"><br><sub>Wamuu</sub> | <img src="docs/media/faces/esidisi.png" width="54"><br><sub>Esidisi</sub> | <img src="docs/media/faces/kars.png" width="54"><br><sub>Kars</sub> | <img src="docs/media/faces/santana.png" width="54"><br><sub>Santana</sub> | | |
-| <img src="docs/media/faces/jotaro_p3.png" width="54"><br><sub>Jotaro</sub> | <img src="docs/media/faces/kakyoin.png" width="54"><br><sub>Kakyoin</sub> | <img src="docs/media/faces/dio_p3.png" width="54"><br><sub>DIO</sub> | <img src="docs/media/faces/polnareff.png" width="54"><br><sub>Polnareff</sub> | <img src="docs/media/faces/avdol.png" width="54"><br><sub>Avdol</sub> | |
+| <img src="docs/media/faces/jotaro_p3.png" width="54"><br><sub>Jotaro</sub> | <img src="docs/media/faces/kakyoin.png" width="54"><br><sub>Kakyoin</sub> | <img src="docs/media/faces/dio_p3.png" width="54"><br><sub>DIO</sub> | <img src="docs/media/faces/polnareff.png" width="54"><br><sub>Polnareff</sub> | <img src="docs/media/faces/avdol.png" width="54"><br><sub>Avdol</sub> | <img src="docs/media/faces/joseph_p3.png" width="54"><br><sub>Joseph âgé</sub> |
+| <img src="docs/media/faces/vanilla_ice.png" width="54"><br><sub>Vanilla Ice</sub> | <img src="docs/media/faces/hol_horse.png" width="54"><br><sub>Hol Horse</sub> | <img src="docs/media/faces/mariah.png" width="54"><br><sub>Mariah</sub> | <img src="docs/media/faces/ndoul.png" width="54"><br><sub>N'Doul</sub> | <img src="docs/media/faces/anubis.png" width="54"><br><sub>Anubis</sub> | |
 
 <sub>Partie 1 · Partie 2 (complète) · Partie 3 — les visages sortent du générateur de sprites du jeu.</sub>
 
@@ -226,7 +227,7 @@ icônes et les animations de ce README sont générés par le code du dépôt.
 | 3 | Partie 2 : Joseph, Caesar, Lisa Lisa, Straizo, les Hommes du Pilier, Stroheim | ✅ complète |
 | 4 | Éveil (Power Up), objets portés et lancés, bilan de fin de combat | ✅ |
 | 5 | Altérations d'état : feu, gel, courant | ✅ |
-| 6 | Partie 3 complète : Avdol ✅, Joseph âgé, Iggy, Pet Shop, Vanilla Ice, Hol Horse, Mariah, N'Doul ([plan](docs/PARTIE3.md)) | ⏳ |
+| 6 | Partie 3 complète : Avdol ✅, Joseph âgé ✅, Vanilla Ice ✅, Hol Horse ✅, Mariah ✅, N'Doul ✅, Anubis ✅ (exclusif), Iggy, Pet Shop ([plan](docs/PARTIE3.md)) | ⏳ |
 | 7 | Partie 4 : Josuke, Okuyasu, Kira et leurs Stands | ⏳ |
 | 8 | Mode histoire, arène par partie | ⏳ |
 | 9 | En ligne en rollback — la simulation déterministe le prépare | ⏳ |
@@ -426,6 +427,32 @@ Toutes les valeurs d'équilibrage sont dans des fichiers TOML commentés : `comb
 
 </details>
 
+## Tes propres sons : le pack de sons
+
+Le jeu **synthétise** tous ses sons et sa musique, et n'embarque aucun enregistrement.
+Si tu as tes propres fichiers (voix, bruitages, musiques), il les joue à la place : dépose-les
+dans un dossier `sound_pack/` à côté de tes réglages (le chemin est affiché au lancement,
+ligne `Controls file`).
+
+| Dossier | Ce qu'il remplace |
+| --- | --- |
+| `sfx/<nom>.ogg` | un bruitage du jeu : `time_stop`, `time_resume`, `hamon`, `clash`, `ko`… |
+| `music/<piste>.ogg` | une musique : `menu`, ou le nom d'une arène (`cairo_night`, `swiss_castle`…) |
+| `voices/<perso>/<emplacement>.ogg` | ce que dit un perso : le cri d'un coup (`stand.heavy`), ses ultimes (`hha`, `gha`), sa réplique pour un adversaire (`intro.dio_p3`, `victory.dio_p3`), `pose`, `win`, `ko` |
+
+```
+python tools/sound_pack.py manifest   # écrit MANIFEST.md dans le pack : chaque fichier attendu
+python tools/sound_pack.py check      # ce que le pack contient, ce qui manque
+python tools/sound_pack.py cut        # coupe les fichiers de sound_pack/inbox/ (il faut ffmpeg)
+```
+
+`cut` lit `inbox/cuts.toml` : pour chaque fichier, l'emplacement visé, le début et la fin
+en secondes. Il coupe, met au bon niveau et range sous le bon nom. Un fichier absent n'est
+jamais une erreur : le jeu garde son propre son.
+
+Le pack reste **chez toi** : il ne fait partie ni du dépôt ni du `.exe`, et un test vérifie
+qu'aucun fichier son n'entre dans le jeu.
+
 ## Créer ou modifier l'apparence d'un perso
 
 Les sprites sont **générés à partir d'une fiche de données**, sans dessin à la main.
@@ -460,6 +487,12 @@ Les sprites des persos sont **générés à partir d'une fiche de données**, sa
 Les Stands se font de la même façon (`star_platinum.toml`, `hierophant_green.toml`, `the_world.toml`, `silver_chariot.toml`). Dans `roster.toml`, la clé `stand_sprite` d'un perso indique la planche de son Stand : en combat, quand on appuie sur la touche Stand, il apparaît derrière son manieur et passe devant lui pour frapper.
 
 Un perso qui appelle **plusieurs** compagnons (Speedwagon et sa bande d'Ogre Street) utilise `stand_sprites` à la place : une planche par posture, `stand_sprites = { tattoo = "tattoo/tattoo", amato = "amato/amato" }`. La touche Stand fait défiler les postures (`style = { type = "stance_cycle", ... }`), et c'est le compagnon de la posture en cours qui apparaît.
+
+**Un costume** est une fiche qui part d'une autre et ne redit que ce qui change : `base = "jonathan"` en tête de `jonathan_shirtless.toml`, puis seulement sa `[palette]`, son `[body]` et ses `[[parts]]` (une liste de pièces remplace celle de la base ; les animations et les poses sont toujours celles de la base). Elle porte un bloc `[costume]` (`label`, `label_en`, `source`) et a sa propre planche. Dans `roster.toml` : `costumes = { shirtless = "jonathan_shirtless/jonathan_shirtless" }`.
+
+**Une couleur** est une table `[colors.<id>]` dans une fiche (de base, de costume ou de Stand) : `label`, `label_en`, `source`, et `[colors.<id>.palette]` avec les seules matières qui changent. La première couleur n'a pas de palette : c'est la fiche telle quelle. `stand = "<id>"` nomme la couleur du Stand qui va avec. Le jeu repeint la planche au chargement : une couleur ne coûte aucune image. Le générateur refuse une fiche où une matière à repeindre partage un ton avec une autre (il ne saurait plus les distinguer) et nomme les deux.
+
+Costumes et couleurs ont toujours une **source** : les teintes d'All-Star Battle R et d'Eyes of Heaven, dont JoJo Wiki donne l'origine (une couverture, une carte, l'anime). Une couleur inventée n'est permise que s'il n'en existe pas, et sa source le dit.
 
 Après une modification, régénère la planche :
 

@@ -8,6 +8,91 @@ des corrections seules une patch.
 
 ### Ajouté
 
+- **Tout le monde parle.** Chaque perso des jeux a sa réplique d'entrée et sa réplique de
+  victoire (celles d'All-Star Battle R) : un duel sans dialogue à lui ne reste plus muet, et
+  un vainqueur sans réplique pour cet adversaire dit la sienne.
+- **Nouveau perso, exclusif à JoJo Arena : Anubis**, le sabre qui possède celui qui le
+  dégaine (Chaka, ou Khan en costume). Il retient chaque coup qu'il prend : la fois suivante,
+  il le pare (« je ne perds jamais deux fois ! »), et il devient plus fort et plus rapide à
+  chaque coup appris. Sa lame traverse la garde, et son sabre lancé traverse le décor.
+- **Nouveau perso : N'Doul**, et Geb (d'après Eyes of Heaven). Aveugle, il frappe là où il
+  t'a entendu bouger pour la dernière fois : reste immobile, et il te perd. Tiens la touche
+  Stand et Geb, une masse d'eau, part à l'autre bout de l'arène pendant qu'il reste assis ;
+  frappe-le, et Geb revient. Un costume sans cape, cinq couleurs en tout, trois poses.
+- **Nouveau perso : Mariah**, et Bastet. Touche la prise électrique qu'elle pose au sol et
+  tu deviens un aimant : chaque contact ajoute un niveau (jusqu'à trois), et à chaque niveau
+  ses couteaux, sa ligne électrique qui t'attire et le métal qui te tombe dessus font plus
+  mal. Quatre couleurs d'All-Star Battle R, cinq poses, et ses répliques face à Hol Horse,
+  Joseph, Avdol et DIO. Nouvelle altération dans le glossaire : AIMANT.
+- **Nouveau perso : Hol Horse**, et Emperor dans sa main. Ses balles se pilotent en plein
+  vol à la souris (ou au stick droit) pendant qu'il court ; une balle rapide qui s'éteint
+  si on le touche ; la touche Stand fait tourner Emperor et charge son prochain tir
+  (« Gun beats sword. ») ; une bouteille lancée où il vise laisse une flaque d'où J. Geil
+  poignarde qui marche dedans. Il fait 10 % de dégâts en plus contre les femmes (« Hol
+  Horse loves the ladies! »). Quatre couleurs d'All-Star Battle R, cinq poses, et ses
+  répliques face à Polnareff, Avdol, Kakyoin et DIO.
+- **Nouveau perso : Vanilla Ice**, et Cream. Il se cache dans le vide de son Stand :
+  invisible, intouchable, imparable, et tout ce qu'il traverse disparaît, caisses et
+  piliers compris. Avec une direction, tu le guides au stick tout du long. Mais il doit
+  sortir la tête pour voir : c'est là qu'on le frappe. Sans Cream, il boit le sang
+  (« Lord DIO! ») et fait jaillir Cream du sol sous tes pieds. Vampire : le soleil et le
+  Hamon le brûlent. Cinq couleurs (anime, manga, OVA, All-Star Battle, Eyes of Heaven), six
+  poses tirées du manga, et ses répliques face à Avdol, Polnareff et DIO.
+- **Nouvelle arène : le rêve de Death 13**, un parc d'attractions de cauchemar (d'après Eyes
+  of Heaven) : Death 13 erre dans l'arène, va vers le plus proche et abat sa faux (« La Li
+  Ho ! »). Il a sa propre vie : battez-le, il disparaît un moment, puis revient.
+- **Nouvelle arène : les toits du Caire**, la nuit (d'après Eyes of Heaven) : des trous dans
+  le toit où l'on tombe, l'enseigne néon « AIR » dont les lettres s'écrasent sur qui est
+  projeté dedans, la tour de l'horloge et le château d'eau.
+- **Nouvelle arène : le pont du Caire**, la nuit, où tout se termine. DIO arrête le temps et
+  lance une volée de couteaux sur l'un de vous (sauf si c'est lui qui se bat, comme dans
+  All-Star Battle R) ; un trou béant dans le tablier, une voiture en feu, un camion-citerne
+  couché en travers.
+- **Nouvelle arène : le manoir de DIO.** Il fait grand jour dehors, mais les rideaux gardent le
+  soleil à la porte : arrache-les et la lumière brûle les vampires qui se tiennent dessous.
+  Et Nukesaku saute du plafond pile sur toi, encore et encore (comme dans All-Star Battle R).
+- **Tout le roster en couleurs.** Chaque perso a au moins deux couleurs, toutes sourcées :
+  les teintes d'All-Star Battle R (4 pour la plupart : Zeppeli, Dio, Speedwagon, Joseph,
+  Caesar, Lisa Lisa, Wamuu, Esidisi, Stroheim, Kakyoin...), et pour ceux qu'aucun jeu ne
+  propose (Bruford, Tarkus, Straizo, Santana), les couleurs du manga, de l'anime et du film
+  relevées par JoJo Wiki. Les Stands changent de couleur avec leur manieur. Plus aucun match
+  miroir où les deux joueurs se ressemblent.
+- **Costumes et couleurs.** À l'écran de sélection, juste après le perso : son costume, sa
+  couleur, puis ses poses, avec l'aperçu en direct. Pour commencer, Jonathan (torse nu,
+  *The Inherited Soul*), Jotaro (sans manteau, *The Inherited Soul*), DIO (dans l'ombre)
+  et Avdol (« le père d'Avdol ? »), chacun avec les quatre couleurs d'All-Star Battle R ;
+  Star Platinum, The World et Magician's Red changent de couleur avec leur manieur.
+  Chaque tenue et chaque couleur dit d'où elle vient.
+- **Match miroir lisible.** Deux joueurs sur le même perso ne sont plus jamais identiques :
+  le second prend une autre couleur.
+- **Le pack de sons.** Le jeu synthétise toujours tous ses sons, mais il joue les tiens à la
+  place si tu en as : un dossier `sound_pack/` à côté de tes réglages, avec tes bruitages
+  (le temps arrêté, le Hamon...), tes musiques (par arène) et les voix des persos (le cri
+  de chaque coup, la réplique pour chaque adversaire). `tools/sound_pack.py` liste ce qu'il
+  peut contenir et coupe tes fichiers au bon format. Rien n'est fourni avec le jeu.
+- **Ils se parlent.** À l'écran VS, les deux persos prennent la pose que tu as choisie et
+  échangent les répliques que les jeux donnent à cette affiche : « Espèce d'ordure ! »,
+  « Voilà... le dernier round ! ». 15 affiches pour commencer, toutes tirées d'All-Star
+  Battle et d'All-Star Battle R.
+- **Entrée en scène.** Avant le premier round, les deux persos entrent dans l'arène, et
+  chacun à son tour prend sa pose, son Stand à côté de lui, et dit sa réplique. Entrée
+  pour passer.
+- **Le moment du vainqueur.** Après « VICTOIRE ! », l'arène s'assombrit : le gagnant, sa
+  pose, son Stand et sa réplique pour cet adversaire. Le bilan du combat vient ensuite.
+- **Kakyoin retrouve ses coups d'All-Star Battle R.** Un troisième coup léger sans Stand,
+  les **émeraudes à bout portant** ; un Emerald Splash sans Stand de 5 émeraudes au lieu
+  de 3 ; Stand sorti, les **estocs de tentacule** au bout de sa chaîne, et **« Didn't you
+  notice ? »** : des tentacules qui filent au ras du sol, très loin, et qu'aucune garde
+  n'arrête. Lent à partir, lent à revenir : raté, c'est lui qu'on attrape.
+- **Joseph Joestar âgé et Hermit Purple** (partie 3), d'après sa fiche et ses coups
+  d'All-Star Battle R et d'Eyes of Heaven. Le premier perso qui a **un Stand et le Hamon** :
+  un appui bref sur la touche Stand sort Hermit Purple, un appui long le fait respirer.
+  Des ronces qui frappent à mi-distance et **ramènent l'adversaire à lui**, une saisie en
+  éventail, **Solar Energy Ripple** (le Hamon court le long des ronces), **Coal Tar** (un
+  bidon de goudron et la flaque qui reste), **Cunning Tactician** (un contre), « Panic
+  isn't in my vocabulary » qui le tire où tu vises ; HHA **Years of Experience** (un
+  contre) et GHA **Hermit Purple and Ripple!** en cinématique. Trois poses : la main au
+  chapeau, le doigt pointé des Croisés, « OH MY GOD ! ».
 - **Les vraies poses JoJo.** Chaque perso a ses poses, tirées du manga, des couvertures,
   d'All-Star Battle R et d'Eyes of Heaven, avec leur source : le doigt pointé de Jotaro,
   Kakyoin contre Tower of Gray, DIO de dos, le « Tch, tch... YES I AM! » d'Avdol, la
@@ -87,11 +172,16 @@ des corrections seules une patch.
   qui leur font face de l'autre, un VS au milieu.
 - **Muhammad Avdol et Magician's Red** (partie 3), zoneur de feu, d'après sa fiche et ses
   coups d'All-Star Battle R : **Crossfire Hurricane** (un ankh de feu), la **Variation**
-  posée là où tu vises et qui jaillit sous les pieds, **Red Bind** (des cordes de feu
-  imparables), **Flaming Detector** (une flamme lente qui chasse l'adversaire), « HELL 2
-  U ! », le contre « Now's my chance ! », « I'll burn you to cinders ! » qui explose tout
-  autour, la HHA « Give me four wishes instead ! » et la GHA **Crossfire Hurricane
-  Special** en cinématique : l'anneau d'ankhs se referme.
+  posée là où tu vises et qui jaillit sous les pieds, **Red Bind !** (sa saisie : ligoté,
+  puis un souffle de feu en plein visage), « Must I do this the hard way ? » (les mêmes
+  cordes lancées au loin, qui ligotent sur place et qu'on peut bloquer), **Flaming
+  Detector** (une flamme lente qui chasse l'adversaire), « HELL 2 U ! », « Now's my
+  chance ! » (Magician's Red arme son poing, encaisse un coup, et ce coup déclenche le
+  sien), « I'll burn you to cinders ! » qui explose tout autour, le **souffle de feu** en
+  quatre coups, la HHA « Give me four wishes instead ! » où Magician's Red fonce droit
+  devant, et la GHA **Crossfire Hurricane Special** en cinématique : l'anneau d'ankhs se
+  referme. Comme dans ASBR, **l'ankh et le Flaming Detector s'éteignent si Avdol est
+  touché** : aller le chercher est la bonne réponse à son feu.
 - **Le feu de Magician's Red reste accroché** : ce qu'il touche net brûle encore après
   le coup. C'est l'altération **feu** du moteur, la même que le sang d'Esidisi : un
   second coup la relance sans l'empiler.
@@ -204,6 +294,7 @@ des corrections seules une patch.
   de 26.
 ### Corrigé
 
+- La Variation d'Avdol, posée au point visé, faisait bondir Avdol jusqu'au point.
 - Parties 1 et 2 : le curseur ne peut plus se poser sur une case vide (on pouvait
   « choisir » un perso qui n'existe pas).
 - **Une tornade n'est pas une rafale de poings.** Un coup multi-hit qui a son propre

@@ -8,10 +8,10 @@ Comment le code est rangé, et par où passe une image du jeu. À lire avant de 
 | --- | --- | --- |
 | `jojo_arena/engine/` | Boucle à pas fixe, affichage, entrées (clavier, manette), géométrie, sprites, police pixel | **Aucune référence à JoJo.** Réutilisable tel quel |
 | `jojo_arena/combat/` | Règles du combat : combattants, coups, garde, jauges, clash, rounds, entraînement, interactions (temps arrêté) | Aucune référence à JoJo, **pas de pygame** : la simulation se teste sans écran |
-| `jojo_arena/characters/` | Un kit par perso (`<id>.toml`), leur apparence (`looks/`), le roster (`roster.toml`), les 9 parties (`parts.toml`), le glossaire (`lore/`) | Données ; un nouveau perso n'oblige pas à toucher au moteur |
+| `jojo_arena/characters/` | Un kit par perso (`<id>.toml`), leur apparence (`looks/`), le roster (`roster.toml`), les 9 parties (`parts.toml`), le glossaire (`lore/`), ce que deux persos se disent (`lines.toml`, joué par l'écran VS, l'entrée en scène et le moment du vainqueur de `ui/staging.py`) | Données ; un nouveau perso n'oblige pas à toucher au moteur |
 | `jojo_arena/stages/` | Les arènes : données et dessin | |
-| `jojo_arena/ui/` | Écrans (scènes), HUD, vue du combat, effets, onomatopées | Lit la simulation, ne la modifie jamais |
-| `jojo_arena/assets/` | Planches de sprites générées | |
+| `jojo_arena/ui/` | Écrans (scènes), HUD, vue du combat, effets, onomatopées, sons synthétisés (`sounds.py`, `music.py`) et pack de sons du joueur (`sound_pack.py`) | Lit la simulation, ne la modifie jamais. Aucun fichier son dans le dépôt |
+| `jojo_arena/assets/` | Planches de sprites générées : une par perso, par Stand et par costume. Les couleurs ne sont pas des images : elles sont écrites dans le TOML de la planche et appliquées au chargement (`engine/sprites.py`) | |
 | `tools/` | Générateur de sprites, construction du `.exe`, tournée de captures | |
 | `tests/` | Tests `pytest` | |
 

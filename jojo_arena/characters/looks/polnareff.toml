@@ -217,3 +217,43 @@ hand_l = [1, -5]
 elbow_l = [-3, 0]
 foot_l = [-3, 0]
 foot_r = [2, 0]
+
+# The outfit and its colours ---------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ Jean Pierre Polnareff, "Costumes & Tints" (read
+# 17/11/2026): the normal costume is "Polnareff's main Stardust Crusaders outfit"; its
+# tints are the anime's colours (A), the cover of Weekly Shonen Jump 1990 #9 (B), one
+# whose origin the page does not give and of which it shows no image (C: left out, it
+# cannot be read off anything), and the colours carried over from All-Star Battle (D).
+# The page has no in-game render of them: the tones were read off the reference images it
+# gives (the cover, the All-Star Battle render). Silver Chariot's tint B is the OVA's
+# colours (gold on the armour); it goes with the All-Star Battle tint.
+
+[costume]
+label = "Tenue de Stardust Crusaders"
+label_en = "Stardust Crusaders attire"
+source = "Sa tenue principale de Stardust Crusaders (ASBR, costume normal)"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+
+# Purple from the hair to the top.
+[colors.jump9]
+label = "Jump 1990 n° 9"
+label_en = "Jump 1990 #9"
+source = "ASBR, couleur B : la couverture du Weekly Shonen Jump 1990 n° 9"
+
+[colors.jump9.palette]
+hair = "#8a4aa6"
+top = "#6a2c86"
+
+# A navy top.
+[colors.asb]
+label = "All-Star Battle"
+label_en = "All-Star Battle"
+source = "ASBR, couleur D : les couleurs d'All-Star Battle"
+stand = "ova"
+
+[colors.asb.palette]
+top = "#2c3c8e"

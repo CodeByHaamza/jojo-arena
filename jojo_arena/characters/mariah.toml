@@ -1,0 +1,314 @@
+# Mariah (Part 3) - Bastet. One of the Egypt Nine Glory Gods, sent by DIO.
+#
+# Sources, read on 17/11/2026:
+# - JoJo Wiki, "Mariah" (https://jojowiki.com/Mariah): calm and sure of her Stand, but
+#   quick to lose her composure; devious, flirtatious. She magnetizes Joseph and Avdol
+#   and lures them from trap to trap, until Joseph turns the metal round her against her.
+#   Named after Mariah Carey. Her outfit hides bolts, screws and knives.
+# - JoJo Wiki, "Bastet" (https://jojowiki.com/Bastet): an electrical outlet, a cable under
+#   it, laid on any surface. Whoever touches it is shocked and made a magnet: metal comes
+#   for them, small things first, then heavier, as heavy as cars; the magnetism wears off
+#   if Mariah is too far. No fighting power of its own. Stats E E B A E E.
+# - JoJo Wiki, All-Star Battle R ★ Mariah (https://jojowiki.com/All-Star_Battle_R/Mariah):
+#   900 HP, knife normals. Style "If you're not allowed to touch something, it makes you
+#   want to touch it more..." (Bastet laid ahead of her, a trap: touching it magnetizes,
+#   guard or not; touching it again adds half a level). A Magnetization gauge (Lv 1, Lv 2,
+#   Lv MAX) that raises the damage of her skills. "Sorry, but you'll have to die now."
+#   (three homing knives that cross the arena), "The electricity will char you to a
+#   crisp!" (a knife cuts a power line, which hangs as a live wire, pulls a nearby
+#   opponent in and shocks them), "Heh heh heh... Enjoy..." (a metal wire from her skirt,
+#   a fast projectile that binds), "You can't follow me anymore." (metal objects come down
+#   on the opponent from above). Throw "You were one fine specimen." (pushed onto Bastet,
+#   shocked, a flying barrel; it magnetizes, 120). HHA "What are you drooling over?" (nuts
+#   and bolts in a machine-gun spray, 136 / 204 / 272 by level). GHA "You little turds!"
+#   (Bastet under the opponent wherever they are; wires, bolts, then two cars, 304).
+#
+# What changes here, and why:
+# - The gauge is a status on the opponent here (`magnet`, three levels): each touch of
+#   Bastet, the throw or the ultimate adds a level, and it all runs out after 9 s. ASBR
+#   ties it to staying near her: the timer stands in for that.
+# - Each level makes the moves that look for it hit harder (`bonus_per_level`): the
+#   knives, the live wire, the falling metal, the bolts (the spread of ASBR's numbers).
+# - "Heh heh heh... Enjoy..." ends her chain: a wire that binds, as ASBR makes it a combo
+#   tool; there is no free slot otherwise.
+# - The live wire hangs a set distance ahead (ASBR's medium and heavy versions).
+# Feel: a trapper who never wants to be touched: she lays the outlet, makes a magnet of
+# you, and then everything in the arena comes for you.
+
+name = "Mariah"
+max_hp = 900
+walk_speed = 104
+tags = ["woman"]  # what passives such as Hol Horse's look for
+style = { type = "move", move = "style" }
+
+[stances.base]
+label = "AVEC BASTET"
+label_en = "WITH BASTET"
+
+# Her knife: a quick slash, two upward, then the wire from her skirt.
+[stances.base.moves.light]
+label = "COUP DE COUTEAU"
+label_en = "KNIFE SLASH"
+info = "Rapide. Encore : deux entailles montantes, puis le fil de métal"
+info_en = "Fast. Again: two upward slashes, then the metal wire"
+startup_f = 5
+active_f = 3
+recovery_f = 10
+damage = 26
+reach = 16
+radius = 10
+hitstun_f = 18
+knockback = 70
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+anim = "light"
+
+[stances.base.moves.light2]
+label = "ENTAILLES MONTANTES"
+label_en = "UPWARD SLASHES"
+info = "Deux coups de couteau vers le haut"
+info_en = "Two knife slashes, upward"
+startup_f = 6
+active_f = 6
+recovery_f = 12
+hits = 2
+hit_every_f = 3
+damage = 16
+reach = 17
+radius = 11
+hitstun_f = 20
+knockback = 60
+hitstop_f = 3
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+anim = "heavy"
+
+# ASBR: "Heh heh heh... Enjoy..." - a metal wire shot from her skirt: it binds.
+[stances.base.moves.light3]
+shout = "HÉ HÉ HÉ... SAVOURE..."
+label = "HÉ HÉ HÉ... SAVOURE..."
+label_en = "HEH HEH HEH... ENJOY..."
+info = "Fin de l'enchaînement : un fil de métal jaillit de sa jupe et ligote (long à se libérer)"
+info_en = "Chain ender: a metal wire shoots out of her skirt and binds (slow to break free)"
+startup_f = 8
+active_f = 1
+recovery_f = 18
+cancel_on_hit = ["special"]
+anim = "special"
+
+[stances.base.moves.light3.projectile]
+look = "wire"
+speed = 420
+radius = 4
+damage = 15
+lifetime_s = 0.35
+hitstun_f = 50
+knockback = 10
+hitstop_f = 6
+
+# ASBR throw: "You were one fine specimen." - pushed onto Bastet: shocked, made a magnet.
+[stances.base.moves.heavy]
+shout = "TU ÉTAIS PAS MAL..."
+label = "TU ÉTAIS PLUTÔT PAS MAL"
+label_en = "YOU WERE ONE FINE SPECIMEN"
+info = "Saisie imparable : poussé contre Bastet, électrocuté, aimanté (un niveau de plus)"
+info_en = "Unblockable grab: pushed onto Bastet, shocked, magnetized (one more level)"
+startup_f = 10
+active_f = 3
+recovery_f = 30
+damage = 100
+reach = 12
+radius = 10
+hitstun_f = 34
+knockback = 300
+hitstop_f = 12
+unblockable = true
+clashable = false
+status = "magnet"
+status_s = 9
+anim = "grab"
+
+# ASBR: "You can't follow me anymore." - she points up: metal comes down on them.
+[stances.base.moves.heavy_alt]
+shout = "TU NE PEUX PLUS ME SUIVRE."
+label = "TU NE PEUX PLUS ME SUIVRE."
+label_en = "YOU CAN'T FOLLOW ME ANYMORE."
+info = "Avec une direction : elle pointe le ciel, et le métal tombe là où il se tient. Plus fort à chaque niveau d'aimantation (recharge 4 s)"
+info_en = "With a direction: she points at the sky, and metal comes down where they stand. Stronger for each level of magnetism (4 s cooldown)"
+startup_f = 24
+active_f = 12
+recovery_f = 16
+at_target = true
+reach = 200
+hits = 3
+hit_every_f = 4
+damage = 16
+last_damage = 24
+radius = 16
+hitstun_f = 20
+knockback = 40
+last_knockback = 200
+hitstop_f = 3
+clashable = false
+bonus_status = "magnet"
+bonus_per_level = 0.3
+cooldown_s = 4
+anim = "pose"
+
+# ASBR: "Sorry, but you'll have to die now." - three knives that follow them.
+[stances.base.moves.special]
+shout = "DÉSOLÉE, MAIS TU VAS MOURIR."
+label = "DÉSOLÉE, MAIS TU VAS MOURIR."
+label_en = "SORRY, BUT YOU'LL HAVE TO DIE NOW."
+info = "Trois couteaux à tête chercheuse qui traversent l'arène. Plus forts à chaque niveau d'aimantation"
+info_en = "Three homing knives that cross the arena. Stronger for each level of magnetism"
+startup_f = 11
+active_f = 1
+recovery_f = 18
+anim = "special"
+
+[stances.base.moves.special.projectile]
+look = "knife"
+speed = 260
+radius = 3
+damage = 14
+lifetime_s = 1.6
+hitstun_f = 14
+knockback = 50
+hitstop_f = 2
+count = 3
+spread_deg = 18
+homing_deg_s = 120
+bonus_status = "magnet"
+bonus_per_level = 0.2
+
+# ASBR: "The electricity will char you to a crisp!" - a knife cuts a power line: it hangs
+# ahead of her, live, draws in whoever comes near, and shocks them.
+[stances.base.moves.special_alt]
+shout = "GRILLE DANS L'ÉLECTRICITÉ !"
+label = "L'ÉLECTRICITÉ VA TE GRILLER !"
+label_en = "THE ELECTRICITY WILL CHAR YOU TO A CRISP!"
+info = "Avec une direction : une ligne électrique tombe devant elle et attire qui s'en approche, puis l'électrocute. Plus forte à chaque niveau d'aimantation (recharge 5 s)"
+info_en = "With a direction: a power line drops ahead of her, draws in whoever comes near, and shocks them. Stronger for each level of magnetism (5 s cooldown)"
+startup_f = 14
+active_f = 1
+recovery_f = 18
+cooldown_s = 5
+anim = "special"
+
+[stances.base.moves.special_alt.trap]
+distance = 70
+radius = 10
+lifetime_s = 6
+max_count = 1
+pull = 60
+pull_range = 90
+
+[stances.base.moves.special_alt.trap.projectile]
+look = "live_wire"
+origin = "ring"
+ring_radius = 0
+speed = 0
+radius = 14
+damage = 36
+lifetime_s = 0.3
+hitstun_f = 26
+knockback = 120
+hitstop_f = 8
+status = "shock"
+status_s = 1.2
+bonus_status = "magnet"
+bonus_per_level = 0.3
+
+# Style button: "If you're not allowed to touch something, it makes you want to touch it
+# more..." - Bastet, laid on the floor ahead of her. Touch it, and you are a magnet.
+[moves.style]
+label = "BASTET"
+info = "Elle pose Bastet, la prise électrique, devant elle (une à la fois). Qui la touche est aimanté, un niveau de plus à chaque fois (recharge 3 s)"
+info_en = "She lays Bastet, the outlet, on the floor ahead of her (one at a time). Whoever touches it is magnetized, one more level each time (3 s cooldown)"
+startup_f = 10
+active_f = 1
+recovery_f = 16
+cooldown_s = 3
+anim = "special"
+
+[moves.style.trap]
+distance = 40
+radius = 12
+lifetime_s = 20
+max_count = 1
+
+[moves.style.trap.projectile]
+look = "outlet"
+origin = "ring"
+ring_radius = 0
+speed = 0
+radius = 14
+damage = 11
+lifetime_s = 0.2
+hitstun_f = 20
+knockback = 20
+hitstop_f = 6
+status = "magnet"
+status_s = 9
+
+# Super moves ----------------------------------------------------------------------------
+
+# Heart Heat Attack (1 bar): "What are you drooling over?" - nuts and bolts, a spray.
+[moves.hha]
+shout = "À QUOI TU PENSES ?!"
+label = "À QUOI TU PENSES, LÀ ?!"
+label_en = "WHAT ARE YOU DROOLING OVER?"
+info = "Écrous et boulons en rafale de mitraillette, large et longue. Moitié plus forte à chaque niveau d'aimantation"
+info_en = "Nuts and bolts in a machine-gun spray, long and wide. Half as strong again for each level of magnetism"
+startup_f = 14
+active_f = 42
+recovery_f = 24
+invincible_f = 14
+clashable = false
+anim = "special"
+
+[moves.hha.projectile]
+look = "bolt"
+speed = 360
+radius = 4
+damage = 10
+lifetime_s = 0.6
+hitstun_f = 12
+knockback = 25
+hitstop_f = 1
+waves = 14
+wave_every_f = 3
+spread_deg = 26
+bonus_status = "magnet"
+bonus_per_level = 0.5
+
+# Great Heat Attack (2 bars): "You little turds!" - Bastet comes up under them wherever
+# they are; the wires, the bolts, then two cars.
+[moves.gha]
+shout = "BANDE DE PETITES MERDES !"
+label = "BANDE DE PETITES MERDES !"
+label_en = "YOU LITTLE TURDS!"
+info = "Bastet surgit sous l'adversaire, où qu'il soit ; puis les fils, les boulons, et deux voitures qui se percutent"
+info_en = "Bastet comes up under the opponent wherever they are; then the wires, the bolts, and two cars crashing together"
+startup_f = 18
+active_f = 6
+recovery_f = 30
+invincible_f = 18
+at_target = true
+reach = 0
+damage = 40
+radius = 18
+hitstun_f = 40
+hitstop_f = 10
+clashable = false
+status = "magnet"
+status_s = 9
+anim = "pose"
+cinematic = "bastet_cars"
+cinematic_s = 5
+finish_damage = 264
+finish_hitstun_f = 50
+finish_knockback = 400
+finish_wall_bounce = true

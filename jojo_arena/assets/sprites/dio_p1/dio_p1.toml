@@ -6,6 +6,16 @@ chest = 29
 height = 46
 directions = ["down", "up", "right"]
 
+[costume]
+label = "Tenue de Phantom Blood"
+label_en = "Phantom Blood attire"
+source = "Sa tenue principale (ASBR, costume normal)"
+
+[recolor]
+scarf = [[105, 44, 171], [122, 72, 200], [148, 118, 210], [192, 180, 224]]
+jacket = [[125, 21, 33], [168, 34, 62], [209, 49, 92], [215, 120, 151]]
+trousers = [[96, 16, 26], [140, 28, 52], [183, 41, 80], [208, 93, 131]]
+
 [anims.idle]
 row = 0
 frames = 4
@@ -182,3 +192,42 @@ label_en = "Clawed hand"
 source = "Couverture du tome 3"
 stand = false
 stand_offset = [-14.0, -8.0]
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+stand = ""
+
+[colors.tranche2]
+label = "Tranche du tome 2"
+label_en = "Volume 2 spine"
+source = "ASBR, couleur B : la tranche du tome 2"
+stand = ""
+
+[colors.tranche2.palette]
+jacket = [[113, 84, 26], [154, 106, 42], [194, 128, 58], [205, 160, 123]]
+trousers = [[96, 68, 21], [138, 90, 36], [179, 111, 51], [201, 145, 106]]
+scarf = [[163, 134, 39], [200, 154, 58], [209, 169, 105], [222, 198, 169]]
+
+[colors.asb]
+label = "All-Star Battle"
+label_en = "All-Star Battle"
+source = "ASBR, couleur C : les couleurs d'All-Star Battle"
+stand = ""
+
+[colors.asb.palette]
+jacket = [[31, 27, 35], [58, 54, 64], [86, 82, 92], [125, 125, 125]]
+trousers = [[21, 18, 24], [48, 44, 54], [75, 71, 83], [115, 115, 115]]
+scarf = [[86, 65, 137], [106, 90, 168], [138, 130, 184], [186, 184, 207]]
+
+[colors.bleu]
+label = "Bleu"
+label_en = "Blue"
+source = "ASBR, couleur D (JoJo Wiki n'en note pas l'origine)"
+stand = ""
+
+[colors.bleu.palette]
+jacket = [[29, 45, 135], [44, 76, 176], [71, 112, 205], [139, 166, 214]]
+trousers = [[25, 36, 113], [40, 64, 154], [55, 93, 195], [120, 149, 206]]
+scarf = [[26, 106, 113], [42, 154, 154], [58, 194, 186], [123, 205, 195]]

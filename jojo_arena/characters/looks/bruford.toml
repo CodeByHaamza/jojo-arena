@@ -162,3 +162,38 @@ head = [1, 1]
 hand_r = [5, -14]
 elbow_r = [1, 2]
 hand_l = [-1, 0]
+
+# The outfit and its colours ---------------------------------------------------------------
+# Bruford is in neither All-Star Battle R nor Eyes of Heaven: no game tint to take. His
+# JoJo Wiki page, "Color Schemes" (read 17/11/2026), gives the colours of each medium; the
+# page itself warns they "may or may not be canon". Each colour below is one of them.
+
+[costume]
+label = "Sa tenue"
+label_en = "His outfit"
+source = "JoJo Wiki, Bruford, Appearance"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "JoJo Wiki, Bruford, Color Schemes : l'anime"
+
+[colors.manga]
+label = "Manga en couleur"
+label_en = "Coloured manga"
+source = "JoJo Wiki, Bruford, Color Schemes : le manga en couleur"
+
+[colors.manga.palette]
+skin = "#e8c4a4"
+plate = "#3c5ca8"
+cloth = "#3a4a9a"
+
+[colors.film]
+label = "Film"
+label_en = "Movie"
+source = "JoJo Wiki, Bruford, Color Schemes : le film"
+
+[colors.film.palette]
+skin = "#8a6448"
+plate = "#2c3870"
+cloth = "#3a7a4a"

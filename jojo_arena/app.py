@@ -106,6 +106,13 @@ class Game:
         from jojo_arena.ui.music import TRACKS
 
         music.set_player(music.MusicPlayer(TRACKS, volume=settings.music_volume / 10))
+        # The player's own sound pack, if there is one beside their settings.
+        from jojo_arena.ui.sound_pack import load_pack, pack_dir
+
+        loaded = load_pack(pack_dir(path))
+        if any(loaded.values()):
+            counts = ", ".join(f"{len(names)} {kind}" for kind, names in loaded.items() if names)
+            print(f"Sound pack: {pack_dir(path)} ({counts})")
         self.clock = pygame.time.Clock()
         self.fixed_step = FixedStep(LOGIC_HZ)
 

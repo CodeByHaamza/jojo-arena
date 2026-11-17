@@ -13,7 +13,7 @@ from jojo_arena.combat.rules import HZ, Rules
 from jojo_arena.combat.status import Statuses
 from jojo_arena.combat.styles import make_style
 from jojo_arena.engine.actions import InputFrame
-from jojo_arena.engine.geometry import Vec2
+from jojo_arena.engine.geometry import Vec2, push_circle_out_of_rect
 
 # A press is remembered this long, so an attack pressed slightly early still comes out.
 BUFFER_F = 8
@@ -140,7 +140,7 @@ class Fighter:
         self.dash_dir = Vec2()
         self.evaded = False  # this dash already earned a Stylish Evade
         self.hh = 0.0  # Heart Heat gauge
-        self.hamon = rules.hamon_start if kit.style == "hamon" else 0.0
+        self.hamon = rules.hamon_start if kit.breathes else 0.0
         self.blood = rules.blood_start if kit.style == "vampire" else 0.0
         self.regen_wait = 0  # vampires: steps before their wounds start to close
         self._regen_left = 0.0
@@ -161,6 +161,9 @@ class Fighter:
         self.frozen = False  # caught in someone else's stopped time
         self.pending_hits: list[PendingHit] = []
         self.cursor: Vec2 | None = None  # where the player aims (mouse), if anywhere
+        self.stick: Vec2 | None = None  # the direction the right stick aims, if any
+        self.foe_tags: frozenset[str] = frozenset()  # the opponent's kit tags (set by the match)
+        self.learned: list[str] = []  # the blows it has taken and remembers (kit `learn`)
         # Remote control: the Stand away from its user, steered by the player.
         self.remote_pos: Vec2 | None = None
         self.remote_dir = Vec2()
@@ -201,8 +204,19 @@ class Fighter:
         if self.state == State.DASH:
             return self.state_f < self.rules.dash_invincible_f
         if self.state == State.ATTACK and self.attack is not None:
-            return self.attack.frame < self.attack.move.invincible_f
+            return self.attack.frame < self.attack.move.invincible_f or self.vanished
         return False
+
+    @property
+    def vanished(self) -> bool:
+        """Gone from sight and from reach (a move with `vanish`, before its recovery)."""
+        attack = self.attack
+        return (
+            self.state == State.ATTACK
+            and attack is not None
+            and attack.move.vanish
+            and attack.phase < 2
+        )
 
     @property
     def in_resolve(self) -> bool:
@@ -257,7 +271,40 @@ class Fighter:
 
     @property
     def damage_dealt_mult(self) -> float:
-        return self.buff.damage_dealt_mult if self.buff else 1.0
+        mult = self.buff.damage_dealt_mult if self.buff else 1.0
+        if self.passive_on:
+            mult *= self.kit.passive.damage_dealt_mult
+        if self.learned:
+            mult *= 1 + self.kit.learn_damage * len(self.learned)
+        return mult
+
+    def knows(self, blow: str) -> bool:
+        """It has taken this blow before, and is free to meet it now."""
+        return bool(blow) and blow in self.learned and self.can_act()
+
+    def learn(self, blow: str) -> bool:
+        """Remember a blow just taken. True when it is a new one."""
+        if not self.kit.learns or not blow or blow in self.learned:
+            return False
+        if len(self.learned) >= self.kit.learn_max:
+            return False
+        self.learned.append(blow)
+        return True
+
+    @property
+    def passive_on(self) -> bool:
+        """The kit's passive holds against this opponent."""
+        passive = self.kit.passive
+        return passive is not None and passive.vs_tag in self.foe_tags
+
+    def steer_point(self, origin: Vec2) -> Vec2 | None:
+        """Where a shot steered by hand turns toward: the mouse, else a point along the
+        right stick from `origin`. None without free aim: it keeps flying straight."""
+        if self.cursor is not None:
+            return self.cursor
+        if self.stick is not None and self.stick.length_sq():
+            return origin + self.stick.normalized() * 100
+        return None
 
     @property
     def damage_taken_mult(self) -> float:
@@ -270,6 +317,8 @@ class Fighter:
     def gain_hh(self, amount: float) -> None:
         if self.statuses.no_meter:
             return  # a body under a current gains nothing: it is busy twitching
+        if self.passive_on:
+            amount *= self.kit.passive.hh_gain_mult
         self.hh = min(self.rules.hh_max, self.hh + amount)
 
     def in_stylish_window(self) -> bool:
@@ -292,6 +341,7 @@ class Fighter:
         base = self.kit.walk_speed or self.rules.walk_speed
         speed = base * self.kit.stances[self.stance].walk_speed_mult
         speed = speed * (self.buff.speed_mult if self.buff else 1.0)
+        speed = speed * (1 + self.kit.learn_speed * len(self.learned))
         if self.carrying is not None:
             speed *= self.rules.carry_speed_mult  # a prop over the head
         return speed * self.statuses.walk_mult
@@ -385,13 +435,25 @@ class Fighter:
             return []  # its input steers the host (see Match._possession_inputs)
         self.guard_held = frame.is_held("guard") and not self.remote
         self.cursor = Vec2(*frame.cursor) if frame.cursor is not None else None
+        self.stick = Vec2(*frame.stick) if frame.stick is not None else None
         remote_stance = self.style.params.get("remote")
         if remote_stance and frame.is_held("stand"):
             self.stand_hold_f += 1
             free = self.state in (State.IDLE, State.WALK, State.SWITCH)
             if self.stand_hold_f == self.rules.remote_hold_f and not self.remote and free:
                 return self.enter_remote(remote_stance)
+        elif self.style.params.get("breath") and frame.is_held("stand"):
+            # A Stand user who also breathes the Ripple: the key let go at once calls the
+            # Stand, the key held breathes. Until it is one or the other, nothing happens.
+            self.stand_hold_f += 1
+            self.buffer.pop("stand", None)
+            free = self.state in (State.IDLE, State.WALK)
+            if self.stand_hold_f >= self.rules.hamon_hold_f and free:
+                self.begin_breath()
+                return [Event("breath", self.pos, self.index)]
         else:
+            if self.style.params.get("breath") and 0 < self.stand_hold_f < self.rules.hamon_hold_f:
+                self.buffer["stand"] = BUFFER_F  # let go early: it was a tap
             self.stand_hold_f = 0
         if self.possessed_f > 0:
             # Steered by someone else: it walks where they push it, and nothing else.
@@ -403,6 +465,11 @@ class Fighter:
                 self.set_state(State.WALK if move_dir.length_sq() else State.IDLE)
             return []
         if self.state == State.ATTACK and self.attack is not None:
+            steered = self.attack.move.steer and self.attack.phase < 2
+            if steered and frame.move != (0.0, 0.0):
+                # Steered by hand: it goes where it is pushed, turning as it goes.
+                self.attack.aim = Vec2(*frame.move).normalized()
+                self.facing = self.attack.aim
             if self._try_flash_cancel():
                 return [Event("flash_cancel", self.pos, self.index)]
             if self.attack.connected:
@@ -615,6 +682,10 @@ class Fighter:
     ) -> None:
         # A guard press made before the attack must not Flash Cancel it right away.
         self.buffer.pop("guard", None)
+        if move.boosted and self.buff is not None and self.buff.charge:
+            # Charged: the stronger version comes out, and that spends the charge.
+            move = self.kit.move(self.stance, move.boosted) or move
+            self.buff, self.buff_f = None, 0
         aim = self.aim_at(target)
         dest = None
         if move.leap > 0:
@@ -765,6 +836,7 @@ class Fighter:
         return (
             self.state == State.ATTACK
             and attack is not None
+            and attack.move.leap > 0  # a trap laid on the aimed point has a dest too
             and attack.dest is not None
             and attack.phase == 0
         )
@@ -823,7 +895,7 @@ class Fighter:
                     # Slide along the surface: drop the part of the speed going into it.
                     self.velocity = self.velocity - normal * self.velocity.dot(normal)
             self.pos = pos
-            _, slide = arena.hazards.grip_at(pos, self.kit.style)
+            _, slide = arena.hazards.grip_at(pos, self.kit.styles)
             friction = self.rules.knockback_friction * slide
             new_speed = max(0.0, self.velocity.length() - friction)
             self.velocity = self.velocity.normalized() * new_speed
@@ -842,12 +914,14 @@ class Fighter:
             self.glide = Vec2()
         elif self._lunging():
             step = self.attack.aim * self.attack.move.lunge
+            if self.attack.move.erase:
+                events += self._erase(arena, self.pos + step, radius)
             self.pos, _, _ = arena.constrain(self.pos + step, radius)
             self.glide = Vec2()
         elif self.walk_dir.length_sq() or self.glide.length_sq() > GLIDE_REST:
             # On a normal floor the body goes where it is walked; on oil or ice it only
             # leans that way, and keeps sliding the way it was going.
-            grip, _ = arena.hazards.grip_at(self.pos, self.kit.style)
+            grip, _ = arena.hazards.grip_at(self.pos, self.kit.styles)
             wanted = self.walk_dir * self.walk_speed() if self.walk_dir.length_sq() else Vec2()
             self.glide = wanted if grip >= 1 else self.glide + (wanted - self.glide) * grip
             if self.glide.length_sq() <= GLIDE_REST:
@@ -864,6 +938,16 @@ class Fighter:
             if leash.length() > reach:
                 spot = self.pos + leash.normalized() * reach
             self.remote_pos, _, _ = arena.constrain(spot, self.rules.stand_hurt_radius)
+        return events
+
+    def _erase(self, arena: Arena, pos: Vec2, radius: float) -> list[Event]:
+        """Whatever solid thing the body is about to touch is destroyed (nothing to stop
+        it: what it passes through is simply gone)."""
+        events = []
+        for obstacle in arena.obstacles:
+            if obstacle.solid and push_circle_out_of_rect(pos, radius, obstacle.rect):
+                obstacle.shatter()
+                events.append(Event("prop_break", obstacle.rect.center, self.index))
         return events
 
     def _lunging(self) -> bool:
@@ -987,7 +1071,10 @@ class Fighter:
             self.pending_hits.append(PendingHit(hitstun_f, knockback, wall_bounce))
             return False
         if self.armored():
-            self.attack.armor_used += 1
+            attack = self.attack
+            attack.armor_used += 1
+            if attack.move.armor_release and attack.phase == 0:
+                attack.frame = attack.move.startup_f  # struck while winding up: it goes now
             self.hurt(damage)
             return True
         awakening = self.kit.awakening

@@ -1,0 +1,673 @@
+# What two fighters say to each other before a fight, and what the winner says after it.
+#
+# Nothing here is made up: every line is one the games give to that pair, in the battle
+# named by `source` (All-Star Battle and All-Star Battle R, read on the JoJo Wiki pages
+# of the fighters, section "Dialogue", on 15/11/2026). `text_en` is the game's own line;
+# `text` is its French translation.
+#
+#   fighters = the two fighter ids (roster.toml), in any order;
+#   intro    = the lines, in the order they are said; `by` is who says each;
+#   victory  = what one of the two says when it is the winner (not every pair has both).
+#
+# A pair with no entry falls back on each fighter's own lines ([solo.<id>], at the end of
+# this file); a fighter with neither says nothing. Add a line only with its source.
+
+# Part 3 -----------------------------------------------------------------------------------
+
+[[exchanges]]
+fighters = ["jotaro_p3", "dio_p3"]
+source = "ASBR, combat de boss sur le pont du Caire ; la victoire de DIO : ASB, 3-10"
+
+[[exchanges.intro]]
+by = "jotaro_p3"
+text = "Espèce d'ordure !"
+text_en = "You bastard!"
+
+[[exchanges.intro]]
+by = "dio_p3"
+text = "Voilà... le dernier round !"
+text_en = "This is it... the final round!"
+
+[exchanges.victory.jotaro_p3]
+text = "Tu as perdu pour une seule raison, DIO... Une raison toute simple. Tu m'as mis en colère."
+text_en = "There's only one reason you lost, DIO... A simple one. You pissed me off."
+
+[exchanges.victory.dio_p3]
+text = "Invincible ! Immortel ! Et le Stand le plus puissant ! Personne ne me surpasse !"
+text_en = "Invincible! Immortal! And with the most powerful Stand! None can surpass me!"
+
+[[exchanges]]
+fighters = ["jotaro_p3", "kakyoin"]
+source = "ASBR, combat dans les rues du Caire ; la victoire de Kakyoin : ASB"
+
+[[exchanges.intro]]
+by = "jotaro_p3"
+text = "Le mal, c'est piétiner les faibles pour son seul profit !"
+text_en = "Evil is stomping all over the weak just for your own gain!"
+
+[[exchanges.intro]]
+by = "kakyoin"
+text = "Le perdant est le mal, le vainqueur est le juste. Celui qui survit a gagné. C'est la loi."
+text_en = "The loser is the evil one, the victor is just. Whoever survives, wins. That's the law of the land."
+
+[exchanges.victory.jotaro_p3]
+text = "Le mal ne gagne jamais. Et tu sais ce que ça veut dire."
+text_en = "Evil never wins. And you know what that means."
+
+[exchanges.victory.kakyoin]
+text = "Le perdant est le mal. C'est tout."
+text_en = "The loser is the evil one. That's all there is to it."
+
+[[exchanges]]
+fighters = ["jotaro_p3", "avdol"]
+source = "ASBR, combat dans les rues du Caire"
+
+[[exchanges.intro]]
+by = "jotaro_p3"
+text = "Tu l'auras cherché !"
+text_en = "You brought this on yourself!"
+
+[[exchanges.intro]]
+by = "avdol"
+text = "Quel Stand puissant... Une erreur, et je suis mal..."
+text_en = "What a powerful Stand... I'll be in trouble if I screw up..."
+
+[exchanges.victory.jotaro_p3]
+text = "Je te l'avais dit... Ne viens pas te plaindre..."
+text_en = "I told you... Don't blame me for what happens..."
+
+[[exchanges]]
+fighters = ["dio_p3", "kakyoin"]
+source = "ASBR, combat de boss dans les rues du Caire (ASB, 3-7)"
+
+[[exchanges.intro]]
+by = "kakyoin"
+text = "Je vais percer le secret de ton Stand, DIO !"
+text_en = "I'm gonna unravel the secret of your Stand, DIO!"
+
+[[exchanges.intro]]
+by = "dio_p3"
+text = "Imbécile. Sache-le... le pouvoir de The World permet de régner sur tout !"
+text_en = "You fool. Know this... the power of The World allows you to rule over everything!"
+
+[exchanges.victory.kakyoin]
+text = "J'ai compris ! C'est le temps ! Il arrête le temps lui-même !"
+text_en = "I got it! It's time! He can stop time itself!"
+
+[[exchanges]]
+fighters = ["dio_p3", "polnareff"]
+source = "ASB, 3-9, « The Backstab Strike »"
+
+[[exchanges.intro]]
+by = "polnareff"
+text = "Te voilà, DIO !"
+text_en = "There you are, DIO!"
+
+[[exchanges.intro]]
+by = "dio_p3"
+text = "Je me disais bien que tu viendrais me frapper dans le dos..."
+text_en = "I figured you'd be sneaking up and attacking me from behind by now..."
+
+[exchanges.victory.polnareff]
+text = "Retourne en enfer, DIO ! Yaaaargh !"
+text_en = "Back to hell with you, DIO! Yaaaargh!"
+
+[exchanges.victory.dio_p3]
+text = "Personne n'assassine DIO..."
+text_en = "No one can assassinate DIO..."
+
+[[exchanges]]
+fighters = ["dio_p3", "joseph_p3"]
+source = "ASBR, combat normal (ASB, 3-EX 2)"
+
+[[exchanges.intro]]
+by = "joseph_p3"
+text = "Kakyoin n'est pas du genre à plaisanter dans un moment pareil... Pourquoi irait-il par là ?"
+text_en = "Kakyoin's not one to fool around at a time like this... Why would he go that way?"
+
+[[exchanges.intro]]
+by = "dio_p3"
+text = "Joseph... Tu es le suivant !"
+text_en = "Joseph... You're next!"
+
+[exchanges.victory.joseph_p3]
+text = "N-Non ! Impossible ! The World de DIO peut vraiment arrêter le temps ?!"
+text_en = "N-No! It can't be! DIO's The World can really stop time?!"
+
+[[exchanges]]
+fighters = ["polnareff", "avdol"]
+source = "ASBR, combat normal ; la victoire de Polnareff : ASB, 3-3, « The Sword Master »"
+
+[[exchanges.intro]]
+by = "polnareff"
+text = "J'ai une prédiction, Avdol. Tu vas périr par le pouvoir de ton propre Stand !"
+text_en = "I got a prediction, Avdol. You're gonna be done in by your own Stand's power!"
+
+[[exchanges.intro]]
+by = "avdol"
+text = "Quelle maîtrise de l'épée... Mais tu crois pouvoir me battre ? C'est ton orgueil qui parle !"
+text_en = "Such amazing swordsmanship... But you think you can beat me? That's your ego talking!"
+
+[exchanges.victory.avdol]
+text = "Il t'en faudra bien plus pour prédire mieux que moi ! Tu ne joues pas dans ma catégorie !"
+text_en = "You've gotta put in more effort than that to out-prophet me! You're way out of your league!"
+
+[exchanges.victory.polnareff]
+text = "Ha ha ! Comme prévu. Brûlé vif par ton propre feu."
+text_en = "Ha ha! Just as predicted. You're burned to death by your own fire."
+
+# Across the parts ---------------------------------------------------------------------------
+
+[[exchanges]]
+fighters = ["dio_p3", "jonathan"]
+source = "ASBR, combat bonus de Stardust Crusaders"
+
+[[exchanges.intro]]
+by = "jonathan"
+text = "Dio ?! Et ce corps !"
+text_en = "Dio?! And that body!"
+
+[[exchanges.intro]]
+by = "dio_p3"
+text = "Une rencontre qui traverse le temps lui-même, c'est ça, JoJo ?!"
+text_en = "So an encounter that crosses time itself, is it, JoJo?!"
+
+[exchanges.victory.dio_p3]
+text = "Mon ami... Ce corps me servira encore longtemps !"
+text_en = "My friend... This body will continue to serve me into the future!"
+
+[[exchanges]]
+fighters = ["dio_p3", "dio_p1"]
+source = "ASBR, combat bonus de Phantom Blood"
+
+[[exchanges.intro]]
+by = "dio_p3"
+text = "Essayer mon Stand sur celui que j'étais... comme c'est amusant !"
+text_en = "Testing my Stand against my former self... how amusing!"
+
+[[exchanges.intro]]
+by = "dio_p1"
+text = "Un Stand, dis-tu ? Intéressant. Essaie-le donc sur moi !"
+text_en = "A Stand, you say? Interesting. Try it on me!"
+
+[exchanges.victory.dio_p1]
+text = "Ton Stand m'a surpris d'abord, mais je sais maintenant qu'il n'y a rien à craindre !"
+text_en = "Your Stand was surprising at first, but now I know it's nothing to fear!"
+
+# Vanilla Ice: All-Star Battle R ★ Vanilla Ice, "Dialogue" (read 17/11/2026): the match
+# entrances of ASBR and the victory quotes against each of them.
+
+[[exchanges]]
+fighters = ["vanilla_ice", "avdol"]
+source = "ASBR, entrée en matière et citations de victoire de Vanilla Ice et d'Avdol"
+
+[[exchanges.intro]]
+by = "vanilla_ice"
+text = "Mon vide va souffler ta misérable petite flamme jusqu'au néant !"
+text_en = "My void will blow your puny little fire into oblivion!"
+
+[[exchanges.intro]]
+by = "avdol"
+text = "Espèce de... monstre immonde ! Je vais te réduire en cendres !"
+text_en = "Why-- you vile monster! I'll raze you to cinders!"
+
+[exchanges.victory.vanilla_ice]
+text = "À quoi bon le feu contre le vide ?!"
+text_en = "What good is fire against the void?!"
+
+[exchanges.victory.avdol]
+text = "Il faudra te lever de bonne heure pour me battre !"
+text_en = "You'd have to get up pretty early in the morning to beat me!"
+
+[[exchanges]]
+fighters = ["vanilla_ice", "polnareff"]
+source = "ASBR, entrée en matière et citations de victoire de Vanilla Ice et de Polnareff"
+
+[[exchanges.intro]]
+by = "vanilla_ice"
+text = "Polnareff, tu peux surmonter bien des choses... Mais tu ne me surmonteras pas."
+text_en = "Polnareff, you can overcome much... But you won't overcome me."
+
+[[exchanges.intro]]
+by = "polnareff"
+text = "Viens, sale chien ! Je vais te découper en tranches !"
+text_en = "Come at me, you cur! I'll slice you up!"
+
+[exchanges.victory.vanilla_ice]
+text = "Ton épée n'est qu'un jouet d'enfant aux yeux de mon Stand..."
+text_en = "Your sword is but a child's toy in the eyes of my Stand..."
+
+[exchanges.victory.polnareff]
+text = "Ton âme elle-même est aussi creuse que le vide !"
+text_en = "Your very soul is as empty as a void!"
+
+[[exchanges]]
+fighters = ["vanilla_ice", "dio_p3"]
+source = "ASBR, entrée en matière et citations de victoire de Vanilla Ice et de DIO"
+
+[[exchanges.intro]]
+by = "dio_p3"
+text = "Ice... Je veux éprouver les pouvoirs de The World. Sers-moi de cobaye !"
+text_en = "Ice... I wish to test The World's powers. Be my guinea pig!"
+
+[[exchanges.intro]]
+by = "vanilla_ice"
+text = "À vos ordres, Seigneur DIO."
+text_en = "As you wish, Lord DIO."
+
+[exchanges.victory.vanilla_ice]
+text = "Tout ce que je fais, je le fais pour vous, Seigneur DIO..."
+text_en = "Everything I do, I do for you, Lord DIO..."
+
+[exchanges.victory.dio_p3]
+text = "Tu n'as pas à mourir ici... Mon sang te ressuscitera."
+text_en = "You needn't die here... My blood will resurrect you."
+
+# Hol Horse: All-Star Battle R ★ Hol Horse, "Dialogue" (read 17/11/2026): the match
+# entrances of ASBR and the victory quotes against each of them.
+
+[[exchanges]]
+fighters = ["hol_horse", "polnareff"]
+source = "ASBR, entrée en matière et citations de victoire de Hol Horse et de Polnareff"
+
+[[exchanges.intro]]
+by = "polnareff"
+text = "S'il faut te battre avant de voir ce salaud, alors c'est ce que je ferai. En garde !"
+text_en = "If I gotta beat you before I can see that bastard, then that's what I'll do. En garde!"
+
+[[exchanges.intro]]
+by = "hol_horse"
+text = "Le pistolet est plus fort que l'épée, comme on dit. Si c'est pas la vérité, ça !"
+text_en = "'The gun is mightier than the sword.' Damn if that ain't the truth!"
+
+[exchanges.victory.hol_horse]
+text = "Tu t'es moqué de moi... et tu l'as payé de ta vie !"
+text_en = "You made fun of me... and you paid for it with your life!"
+
+[exchanges.victory.polnareff]
+text = "L'épée bat le pistolet quand on veut ! Enfin, quand c'est moi qui la tiens."
+text_en = "Swords beat guns any day! Well, they do if you're me, that is!"
+
+[[exchanges]]
+fighters = ["hol_horse", "avdol"]
+source = "ASBR, entrée en matière et citations de victoire de Hol Horse et d'Avdol"
+
+[[exchanges.intro]]
+by = "avdol"
+text = "Je vais réduire toutes tes balles en cendres !"
+text_en = "I'll burn away all of your bullets!"
+
+[[exchanges.intro]]
+by = "hol_horse"
+text = "Je vais te loger une balle entre les deux yeux, Avdol !"
+text_en = "I'll put a hole right between your eyes, Avdol!"
+
+[exchanges.victory.hol_horse]
+text = "Les pièces de ton petit jeu ne me font plus peur !"
+text_en = "The pieces of your little game no longer frighten me!"
+
+[exchanges.victory.avdol]
+text = "Qu'y a-t-il ? Ta cigarette s'est éteinte. Besoin de feu ?"
+text_en = "What's wrong? Your smoke's burnt out. Need a light?"
+
+[[exchanges]]
+fighters = ["hol_horse", "kakyoin"]
+source = "ASBR, entrée en matière et citations de victoire de Hol Horse et de Kakyoin"
+
+[[exchanges.intro]]
+by = "kakyoin"
+text = "Bande de lâches ! Vous allez tomber !"
+text_en = "You cowards! You're going down!"
+
+[[exchanges.intro]]
+by = "hol_horse"
+text = "Kakyoin, le manieur de Hierophant, hein ? Mort au traître !"
+text_en = "Kakyoin the Hierophant user, huh? Death to the betrayer!"
+
+[exchanges.victory.hol_horse]
+text = "Tu sais, la fin d'une vie, c'est souvent un rideau qui tombe d'un coup."
+text_en = "Well, the end of someone's life is usually a pretty sudden curtain call."
+
+[exchanges.victory.kakyoin]
+text = "Quelle bande de clowns. Vous ne voyez pas qu'on sait exactement comment vous opérez ?"
+text_en = "What a bunch of clowns. Don't you realize we know exactly how you work?"
+
+[[exchanges]]
+fighters = ["hol_horse", "dio_p3"]
+source = "ASBR, entrée en matière et citations de victoire de Hol Horse et de DIO"
+
+[[exchanges.intro]]
+by = "hol_horse"
+text = "Le fort d'Emperor, c'est l'assassinat à bout portant ! On le tient !"
+text_en = "Emperor's forte is close-quarters assassination! We got 'em now!"
+
+[[exchanges.intro]]
+by = "dio_p3"
+text = "Tu essaies vraiment de me tirer dessus ?"
+text_en = "Are you really trying to shoot me?"
+
+[exchanges.victory.hol_horse]
+text = "Je me range toujours du côté du plus fort. Point."
+text_en = "I stick by the strongest I find. That's it!"
+
+[exchanges.victory.dio_p3]
+text = "Tu me plais. Jamais une goutte de sueur, jamais perdu le rythme. Tu es froid comme la glace, Hol Horse."
+text_en = "I like you. You never sweated, never lost your rhythm. You are cool as ice, Hol Horse."
+
+# Mariah: All-Star Battle R ★ Mariah, "Dialogue" (read 17/11/2026): the match entrances
+# of ASBR and the victory quotes against each of them.
+
+[[exchanges]]
+fighters = ["hol_horse", "mariah"]
+source = "ASBR, entrée en matière et citations de victoire de Hol Horse et de Mariah"
+
+[[exchanges.intro]]
+by = "hol_horse"
+text = "Je me lasserai jamais de ces jambes !"
+text_en = "I never get tired of seeing those legs!"
+
+[[exchanges.intro]]
+by = "mariah"
+text = "Ah oui, Hol Horse... Le manieur de Stand qui n'a jamais servi à rien au seigneur DIO..."
+text_en = "Oh right, Hol Horse... The Stand user who never manages to be of any help to Lord DIO..."
+
+[exchanges.victory.mariah]
+text = "Voilà pourquoi tu ne gagnes jamais tes combats..."
+text_en = "This is why you never win your battles..."
+
+[exchanges.victory.hol_horse]
+text = "J'adore les filles qui ont la langue bien pendue comme toi, ma belle !"
+text_en = "I sure do love a girl with a sharp tongue like yours, baby!"
+
+[[exchanges]]
+fighters = ["mariah", "joseph_p3"]
+source = "ASBR, entrée en matière et citations de victoire de Mariah et de Joseph âgé"
+
+[[exchanges.intro]]
+by = "mariah"
+text = "Joseph Joestar ! Tu es bien plus vieux que moi, mais j'ai pensé à faire de toi mon petit ami. Hé hé hé."
+text_en = "Joseph Joestar! You're much older than me, but I did think about making a boyfriend out of you. Heh heh heh."
+
+[[exchanges.intro]]
+by = "joseph_p3"
+text = "Comme c'est gentil. Alors arrête d'essayer de me faire du mal !"
+text_en = "Well isn't that nice. Stop trying to hurt me, then!"
+
+[exchanges.victory.mariah]
+text = "Laisse tomber. Tu n'es rien à côté du charme du seigneur DIO."
+text_en = "Forget it. You're nothing compared to the charm of Lord DIO."
+
+[exchanges.victory.joseph_p3]
+text = "Tu as perdu, ma chère."
+text_en = "You lose, my dear."
+
+[[exchanges]]
+fighters = ["mariah", "avdol"]
+source = "ASBR, entrée en matière et citations de victoire de Mariah et d'Avdol"
+
+[[exchanges.intro]]
+by = "avdol"
+text = "Femme ! Mes flammes vont te réduire en cendres !"
+text_en = "Woman! My flames will burn you right up!"
+
+[[exchanges.intro]]
+by = "mariah"
+text = "Hé hé hé... Je vais t'apprendre l'horreur du magnétisme !"
+text_en = "Heh heh heh... Time to teach you about the horrors of magnetism!"
+
+[exchanges.victory.mariah]
+text = "J'ai besoin d'une cigarette... Tu me donnerais du feu ?"
+text_en = "I need a smoke... Mind giving me a light?"
+
+[exchanges.victory.avdol]
+text = "C'était vraiment une adversaire redoutable..."
+text_en = "She really was a fearsome opponent..."
+
+[[exchanges]]
+fighters = ["mariah", "dio_p3"]
+source = "ASBR, entrée en matière et citations de victoire de Mariah et de DIO"
+
+[[exchanges.intro]]
+by = "dio_p3"
+text = "Viens, Mariah. Je vais te mettre à l'épreuve."
+text_en = "Come, Mariah. I will test you."
+
+[[exchanges.intro]]
+by = "mariah"
+text = "Quel honneur de croiser le fer avec vous, seigneur DIO !"
+text_en = "I'm honored to be able to spar with you like this, Lord DIO!"
+
+[exchanges.victory.mariah]
+text = "J'écraserai les Joestar avec ce pouvoir !"
+text_en = "I'll crush the Joestars with this power of mine!"
+
+[exchanges.victory.dio_p3]
+text = "L'aimantation s'estompe... Qu'y a-t-il ? Déjà fini ?"
+text_en = "The magnetism is wearing off... What's wrong? Finished already?"
+
+# Part 1 -----------------------------------------------------------------------------------
+
+[[exchanges]]
+fighters = ["jonathan", "dio_p1"]
+source = "ASBR, page de Dio Brando, section Dialogue (le combat n'y est pas nommé)"
+
+[[exchanges.intro]]
+by = "dio_p1"
+text = "Je vais t'arracher jusqu'à ta dernière goutte de vie !"
+text_en = "I'll wring every last bit of life out of you!"
+
+[[exchanges.intro]]
+by = "jonathan"
+text = "Je purifierai ce monde de ta souillure !"
+text_en = "I'll cleanse the world of your filth!"
+
+[exchanges.victory.jonathan]
+text = "Tu dois être anéanti, Dio !"
+text_en = "You must be annihilated, Dio!"
+
+# Part 2 -----------------------------------------------------------------------------------
+
+[[exchanges]]
+fighters = ["joseph_p2", "caesar"]
+source = "ASBR, combat normal (ASB, 2-1, « The Pigeon and the Girl »)"
+
+[[exchanges.intro]]
+by = "caesar"
+text = "Laisse tomber ! Ton Onde ne battrait même pas cette fille !"
+text_en = "Forget it! Your Ripple could never even beat this girl!"
+
+[[exchanges.intro]]
+by = "joseph_p2"
+text = "Ha ha ha ! Un type comme toi ne battrait même pas un pigeon !"
+text_en = "Ha ha ha! A guy like you couldn't even beat a pigeon!"
+
+[exchanges.victory.joseph_p2]
+text = "Je le redis. Tu ne battrais toujours pas un pigeon !"
+text_en = "I'll say it one more time. You still couldn't even beat a pigeon!"
+
+[[exchanges]]
+fighters = ["joseph_p2", "wamuu"]
+source = "ASBR, combat normal (ASB, 2-2, « The Blood Clock »)"
+
+[[exchanges.intro]]
+by = "joseph_p2"
+text = "Tu aimes t'en prendre aux gens, hein ? Je vais te la faire ravaler, ton arrogance !"
+text_en = "Like to pick on people, huh? I'll smash that attitude of yours good!"
+
+[[exchanges.intro]]
+by = "wamuu"
+text = "Montre-moi ton âme de guerrier !"
+text_en = "Show me your warrior's spirit!"
+
+[exchanges.victory.joseph_p2]
+text = "Je n'ai jamais supporté les arrogants de ton espèce !"
+text_en = "Could never stand arrogant bastards like you!"
+
+[[exchanges]]
+fighters = ["joseph_p2", "esidisi"]
+source = "ASBR, combat normal (ASB, 2-3, « The Disturbing Esidisi »)"
+
+[[exchanges.intro]]
+by = "joseph_p2"
+text = "Alors tu as compris que c'est Lisa Lisa qui a la Pierre Rouge d'Aja, hein ?"
+text_en = "So you've figured out that Lisa Lisa has the Red Stone of Aja, huh?"
+
+[[exchanges.intro]]
+by = "esidisi"
+text = "Tu as du cran. Mais ceux qui me tiennent tête comme ça... meurent toujours vite !"
+text_en = "You got spunk. But those who meet me with such an attitude... always die quickly!"
+
+[exchanges.victory.joseph_p2]
+text = "Va-t'en ! Et emporte la puissance que t'ont donnée tous ces milliers de morts !"
+text_en = "Go away! And take that rush of power you earned by killing all those thousands with you!"
+
+[[exchanges]]
+fighters = ["joseph_p2", "kars"]
+source = "ASBR, combat de boss (ASB, 2-7, « The Ultimate Being »)"
+
+[[exchanges.intro]]
+by = "joseph_p2"
+text = "J'ai un atout dans ma manche !"
+text_en = "I have an ace up my sleeve!"
+
+[[exchanges.intro]]
+by = "kars"
+text = "JoJo ! Ta mort sera offerte à ma naissance !"
+text_en = "JoJo! Your death will be dedicated to my birth!"
+
+[exchanges.victory.joseph_p2]
+text = "Je me tire !"
+text_en = "I'm outta here!"
+
+[[exchanges]]
+fighters = ["joseph_p2", "lisa_lisa"]
+source = "ASBR, combat normal, Caesar en soutien"
+
+[[exchanges.intro]]
+by = "joseph_p2"
+text = "Alors, comment je vais t'embêter ? Hé hé hé !"
+text_en = "Now, how should I pick on you? Heh heh heh!"
+
+[[exchanges.intro]]
+by = "lisa_lisa"
+text = "Je ne vivrai pas une vie si vaine qu'un enfant me prendrait en pitié !"
+text_en = "I will not live a life so in vain that it invites pity from children!"
+
+[exchanges.victory.lisa_lisa]
+text = "J'ai toujours voulu mettre à l'épreuve ce talent étonnant..."
+text_en = "I've always wanted to test that amazing talent of yours..."
+
+# Each fighter's own lines -----------------------------------------------------------------
+# Said when the pair has nothing of its own (and a winner's line when the pair has none for
+# it): All-Star Battle R ★ <fighter>, "Dialogue" (read 17/11/2026): the default match
+# entrance and the generic victory quote, or the round-win line where the page has no
+# generic victory. Bruford, Tarkus, Straizo and Santana are in no game: nothing to say.
+
+[solo.jonathan]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Koooohhh !", text_en = "Koooohhh!" }
+victory = { text = "Pourquoi est-ce arrivé ? Qu'est-ce que ça veut dire ?!", text_en = "Why did this happen? What's the meaning of this?!" }
+
+[solo.zeppeli]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Bien... Je m'en charge.", text_en = "Right... I'll handle this." }
+victory = { text = "On dirait que mon Onde est supérieure !", text_en = "Looks like my Ripple is superior!" }
+
+[solo.dio_p1]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Ah, te voilà.", text_en = "Ah, there you are." }
+victory = { text = "Je suis invincible, immortel ! Je peux régner sur ce monde !", text_en = "I am invincible, an immortal! I can rule this world!" }
+
+[solo.speedwagon]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Ton adversaire, c'est moi !", text_en = "Your opponent's right here!" }
+victory = { text = "Speedwagon garde toujours son sang-froid.", text_en = "Speedwagon always stays cool." }
+
+[solo.joseph_p2]
+source = "ASBR, sa réplique d'entrée par défaut ; la victoire est sa réplique de manche gagnée"
+intro = { text = "Kohhhh...", text_en = "Kohhhh..." }
+victory = { text = "On dirait que j'ai gagné !", text_en = "Guess I win!" }
+
+[solo.caesar]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Voyons ce que vaut mon entraînement !", text_en = "Time to test out the fruits of my training!" }
+victory = { text = "Je dois devenir plus fort... Plus fort que maintenant...", text_en = "I need to be stronger... Stronger than I am now..." }
+
+[solo.lisa_lisa]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Je dois accomplir ma mission.", text_en = "I must accomplish my mission." }
+victory = { text = "Ma vie ne sera pas vaine !", text_en = "My life will not be in vain!" }
+
+[solo.wamuu]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Te voilà donc.", text_en = "So you've come." }
+victory = { text = "Un vent pareil ne suffira pas à suivre le mien.", text_en = "That wind won't be enough to keep up with mine." }
+
+[solo.esidisi]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Ohh... Perspicace. Tu as de bons yeux.", text_en = "Hohh... Sharp. You have good eyes." }
+victory = { text = "Il faut bouillir pour venir à bout de moi !", text_en = "You gotta get to boiling if you wanna take me out!" }
+
+[solo.kars]
+source = "ASBR, sa première citation de victoire (sa page n'a pas de réplique d'entrée par défaut)"
+victory = { text = "Laisse le danger aux autres ! Que tes pions fassent le sale boulot ! Voilà comment on se bat !", text_en = "Save the hard work and danger for someone else! Let your pawns do the dirty work! That's how you fight!" }
+
+[solo.stroheim]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Ton adversaire, c'est moi, Stroheim !", text_en = "Your opponent is I, Stroheim!" }
+victory = { text = "La technologie allemande n'a pas de limites ! On va me produire en série !", text_en = "German technology knows no bounds! Of course they'd waste no time in mass producing me!" }
+
+[solo.jotaro_p3]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "C'est moi qui vais te botter le cul.", text_en = "You're getting an ass beating from yours truly." }
+victory = { text = "Quelle plaie.", text_en = "Good grief." }
+
+[solo.kakyoin]
+source = "ASBR, sa réplique d'entrée par défaut ; la victoire est sa réplique de manche gagnée"
+intro = { text = "Je ne me retiendrai pas. Prépare-toi.", text_en = "I won't hold back. You'd better be prepared." }
+victory = { text = "Tu n'aurais pas dû sous-estimer mon Hierophant.", text_en = "Shouldn't have underestimated my Hierophant." }
+
+[solo.dio_p3]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Heh.", text_en = "Heh." }
+victory = { text = "J'ai prouvé que personne ne peut surpasser DIO !", text_en = "Now I've proven that nobody can surpass DIO!" }
+
+[solo.polnareff]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Je vais t'embrocher comme ces pièces !", text_en = "I'll skewer you just like those coins!" }
+victory = { text = "Amuse-toi bien en enfer !", text_en = "Have fun in hell!" }
+
+[solo.avdol]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Laisse-moi lire ton avenir dans ma flamme.", text_en = "Let me tell your fortune with my flame." }
+victory = { text = "Je n'avais même pas besoin de le prédire.", text_en = "I shouldn't have bothered even predicting this." }
+
+[solo.joseph_p3]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Ne sous-estime pas mon Hermit Purple !", text_en = "Don't underestimate my Hermit Purple!" }
+victory = { text = "Tu vois ce que je veux dire, avec l'expérience ?", text_en = "See what I mean about experience?" }
+
+[solo.vanilla_ice]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Let's kick it one time...", text_en = "Let's kick it one time..." }
+victory = { text = "C'est moi qui sers le grand DIO ! Pas toi !", text_en = "I am the one who serves the great DIO! Not you!" }
+
+[solo.hol_horse]
+source = "ASBR, sa réplique d'entrée par défaut et sa première citation de victoire"
+intro = { text = "Tu sais comment je travaille, maintenant. Pas vrai, J. Geil ?", text_en = "You know how I work by now. Right, J. Geil?" }
+victory = { text = "La mort, c'est rarement bien spectaculaire, hein ?", text_en = "I guess death is pretty anticlimactic most of the time, huh?" }
+
+[solo.mariah]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Personne ne peut arrêter mon magnétisme...", text_en = "No one can stop my magnetism..." }
+victory = { text = "Ton pouvoir magnétique n'était qu'une plaisanterie.", text_en = "Your magnetic power was an absolute joke." }
+
+[solo.ndoul]
+source = "Eyes of Heaven (il n'est pas dans ASBR), mission 1-3 du mode histoire, sur les toits du Caire : son entrée, et ce qu'il dit une fois l'ennemi tombé"
+intro = { text = "Heh... Je vais l'écraser comme une mouche !", text_en = "Heh... I'll pick him off like a fly!" }
+victory = { text = "Plus personne ne se dresse sur notre chemin.", text_en = "Now there is no one left to stand in our way." }
+
+[solo.anubis]
+source = "Le manga : ce qu'Anubis dit à Chaka qui vient de le dégainer (ch. 193), et ce qu'il dit par la bouche de Khan (ch. 196). Il n'est dans aucun jeu récent"
+intro = { text = "Tu m'as dégainé... Tu seras mon porteur.", text_en = "You have unsheathed me... You will be my user." }
+victory = { text = "Un adversaire combattu une fois... Je ne perds j-j-j-jamais deux fois !", text_en = "Once I've fought someone once, I n-n-n-n-NEVER lose twice!" }

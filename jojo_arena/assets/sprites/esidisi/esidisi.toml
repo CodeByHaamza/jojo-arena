@@ -6,6 +6,15 @@ chest = 28
 height = 46
 directions = ["down", "up", "right"]
 
+[costume]
+label = "Tenue de Battle Tendency"
+label_en = "Battle Tendency attire"
+source = "Sa tenue principale (ASBR, costume normal)"
+
+[recolor]
+leather = [[85, 54, 29], [122, 74, 48], [159, 94, 67], [184, 134, 119]]
+cloth = [[83, 26, 25], [122, 42, 48], [160, 60, 73], [188, 109, 124]]
+
 [anims.idle]
 row = 0
 frames = 4
@@ -175,3 +184,39 @@ label_en = "Esidisi's trick"
 source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : le Pilier rusé qui fait semblant de pleurer"
 stand = false
 stand_offset = [-14.0, -8.0]
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+stand = ""
+
+[colors.j064]
+label = "Carte J-064"
+label_en = "Card J-064"
+source = "ASBR, couleur B : la carte Adventure Battle J-064"
+stand = ""
+
+[colors.j064.palette]
+cloth = [[27, 45, 102], [44, 76, 142], [61, 107, 181], [120, 155, 198]]
+leather = [[37, 57, 87], [58, 90, 122], [80, 123, 156], [133, 162, 180]]
+
+[colors.agogo]
+label = "JOJO A-GO!GO!"
+label_en = "JOJO A-GO!GO!"
+source = "ASBR, couleur C : JOJO A-GO!GO!"
+stand = ""
+
+[colors.agogo.palette]
+cloth = [[29, 84, 43], [47, 122, 60], [66, 159, 77], [117, 185, 121]]
+leather = [[44, 71, 31], [74, 106, 52], [105, 140, 74], [147, 170, 121]]
+
+[colors.asb]
+label = "All-Star Battle"
+label_en = "All-Star Battle"
+source = "ASBR, couleur D : les couleurs d'All-Star Battle"
+stand = ""
+
+[colors.asb.palette]
+cloth = [[135, 58, 27], [176, 68, 42], [206, 87, 68], [215, 142, 136]]
+leather = [[119, 73, 27], [160, 90, 42], [199, 108, 59], [208, 150, 127]]

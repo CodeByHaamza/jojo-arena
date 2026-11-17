@@ -164,3 +164,39 @@ hand_l = [5, -11]
 knee_r = [3, -1]
 foot_r = [3, 0]
 foot_l = [-3, 0]
+
+# The outfit and its colours ---------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ Kars, "Costumes & Tints" (read 17/11/2026):
+# https://jojowiki.com/All-Star_Battle_R/Kars . Each colour below is one of the
+# game's tints, with the origin the page gives it; the tones were read off the game's render of each tint and brought to this sprite's brightness.
+# Tint B has neither an origin nor an image on the page: left out.
+
+[costume]
+label = "Tenue de Battle Tendency"
+label_en = "Battle Tendency attire"
+source = "Sa tenue principale (ASBR, costume normal)"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+
+[colors.agogo]
+label = "JOJO A-GO!GO!"
+label_en = "JOJO A-GO!GO!"
+source = "ASBR, couleur C : l'illustration intérieure de JOJO A-GO!GO!"
+
+[colors.agogo.palette]
+cloth = "#2a7a52"
+guard = "#4aa070"
+hair = "#2a3a6a"
+
+[colors.asb]
+label = "All-Star Battle"
+label_en = "All-Star Battle"
+source = "ASBR, couleur D : les couleurs d'All-Star Battle"
+
+[colors.asb.palette]
+cloth = "#6a2a7a"
+guard = "#a04ab0"
+hair = "#5a2a7a"

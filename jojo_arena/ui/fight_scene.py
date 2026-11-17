@@ -11,6 +11,7 @@ import pygame
 
 from jojo_arena import __version__
 from jojo_arena.characters import get_fighter
+from jojo_arena.characters.lines import exchange_for
 from jojo_arena.combat.ai import CpuPlayer
 from jojo_arena.combat.replay import Replay, save_replay
 from jojo_arena.combat.rounds import Phase, Rounds
@@ -19,20 +20,27 @@ from jojo_arena.context import GameContext
 from jojo_arena.engine import font, music
 from jojo_arena.engine.actions import NEUTRAL, InputFrame
 from jojo_arena.engine.scene import Scene
+from jojo_arena.engine.sprites import shade
 from jojo_arena.stages import load_stage
 from jojo_arena.stages.base import StageOptions
-from jojo_arena.ui import text
+from jojo_arena.ui import sound_pack, text
 from jojo_arena.ui.fight_view import FightView
 from jojo_arena.ui.hud import Hud
 from jojo_arena.ui.labels import action_label, menu_key
-from jojo_arena.ui.loadout import random_loadout
+from jojo_arena.ui.loadout import random_loadout, settle
 from jojo_arena.ui.menu import Menu, MenuItem
 from jojo_arena.ui.movelist import MoveListPanel
 from jojo_arena.ui.music import track_for_stage
 from jojo_arena.ui.rumble import FightRumble, pad_slots
+from jojo_arena.ui.staging import WINNER_HOLD_F, WINNER_SILENT_F, Entrance, typed
 from jojo_arena.ui.widgets import DIM, GOLD, WHITE, draw_box, draw_toast, veil
 
-RESULT_MENU_AFTER_F = 120  # let the victory sink in before offering a rematch
+RESULT_MENU_AFTER_F = 120  # the least the victory is left to sink in before the summary
+# The last blow lands and "VICTORY" is announced; then the banner gives the screen to the
+# winner: the arena dims, it strikes its pose with its Stand and says its line.
+WINNER_POSE_AFTER_F = 80
+WINNER_LINE_Y = 44  # under the life bars, over the summary
+WINNER_LINE_W = 380
 TOAST_F = 90
 MOUSE_AIM_F = 60  # the mouse aims for a keyboard player if it moved in the last second
 
@@ -49,12 +57,19 @@ class FightScene(Scene):
         bots: tuple[bool, bool] = (False, False),
         cpu_level: int = 2,
         stage_options: StageOptions | None = None,
+        entrance: bool = False,
     ) -> None:
         super().__init__()
         self.ctx = ctx
+        # The fighters walk in, pose and speak before the first round (fights started from
+        # the menus ask for it; a replay, a demo or a test goes straight to the round).
+        self.wants_entrance = entrance
+        self.entrance: Entrance | None = None
         self.stage_options = stage_options or StageOptions()
         self.fighter_ids = fighter_ids
         self.fighter_defs = [get_fighter(i) for i in fighter_ids]
+        # What the games give this pair to say (None: nothing): the winner's line, at the end.
+        self.exchange = exchange_for(*fighter_ids)
         self.stage = load_stage(stage_id)
         music.request(track_for_stage(stage_id))
         self.rules = load_rules()
@@ -67,11 +82,15 @@ class FightScene(Scene):
         self.demo = all(bots)
         if any(bots) and not self.demo:
             self.mode = "vs_cpu"
-        self.view = FightView(self.stage, self.fighter_defs, list(ctx.loadouts))
+        self.view = FightView(
+            self.stage, self.fighter_defs, settle(self.fighter_defs, list(ctx.loadouts))
+        )
         for side, bot in enumerate(self.bots):
-            if bot is not None:  # the computer strikes any of its poses
+            if bot is not None:  # the computer strikes any of its poses, in what it wears
                 view = self.view.fighter_views[side]
-                view.loadout = random_loadout(view.sprites, random.Random())
+                poses = random_loadout(view.sprites, random.Random())
+                worn = view.loadout
+                view.loadout = replace(poses, costume=worn.costume, color=worn.color)
         self.hud = Hud(self.fighter_defs, [view.height for view in self.view.fighter_views])
         players = ctx.controls.active_preset.players
         self.hud.mash_keys = tuple(action_label(p, "light", ctx.inputs) for p in players)
@@ -157,6 +176,8 @@ class FightScene(Scene):
             self._update_result()
             return
         self.toast_f = max(0, self.toast_f - 1)
+        if self._update_entrance():
+            return
         if self.playback is not None:
             menu = self.ctx.read_menu()
             if menu.was_pressed("pause") or menu.was_pressed("back"):
@@ -178,13 +199,70 @@ class FightScene(Scene):
         self.hud.on_events(events, self.rounds)
         self.view.update(self.rounds.match)
         self.hud.update(self.rounds)
-        if self.rounds.phase == Phase.MATCH_OVER and self.rounds.phase_f >= RESULT_MENU_AFTER_F:
+        won = self.rounds.phase == Phase.MATCH_OVER and self.rounds.phase_f >= WINNER_POSE_AFTER_F
+        for side, fighter_view in enumerate(self.view.fighter_views):
+            fighter_view.celebrating = won and side == self.rounds.winner
+        if won and self.rounds.phase_f == WINNER_POSE_AFTER_F and self.rounds.winner is not None:
+            # The winner's moment starts: its voice, if the player's sound pack has it.
+            winner = self.fighter_ids[self.rounds.winner]
+            loser = self.fighter_ids[1 - self.rounds.winner]
+            sound_pack.say(
+                sound_pack.line_slot(winner, "victory", loser),
+                sound_pack.generic_slot(winner, "win"),
+            )
+        if self.rounds.phase == Phase.MATCH_OVER and self._summary_due():
             if self.demo or self.playback is not None:
                 if self.demo:
                     self._new_rounds()
             else:
                 self.save_replay()
                 self.result_menu = Menu(self._result_items())
+
+    def _update_entrance(self) -> bool:
+        """Play the entrance, once, before the first round. True while it is on."""
+        if self.wants_entrance and self.entrance is None:
+            self.wants_entrance = False
+            if not self.demo and self.playback is None:
+                self.entrance = Entrance(
+                    self.rounds.match.fighters,
+                    self.view.fighter_views,
+                    self.fighter_ids,
+                    self.exchange,
+                )
+        if self.entrance is None:
+            return False
+        menu = self.ctx.read_menu()
+        skipped = menu.was_pressed("confirm") or menu.was_pressed("pause")
+        self.entrance.update()
+        self.view.update(self.rounds.match)
+        if skipped or self.entrance.done:
+            # Over: the match it played on is thrown away, the real one starts untouched.
+            self.entrance.finish()
+            self.entrance = None
+            self._new_rounds()
+        return True
+
+    def winner_moment_f(self) -> int:
+        """How long the winner has the screen before the summary: its line typed out and
+        left to be read, or its pose alone."""
+        line = self.winner_line()
+        if not line:
+            return max(RESULT_MENU_AFTER_F, WINNER_POSE_AFTER_F + WINNER_SILENT_F)
+        return WINNER_POSE_AFTER_F + len(line) // 2 + WINNER_HOLD_F
+
+    def _summary_due(self) -> bool:
+        """The winner's moment is over, or a player pressed confirm to cut it short."""
+        if self.rounds.phase_f >= self.winner_moment_f():
+            return True
+        skip = self.rounds.phase_f >= RESULT_MENU_AFTER_F and not self.demo
+        return skip and self.playback is None and self.ctx.read_menu().was_pressed("confirm")
+
+    def winner_line(self) -> str:
+        """What the winner says to this opponent once the fight is over ("": nothing)."""
+        winner = self.rounds.winner
+        if self.exchange is None or winner is None or self.rounds.phase != Phase.MATCH_OVER:
+            return ""
+        return self.exchange.victory_line(self.fighter_ids[winner])
 
     def on_step(self, events: list) -> None:
         """Called with the events of each logic step (training reads them)."""
@@ -312,8 +390,12 @@ class FightScene(Scene):
 
     def draw(self, surface: pygame.Surface) -> None:
         self.view.draw(surface, self.rounds.match)
+        self._draw_winner_moment(surface)
         menus_open = self.pause_menu is not None or self.move_list is not None
-        self.hud.draw(surface, self.rounds, announcements=not menus_open)
+        announcing = not menus_open and self.entrance is None and not self._winner_has_the_screen()
+        self.hud.draw(surface, self.rounds, announcements=announcing)
+        if self.entrance is not None:
+            self.entrance.draw(surface, self.fighter_defs)
         if not menus_open and self.rounds.match.cutscene is None:
             self.draw_overlay(surface)
             if self.playback is not None:
@@ -323,6 +405,7 @@ class FightScene(Scene):
                 font.draw(surface, label, (surface.get_width() // 2, 38), GOLD, align="center")
         draw_toast(surface, text.REPLAY_SAVED, self.toast_f, y=60)
         center = surface.get_width() // 2
+        self._draw_winner_line(surface, center)
         if self.pause_menu is not None:
             surface.blit(veil(surface.get_size(), (10, 8, 24, 160)), (0, 0))
             items = len(self.pause_menu.items)
@@ -341,6 +424,37 @@ class FightScene(Scene):
             self.result_menu.draw(surface, center, box.y + 9, spacing=15)
         if self.move_list is not None:
             self.move_list.draw(surface)
+
+    def _draw_winner_line(self, surface: pygame.Surface, center: int) -> None:
+        """The winner's line to this opponent, in its color, under the life bars."""
+        line = self.winner_line()
+        if not line or self.rounds.phase_f < WINNER_POSE_AFTER_F or self.pause_menu is not None:
+            return
+        rows = font.wrap(line, WINNER_LINE_W)
+        width = max(font.text_width(row) for row in rows) + 12
+        box = pygame.Rect(0, 0, width, len(rows) * 10 + 7)
+        box.midtop = (center, WINNER_LINE_Y)
+        draw_box(surface, box)
+        color = shade(self.fighter_defs[self.rounds.winner].color, 70)
+        shown = typed(line, self.rounds.phase_f - WINNER_POSE_AFTER_F)
+        for i, row in enumerate(rows):
+            if shown <= 0:
+                break
+            font.draw(surface, row[:shown], (center, box.y + 4 + i * 10), color, align="center")
+            shown -= len(row) + 1  # the space the wrap ate
+
+    def _winner_has_the_screen(self) -> bool:
+        rounds = self.rounds
+        won = rounds.phase == Phase.MATCH_OVER and rounds.winner is not None
+        return won and rounds.match.cutscene is None and rounds.phase_f >= WINNER_POSE_AFTER_F
+
+    def _draw_winner_moment(self, surface: pygame.Surface) -> None:
+        """The fight is won: the arena dims and the winner stands out, pose and Stand."""
+        rounds = self.rounds
+        if not self._winner_has_the_screen():
+            return
+        strength = (rounds.phase_f - WINNER_POSE_AFTER_F) / 20
+        self.view.draw_spotlight(surface, rounds.match.fighters[rounds.winner], strength)
 
     def _draw_summary(self, surface: pygame.Surface, center: int) -> None:
         """What each of them did over the whole fight, over the rematch menu."""

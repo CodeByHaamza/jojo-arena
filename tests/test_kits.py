@@ -24,7 +24,7 @@ def chain_names(match, button: str, steps: int = 60) -> list[str]:
 
 
 def test_every_fighter_has_a_three_hit_string_without_the_stand():
-    for fighter_id, length in (("jotaro_p3", 3), ("dio_p3", 3), ("polnareff", 3), ("kakyoin", 2)):
+    for fighter_id, length in (("jotaro_p3", 3), ("dio_p3", 3), ("polnareff", 3), ("kakyoin", 3)):
         match = make_duel(fighter_id, "mannequin_red")
         names = chain_names(match, "light")
         assert names[:length] == ["light", "light2", "light3"][:length], fighter_id
@@ -64,13 +64,33 @@ def test_kakyoin_grapples_where_the_player_aims():
     assert match.fighters[0].pos.y > 170
 
 
-def test_hierophant_tentacle_reels_the_opponent_in():
-    match = make_duel("kakyoin", "jotaro_p3", p1=(150, 100), p2=(190, 100))
+def test_didnt_you_notice_catches_a_guarding_opponent_from_afar():
+    match = make_duel("kakyoin", "jotaro_p3", p1=(100, 100), p2=(170, 100))
+    jotaro = match.fighters[1]
     stand_out(match)
-    before = match.fighters[1].pos.x
-    events = run(match, 40, p1=press("heavy"))
-    assert "hit" in kinds(events)
-    assert match.fighters[1].pos.x < before  # pulled toward Kakyoin
+    match.step((press("heavy"), hold("guard")))
+    for _ in range(40):
+        match.step((NONE, hold("guard")))
+    assert jotaro.hp < jotaro.max_hp  # 70 px away, guard up: the tendrils do not care
+
+
+def test_kakyoin_point_blank_emeralds_die_out_a_few_steps_away():
+    kit = make_duel("kakyoin", "mannequin_red").fighters[0].kit
+    burst = kit.move("base", "light3").projectile
+    volley = kit.move("base", "special").projectile
+    assert burst.count == 5 and volley.count == 5
+    assert burst.speed * burst.lifetime_f < 60 < volley.speed * volley.lifetime_f
+
+
+def test_hierophant_stabs_three_times_and_the_last_one_launches():
+    match = make_duel("kakyoin", "mannequin_red", p1=(150, 100), p2=(186, 100))
+    kakyoin, dummy = match.fighters
+    stand_out(match)
+    assert chain_names(match, "light")[:3] == ["light", "light2", "light3"]
+    stab = kakyoin.kit.move("stand", "light3")
+    assert stab.hits == 3 and stab.shape == "line"
+    assert stab.last_knockback > stab.knockback
+    assert dummy.hp < dummy.max_hp
 
 
 def test_polnareff_chariot_flashes_out_for_a_long_thrust():
@@ -96,6 +116,7 @@ def test_every_signature_move_is_reachable():
         kit = fighter.kit
         shared_links = {m.chain for m in kit.shared_moves.values()}
         shared_links |= {m.counter for m in kit.shared_moves.values()}
+        shared_links |= {m.boosted for m in kit.shared_moves.values()}
         for stance in kit.stances.values():
             # The five attack buttons, plus the two super slots: a stance may give
             # a super of its own (awakened Kars does not fight like Kars).
@@ -104,7 +125,7 @@ def test_every_signature_move_is_reachable():
             reachable |= {kit.pose_counter} - {""}
             reachable |= shared_links - {""}  # an ultimate can chain or counter too
             for move in stance.moves.values():
-                reachable |= {move.chain, move.counter} - {""}
+                reachable |= {move.chain, move.counter, move.boosted} - {""}
                 reachable |= {name for _, name in move.chains}  # a branching chain
             assert set(stance.moves) <= reachable, (fighter.id, set(stance.moves) - reachable)
 

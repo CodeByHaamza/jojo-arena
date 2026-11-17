@@ -1,0 +1,35 @@
+# Jotaro Kujo in the whites of JOESTAR The Inherited Soul: a costume of
+# looks/jotaro_p3.toml (the same clothes, in other colours: it says only its palette).
+#
+# Sources, read on 16/11/2026:
+# - JoJo Wiki, All-Star Battle R ★ Jotaro Kujo, "Costumes & Tints": Extra Costume A,
+#   "Deluxe Edition exclusive", is based on "JOESTAR The Inherited Soul merchandise";
+#   its tint A is from that merchandise, its tint B is "original to All-Star Battle R".
+# - The game's renders of the two tints: A is a white cap, coat and trousers over a teal
+#   shirt; B is the same teal shirt under black.
+
+base = "jotaro_p3"
+
+[costume]
+label = "The Inherited Soul"
+label_en = "The Inherited Soul"
+source = "ASBR, costume extra A : les produits JOESTAR The Inherited Soul"
+
+[palette]
+uniform = "#e0e2ec"      # white
+shirt = "#2f9094"        # teal
+shoes = "#2a8088"
+
+[colors.blanc]
+label = "Blanc"
+label_en = "White"
+source = "ASBR, extra A, couleur A : les produits JOESTAR The Inherited Soul"
+
+[colors.noir]
+label = "Noir"
+label_en = "Black"
+source = "ASBR, extra A, couleur B : une couleur propre à All-Star Battle R"
+
+[colors.noir.palette]
+uniform = "#2a2c38"
+shoes = "#24262e"

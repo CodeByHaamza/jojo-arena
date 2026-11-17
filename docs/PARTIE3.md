@@ -16,10 +16,10 @@ Ce qui n'est pas sûr est marqué **à vérifier**. Une source manque, se contre
 
 ## Où on en est
 
-- **Jouables** : Jotaro, Kakyoin, Polnareff, DIO, et **Avdol** (fait le 24/10/2026).
-- **Arène** : Le Caire, rue de nuit.
+- **Jouables** : Jotaro, Kakyoin, Polnareff, DIO, **Avdol** (fait le 24/10/2026), **Joseph âgé** (fait le 15/11/2026), **Vanilla Ice**, **Hol Horse**, **Mariah**, **N'Doul** et **Anubis** (faits le 17/11/2026).
+- **Arènes** : Le Caire, rue de nuit ; le manoir de DIO ; le pont du Caire (fait le 17/11/2026 : les couteaux de DIO en temps arrêté, sauf si DIO se bat, et le trou du tablier, d'après ASBR et EoH) ; les toits du Caire (faits le 17/11/2026, d'après EoH : l'enseigne « AIR », la tour de l'horloge, le château d'eau ; les trous dans le toit sont la demande du propriétaire, la fiche EoH n'en parle pas) ; le rêve de Death 13 (fait le 17/11/2026, d'après le « Nightmare World » d'EoH : Death 13 erre et fauche, avec sa propre vie).
 - Le moteur **sait déjà** faire : Stand on/off, mode contrôle, temps arrêté, pièges, projectiles (`count`, `ring`), visée libre, saisies inbloquables, Hamon, vampire et soleil, `stance_cycle`, éveil, objets à lancer.
-- Il **ne sait pas encore** faire : brûlure, vol, invisibilité, états qui s'accumulent, décor effacé, et Stand + Hamon ensemble.
+- Il **ne sait pas encore** faire : vol, états qui s'accumulent. (Brûlure, Stand + Hamon, invisibilité et décor effacé : faits.)
 
 ---
 
@@ -55,6 +55,7 @@ Le nom officiel du coup est entre guillemets. La forme de la hitbox suit la règ
 
 - Coiffure (relue sur la fiche) : un bandeau ou foulard sur le front, des cheveux en **nœuds bantous** et une **longue queue de cheval**. Ses boucles d'oreilles sont **une longue chaîne de médaillons**, le plus gros porte un ankh et un gland qui tombe sur la poitrine. Des bracelets de métal épais aux deux poignets. Couleurs de l'anime (corrigées le 24/10 : le jaune du premier schéma de la fiche était le mauvais) : **long manteau rouge orangé**, rouge comme les flammes de Magician's Red, un dessous kaki, un **bandeau blanc** ; cheveux brun foncé, yeux auburn. Reste **à vérifier** : la couleur de l'écharpe, mise plus sombre que le manteau pour que les deux se distinguent.
 - Skills Stand d'ASBR, relues : « I'll burn you to cinders! » est une gerbe de flammes sortie de tout le corps qui projette (un anti-air) ; « Flaming Detector » est une flamme lente qui chasse l'adversaire pendant qu'Avdol reste libre ; « HELL 2 U! » une rafale de trois coups ; « Now's my chance! » un contre ; la HHA « Give me four wishes instead! » un coup de pied de Magician's Red.
+- **Relecture du 15/11/2026** : la page ASBR s'ouvre maintenant, et elle corrige les résumés du 24/10. « Red Bind! » est la **saisie** ; les cordes à distance s'appellent « Must I do this the hard way? » et se bloquent ; « Now's my chance! » n'est pas un contre mais un poing armé qui encaisse un coup ; « HELL 2 U! » finit au mur ; l'ankh et le Flaming Detector disparaissent si Avdol est touché ; 1000 PV. Le kit suit maintenant la page. Le tableau plus bas est celui du 24/10, gardé pour mémoire.
 - Statistiques de Magician's Red : B B C B C D (plusieurs wikis concordent ; la fiche JoJo Wiki n'a pas pu être ouverte).
 - Pas trouvé : l'origine du nom d'Avdol (une seule source de fans, non vérifiée) ; le glossaire n'en dit donc rien.
 
@@ -91,9 +92,18 @@ Le nom officiel du coup est entre guillemets. La forme de la hitbox suit la règ
 - **Mécanique nouvelle** : la **brûlure**, des dégâts sur la durée. Elle s'accumule (voir « Mécaniques »).
 - **À vérifier** : le nom de la GHA. Une page ASBR l'appelle *Special*, une autre range le coup à 3 boutons sous *Variation*.
 
-### Joseph Joestar âgé (Hermit Purple + Hamon)
+### Joseph Joestar âgé (Hermit Purple + Hamon) : fait
 
 **Rôle** : grappler longue portée, trickster.
+
+**Fait le 15/11/2026** (`characters/joseph_p3.toml`, `looks/joseph_p3.toml`). Les pages ASBR et EoH s'ouvrent maintenant, et elles tranchent ce qui était « à vérifier » plus bas :
+
+- Noms : la HHA est **« Years of Experience »** (un contre), la GHA **« Hermit Purple and Ripple! »**, et **« Coal Tar »** est bien le nom de la skill. 950 PV.
+- Tenue : celle du voyage (de Calcutta à la fin), pas le pull col V de la maison des Kujo que notait le tableau : chemise kaki à manches courtes, pantalon marron, fedora marron, gants blancs et bracelets noirs, cheveux gris courts, barbe taillée, yeux verts (ligne anime de « Color Schemes »).
+- Stand sorti, ses trois coups légers sont ceux d'EoH (ronce, ronce qui ramène, tranchant de Hamon) : vus de dessus, ils disent « Hermit Purple » mieux que les poings entourés de ronces d'ASBR. « Panic isn't in my vocabulary » est aussi celui d'EoH (tiré vers le point visé).
+- Écarts dits au propriétaire : « Now I gotcha! » (anti-air) attend le vol ; « Cunning Tactician » attrape le coup au lieu de l'encaisser ; la flaque de goudron ne fait tomber que l'adversaire.
+- **Mesure au bot (15/11/2026)** : 25 % de victoires contre les cinq autres persos de la partie 3 (20 combats par affiche et par côté). Ce que l'ordinateur en fait : presque que la ronce au ras du sol (280 fois sur 20 combats contre Jotaro, bloquée deux fois sur trois), jamais la suite qu'elle ouvre. C'est un grappler à distance, et le bot ne sait pas en jouer : à juger manette en main avant de toucher aux chiffres. Au passage, l'ordinateur a appris trois choses, pour tout le monde : garder un ultime qui est un contre pour un coup qui arrive ; ne plus attaquer avec un grappin qui ne frappe pas ; juger un coup qui laisse un piège à la portée du coup.
+- Hermit Purple n'a pas de corps : pas de planche de Stand, pas de pose en duo. Les ronces autour de son bras quand le Stand est sorti viendront avec les costumes (une fiche qui hérite d'une autre).
 
 **Design** :
 
@@ -158,6 +168,36 @@ Le nom officiel du coup est entre guillemets. La forme de la hitbox suit la règ
 
 ### Vanilla Ice (Cream)
 
+**Fait le 17/11/2026** (`characters/vanilla_ice.toml`, `looks/vanilla_ice.toml`,
+`looks/cream.toml`). La page ASBR tranche le plan ci-dessous :
+
+- **Le vide est Stand sorti**, comme dans ASBR (« Once and for all! » est sa seule spéciale
+  avec Cream). Deux versions, comme les deux entrées d'ASBR : **droit** (spécial seul,
+  plus rapide, plus court) et **guidé** (spécial + direction : il suit le stick tout du
+  long). Trois champs génériques nouveaux : `steer` (l'élan suit la direction tenue),
+  `vanish` (ni dessiné ni touchable jusqu'à la récupération) et `erase` (ce qu'il traverse
+  est détruit). À la fin il sort la tête : là, on peut le frapper.
+- **Cream depuis le sol** (« Now I've taken your legs! ») est Stand rentré, spécial +
+  direction : `at_target`, quatre coups imparables ; le sol se fend sous l'adversaire
+  (nouveau `fx = "rise"`).
+- Stand rentré : revers, coup de pied, puis **« You foul creature! »** (Cream piétine six
+  fois) ; **« Lord DIO! »** (saisie qui boit le sang) ; **« How dare you! »** (l'uppercut
+  qui avance, intouchable au départ) ; **« This vicious arm! »** (trois tranchants de Cream
+  en avançant). Stand sorti : les mains de Cream, **« I swear I'll kill you! »** (la
+  projection d'ASBR, en saisie) et Cream qui s'abat (sa Reversal Assist).
+- HHA **« The great void rises! »** : il entre dans Cream et fonce, imparable. GHA
+  **« Miasma of the Void »** : le vide traverse l'arène en ligne, puis la cinématique
+  (la boule de vide tourne autour de l'adversaire, l'emporte dans sa spirale, le coup
+  final vers le haut, et il sort la tête).
+- **Écarts avec ASBR** : pas de jauge de Stand (le vide et Cream depuis le sol ont une
+  recharge à la place) ; « You foul creature! » ne frappe qu'un adversaire au sol dans
+  ASBR, ici elle finit son enchaînement.
+- **Décor effacé** : un objet traversé par le vide est brisé comme sous un coup, et
+  revient au même rythme que les autres. Ta proposition (« deux fois plus lentement »)
+  attend toujours ta décision.
+- **Pas encore fait** : le Flaming Detector d'Avdol et Hermit Purple qui le révèlent ; la
+  trace de sable de Polnareff.
+
 **Rôle** : assassin, invisible, inbloquable, lent à viser.
 
 **Design** :
@@ -190,6 +230,37 @@ Le nom officiel du coup est entre guillemets. La forme de la hitbox suit la règ
 - **Nature `vampire`** : DIO l'a fait vampire, et le soleil l'achève face à Polnareff.
 
 ### Hol Horse (Emperor)
+
+**Fait le 17/11/2026** (`characters/hol_horse.toml`, `looks/hol_horse.toml`). La page ASBR
+tranche ce qui était « à fixer » plus bas :
+
+- **Touche Stand : « Gun beats sword. »** Il fait tourner Emperor ; le prochain coup que
+  ASBR marque d'une étoile (les deux balles et « Eat this! ») sort **chargé** : plus de
+  balles, plus de dégâts. Champs génériques : le style `move` (la touche lance un coup),
+  la charge (`charge` sur un bonus) et `boosted` (la version chargée d'un coup).
+- **Spécial : « You lose, loser! »**, une balle rapide qui disparaît s'il est touché.
+- **Spécial + direction : « Even my bullets are part of my Stand! »**, plus lente, plus
+  forte, **pilotée en vol par la visée libre** (souris ou stick droit) pendant qu'il
+  continue de bouger, comme décidé le 24/10 (nouveau champ `steer_deg_s`).
+- **Lourd : « Now I've got ya! »**, sa projection d'ASBR (par le col, Hanged Man
+  poignarde), en saisie imparable.
+- **Lourd + direction : « Come get us! »**, la bouteille lancée au point visé ; la flaque
+  dure 15 s et **J. Geil** frappe depuis le reflet quiconque marche dedans (« You're up,
+  J. Geil! »). Pas de touche à part pour J. Geil : il n'y a plus d'emplacement libre.
+- **Passif « Hol Horse loves the ladies! »** : +10 % de dégâts contre une femme (Lisa Lisa
+  pour l'instant, Mariah ensuite), Heart Heat un peu plus lente. Champs génériques `tags`
+  et `[passive]`.
+- HHA **« Eat this! »** : dix balles qui reviennent vers la cible (douze, chargée). GHA
+  **« Hol Horse is gonna kill ya! »** : les bouteilles éclatent tout autour de lui, puis la
+  cinématique (Hanged Man sort d'un éclat de verre, la balle courbe d'éclat en éclat).
+- **Emperor se voit dans sa main** (une pièce `pistol` du générateur) : c'est un pistolet,
+  pas un Stand à côté de lui. Ses poses (5, tirées des planches des esquives stylées
+  d'ASBR) le montrent donc toujours en main ; pas de pose « en duo ».
+- **Écarts** : « I'll be right back! » (il s'enfuit) n'est pas repris, le dash en arrière
+  le fait déjà ; la cigarette et les éperons ne se voient pas à cette taille. Une seule
+  tenue (ASBR et EoH n'en ont pas d'autre), quatre couleurs.
+- **Bug corrigé au passage** : un piège posé au point visé (la Variation d'Avdol, la
+  bouteille) faisait bondir le perso jusqu'au point.
 
 **Rôle** : tireur qui bouge, buffe ses tirs.
 
@@ -224,7 +295,51 @@ Le nom officiel du coup est entre guillemets. La forme de la hitbox suit la règ
 | **HHA** | **« Eat this! »** | rafale guidée |
 | **GHA** | **« Hol Horse is gonna kill ya! »**, avec la mise en scène de la DHA d'EoH : il lance une bouteille et la fait éclater d'une balle ; Hanged Man surgit dans les éclats, poignarde l'adversaire à l'épaule et l'immobilise ; Hol Horse tire la balle finale | `projectile`, cinématique |
 
+### Anubis (exclusif à JoJo Arena)
+
+**Fait le 17/11/2026** à la demande du propriétaire (`characters/anubis.toml`,
+`looks/anubis.toml`, `looks/anubis_khan.toml`). Il n'est ni dans ASBR ni dans EoH (seul le
+JoJo's Venture de Capcom l'avait) : tout vient de sa fiche JoJo Wiki.
+
+- **Il apprend** (nouvelle table de kit `[learn]`) : chaque coup reçu est retenu ; la fois
+  suivante, s'il est libre de bouger, il le pare (« je ne perds jamais deux fois ! ») ; chaque
+  coup appris lui donne +5 % de dégâts et +2,5 % de vitesse, jusqu'à 8. Une combo passe quand
+  même. Le contrer : lui montrer du nouveau à chaque fois.
+- **La lame traverse** : l'estoc passe la garde, le sabre lancé passe à travers le décor
+  (`phasing`) et revient en main, l'entaille « derrière le pilier » porte loin.
+- Le porteur se bat en amateur (la fiche le dit de Chaka) : des tailles simples.
+- HHA **« Je ne perds jamais deux fois ! »** (la phrase de Khan, ch. 196) : un contre. GHA
+  **« À travers tout »** : la lame à travers le pilier, en cinématique. La touche Stand ne
+  fait rien : Anubis n'a pas d'autre forme, c'est le sabre.
+- **Le corps** est celui de Chaka (couleurs de l'anime, du manga et des jeux Capcom) ; **Khan**
+  est un costume (anime, manga). Trois poses tirées de la galerie d'Anubis.
+- Idées pour plus tard : Polnareff possédé (les deux épées, avec Silver Chariot) en costume
+  ou en éveil ; la lame brisée qui continue (ce que Jotaro a vu).
+
 ### Mariah (Bastet)
+
+**Fait le 17/11/2026** (`characters/mariah.toml`, `looks/mariah.toml`), d'après sa page
+ASBR :
+
+- **L'aimantation** est une altération d'état générique, `magnet`, à **trois niveaux** :
+  chaque contact en ajoute un (Bastet, sa saisie, l'ultime), et tout s'éteint au bout de
+  9 s. Ses coups qui la cherchent frappent plus fort à chaque niveau (`bonus_status`,
+  `bonus_per_level`) : les couteaux, la ligne électrique, le métal qui tombe, les boulons.
+  Écart : dans ASBR la jauge tient tant que l'adversaire reste près d'elle ; ici, un minuteur.
+- **Touche Stand : Bastet**, la prise électrique posée devant elle (une à la fois), un piège.
+- **Spécial : « Sorry, but you'll have to die now. »**, trois couteaux à tête chercheuse.
+- **Spécial + direction : « The electricity will char you to a crisp! »**, une ligne
+  électrique qui pend devant elle, **attire** qui s'approche (nouveaux champs de piège
+  `pull`, `pull_range`) et l'électrocute (le courant `shock`).
+- **Lourd : « You were one fine specimen. »**, sa projection, en saisie : elle aimante.
+- **Lourd + direction : « You can't follow me anymore. »**, le métal tombe là où il se tient.
+- **Fin d'enchaînement : « Heh heh heh... Enjoy... »**, le fil de métal qui ligote.
+- HHA **« What are you drooling over? »** : écrous et boulons en rafale (moitié plus forte
+  par niveau, comme 136 / 204 / 272 dans ASBR). GHA **« You little turds! »** : Bastet
+  surgit sous l'adversaire où qu'il soit, puis la cinématique (fils, boulons, deux voitures).
+- 900 PV comme dans ASBR. Elle porte l'étiquette `woman` : Hol Horse fait 10 % de plus.
+- Une seule tenue dans ASBR (et EoH ne l'a pas), quatre couleurs ; cinq poses tirées des
+  planches de ses esquives, provocations et victoires d'ASBR.
 
 **Rôle** : piégeuse, fragile, gagne avec le temps.
 
@@ -288,6 +403,28 @@ Le nom officiel du coup est entre guillemets. La forme de la hitbox suit la règ
 | Bonus EoH | Le missile de glace énorme et inbloquable au-dessus de sa tête ; la cible est paralysée | `projectile` lent, inbloquable |
 
 ### N'Doul (Geb)
+
+**Fait le 17/11/2026** (`characters/ndoul.toml`, `looks/ndoul.toml`,
+`looks/ndoul_sans_cape.toml`), d'après Eyes of Heaven (il n'est pas dans ASBR) :
+
+- **Aveugle, il vise à l'oreille** (nouveau champ de kit `hears`) : ses coups vont là où il a
+  entendu l'adversaire pour la dernière fois (marcher, dasher, frapper, être frappé fait du
+  bruit). **Rester immobile, ou seulement garder, le trompe** : c'est ainsi qu'on le bat dans
+  le manga. Il marche lentement, avec sa canne.
+- **Touche Stand** : un appui sort Geb à côté de lui ; **tenue, Geb part en mode contrôle**
+  à travers toute l'arène pendant qu'il reste assis, sans défense (le mode assis d'EoH). Un
+  coup sur lui ramène Geb. Geb n'a pas de corps : de l'eau, un tentacule à main griffue.
+- Canne : coup, revers, estoc. **« Not another step closer... »** : Geb jaillit du sol là où
+  il les a entendus. **« No need to hold back! »** : huit coups de fouet autour du point.
+  **« I need to pull back! »** : l'eau autour de lui, qui frappe et renvoie les projectiles.
+  Geb : pique, fouet, griffe, poing, poing dans le sol.
+- EoH n'a ni HHA ni GHA : la HHA est la version EX de « No need to hold back! », la GHA sa
+  Dual Heat Attack **« Shoot him! »** (Geb les saisit, les plaque, frappe d'en dessous, la
+  pique), en cinématique.
+- Costumes : sa tenue normale (quatre couleurs d'EoH) et **sans cape** (le costume spécial
+  A d'EoH, deux couleurs). Trois poses tirées de sa galerie du manga.
+- Pas encore fait : la pluie qui révèle les adversaires (« Not another step closer... »
+  dans EoH) et la faiblesse de Geb au feu d'Avdol.
 
 **Rôle** : sniper aveugle. Il n'est que dans EoH.
 

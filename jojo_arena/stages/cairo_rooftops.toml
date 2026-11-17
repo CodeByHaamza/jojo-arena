@@ -1,0 +1,113 @@
+# The rooftops of Cairo, at night (GDD: "Toits du Caire", asked for with holes in the roof
+# by the owner on 17/11/2026, "comme Eyes of Heaven").
+#
+# Source, read on 17/11/2026: JoJo Wiki, Eyes of Heaven stage data, "Cairo Rooftops"
+# (カイロ市街屋上): knocked into the neon "AIR" sign, its letters fail and fall forward,
+# hurting whoever is under them; a clock tower in one corner has its own large health
+# and collapses once beaten down; the Situation Finish throws the loser into a water
+# tower, Kakyoin's death scene. The holes in the roof are the owner's: the wiki's
+# description does not mention them (said in the report).
+# Coordinates are internal pixels (screen is 480 x 270). Rects are [x, y, width, height].
+
+name = "Les toits du Caire"
+name_en = "The rooftops of Cairo"
+part = 3
+
+[bounds]
+rect = [16, 40, 448, 212]
+corner_radius = 4
+
+[spawns]
+p1 = [140, 150]
+p2 = [340, 150]
+
+# The neon "AIR" sign along the top edge: slammed into it, its letters come down.
+[[trap_zones]]
+look = "neon"
+rect = [178, 40, 124, 22]
+damage = 60
+hitstun_f = 30
+knockback = 220
+min_speed = 90
+rearm_s = 4
+
+# Holes in the roof: knocked into one, a fall through to the floor below.
+[[trap_zones]]
+look = "roof_hole"
+rect = [86, 176, 34, 26]
+damage = 70
+hitstun_f = 30
+knockback = 260
+min_speed = 100
+rearm_s = 1.0
+
+[[trap_zones]]
+look = "roof_hole"
+rect = [362, 92, 34, 26]
+damage = 70
+hitstun_f = 30
+knockback = 260
+min_speed = 100
+rearm_s = 1.0
+
+[prop_kinds.clock_tower]
+hp = 420
+
+[prop_kinds.water_tower]
+hp = 260
+
+[prop_kinds.vent]
+hp = 60
+
+[prop_kinds.crate]
+hp = 40
+throwable = true
+throw_damage = 45
+respawn_s = 10
+
+# The clock tower in a corner, the water tower in the other, vents and crates.
+[[props]]
+kind = "clock_tower"
+rect = [30, 52, 30, 30]
+
+[[props]]
+kind = "water_tower"
+rect = [420, 206, 30, 30]
+
+[[props]]
+kind = "vent"
+rect = [228, 214, 16, 12]
+
+[[props]]
+kind = "vent"
+rect = [300, 120, 16, 12]
+
+[[props]]
+kind = "crate"
+rect = [160, 210, 12, 11]
+
+[[props]]
+kind = "crate"
+rect = [330, 64, 12, 11]
+
+[[lanterns]]
+pos = [100, 37]
+
+[[lanterns]]
+pos = [380, 37]
+
+[[lanterns]]
+pos = [240, 254]
+
+[palette]
+frame = [18, 16, 30]
+frame_dark = [10, 9, 20]
+window = [255, 210, 120]
+curb = [104, 96, 92]
+roof = [118, 106, 96]
+roof_light = [128, 116, 106]
+roof_dark = [104, 94, 86]
+seam = [92, 84, 78]
+lantern = [255, 214, 140]
+neon = [255, 90, 160]
+neon_dim = [120, 40, 80]

@@ -353,3 +353,56 @@ lean = -1
 hand_r = [3, -25]
 elbow_r = [3, -3]
 hand_l = [-1, -25]
+
+# The outfit and its colours ---------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ DIO, "Costumes & Tints" (read 16/11/2026): the normal
+# costume is "DIO's main Stardust Crusaders attire"; its tints are the anime's colours
+# (A), Weekly Shonen Jump Issue #7 and the Super Action Statue (B), one "original to
+# All-Star Battle" (C) and the Adventure Battle Card J-367 (D). The tones were read off
+# the game's render of each tint. The World has two tints: the pale one is the Super
+# Action Statue's, as DIO's tint B is: they go together.
+
+[costume]
+label = "Tenue de Stardust Crusaders"
+label_en = "Stardust Crusaders attire"
+source = "Sa tenue principale de Stardust Crusaders (ASBR, costume normal)"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+
+# Orange-red from jacket to trousers, the hair red.
+[colors.jump7]
+label = "Jump n° 7"
+label_en = "Jump #7"
+source = "ASBR, couleur B : Weekly Shonen Jump n° 7 et la Super Action Statue"
+stand = "sas"
+
+[colors.jump7.palette]
+jacket = "#e0562c"
+trousers = "#e04a28"
+hair = "#d83a30"
+
+# Pink, the hair gone dark.
+[colors.asb]
+label = "All-Star Battle"
+label_en = "All-Star Battle"
+source = "ASBR, couleur C : une couleur propre à All-Star Battle"
+
+[colors.asb.palette]
+jacket = "#c8528e"
+trousers = "#c04a88"
+hair = "#3c3c5c"
+
+# A yellow jacket over orange trousers and a dark green top.
+[colors.j367]
+label = "Carte J-367"
+label_en = "Card J-367"
+source = "ASBR, couleur D : la carte Adventure Battle J-367"
+
+[colors.j367.palette]
+jacket = "#e8ba2a"
+trousers = "#e07a2c"
+hair = "#e09c3c"
+top = "#2a4c3c"

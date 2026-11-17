@@ -1,0 +1,206 @@
+# Joseph Joestar, old (Part 3): look file for tools/make_sprites.py.
+#
+# Sources, read on 15/11/2026:
+# - JoJo Wiki, "Joseph Joestar", Appearance, Part 3 (https://jojowiki.com/Joseph_Joestar):
+#   at 67 he keeps most of his health and muscularity; short gray hair and a thick,
+#   well-trimmed beard; his left hand is a prosthesis, hidden under white gloves with
+#   dark wristbands. Final outfit (Calcutta onward): a short-sleeved, buttonless shirt,
+#   khaki pants, dress shoes, gloves with wristbands and a fedora.
+# - Same page, Color Schemes, anime line: gray hair, green eyes, khaki shirt, brown
+#   fedora, brown pants, white gloves, black arm-warmers.
+# - The All-Star Battle R render, looked at for the shapes: the fedora's pinched crown
+#   and its darker band, the open collar, the dark belt, the brown shoes.
+# Hermit Purple has no body: nothing of it is drawn here. The vines are drawn by his
+# moves (fx = "vine").
+
+name = "Joseph Joestar (P3)"
+
+# As tall and broad as he was at 18 (195 cm), a little heavier in the chest.
+# Signature pose (Pose key): the Crusaders' point (chapter 248).
+pose = "point"
+
+[build]
+head_r = 5.9
+neck = 1.0
+torso = 14.5
+legs = 17.5
+arms = 15.5
+shoulders = 9.4
+hips = 3.6
+torso_r = 6.7
+arm_r = 2.8
+leg_r = 2.7
+hand_r = 2.3
+foot_r = 2.5
+
+[palette]
+skin = "#e8b890"
+hair = "#b4b4be"        # gray: his hair and his beard
+hat = "#7a5234"         # brown fedora
+hat_band = "#3c2a20"
+shirt = "#b9a468"       # khaki, short sleeves
+trousers = "#74583c"    # brown
+belt = "#34261f"
+gold = "#d8b648"
+gloves = "#ececf2"      # white, over the prosthesis too
+wristband = "#262230"   # black arm-warmers
+shoes = "#573a2a"
+eyes = "#4a9a6c"        # green in the anime
+
+[body]
+head = "skin"
+torso = "shirt"
+arms = "skin"
+hands = "gloves"
+legs = "trousers"
+feet = "shoes"
+
+[face]
+eyes = "eyes"
+eye_style = "wide"
+brows = true
+nose = true
+ear = true
+beard = "hair"
+
+# Short gray hair: what the hat leaves showing, at the temples and the nape.
+[[parts]]
+type = "hair"
+material = "hair"
+style = "short"
+volume = 6.6
+
+# The fedora: a low pinched crown, a wide brim, a darker band.
+[[parts]]
+type = "top_hat"
+material = "hat"
+fedora = true
+band = "hat_band"
+
+# The short sleeves of the shirt: the arms are bare below them.
+[[parts]]
+type = "sleeves"
+material = "shirt"
+length = 0.12
+
+# The black arm-warmers: a dark band at each wrist, over the white gloves (the hands are
+# white in [body]).
+[[parts]]
+type = "bracelets"
+material = "wristband"
+count = 2
+width = 1.8
+
+[[parts]]
+type = "belt"
+material = "belt"
+buckle = "gold"
+
+
+# JoJo poses ---------------------------------------------------------------------------
+# Picked on the select screen; the Pose key plays the one picked. Each was drawn from the
+# image named in `source`, looked at on JoJo Wiki (the All-Star Battle R page of Old
+# Joseph, its render and the reference panels of its taunts) on 15/11/2026. One key per
+# view: it breathes on its own. Hermit Purple has no body to pose beside him: no pose
+# "with the Stand".
+
+# The All-Star Battle R render: one gloved hand up to the brim of the fedora, the other
+# arm hanging, Hermit Purple wound round it.
+[poses.main_au_chapeau]
+label = "La main au chapeau"
+label_en = "Hand to the hat"
+source = "All-Star Battle R, rendu de Joseph âgé (JoJo Wiki)"
+
+[[poses.main_au_chapeau.down]]
+sway = 1
+hand_r = [-3, -16]
+elbow_r = [6, -3]
+hand_l = [-1, 0]
+foot_l = [-1, 0]
+foot_r = [1, 0]
+
+[[poses.main_au_chapeau.right]]
+hand_r = [5, -16]
+elbow_r = [6, -4]
+hand_l = [-2, 0]
+
+# Chapter 248: at the door of DIO's mansion, Kakyoin, Joseph and Jotaro point as one.
+# His arm thrust straight out, the other fist closed at his chest.
+[poses.doigt_des_croises]
+label = "Le doigt pointé des Croisés"
+label_en = "The Crusaders' point"
+source = "Chapitre 248, « Le monde de DIO, partie 2 » ; ASBR, provocation A"
+
+[[poses.doigt_des_croises.down]]
+lean = 1
+hand_r = [-5, -10]
+elbow_r = [2, 0]
+big_hand_r = true
+hand_l = [4, -9]
+elbow_l = [-4, -2]
+
+[[poses.doigt_des_croises.right]]
+lean = 1
+hand_r = [13, -11]
+hand_l = [3, -8]
+elbow_l = [-3, -2]
+foot_l = [-3, 0]
+foot_r = [3, 0]
+
+# Chapter 199: "OH! MY! GOD!", both hands clapped to his cheeks, the elbows out.
+[poses.oh_my_god]
+label = "OH MY GOD !"
+label_en = "OH MY GOD!"
+source = "Chapitre 199, « Bastet » Mariah, partie 1 ; ASBR, provocation B"
+
+[[poses.oh_my_god.down]]
+head = [0, -1]
+hand_l = [5, -14]
+elbow_l = [-5, -4]
+hand_r = [-5, -14]
+elbow_r = [5, -4]
+
+[[poses.oh_my_god.right]]
+head = [-1, -1]
+hand_r = [4, -14]
+elbow_r = [5, -4]
+hand_l = [3, -14]
+elbow_l = [4, -4]
+
+# The outfit and its colours ---------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ Old Joseph Joestar, "Costumes & Tints" (read 17/11/2026):
+# the normal costume is "his main Stardust Crusaders attire"; tint A is the anime's
+# colours, tint D "colors carried over from All-Star Battle". Its tint B (cover B of
+# chapter 205) and C (no origin) have no image on the page: left out. JoJo Wiki,
+# "Joseph Joestar", Color Schemes, gives the All-Star Battle colours in words (a bright
+# yellow shirt, brown fedora and trousers, white gloves, black arm-warmers, blue shoes)
+# and those of the coloured manga (a yellow shirt, brown fedora and trousers, purple
+# arm-warmers): the third colour here.
+
+[costume]
+label = "Tenue du voyage"
+label_en = "Travelling clothes"
+source = "Sa tenue de Calcutta à la fin de Stardust Crusaders (ASBR, costume normal)"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+
+[colors.asb]
+label = "All-Star Battle"
+label_en = "All-Star Battle"
+source = "ASBR, couleur D : les couleurs d'All-Star Battle (JoJo Wiki, Color Schemes)"
+
+[colors.asb.palette]
+shirt = "#e8c83a"
+shoes = "#3a5aa8"
+
+[colors.manga]
+label = "Manga en couleur"
+label_en = "Coloured manga"
+source = "JoJo Wiki, Joseph Joestar, Color Schemes : le manga en couleur"
+
+[colors.manga.palette]
+shirt = "#dcbc40"
+wristband = "#6a3a8e"

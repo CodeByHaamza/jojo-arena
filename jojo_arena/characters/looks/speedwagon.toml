@@ -143,3 +143,47 @@ lean = 2.5
 head = [1, 1]
 hand_r = [5, -11]
 hand_l = [-8, -8]
+
+# The outfit and its colours ---------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ Robert E. O. Speedwagon, "Costumes & Tints" (read 17/11/2026):
+# https://jojowiki.com/All-Star_Battle_R/Robert_E._O._Speedwagon . Each colour below is one of the
+# game's tints, with the origin the page gives it; the tones were read off the game's render of each tint and brought to this sprite's brightness.
+
+[costume]
+label = "Tenue de Phantom Blood"
+label_en = "Phantom Blood attire"
+source = "Sa tenue principale (ASBR, costume normal)"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+
+[colors.jojo_d]
+label = "JOJO-D"
+label_en = "JOJO-D"
+source = "ASBR, couleur B : sa première apparition dans JOJO-D"
+
+[colors.jojo_d.palette]
+coat = "#8a2a6a"
+trousers = "#7a2a5c"
+
+[colors.j430]
+label = "Carte J-430"
+label_en = "Card J-430"
+source = "ASBR, couleur C : la carte Adventure Battle J-430"
+
+[colors.j430.palette]
+coat = "#5a3a82"
+trousers = "#4a3070"
+vest = "#3a7a4a"
+
+[colors.j727]
+label = "Carte J-727"
+label_en = "Card J-727"
+source = "ASBR, couleur D : la carte Adventure Battle J-727"
+
+[colors.j727.palette]
+coat = "#2a2e74"
+trousers = "#262a66"
+vest = "#8a4ac8"

@@ -1,0 +1,254 @@
+# N'Doul (Part 3): look file for tools/make_sprites.py.
+#
+# JoJo Wiki, "N'Doul", Appearance (read 17/11/2026, https://jojowiki.com/N%27Doul): a blind,
+# athletic man of medium height, dark unkempt hair, blank eyes nearly always shut. A striped
+# vest over a sleeveless shirt, armbands, trousers and shoes, a drape against the Saharan
+# sun, a headband, two hoop earrings, a segmented cane with three jewels on its handle.
+# Colours: the anime's ("Color Schemes"): light brown skin, black hair, grey eyes; a warm
+# grey drape over a brick-red vest and a beige shirt; a golden-brown headband; brown
+# wristbands, trousers and shoes. Eyes of Heaven's render gives the shapes: the drape
+# thrown over the shoulders and falling to the calves behind, baggy trousers, boots.
+
+name = "N'Doul"
+
+# Leaning on his cane, head tilted to listen.
+# Signature pose (Pose key): see tools/spritegen/skeleton.py.
+pose = "frame_face"
+
+[build]
+head_r = 5.4
+neck = 1.3
+torso = 13.5
+legs = 17.5
+arms = 14.5
+shoulders = 8.4
+hips = 3.2
+torso_r = 5.6
+arm_r = 2.3
+leg_r = 2.5
+hand_r = 2.1
+foot_r = 2.3
+
+[palette]
+skin = "#b07a54"
+hair = "#26222c"
+eyes = "#c8c8cc"         # blank
+band = "#b88a3a"         # golden-brown headband
+drape = "#8c8682"        # warm grey
+vest = "#9a3a34"         # brick red
+shirt = "#ddd2bc"        # beige
+cuffs = "#6a4a30"        # brown wristbands
+trousers = "#7a5a36"
+shoes = "#4a3424"
+cane = "#7a5232"
+gold = "#e0b84a"         # the earrings and the jewels on the cane
+
+[body]
+head = "skin"
+torso = "shirt"
+arms = "skin"
+hands = "skin"
+legs = "trousers"
+feet = "shoes"
+
+[face]
+eyes = "eyes"
+eye_style = "dot"
+brows = true
+nose = true
+
+# Dark, unkempt hair, standing up and falling behind.
+[[parts]]
+type = "hair"
+material = "hair"
+style = "mane"
+volume = 7.6
+flare = 0.5
+back_length = 3
+
+[[parts]]
+type = "headband"
+material = "band"
+
+[[parts]]
+type = "earring"
+material = "gold"
+style = "stud"
+
+# The drape over his shoulders, falling to the calves behind him.
+[[parts]]
+type = "coat"
+material = "drape"
+length = 0.7
+open = true
+opening = 9
+collar = false
+trail = 4
+
+# Thrown over his shoulders: the drape heaped up on them.
+[[parts]]
+type = "pauldrons"
+material = "drape"
+size = 4.8
+
+# The striped vest over the shirt.
+[[parts]]
+type = "coat"
+material = "vest"
+length = 0
+open = true
+opening = 4
+collar = false
+
+[[parts]]
+type = "bracelets"
+material = "cuffs"
+width = 2.2
+
+[[parts]]
+type = "boots"
+material = "shoes"
+length = 0.25
+
+# The cane, three jewels on its handle.
+[[parts]]
+type = "sword"
+material = "cane"
+length = 15
+guard = "gold"
+
+# JoJo poses ---------------------------------------------------------------------------
+# Picked on the select screen; the Pose key plays the one picked. Each was drawn from the
+# panel named in `source`, looked at in his JoJo Wiki gallery on 17/11/2026. Geb is water:
+# there is no Stand to pose beside him.
+
+# Sitting in the sand, the cane planted, his ear against it: listening.
+[poses.a_l_ecoute]
+label = "À l'écoute"
+label_en = "Listening"
+source = "Le manga : il se sert de sa canne comme d'un sonar, assis dans le désert (« NDoul_detect », « SC_Ch_72_N'Doul_Pose_Ref »)"
+
+[[poses.a_l_ecoute.down]]
+bob = 8
+head = [-1, 1]
+hand_r = [-2, -12]
+elbow_r = [4, -2]
+hand_l = [-1, -10]
+elbow_l = [-4, -1]
+knee_l = [-4, -7]
+knee_r = [4, -7]
+foot_l = [-1, -1]
+foot_r = [1, -1]
+
+[[poses.a_l_ecoute.right]]
+bob = 8
+head = [1, 1]
+hand_r = [5, -12]
+hand_l = [3, -10]
+knee_r = [6, -7]
+knee_l = [4, -6]
+foot_r = [4, 0]
+foot_l = [3, 0]
+
+# Against Jotaro: lunging, an arm thrown out, Geb's claw coming up.
+[poses.duel]
+label = "Le duel contre Jotaro"
+label_en = "The duel with Jotaro"
+source = "Le manga : son duel contre Jotaro (« NDoul_jotaro_duel »)"
+
+[[poses.duel.down]]
+lean = 2
+bob = 1
+hand_r = [-3, -14]
+elbow_r = [5, -4]
+hand_l = [-4, 0]
+knee_l = [-3, -1]
+knee_r = [3, -1]
+
+[[poses.duel.right]]
+lean = 2.5
+bob = 1
+hand_r = [13, -12]
+elbow_r = [7, -9]
+hand_l = [-3, 0]
+foot_r = [5, 0]
+foot_l = [-5, 0]
+
+# His first appearance: the head tilted, the cane's handle held up by his face.
+[poses.premiere_apparition]
+label = "Sa première apparition"
+label_en = "His first appearance"
+source = "Le manga : sa première apparition (« NDoul_first »)"
+
+[[poses.premiere_apparition.down]]
+head = [-1, 1]
+hand_r = [-2, -18]
+elbow_r = [4, -2]
+hand_l = [-3, 1]
+
+[[poses.premiere_apparition.right]]
+head = [1, 1]
+hand_r = [5, -18]
+elbow_r = [3, -2]
+hand_l = [-2, 1]
+
+# The outfit and its colours ---------------------------------------------------------------
+# N'Doul is in Eyes of Heaven, not in All-Star Battle R. JoJo Wiki, Eyes of Heaven ★
+# N'Doul, "Costumes & Tints" (read 17/11/2026): the normal costume, "his main Stardust
+# Crusaders attire", in four tints: the anime's colours (A), an inside illustration of JoJo
+# 6251 (B), one of JOJO A-GO!GO! (C), the Chara Heroes figure (D) - the page's letters for
+# C and D are inferred from their order; and a special costume without the cloak
+# (ndoul_sans_cape.toml). The tones were read off the game's render of each tint.
+
+[costume]
+label = "Tenue de Stardust Crusaders"
+label_en = "Stardust Crusaders attire"
+source = "Sa tenue principale de Stardust Crusaders (EoH, costume normal)"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "EoH, couleur A : les couleurs de l'anime"
+
+# An orange drape, a purple vest, grey trousers, the cane white.
+[colors.jojo6251]
+label = "JoJo 6251"
+label_en = "JoJo 6251"
+source = "EoH, couleur B : une illustration intérieure de JoJo 6251"
+
+[colors.jojo6251.palette]
+drape = "#d8701e"
+vest = "#6a5aa8"
+trousers = "#9a9aa2"
+band = "#c8462c"
+cuffs = "#d8b440"
+cane = "#e6e6ec"
+
+# A golden drape, a pink vest, lime trousers, a teal headband.
+[colors.agogo]
+label = "JOJO A-GO!GO!"
+label_en = "JOJO A-GO!GO!"
+source = "EoH, couleur C : une illustration intérieure de JOJO A-GO!GO!"
+
+[colors.agogo.palette]
+drape = "#a87a2a"
+vest = "#c83a7a"
+trousers = "#6ac83a"
+band = "#2a9a9a"
+cuffs = "#7ad040"
+shoes = "#62b836"
+cane = "#e6e6ec"
+
+# A blue drape, an olive vest, khaki trousers, a green headband, the cane yellow.
+[colors.chara_heroes]
+label = "Chara Heroes"
+label_en = "Chara Heroes"
+source = "EoH, couleur D : la figurine Chara Heroes"
+
+[colors.chara_heroes.palette]
+drape = "#2a4ab8"
+vest = "#6e6a2c"
+trousers = "#b8a07a"
+band = "#4a9a3a"
+cuffs = "#d8b440"
+cane = "#e8d070"
