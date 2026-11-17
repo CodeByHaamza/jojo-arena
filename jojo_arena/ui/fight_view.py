@@ -198,9 +198,15 @@ class FighterView:
         own = self.body_sheet(fighter)
         sprites = sprites or own
         phase = None
-        if fighter.state == State.ATTACK and fighter.attack is not None:
+        if (
+            fighter.state == State.ATTACK
+            and fighter.attack is not None
+            and not (fighter.remote and self.stand is None and sprites is own)
+        ):
             anim = fighter.attack.move.anim
             phase = fighter.attack.phase_info()
+        elif fighter.remote and sprites is own:
+            anim = "idle"  # its Stand strikes far away: the user stays where it sits
         elif self.posing(fighter):
             anim = self.pose_anim(fighter)
         else:
@@ -1733,10 +1739,13 @@ class FightView:
             return
         if view.stand_presence(fighter) > 0 and view.stand is not None:
             start = fighter.stand_spot() + Vec2(0, -view.stand.chest - 6)
+        elif fighter.remote:
+            start = fighter.remote_pos + Vec2(0, -14)  # a Stand with no body, sent away
         else:
             start = fighter.pos + view.chest
         grow = min(1.0, (attack.active_offset + 1) / 3)
-        tip = fighter.pos + attack.aim * (move.reach * grow) + view.chest
+        base = start if fighter.remote and view.stand is None else fighter.pos + view.chest
+        tip = base + attack.aim * (move.reach * grow)
         if move.fx == "fire_rope":
             vfx.draw_fire_rope(surface, start, tip, self.tick)
             return
