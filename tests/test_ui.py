@@ -143,7 +143,12 @@ def test_title_to_local_fight_to_pause_and_back(ctx):
     fight = ctx.scenes.current
     assert isinstance(fight, FightScene)
     assert fight.rounds_to_win == 3 and fight.fighter_ids == setup.fighter_ids
-    steps(ctx, 150)
+    # Let the entrance play out: pausing during it would only skip it.
+    for _ in range(600):
+        if fight.entrance is None and not fight.wants_entrance:
+            break
+        steps(ctx, 1)
+    steps(ctx, 30)
     keys(ctx, "Escape")
     assert fight.pause_menu is not None
     frozen = fight.rounds.phase_f

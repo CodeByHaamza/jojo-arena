@@ -9,7 +9,8 @@
 #   intro    = the lines, in the order they are said; `by` is who says each;
 #   victory  = what one of the two says when it is the winner (not every pair has both).
 #
-# A pair with no entry says nothing: add one only with its source.
+# A pair with no entry falls back on each fighter's own lines ([solo.<id>], at the end of
+# this file); a fighter with neither says nothing. Add a line only with its source.
 
 # Part 3 -----------------------------------------------------------------------------------
 
@@ -464,3 +465,103 @@ text_en = "I will not live a life so in vain that it invites pity from children!
 [exchanges.victory.lisa_lisa]
 text = "J'ai toujours voulu mettre à l'épreuve ce talent étonnant..."
 text_en = "I've always wanted to test that amazing talent of yours..."
+
+# Each fighter's own lines -----------------------------------------------------------------
+# Said when the pair has nothing of its own (and a winner's line when the pair has none for
+# it): All-Star Battle R ★ <fighter>, "Dialogue" (read 17/11/2026): the default match
+# entrance and the generic victory quote, or the round-win line where the page has no
+# generic victory. Bruford, Tarkus, Straizo and Santana are in no game: nothing to say.
+
+[solo.jonathan]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Koooohhh !", text_en = "Koooohhh!" }
+victory = { text = "Pourquoi est-ce arrivé ? Qu'est-ce que ça veut dire ?!", text_en = "Why did this happen? What's the meaning of this?!" }
+
+[solo.zeppeli]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Bien... Je m'en charge.", text_en = "Right... I'll handle this." }
+victory = { text = "On dirait que mon Onde est supérieure !", text_en = "Looks like my Ripple is superior!" }
+
+[solo.dio_p1]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Ah, te voilà.", text_en = "Ah, there you are." }
+victory = { text = "Je suis invincible, immortel ! Je peux régner sur ce monde !", text_en = "I am invincible, an immortal! I can rule this world!" }
+
+[solo.speedwagon]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Ton adversaire, c'est moi !", text_en = "Your opponent's right here!" }
+victory = { text = "Speedwagon garde toujours son sang-froid.", text_en = "Speedwagon always stays cool." }
+
+[solo.joseph_p2]
+source = "ASBR, sa réplique d'entrée par défaut ; la victoire est sa réplique de manche gagnée"
+intro = { text = "Kohhhh...", text_en = "Kohhhh..." }
+victory = { text = "On dirait que j'ai gagné !", text_en = "Guess I win!" }
+
+[solo.caesar]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Voyons ce que vaut mon entraînement !", text_en = "Time to test out the fruits of my training!" }
+victory = { text = "Je dois devenir plus fort... Plus fort que maintenant...", text_en = "I need to be stronger... Stronger than I am now..." }
+
+[solo.lisa_lisa]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Je dois accomplir ma mission.", text_en = "I must accomplish my mission." }
+victory = { text = "Ma vie ne sera pas vaine !", text_en = "My life will not be in vain!" }
+
+[solo.wamuu]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Te voilà donc.", text_en = "So you've come." }
+victory = { text = "Un vent pareil ne suffira pas à suivre le mien.", text_en = "That wind won't be enough to keep up with mine." }
+
+[solo.esidisi]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Ohh... Perspicace. Tu as de bons yeux.", text_en = "Hohh... Sharp. You have good eyes." }
+victory = { text = "Il faut bouillir pour venir à bout de moi !", text_en = "You gotta get to boiling if you wanna take me out!" }
+
+[solo.kars]
+source = "ASBR, sa première citation de victoire (sa page n'a pas de réplique d'entrée par défaut)"
+victory = { text = "Laisse le danger aux autres ! Que tes pions fassent le sale boulot ! Voilà comment on se bat !", text_en = "Save the hard work and danger for someone else! Let your pawns do the dirty work! That's how you fight!" }
+
+[solo.stroheim]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Ton adversaire, c'est moi, Stroheim !", text_en = "Your opponent is I, Stroheim!" }
+victory = { text = "La technologie allemande n'a pas de limites ! On va me produire en série !", text_en = "German technology knows no bounds! Of course they'd waste no time in mass producing me!" }
+
+[solo.jotaro_p3]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "C'est moi qui vais te botter le cul.", text_en = "You're getting an ass beating from yours truly." }
+victory = { text = "Quelle plaie.", text_en = "Good grief." }
+
+[solo.kakyoin]
+source = "ASBR, sa réplique d'entrée par défaut ; la victoire est sa réplique de manche gagnée"
+intro = { text = "Je ne me retiendrai pas. Prépare-toi.", text_en = "I won't hold back. You'd better be prepared." }
+victory = { text = "Tu n'aurais pas dû sous-estimer mon Hierophant.", text_en = "Shouldn't have underestimated my Hierophant." }
+
+[solo.dio_p3]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Heh.", text_en = "Heh." }
+victory = { text = "J'ai prouvé que personne ne peut surpasser DIO !", text_en = "Now I've proven that nobody can surpass DIO!" }
+
+[solo.polnareff]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Je vais t'embrocher comme ces pièces !", text_en = "I'll skewer you just like those coins!" }
+victory = { text = "Amuse-toi bien en enfer !", text_en = "Have fun in hell!" }
+
+[solo.avdol]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Laisse-moi lire ton avenir dans ma flamme.", text_en = "Let me tell your fortune with my flame." }
+victory = { text = "Je n'avais même pas besoin de le prédire.", text_en = "I shouldn't have bothered even predicting this." }
+
+[solo.joseph_p3]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Ne sous-estime pas mon Hermit Purple !", text_en = "Don't underestimate my Hermit Purple!" }
+victory = { text = "Tu vois ce que je veux dire, avec l'expérience ?", text_en = "See what I mean about experience?" }
+
+[solo.vanilla_ice]
+source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
+intro = { text = "Let's kick it one time...", text_en = "Let's kick it one time..." }
+victory = { text = "C'est moi qui sers le grand DIO ! Pas toi !", text_en = "I am the one who serves the great DIO! Not you!" }
+
+[solo.hol_horse]
+source = "ASBR, sa réplique d'entrée par défaut et sa première citation de victoire"
+intro = { text = "Tu sais comment je travaille, maintenant. Pas vrai, J. Geil ?", text_en = "You know how I work by now. Right, J. Geil?" }
+victory = { text = "La mort, c'est rarement bien spectaculaire, hein ?", text_en = "I guess death is pretty anticlimactic most of the time, huh?" }
