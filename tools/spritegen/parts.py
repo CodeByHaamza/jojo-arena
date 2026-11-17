@@ -618,11 +618,14 @@ def belt(sk: Skeleton, p: dict, look: Look) -> list[Part]:
 
 
 def chain(sk: Skeleton, p: dict, look: Look) -> list[Part]:
-    """A chain hanging from the collar on the wearer's left. Option: length (links)."""
+    """A chain hanging from the collar on the wearer's left. Options: length (links),
+    side (left | right: the wearer's shoulder it hangs from)."""
     length = p.get("length", 5)
     hx, r, shoulder = sk.head[0], sk.head_r, sk.shoulder_y
+    # Seen from the front, the wearer's left is the right of the picture.
+    sign = -1 if p.get("side", "left") == "right" else 1
     if sk.view == "down":
-        links = [(hx + 0.6 * r - i * 0.3, shoulder - 1 + i) for i in range(length)]
+        links = [(hx + sign * (0.6 * r - i * 0.3), shoulder - 1 + i) for i in range(length)]
     elif sk.view == "right":
         links = [(hx + 0.3 * r + i * 0.2, shoulder + i) for i in range(length // 2 + 1)]
     else:

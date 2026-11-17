@@ -216,6 +216,14 @@ class MoveDef:
     infiltrate_f: int = 0
     inside_dps: float = 0.0
     burrow: bool = False  # the view: the user travels under the floor through its startup
+    # A lunge steered by hand: through startup and active frames it goes where the player
+    # pushes (the held direction), not only where it was aimed when it began.
+    steer: bool = False
+    # Through startup and active frames the user is gone from sight and from reach: not
+    # drawn (a faint shimmer at most) and untouchable. It reappears for its recovery.
+    vanish: bool = False
+    # Solid things in the user's way are destroyed rather than stopping it.
+    erase: bool = False
     guard_damage: float = 1.0  # multiplies the guard gauge damage when blocked
     stand_flash: bool = False  # the Stand appears for this move even when called back
     fx: str = ""  # drawn while active: "limb", "tentacle" or "blade" out to `reach`
@@ -308,6 +316,9 @@ class MoveDef:
             infiltrate_f=seconds_to_frames(data.get("infiltrate_s", 0)),
             inside_dps=data.get("inside_dps", 0.0),
             burrow=data.get("burrow", False),
+            steer=data.get("steer", False),
+            vanish=data.get("vanish", False),
+            erase=data.get("erase", False),
             guard_damage=data.get("guard_damage", 1.0),
             stand_flash=data.get("stand_flash", False),
             fx=data.get("fx", ""),

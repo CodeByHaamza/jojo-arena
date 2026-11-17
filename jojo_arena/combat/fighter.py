@@ -13,7 +13,7 @@ from jojo_arena.combat.rules import HZ, Rules
 from jojo_arena.combat.status import Statuses
 from jojo_arena.combat.styles import make_style
 from jojo_arena.engine.actions import InputFrame
-from jojo_arena.engine.geometry import Vec2
+from jojo_arena.engine.geometry import Vec2, push_circle_out_of_rect
 
 # A press is remembered this long, so an attack pressed slightly early still comes out.
 BUFFER_F = 8
@@ -201,8 +201,19 @@ class Fighter:
         if self.state == State.DASH:
             return self.state_f < self.rules.dash_invincible_f
         if self.state == State.ATTACK and self.attack is not None:
-            return self.attack.frame < self.attack.move.invincible_f
+            return self.attack.frame < self.attack.move.invincible_f or self.vanished
         return False
+
+    @property
+    def vanished(self) -> bool:
+        """Gone from sight and from reach (a move with `vanish`, before its recovery)."""
+        attack = self.attack
+        return (
+            self.state == State.ATTACK
+            and attack is not None
+            and attack.move.vanish
+            and attack.phase < 2
+        )
 
     @property
     def in_resolve(self) -> bool:
@@ -414,6 +425,11 @@ class Fighter:
                 self.set_state(State.WALK if move_dir.length_sq() else State.IDLE)
             return []
         if self.state == State.ATTACK and self.attack is not None:
+            steered = self.attack.move.steer and self.attack.phase < 2
+            if steered and frame.move != (0.0, 0.0):
+                # Steered by hand: it goes where it is pushed, turning as it goes.
+                self.attack.aim = Vec2(*frame.move).normalized()
+                self.facing = self.attack.aim
             if self._try_flash_cancel():
                 return [Event("flash_cancel", self.pos, self.index)]
             if self.attack.connected:
@@ -853,6 +869,8 @@ class Fighter:
             self.glide = Vec2()
         elif self._lunging():
             step = self.attack.aim * self.attack.move.lunge
+            if self.attack.move.erase:
+                events += self._erase(arena, self.pos + step, radius)
             self.pos, _, _ = arena.constrain(self.pos + step, radius)
             self.glide = Vec2()
         elif self.walk_dir.length_sq() or self.glide.length_sq() > GLIDE_REST:
@@ -875,6 +893,16 @@ class Fighter:
             if leash.length() > reach:
                 spot = self.pos + leash.normalized() * reach
             self.remote_pos, _, _ = arena.constrain(spot, self.rules.stand_hurt_radius)
+        return events
+
+    def _erase(self, arena: Arena, pos: Vec2, radius: float) -> list[Event]:
+        """Whatever solid thing the body is about to touch is destroyed (nothing to stop
+        it: what it passes through is simply gone)."""
+        events = []
+        for obstacle in arena.obstacles:
+            if obstacle.solid and push_circle_out_of_rect(pos, radius, obstacle.rect):
+                obstacle.shatter()
+                events.append(Event("prop_break", obstacle.rect.center, self.index))
         return events
 
     def _lunging(self) -> bool:

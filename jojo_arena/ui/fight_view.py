@@ -419,12 +419,13 @@ class Spark:
 HELD_FX = ("gun", "vortex", "cables")
 # A multi-hit move only draws a flurry of blows when the blows are what it is: a
 # tornado or a vein is not a barrage of fists, whatever its hit count says.
-FLURRY_FX = ("", "limb", "blade", "blade_hair")
+FLURRY_FX = ("", "limb", "blade", "blade_hair", "rise")
 
 
 def hidden(fighter: Fighter) -> bool:
-    """Not drawn at all: inside the opponent's body, or travelling under the floor."""
-    if fighter.inside is not None:
+    """Not drawn at all: inside the opponent's body, travelling under the floor, or gone
+    into a void of its own."""
+    if fighter.inside is not None or fighter.vanished:
         return True
     attack = fighter.attack
     return (
@@ -1179,6 +1180,9 @@ class FightView:
         if attack.move.fx == "ankhs":
             self._draw_closing_ankhs(surface, fighter)
             return
+        if attack.move.fx == "rise":
+            self._draw_floor_opening(surface, fighter)
+            return
         if attack.phase != 0:
             return
         progress = attack.frame / max(1, attack.move.startup_f)
@@ -1191,6 +1195,21 @@ class FightView:
         surface.fill(OUTLINE, block.inflate(2, 2))
         surface.fill((90, 96, 108), block)
         surface.fill((140, 146, 160), (block.x, block.y, block.w, 4))
+
+    def _draw_floor_opening(self, surface: pygame.Surface, fighter: Fighter) -> None:
+        """Something coming up through the floor on a spot: the floor cracks open there
+        through the startup, and gapes while the blows come up out of it."""
+        attack = fighter.attack
+        target = attack.target
+        progress = 1.0 if attack.phase else (attack.frame + 1) / max(1, attack.move.startup_f)
+        size = round(attack.move.radius * 2 * (0.4 + 0.6 * progress))
+        blit_shadow(surface, (target.x, target.y), size, max(3, size // 3))
+        rng = random.Random(attack.serial)
+        for _ in range(6):
+            angle = rng.uniform(0, math.tau)
+            reach = size * (0.45 + 0.35 * rng.random()) * progress
+            end = target + Vec2(math.cos(angle) * reach, math.sin(angle) * reach * 0.45)
+            pygame.draw.line(surface, OUTLINE, target.as_ints(), end.as_ints())
 
     def _draw_falling_beam(self, surface: pygame.Surface, fighter: Fighter) -> None:
         """A beam coming straight down on a spot: a thread of light while it gathers,
@@ -1328,6 +1347,25 @@ class FightView:
                 surface.set_at((round(spot.x) - 1, round(spot.y) - 1), FLESH_LIGHT)
             return
         if not hidden(fighter):
+            return
+        if fighter.vanished:
+            # In the void: nothing to see but the air bending around a ball of nothing,
+            # and the floor scored where it passes.
+            pos = fighter.pos + Vec2(0, -12)
+            wobble = (self.tick // 2) % 3
+            for i, shade_ in enumerate((40, 28, 18)):
+                radius = 9 - i * 2 + (wobble if i == 0 else 0)
+                pygame.draw.circle(
+                    surface, (shade_, shade_ - 8, shade_ + 6), pos.as_ints(), radius, 1
+                )
+            surface.set_at((round(pos.x) + 3, round(pos.y) - 4), (120, 110, 140))
+            pygame.draw.line(
+                surface,
+                OUTLINE,
+                (round(fighter.pos.x) - 5, round(fighter.pos.y)),
+                (round(fighter.pos.x) + 5, round(fighter.pos.y)),
+                1,
+            )
             return
         # Under the floor: the ground heaves over him, and cracks behind.
         pos = fighter.pos
@@ -1543,14 +1581,23 @@ class FightView:
 
     def _draw_rush(self, surface: pygame.Surface, fighter: Fighter) -> None:
         """Rushes and clashes: a flurry of fists (or thrusts) a new spread every frame."""
-        if fighter.frozen:
-            return
+        if fighter.frozen or fighter.vanished:
+            return  # nothing to see of a body gone into a void
         attack = fighter.attack
         if fighter.state == State.ATTACK and attack is not None and attack.move.hits > 1:
             if not attack.active or attack.move.fx not in FLURRY_FX:
                 return  # a storm, veins or cables draw themselves: no fists on top of them
             aim, length = attack.aim, attack.move.reach + attack.move.radius
             kind = {"blade": "blade", "blade_hair": "blade"}.get(attack.move.fx, "fists")
+            if attack.move.at_target:
+                # The blows come up out of the floor under the spot, not from the user.
+                color = self.fighter_defs[fighter.index].aura
+                seed = self.tick * 13 + fighter.index * 7
+                origin = attack.target + Vec2(0, 4)
+                vfx.draw_flurry(
+                    surface, origin, Vec2(0, -1), color, seed, attack.move.radius * 2, 12, kind
+                )
+                return
         elif fighter.state == State.CLASH:
             aim, length = fighter.facing, 26.0
             kind = "fists"

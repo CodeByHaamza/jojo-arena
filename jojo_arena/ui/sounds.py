@@ -312,6 +312,7 @@ FX_SOUNDS: dict[str, str] = {
     "vine": "whoosh",
     "flame_burst": "boom",
     "ankhs": "sizzle",
+    "rise": "boom",  # the floor bursting open
 }
 
 
