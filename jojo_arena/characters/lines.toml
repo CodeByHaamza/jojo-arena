@@ -661,3 +661,8 @@ victory = { text = "La mort, c'est rarement bien spectaculaire, hein ?", text_en
 source = "ASBR, sa réplique d'entrée par défaut et sa citation de victoire (joueur 1)"
 intro = { text = "Personne ne peut arrêter mon magnétisme...", text_en = "No one can stop my magnetism..." }
 victory = { text = "Ton pouvoir magnétique n'était qu'une plaisanterie.", text_en = "Your magnetic power was an absolute joke." }
+
+[solo.ndoul]
+source = "Eyes of Heaven (il n'est pas dans ASBR), mission 1-3 du mode histoire, sur les toits du Caire : son entrée, et ce qu'il dit une fois l'ennemi tombé"
+intro = { text = "Heh... Je vais l'écraser comme une mouche !", text_en = "Heh... I'll pick him off like a fly!" }
+victory = { text = "Plus personne ne se dresse sur notre chemin.", text_en = "Now there is no one left to stand in our way." }

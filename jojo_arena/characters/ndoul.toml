@@ -1,0 +1,377 @@
+# N'Doul (Part 3) - Geb. One of the Egypt Nine Glory Gods, blind, loyal to DIO to the end.
+#
+# N'Doul is in Eyes of Heaven, not in All-Star Battle R: his moves are EoH's.
+#
+# Sources, read on 17/11/2026:
+# - JoJo Wiki, "N'Doul" (https://jojowiki.com/N%27Doul): blind; he tracks people by
+#   sound - footsteps, falling grains of sand, the vibrations his cane picks up through the
+#   ground. Avdol lured Geb into the open; Jotaro beat him by throwing Iggy and The Fool at
+#   him to break his focus. Named after Youssou N'Dour.
+# - JoJo Wiki, "Geb" (https://jojowiki.com/Geb): a small, shapeless mass of water, usually a
+#   tentacle ending in a clawed hand. Controlled precisely from as far as four kilometres;
+#   hidden under the sand for surprise attacks; its claw cuts flesh and metal; the water
+#   blocks projectiles. Weak to heat. Stats C B A B D D.
+# - JoJo Wiki, Eyes of Heaven ★ N'Doul (https://jojowiki.com/Eyes_of_Heaven/N%27Doul):
+#   blind (he cannot lock on, he walks slowly with his cane); his Style Action switches
+#   between N'Doul standing and N'Doul sitting while the player steers Geb; a blow on his
+#   body brings Geb back. Cane: an inward swing, an outward swing that knocks down, a
+#   stab that knocks back. Geb: a stab, horizontal and diagonal whips, a claw, a hand that
+#   punches and sends flying, a hand that uppercuts, a punch into the ground. Skills: "Not
+#   another step closer..." (Geb rises from the ground in a water spout at the target's
+#   feet, launching), "No need to hold back!" (Geb whips round an area, 8 hits and a final
+#   knockback; EX: more damage, one more hit, more range), "I need to pull back!" (Geb
+#   comes back from any distance and surrounds him with water that strikes whoever is
+#   near and shields him from projectiles). Dual Heat Attack "Shoot him!" (Geb grabs the
+#   opponent, slams them down, strikes from below, impales them with a spike).
+#
+# What changes here, and why:
+# - Blind: he aims where he last *heard* the opponent (kit field `hears`): walking,
+#   dashing, striking or being struck makes a sound; standing still or guarding does not.
+#   That is how he fights in the manga, and why standing still beats him.
+# - The Stand key: a tap brings Geb out at his side (its moves, from him); held, Geb goes
+#   off under remote control across the whole arena while he sits, defenseless.
+# - EoH has no HHA nor GHA: the HHA is the EX version of "No need to hold back!", the GHA
+#   is his Dual Heat Attack, "Shoot him!".
+# Feel: a sniper with a cane. Keep moving and he finds you; stop, and he loses you.
+
+name = "N'Doul"
+max_hp = 900
+walk_speed = 82  # blind: a slow walk, feeling the way with his cane
+strength = 1.1
+hears = true
+style = { type = "stance_toggle", off = "base", on = "geb", remote = "geb", remote_range = 380, remote_speed = 190 }
+
+# N'Doul and his cane --------------------------------------------------------------------
+
+[stances.base]
+label = "N'DOUL ET SA CANNE"
+label_en = "N'DOUL AND HIS CANE"
+
+# The cane swung in, then out.
+[stances.base.moves.light]
+label = "COUP DE CANNE"
+label_en = "CANE SWING"
+info = "Rapide. Encore : le revers de canne qui renverse"
+info_en = "Fast. Again: the backhand swing that knocks down"
+startup_f = 6
+active_f = 3
+recovery_f = 11
+damage = 28
+reach = 18
+radius = 10
+hitstun_f = 19
+knockback = 80
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+
+[stances.base.moves.light2]
+label = "REVERS DE CANNE"
+label_en = "CANE BACKHAND"
+info = "S'enchaîne : envoie loin"
+info_en = "Follows: sends far"
+startup_f = 7
+active_f = 3
+recovery_f = 16
+damage = 40
+reach = 19
+radius = 11
+hitstun_f = 26
+knockback = 320
+hitstop_f = 7
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "heavy"
+
+# EoH: the cane stabbed forward.
+[stances.base.moves.heavy]
+label = "ESTOC DE CANNE"
+label_en = "CANE STAB"
+info = "La canne pointée droit devant, repousse"
+info_en = "The cane stabbed straight ahead, knocks back"
+startup_f = 10
+active_f = 4
+recovery_f = 20
+damage = 52
+reach = 22
+radius = 9
+shape = "line"
+hitstun_f = 28
+knockback = 300
+hitstop_f = 8
+anim = "light"
+
+# EoH: "I need to pull back!" - Geb comes back and wraps him in water: it strikes whoever
+# is near and sends the shots back.
+[stances.base.moves.heavy_alt]
+shout = "JE DOIS ME REPLIER !"
+label = "JE DOIS ME REPLIER !"
+label_en = "I NEED TO PULL BACK!"
+info = "Avec une direction : Geb l'entoure d'eau ; elle frappe qui s'approche et renvoie les projectiles (recharge 6 s)"
+info_en = "With a direction: Geb wraps him in water; it strikes whoever comes near and sends projectiles back (6 s cooldown)"
+startup_f = 6
+active_f = 36
+recovery_f = 16
+reach = 0
+radius = 24
+hits = 4
+hit_every_f = 9
+damage = 12
+hitstun_f = 16
+knockback = 140
+hitstop_f = 3
+reflect = true
+cooldown_s = 6
+fx = "water_shell"
+anim = "guard"
+
+# EoH: "Not another step closer..." - Geb comes up out of the floor where he heard them.
+[stances.base.moves.special]
+shout = "PAS UN PAS DE PLUS..."
+label = "PAS UN PAS DE PLUS..."
+label_en = "NOT ANOTHER STEP CLOSER..."
+info = "Geb jaillit du sol en geyser là où il les a entendus pour la dernière fois, et les envoie en l'air"
+info_en = "Geb bursts out of the floor in a water spout where he last heard them, and throws them up"
+startup_f = 22
+active_f = 6
+recovery_f = 18
+at_target = true
+reach = 0
+damage = 66
+radius = 18
+hitstun_f = 34
+knockback = 300
+hitstop_f = 8
+clashable = false
+fx = "tentacle"
+anim = "special"
+
+# EoH: "No need to hold back!" - Geb lashes round that spot, eight times, and flings them.
+[stances.base.moves.special_alt]
+shout = "PAS BESOIN DE ME RETENIR !"
+label = "PAS BESOIN DE ME RETENIR !"
+label_en = "NO NEED TO HOLD BACK!"
+info = "Avec une direction : Geb fouette tout autour du point entendu, huit fois, puis projette (recharge 5 s)"
+info_en = "With a direction: Geb lashes all round the spot he heard, eight times, then flings them (5 s cooldown)"
+startup_f = 20
+active_f = 34
+recovery_f = 18
+at_target = true
+reach = 0
+radius = 28
+hits = 8
+hit_every_f = 4
+damage = 9
+last_damage = 30
+hitstun_f = 16
+knockback = 30
+last_knockback = 320
+hitstop_f = 2
+clashable = false
+cooldown_s = 5
+fx = "tentacle"
+anim = "special"
+
+# Geb out: a tap, at his side; held, steered across the arena while he sits ------------
+
+[stances.geb]
+label = "GEB"
+label_en = "GEB"
+walk_speed_mult = 0.9
+
+# A stab, a whip, then the claw.
+[stances.geb.moves.light]
+label = "PIQUE DE GEB"
+label_en = "GEB'S STAB"
+info = "Le tentacule d'eau pique. Encore : un coup de fouet, puis la griffe"
+info_en = "The water tentacle stabs. Again: a whip, then the claw"
+startup_f = 6
+active_f = 3
+recovery_f = 11
+shape = "line"
+damage = 28
+reach = 30
+radius = 6
+hitstun_f = 19
+knockback = 80
+hitstop_f = 4
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light2"
+fx = "tentacle"
+
+[stances.geb.moves.light2]
+label = "FOUET DE GEB"
+label_en = "GEB'S WHIP"
+info = "Un coup de fouet en travers"
+info_en = "A whip across"
+startup_f = 6
+active_f = 4
+recovery_f = 12
+shape = "line"
+damage = 32
+reach = 34
+radius = 7
+hitstun_f = 21
+knockback = 110
+hitstop_f = 5
+cancel_on_hit = ["light", "heavy", "special"]
+chain = "light3"
+fx = "tentacle"
+anim = "heavy"
+
+[stances.geb.moves.light3]
+label = "GRIFFE DE GEB"
+label_en = "GEB'S CLAW"
+info = "La main d'eau griffe : envoie loin"
+info_en = "The water hand claws: sends far"
+startup_f = 9
+active_f = 4
+recovery_f = 20
+damage = 54
+reach = 24
+radius = 14
+hitstun_f = 30
+knockback = 380
+hitstop_f = 9
+wall_bounce = true
+cancel_on_hit = ["special"]
+anim = "heavy"
+
+# EoH: Geb's hand punches forward and sends them flying.
+[stances.geb.moves.heavy]
+label = "POING DE GEB"
+label_en = "GEB'S FIST"
+info = "La main d'eau frappe droit devant : envoie contre le mur"
+info_en = "The water hand punches straight ahead: sends into the wall"
+startup_f = 12
+active_f = 4
+recovery_f = 22
+damage = 64
+reach = 24
+radius = 14
+hitstun_f = 32
+knockback = 440
+hitstop_f = 10
+wall_bounce = true
+anim = "light"
+
+# EoH: Geb's punch into the ground: a shock all round it.
+[stances.geb.moves.heavy_alt]
+label = "GEB FRAPPE LE SOL"
+label_en = "GEB STRIKES THE GROUND"
+info = "Avec une direction : la main d'eau frappe le sol, tout autour d'elle"
+info_en = "With a direction: the water hand strikes the ground, all round it"
+startup_f = 14
+active_f = 4
+recovery_f = 22
+reach = 0
+radius = 30
+damage = 56
+hitstun_f = 30
+knockback = 260
+hitstop_f = 9
+fx = "shock"
+anim = "heavy"
+
+[stances.geb.moves.special]
+shout = "PAS UN PAS DE PLUS..."
+label = "PAS UN PAS DE PLUS..."
+label_en = "NOT ANOTHER STEP CLOSER..."
+info = "Geb jaillit du sol en geyser là où il les a entendus, et les envoie en l'air"
+info_en = "Geb bursts out of the floor in a water spout where he heard them, and throws them up"
+startup_f = 22
+active_f = 6
+recovery_f = 18
+at_target = true
+reach = 0
+damage = 66
+radius = 18
+hitstun_f = 34
+knockback = 300
+hitstop_f = 8
+clashable = false
+fx = "tentacle"
+anim = "special"
+
+[stances.geb.moves.special_alt]
+shout = "PAS BESOIN DE ME RETENIR !"
+label = "PAS BESOIN DE ME RETENIR !"
+label_en = "NO NEED TO HOLD BACK!"
+info = "Avec une direction : Geb fouette tout autour de lui, huit fois, puis projette (recharge 5 s)"
+info_en = "With a direction: Geb lashes all round itself, eight times, then flings them (5 s cooldown)"
+startup_f = 14
+active_f = 34
+recovery_f = 18
+reach = 0
+radius = 30
+hits = 8
+hit_every_f = 4
+damage = 9
+last_damage = 30
+hitstun_f = 16
+knockback = 30
+last_knockback = 320
+hitstop_f = 2
+clashable = false
+cooldown_s = 5
+fx = "tentacle"
+anim = "special"
+
+# Super moves ----------------------------------------------------------------------------
+
+# Heart Heat Attack (1 bar): "No need to hold back!", EoH's EX version - harder, one more
+# lash, wider.
+[moves.hha]
+shout = "PAS BESOIN DE ME RETENIR !"
+label = "PAS BESOIN DE ME RETENIR ! (EX)"
+label_en = "NO NEED TO HOLD BACK! (EX)"
+info = "La version EX : neuf coups de fouet plus forts, plus larges, là où il les a entendus"
+info_en = "The EX version: nine harder, wider lashes, where he heard them"
+startup_f = 16
+active_f = 40
+recovery_f = 22
+invincible_f = 16
+at_target = true
+reach = 0
+radius = 36
+hits = 9
+hit_every_f = 4
+damage = 14
+last_damage = 46
+hitstun_f = 18
+knockback = 30
+last_knockback = 380
+last_wall_bounce = true
+hitstop_f = 2
+clashable = false
+fx = "tentacle"
+anim = "special"
+
+# Great Heat Attack (2 bars): "Shoot him!", his Dual Heat Attack - Geb seizes them where
+# he heard them, slams them down, strikes from below, and the spike goes in.
+[moves.gha]
+shout = "ABATS-LE !"
+label = "ABATS-LE !"
+label_en = "SHOOT HIM!"
+info = "Geb les saisit là où il les a entendus, les plaque au sol, frappe d'en dessous et les empale"
+info_en = "Geb seizes them where he heard them, slams them down, strikes from below and impales them"
+startup_f = 18
+active_f = 6
+recovery_f = 30
+invincible_f = 18
+at_target = true
+reach = 0
+damage = 40
+radius = 18
+hitstun_f = 40
+hitstop_f = 10
+unblockable = true
+clashable = false
+fx = "tentacle"
+anim = "special"
+cinematic = "geb_spike"
+cinematic_s = 4.5
+finish_damage = 280
+finish_hitstun_f = 50
+finish_knockback = 380
+finish_wall_bounce = true

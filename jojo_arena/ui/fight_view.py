@@ -1561,6 +1561,10 @@ class FightView:
             end = fighter.remote_pos + Vec2(0, -view.stand.chest - 6)
             vfx.draw_reach(surface, start, end, shade(aura, -30), "tentacle", 1)
             return
+        if fighter.remote:
+            # A Stand with no body of its own (water): drawn where it has been sent.
+            vfx.draw_water_stand(surface, fighter.remote_pos, self.tick)
+            return
         hold = fighter.stand_hold_f
         need = fighter.rules.remote_hold_f
         if fighter.style.params.get("remote") and 4 < hold < need:
@@ -1708,6 +1712,11 @@ class FightView:
         if move.fx == "gun":
             hip = fighter.pos + view.chest + Vec2(0, 3)
             vfx.draw_gun(surface, hip, attack.aim, self.tick)
+            return
+        if move.fx == "water_shell":
+            # Water wrapped all round the body.
+            center = fighter.strike_origin() + Vec2(0, -8)
+            vfx.draw_water_shell(surface, center, move.radius, self.tick)
             return
         if move.fx == "flame_burst":
             # Fire out of the whole body, all round where the blow is centred.

@@ -597,6 +597,38 @@ def draw_flame_burst(surface: pygame.Surface, center: Vec2, radius: float, tick:
         _draw_flame(surface, spot, 1.0 + 0.3 * ((i + tick // 3) % 2))
 
 
+def draw_water_shell(surface: pygame.Surface, center: Vec2, radius: float, tick: int) -> None:
+    """Water wrapped all round a body: a turning ring of it, drops thrown off its rim."""
+    for ring in range(2):
+        box = pygame.Rect(0, 0, round(radius * 2 - ring * 6), round(radius * 1.2 - ring * 4))
+        box.center = _ints(center)
+        pygame.draw.ellipse(surface, OUTLINE, box.inflate(2, 2), 3)
+        pygame.draw.ellipse(surface, WATER_SHEEN if ring == 0 else WATER, box, 1)
+    for i in range(8):
+        angle = math.tau * i / 8 + tick * 0.12
+        drop = center + Vec2(math.cos(angle) * radius, math.sin(angle) * radius * 0.6)
+        pygame.draw.circle(surface, OUTLINE, _ints(drop), 2)
+        surface.set_at(_ints(drop), WATER_SHEEN)
+
+
+def draw_water_stand(surface: pygame.Surface, spot: Vec2, tick: int) -> None:
+    """A Stand made of water, steered far from its user: a moving pool on the floor, and
+    the tentacle that rears out of it, a clawed hand at its end."""
+    draw_water_puddle(surface, spot + Vec2(0, 4), 9, tick)
+    sway = math.sin(tick * 0.15) * 2
+    points = [
+        spot + Vec2(0, 3),
+        spot + Vec2(sway, -6),
+        spot + Vec2(-sway, -14),
+        spot + Vec2(sway * 0.5, -20),
+    ]
+    pygame.draw.lines(surface, OUTLINE, False, [_ints(p) for p in points], 4)
+    pygame.draw.lines(surface, WATER, False, [_ints(p) for p in points], 2)
+    hand = points[-1]
+    for dx in (-2, 0, 2):  # the claws
+        pygame.draw.line(surface, WATER_SHEEN, _ints(hand), _ints(hand + Vec2(dx, -3)), 1)
+
+
 def draw_body_ablaze(
     surface: pygame.Surface, foot: Vec2, height: float, tick: int, seed: int
 ) -> None:

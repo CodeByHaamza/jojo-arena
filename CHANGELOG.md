@@ -11,6 +11,10 @@ des corrections seules une patch.
 - **Tout le monde parle.** Chaque perso des jeux a sa réplique d'entrée et sa réplique de
   victoire (celles d'All-Star Battle R) : un duel sans dialogue à lui ne reste plus muet, et
   un vainqueur sans réplique pour cet adversaire dit la sienne.
+- **Nouveau perso : N'Doul**, et Geb (d'après Eyes of Heaven). Aveugle, il frappe là où il
+  t'a entendu bouger pour la dernière fois : reste immobile, et il te perd. Tiens la touche
+  Stand et Geb, une masse d'eau, part à l'autre bout de l'arène pendant qu'il reste assis ;
+  frappe-le, et Geb revient. Un costume sans cape, cinq couleurs en tout, trois poses.
 - **Nouveau perso : Mariah**, et Bastet. Touche la prise électrique qu'elle pose au sol et
   tu deviens un aimant : chaque contact ajoute un niveau (jusqu'à trois), et à chaque niveau
   ses couteaux, sa ligne électrique qui t'attire et le métal qui te tombe dessus font plus

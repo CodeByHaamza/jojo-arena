@@ -16,7 +16,7 @@ Ce qui n'est pas sûr est marqué **à vérifier**. Une source manque, se contre
 
 ## Où on en est
 
-- **Jouables** : Jotaro, Kakyoin, Polnareff, DIO, **Avdol** (fait le 24/10/2026), **Joseph âgé** (fait le 15/11/2026), **Vanilla Ice**, **Hol Horse** et **Mariah** (faits le 17/11/2026).
+- **Jouables** : Jotaro, Kakyoin, Polnareff, DIO, **Avdol** (fait le 24/10/2026), **Joseph âgé** (fait le 15/11/2026), **Vanilla Ice**, **Hol Horse**, **Mariah** et **N'Doul** (faits le 17/11/2026).
 - **Arène** : Le Caire, rue de nuit.
 - Le moteur **sait déjà** faire : Stand on/off, mode contrôle, temps arrêté, pièges, projectiles (`count`, `ring`), visée libre, saisies inbloquables, Hamon, vampire et soleil, `stance_cycle`, éveil, objets à lancer.
 - Il **ne sait pas encore** faire : vol, états qui s'accumulent. (Brûlure, Stand + Hamon, invisibilité et décor effacé : faits.)
@@ -382,6 +382,28 @@ ASBR :
 | Bonus EoH | Le missile de glace énorme et inbloquable au-dessus de sa tête ; la cible est paralysée | `projectile` lent, inbloquable |
 
 ### N'Doul (Geb)
+
+**Fait le 17/11/2026** (`characters/ndoul.toml`, `looks/ndoul.toml`,
+`looks/ndoul_sans_cape.toml`), d'après Eyes of Heaven (il n'est pas dans ASBR) :
+
+- **Aveugle, il vise à l'oreille** (nouveau champ de kit `hears`) : ses coups vont là où il a
+  entendu l'adversaire pour la dernière fois (marcher, dasher, frapper, être frappé fait du
+  bruit). **Rester immobile, ou seulement garder, le trompe** : c'est ainsi qu'on le bat dans
+  le manga. Il marche lentement, avec sa canne.
+- **Touche Stand** : un appui sort Geb à côté de lui ; **tenue, Geb part en mode contrôle**
+  à travers toute l'arène pendant qu'il reste assis, sans défense (le mode assis d'EoH). Un
+  coup sur lui ramène Geb. Geb n'a pas de corps : de l'eau, un tentacule à main griffue.
+- Canne : coup, revers, estoc. **« Not another step closer... »** : Geb jaillit du sol là où
+  il les a entendus. **« No need to hold back! »** : huit coups de fouet autour du point.
+  **« I need to pull back! »** : l'eau autour de lui, qui frappe et renvoie les projectiles.
+  Geb : pique, fouet, griffe, poing, poing dans le sol.
+- EoH n'a ni HHA ni GHA : la HHA est la version EX de « No need to hold back! », la GHA sa
+  Dual Heat Attack **« Shoot him! »** (Geb les saisit, les plaque, frappe d'en dessous, la
+  pique), en cinématique.
+- Costumes : sa tenue normale (quatre couleurs d'EoH) et **sans cape** (le costume spécial
+  A d'EoH, deux couleurs). Trois poses tirées de sa galerie du manga.
+- Pas encore fait : la pluie qui révèle les adversaires (« Not another step closer... »
+  dans EoH) et la faiblesse de Geb au feu d'Avdol.
 
 **Rôle** : sniper aveugle. Il n'est que dans EoH.
 

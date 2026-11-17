@@ -2250,6 +2250,95 @@ class BastetCars(CutscenePlayer):
             draw_car(world, self.v + Vec2(gap + 18, 6), False, self.BLUE_CAR)
 
 
+# N'Doul: Shoot him! ---------------------------------------------------------------------------
+
+
+class GebSpike(CutscenePlayer):
+    """Geb has them. The water hand closes round them and lifts them, slams them into the
+    floor; it strikes again and again from underneath; then the water hardens into a spike
+    and goes in. N'Doul has not moved: he listens."""
+
+    length = 270
+    LIFT = 40  # up off the floor
+    SLAM = 70  # and down
+    BELOW = 90  # the blows from under the floor
+    SPIKE = 190  # the spike
+    WATER, SHEEN = (86, 120, 156), (176, 206, 230)
+
+    def where(self, f: int) -> tuple[Vec2, float]:
+        if f < self.LIFT:
+            return self.v, 0.0
+        if f < self.SLAM:
+            t = (f - self.LIFT) / (self.SLAM - self.LIFT)
+            return self.v, 40 * math.sin(t * math.pi * 0.5) if t < 0.85 else 40 * (1 - t) * 6
+        return self.v, 0.0
+
+    def camera(self, f):
+        if f < self.BELOW:
+            return self.v + Vec2(0, -24), 3
+        if f < self.SPIKE - 20:
+            return self.v + Vec2(0, -16), 2
+        return self.v + Vec2(0, -20), 3
+
+    def cue(self, f):
+        fx = self.fx
+        pos, lift = self.where(f)
+        hit = self.chest(self.scene.target, pos, lift=lift)
+        if f == 1:
+            self.shout(text.NDOUL_GHA_LINE, scale=2, life=46)
+        if f == self.SLAM:
+            fx.add(vfx.Ring(self.v, self.SHEEN, 4.0, 22, 2))
+            self.world_words.add(sfx.DOGO, self.v + Vec2(0, -14), "impact", 3, 40, 0.2, 2)
+            self.shake = 14
+        if self.BELOW <= f < self.SPIKE and (f - self.BELOW) % 14 == 0:
+            fx.add(vfx.Flash(hit, 10, self.SHEEN, 5))
+            self.world_words.add(
+                sfx.GA, hit + Vec2(self.rng.randint(-6, 6), -10), "impact", 2, 20, 0.3, 2
+            )
+            self.shake = 4
+        if f == self.SPIKE:
+            fx.add(vfx.Flash(hit, 46, self.SHEEN, 12))
+            fx.add(vfx.Ring(hit, self.SHEEN, 5.0, 26, 3))
+            fx.focus(hit, heavy=True)
+            self.world_words.add(sfx.BAKI, hit + Vec2(0, -16), "impact", 3, 46, 0.2, 2)
+            self.flash, self.shake = 12, 18
+
+    def negative(self, f):
+        return self.SPIKE <= f < self.SPIKE + 3
+
+    def scene_draw(self, world, f):
+        target = self.scene.target
+        pos, lift = self.where(f)
+        vfx.draw_water_puddle(world, self.v + Vec2(0, 4), 16, f)
+        jitter = Vec2(self.rng.choice((-1, 0, 1)), 0) if f % 4 < 2 else Vec2()
+        self.body(world, target, pos + jitter, "hurt", 0, self.side < 0, lift=lift)
+        held = self.chest(target, pos, lift=lift)
+        if f < self.SLAM + 6:
+            # The water hand round them.
+            base = self.v + Vec2(0, 2)
+            pygame.draw.line(world, OUTLINE, base.as_ints(), held.as_ints(), 6)
+            pygame.draw.line(world, self.WATER, base.as_ints(), held.as_ints(), 4)
+            box = pygame.Rect(0, 0, 14, 6)
+            box.center = held.as_ints()
+            pygame.draw.ellipse(world, OUTLINE, box.inflate(2, 2), 3)
+            pygame.draw.ellipse(world, self.SHEEN, box, 1)
+        if f >= self.SPIKE - 6:
+            # The spike of hardened water, up out of the floor and through them.
+            grow = min(1.0, (f - self.SPIKE + 6) / 6)
+            base = self.v + Vec2(0, 4)
+            tip = base + (held + Vec2(0, -10) - base) * grow
+            pygame.draw.polygon(
+                world,
+                OUTLINE,
+                [(base + Vec2(-4, 0)).as_ints(), (base + Vec2(4, 0)).as_ints(), tip.as_ints()],
+            )
+            pygame.draw.polygon(
+                world,
+                self.SHEEN,
+                [(base + Vec2(-2, 0)).as_ints(), (base + Vec2(2, 0)).as_ints(), tip.as_ints()],
+            )
+
+
 CUTSCENES = {
     "hermit_overdrive": HermitOverdrive,
     "road_roller": RoadRoller,
@@ -2275,6 +2364,7 @@ CUTSCENES = {
     "void_miasma": VoidMiasma,
     "emperor_hanged_man": EmperorHangedMan,
     "bastet_cars": BastetCars,
+    "geb_spike": GebSpike,
 }
 
 

@@ -130,6 +130,16 @@ text_en = "One of the Nine Egyptian Glory Gods sent by DIO: calm, sure of her St
 name_origin = "D'après la chanteuse américaine Mariah Carey."
 name_origin_en = "After the American singer Mariah Carey."
 
+[[characters]]
+id = "ndoul"
+name = "N'DOUL"
+fighter = "ndoul"
+stand = "GEB"
+text = "L'une des Neuf Divinités d'Égypte, aveugle, d'une loyauté absolue envers DIO, qu'il idolâtre tout en le sachant mauvais. Il repère ses ennemis à l'oreille : les pas, les grains de sable qui retombent, les vibrations du sol que lui transmet sa canne, et frappe avec Geb à des kilomètres. Avdol attire Geb à découvert ; Jotaro lui lance Iggy pour briser sa concentration. Vaincu, il se tue avec son propre Stand plutôt que de livrer ses souvenirs. Le mal aussi a besoin d'un sauveur, dit-il."
+text_en = "One of the Nine Egyptian Glory Gods, blind, utterly loyal to DIO, whom he idolizes while knowing him evil. He finds his enemies by ear: footsteps, grains of sand falling back, the vibrations of the ground his cane picks up, and strikes with Geb from kilometres away. Avdol lures Geb into the open; Jotaro throws Iggy at him to break his focus. Beaten, he kills himself with his own Stand rather than give up his memories. Evil needs a savior as well, he says."
+name_origin = "D'après le chanteur sénégalais Youssou N'Dour (cité dans le Shueisha Jump Remix)."
+name_origin_en = "After the Senegalese singer Youssou N'Dour (cited in the Shueisha Jump Remix)."
+
 [[stands]]
 id = "star_platinum"
 name = "STAR PLATINUM"
@@ -228,3 +238,14 @@ text = "Une prise électrique, un câble dessous, posée sur n'importe quelle su
 text_en = "An electrical outlet, a cable under it, laid on any surface. Whoever touches it gets a shock and becomes a magnet: metal comes for them, heavier and heavier as time passes, up to cars, and can crush or impale them. Several victims draw each other in. If Mariah goes too far, the magnetism wears off. No fighting power of its own: it is a trap."
 name_origin = "D'après Bastet, la déesse égyptienne protectrice ; c'est la quatrième des Neuf Divinités d'Égypte."
 name_origin_en = "After Bastet, the Egyptian goddess of protection; it is the fourth of the Nine Egyptian Glory Gods."
+
+[[stands]]
+id = "geb"
+name = "GEB"
+user = "N'DOUL"
+icon = "glossary_geb"  # no body: water, a tentacle with a clawed hand
+stats = "CBABDD"
+text = "Une petite masse d'eau sans forme, qui tiendrait dans une gourde, le plus souvent un tentacule terminé par une main griffue. N'Doul la dirige avec précision jusqu'à quatre kilomètres, cachée sous le sable pour surgir par surprise ; sa griffe tranche la chair et le métal, et l'eau arrête les projectiles. Sa faiblesse : la chaleur. Les flammes de Magician's Red l'évaporent en partie."
+text_en = "A small, shapeless mass of water that would fit in a canteen, most often a tentacle ending in a clawed hand. N'Doul steers it precisely up to four kilometres away, hidden under the sand to strike by surprise; its claw cuts flesh and metal, and the water stops projectiles. Its weakness: heat. Magician's Red's flames partly boil it away."
+name_origin = "D'après Geb, le dieu égyptien de la terre ; c'est l'une des Neuf Divinités d'Égypte."
+name_origin_en = "After Geb, the Egyptian god of the earth; it is one of the Nine Egyptian Glory Gods."

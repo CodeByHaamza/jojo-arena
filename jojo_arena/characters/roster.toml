@@ -377,6 +377,22 @@ color = "#8a2c48"
 aura = "#c060e0"
 
 [[fighters]]
+id = "ndoul"
+side = "villain"
+part = 3
+name = "N'DOUL"
+kit = "ndoul"
+sprite = "ndoul/ndoul"
+costumes = { sans_cape = "ndoul_sans_cape/ndoul_sans_cape" }
+stand_name = "GEB"
+role = "TIREUR AVEUGLE - LONGUE PORTÉE"
+role_en = "BLIND SNIPER - LONG RANGE"
+blurb = "Aveugle, il frappe là où il t'entend : Geb sort du sol à l'autre bout de l'arène. Reste immobile, et il te perd."
+blurb_en = "Blind, he strikes where he hears you: Geb comes out of the floor across the arena. Stand still, and he loses you."
+color = "#8a6440"
+aura = "#4aa0e0"
+
+[[fighters]]
 id = "mannequin_red"
 name = "MANNEQUIN ROUGE"
 name_en = "RED DUMMY"
