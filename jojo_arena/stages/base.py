@@ -10,10 +10,12 @@ from jojo_arena.combat.hazards import (
     DropDef,
     ExitDef,
     Hazards,
+    RoamerDef,
     SurfaceDef,
     TrapZoneDef,
     parse_exits,
     parse_hazards,
+    parse_roamers,
     parse_surfaces,
 )
 from jojo_arena.engine.data import load_toml, seconds_to_frames
@@ -76,6 +78,7 @@ class StageDef:
     trap_zones: tuple[TrapZoneDef, ...] = ()  # events: what springs from the floor
     surfaces: tuple[SurfaceDef, ...] = ()  # the floor itself (always there)
     exits: tuple[ExitDef, ...] = ()  # events: walls a body can be slammed through
+    roamers: tuple[RoamerDef, ...] = ()  # events: what walks the arena on its own
     outdoors: bool = False  # no roof: the sun, once up, is everywhere
 
     @property
@@ -84,7 +87,7 @@ class StageDef:
 
     @property
     def has_events(self) -> bool:
-        return bool(self.drops or self.trap_zones or self.exits)
+        return bool(self.drops or self.trap_zones or self.exits or self.roamers)
 
     def build_arena(self, options: StageOptions | None = None) -> Arena:
         options = options or StageOptions()
@@ -117,6 +120,7 @@ class StageDef:
                 self.trap_zones if events else (),
                 self.surfaces,
                 self.exits if events else (),
+                self.roamers if events else (),
             ),
             name=self.id,
             elsewhere=lambda stage_id: _load(stage_id).build_arena(options),
@@ -181,5 +185,6 @@ def load_stage_def(path: Path, stage_id: str) -> StageDef:
         trap_zones=trap_zones,
         surfaces=parse_surfaces(data),
         exits=parse_exits(data),
+        roamers=parse_roamers(data),
         outdoors=data.get("outdoors", False),
     )

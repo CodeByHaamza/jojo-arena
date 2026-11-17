@@ -8,7 +8,9 @@ Three kinds, each described by a stage's data file and blind to who is fighting:
 - a **surface**: a floor that does not grip, where a body keeps sliding the way it was
   going (and gets carried further by a blow);
 - an **exit**: a stretch of wall that gives way when somebody is slammed into it, and
-  the fight goes on in another arena (named by the stage, built by the stage layer).
+  the fight goes on in another arena (named by the stage, built by the stage layer);
+- a **roamer**: something that walks the arena on its own, raises its weapon and strikes
+  whoever it reaches; the fighters can beat it back, and it comes back later.
 
 A kit style can be spared by a trap or a surface (`spare_style`): what that style
 means is the stage's business, the engine only compares names.
@@ -126,6 +128,70 @@ class ExitDef:
         return cls(rect=Rect(*data["rect"]), to=data["to"])
 
 
+@dataclass(frozen=True)
+class RoamerDef:
+    """Something that walks the arena on its own and strikes whoever it reaches."""
+
+    start: Vec2  # where it comes in
+    hp: int  # beaten down to nothing, it is gone for a while
+    speed: float  # px/frame
+    reach: float  # how far in front of it its blow lands...
+    radius: float  # ...and how wide
+    body: float  # how big a target it is
+    damage: int
+    hitstun_f: int
+    knockback: float  # px/frame
+    windup_f: int  # it raises its weapon this long before the blow: the warning
+    rest_f: int  # it waits this long after a blow
+    first_f: int  # it comes in this far into the round
+    banish_f: int  # beaten, it is gone this long, then comes back whole
+    look: str = ""
+
+    @classmethod
+    def from_data(cls, data: dict) -> RoamerDef:
+        return cls(
+            start=Vec2(*data["start"]),
+            hp=data["hp"],
+            speed=data["speed"] / HZ,
+            reach=data["reach"],
+            radius=data["radius"],
+            body=data.get("body", 12),
+            damage=data["damage"],
+            hitstun_f=data["hitstun_f"],
+            knockback=data.get("knockback", 0) / HZ,
+            windup_f=seconds_to_frames(data["windup_s"]),
+            rest_f=seconds_to_frames(data["rest_s"]),
+            first_f=seconds_to_frames(data.get("first_s", 0)),
+            banish_f=seconds_to_frames(data["banish_s"]),
+            look=data.get("look", ""),
+        )
+
+
+@dataclass
+class Roamer:
+    """A roamer in play."""
+
+    defn: RoamerDef
+    pos: Vec2 = field(default_factory=Vec2)
+    hp: int = 0
+    facing: Vec2 = field(default_factory=lambda: Vec2(1, 0))
+    away: int = 0  # steps before it comes (in) back
+    windup: int = 0  # steps left before its raised weapon comes down
+    rest: int = 0
+    swing: int = 0  # steps the blow is shown (for the view)
+    flash: int = 0  # steps it shows a blow taken (for the view)
+    struck_by: set = field(default_factory=set)  # the attacks that already hit it
+
+    def __post_init__(self) -> None:
+        self.away = self.defn.first_f
+        self.pos = self.defn.start.copy()
+        self.hp = self.defn.hp
+
+    @property
+    def present(self) -> bool:
+        return self.away <= 0
+
+
 @dataclass
 class Drop:
     """A drop in play: when it falls next, and where its last wreck lies."""
@@ -163,6 +229,7 @@ class Hazards:
     zones: list[TrapZone] = field(default_factory=list)
     surfaces: tuple[SurfaceDef, ...] = ()
     exits: tuple[ExitDef, ...] = ()
+    roamers: list[Roamer] = field(default_factory=list)
 
     @classmethod
     def build(
@@ -171,8 +238,15 @@ class Hazards:
         zones: tuple[TrapZoneDef, ...] = (),
         surfaces: tuple[SurfaceDef, ...] = (),
         exits: tuple[ExitDef, ...] = (),
+        roamers: tuple[RoamerDef, ...] = (),
     ) -> Hazards:
-        return cls([Drop(d) for d in drops], [TrapZone(z) for z in zones], surfaces, exits)
+        return cls(
+            [Drop(d) for d in drops],
+            [TrapZone(z) for z in zones],
+            surfaces,
+            exits,
+            [Roamer(r) for r in roamers],
+        )
 
     def grip_at(self, pos: Vec2, styles: frozenset[str]) -> tuple[float, float]:
         """(grip, slide) of the floor under `pos` for a body with these kit styles."""
@@ -194,6 +268,10 @@ def parse_hazards(data: dict) -> tuple[tuple[DropDef, ...], tuple[TrapZoneDef, .
                 "a drop needs spots (or on_fighter), and to fall less often than it warns"
             )
     return drops, zones
+
+
+def parse_roamers(data: dict) -> tuple[RoamerDef, ...]:
+    return tuple(RoamerDef.from_data(r) for r in data.get("roamers", []))
 
 
 def parse_exits(data: dict) -> tuple[ExitDef, ...]:

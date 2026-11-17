@@ -178,6 +178,8 @@ class Match:
         events += self._update_webs()
         events += self._resolve_melee()
         events += self._resolve_projectile_hits()
+        if self.arena.hazards.roamers and self.time_stop is None:
+            events += self._strike_roamers()
         events += self._apply_sunlight()
         events += self._apply_statuses()
         events += self._update_hazards()
@@ -918,6 +920,91 @@ class Match:
             events += self._update_drop(drop)
         for zone in hazards.zones:
             events += self._update_trap_zone(zone)
+        for roamer in hazards.roamers:
+            events += self._update_roamer(roamer)
+        return events
+
+    def _update_roamer(self, roamer) -> list[Event]:
+        """It walks to the nearest fighter, raises its weapon, strikes, rests; beaten,
+        it is gone a while and comes back whole."""
+        defn = roamer.defn
+        roamer.flash = max(0, roamer.flash - 1)
+        roamer.swing = max(0, roamer.swing - 1)
+        if roamer.away > 0:
+            roamer.away -= 1
+            if roamer.away == 0:
+                roamer.pos, roamer.hp = defn.start.copy(), defn.hp
+                roamer.windup = roamer.rest = 0
+                roamer.struck_by.clear()
+                return [Event("roamer_in", roamer.pos.copy(), None)]
+            return []
+        alive = [f for f in self.fighters if f.alive]
+        if not alive:
+            return []
+        target = min(alive, key=lambda f: ((f.pos - roamer.pos).length_sq(), f.index))
+        gap = target.pos - roamer.pos
+        if roamer.windup > 0:
+            roamer.windup -= 1
+            if roamer.windup > 0:
+                return []
+            # The blow comes down where it was facing.
+            roamer.rest, roamer.swing = defn.rest_f, 10
+            center = roamer.pos + roamer.facing * defn.reach
+            events = [Event("roamer_swing", center, None, defn.radius)]
+            reach = defn.radius + self.rules.hurt_radius
+            for fighter in self.fighters:
+                if not fighter.alive or fighter.invincible:
+                    continue
+                if (fighter.pos - center).length_sq() > reach * reach:
+                    continue
+                events += self._hazard_hit(
+                    fighter, defn.damage, defn.hitstun_f, roamer.facing * defn.knockback
+                )
+            return events
+        if gap.length_sq() > 1e-6:
+            roamer.facing = gap.normalized()
+        if roamer.rest > 0:
+            roamer.rest -= 1
+            return []
+        if gap.length() <= defn.reach + defn.radius * 0.5:
+            roamer.windup = defn.windup_f
+            return [Event("roamer_windup", roamer.pos.copy(), None)]
+        step = roamer.facing * min(defn.speed, gap.length())
+        roamer.pos, _, _ = self.arena.constrain(roamer.pos + step, defn.body)
+        return []
+
+    def _strike_roamers(self) -> list[Event]:
+        """The fighters' blows and shots land on a roamer in their way."""
+        events: list[Event] = []
+        for roamer in self.arena.hazards.roamers:
+            if not roamer.present:
+                continue
+            hits: list[tuple[int, Vec2]] = []
+            for fighter in self.fighters:
+                attack = fighter.attack
+                if attack is None or (fighter.index, attack.serial) in roamer.struck_by:
+                    continue
+                for center, radius in fighter.hitboxes():
+                    reach = radius + roamer.defn.body
+                    if (center - roamer.pos).length_sq() <= reach * reach:
+                        roamer.struck_by.add((fighter.index, attack.serial))
+                        hits.append((attack.move.damage or 10, center))
+                        break
+            for projectile in self.projectiles:
+                if not projectile.alive:
+                    continue
+                reach = projectile.radius + roamer.defn.body
+                if (projectile.pos - roamer.pos).length_sq() <= reach * reach:
+                    projectile.alive = False
+                    hits.append((projectile.defn.damage, projectile.pos.copy()))
+            for damage, where in hits:
+                roamer.hp -= damage
+                roamer.flash = 8
+                events.append(Event("roamer_hit", where, None, damage))
+                if roamer.hp <= 0:
+                    roamer.away = roamer.defn.banish_f
+                    events.append(Event("roamer_banished", roamer.pos.copy(), None))
+                    break
         return events
 
     def _take_exits(self, moved: list[Event]) -> list[Event]:
