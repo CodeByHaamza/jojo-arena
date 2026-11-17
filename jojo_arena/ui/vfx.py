@@ -1581,15 +1581,36 @@ def draw_nukesaku_landed(surface: pygame.Surface, spot: Vec2, seed: int) -> None
     _draw_nukesaku_body(surface, spot + Vec2(0, -6), 0.0)
 
 
+def draw_knife_volley(surface: pygame.Surface, center: Vec2, scale: float = 1.0) -> None:
+    """A volley of knives thrown in stopped time: a ring of them, points down, hanging."""
+    for i in range(8):
+        angle = math.tau * i / 8
+        spot = center + Vec2(math.cos(angle) * 12 * scale, math.sin(angle) * 6 * scale)
+        _draw_knife(surface, spot, Vec2(0, 1))
+
+
+def draw_knives_stuck(surface: pygame.Surface, spot: Vec2, seed: int) -> None:
+    """The knives after they came down: stuck in the floor, handles up."""
+    rng = random.Random(seed)
+    for _ in range(7):
+        x = spot.x + rng.uniform(-14, 14)
+        y = spot.y + rng.uniform(-6, 6)
+        pygame.draw.line(surface, OUTLINE, (round(x), round(y)), (round(x), round(y) - 5), 3)
+        pygame.draw.line(surface, LEATHER, (round(x), round(y) - 2), (round(x), round(y) - 5), 1)
+        surface.set_at((round(x), round(y) - 1), STEEL)
+
+
 DROP_LOOKS = {
     "chandelier": draw_chandelier,
     "snow_slab": draw_snow_slab,
     "nukesaku": draw_nukesaku,
+    "knives": draw_knife_volley,
 }
 WRECK_LOOKS = {
     "chandelier": draw_chandelier_wreck,
     "snow_slab": draw_snow_wreck,
     "nukesaku": draw_nukesaku_landed,
+    "knives": draw_knives_stuck,
 }
 DROP_FALL = 0.35  # the last share of the warning, the thing is visibly falling
 

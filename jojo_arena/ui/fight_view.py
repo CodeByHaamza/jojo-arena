@@ -1361,6 +1361,8 @@ class FightView:
             if drop.spot is not None:
                 vfx.draw_drop_shadow(surface, drop.spot, drop.defn.radius, drop.warning)
         for zone in hazards.zones:
+            if zone.defn.look not in ("", "spikes"):
+                continue  # a hole in the floor has nothing to spring
             if zone.sprung_left > 0 and zone.defn.rearm_f > 0:
                 rect = pygame.Rect(
                     *(round(v) for v in (zone.defn.rect.x, zone.defn.rect.y)),

@@ -1,0 +1,110 @@
+# The Cairo bridge, at night: where Jotaro and DIO finish it (GDD: "Pont du Caire").
+#
+# Sources, read on 17/11/2026:
+# - JoJo Wiki, stage template of All-Star Battle (R) ★ "Cairo Bridge" (Cairo Overpass,
+#   All-Star Battle R only): its Stage Gimmick, "DIO briefly halts time, then hurls a
+#   volley of knives at the fighters. It doesn't occur if DIO is a combatant." Its
+#   Situation Finish (a road roller on the loser, near a burning car) is not in yet.
+# - JoJo Wiki, Eyes of Heaven ★ Cairo Overpass: the bridge where Jotaro beats DIO; a
+#   section of it is destroyed, and an overturned oil tanker blocks the other side.
+# Coordinates are internal pixels (screen is 480 x 270). Rects are [x, y, width, height].
+
+name = "Le pont du Caire"
+name_en = "The Cairo bridge"
+part = 3
+
+# A long, narrow roadway between two railings.
+[bounds]
+rect = [16, 70, 448, 160]
+corner_radius = 6
+
+[spawns]
+p1 = [140, 150]
+p2 = [340, 150]
+
+# Event: DIO stops time and throws a volley of knives at whoever's turn it is; they hang
+# in the air over them a moment (time is stopped), then come down. Not while DIO fights.
+# Off with the "events" option.
+[[drops]]
+look = "knives"
+on_fighter = true
+not_with = ["dio_p3"]
+first_s = 12
+every_s = 15
+warning_s = 1.2
+radius = 18
+damage = 45
+hitstun_f = 24
+knockback = 120
+wreck_s = 1.6
+
+# The section of the bridge that is gone: knocked into it, a fall onto the girders below.
+[[trap_zones]]
+look = "gap"
+rect = [214, 70, 52, 34]
+damage = 70
+hitstun_f = 30
+knockback = 260
+min_speed = 100
+rearm_s = 1.0
+
+[prop_kinds.car]
+hp = 180
+
+[prop_kinds.tanker]
+hp = 320
+
+[prop_kinds.barrel]
+hp = 30
+throwable = true
+throw_damage = 45
+respawn_s = 9
+
+# The burning car by the railing, and the overturned tanker blocking the far side.
+[[props]]
+kind = "car"
+rect = [60, 186, 40, 18]
+
+[[props]]
+kind = "tanker"
+rect = [388, 82, 54, 22]
+
+[[props]]
+kind = "barrel"
+rect = [118, 88, 9, 10]
+
+[[props]]
+kind = "barrel"
+rect = [360, 202, 9, 10]
+
+[[props]]
+kind = "barrel"
+rect = [300, 92, 9, 10]
+
+# Street lamps along the railings.
+[[lanterns]]
+pos = [100, 66]
+
+[[lanterns]]
+pos = [380, 66]
+
+[[lanterns]]
+pos = [180, 234]
+
+[[lanterns]]
+pos = [300, 234]
+
+[palette]
+frame = [14, 18, 34]
+frame_dark = [8, 10, 22]
+window = [255, 210, 120]
+water = [20, 30, 52]
+water_light = [38, 54, 84]
+curb = [92, 92, 104]
+rail = [132, 132, 146]
+road = [58, 58, 66]
+road_light = [66, 66, 74]
+road_dark = [50, 50, 58]
+marking = [196, 186, 120]
+lantern = [255, 214, 140]
+fire = [255, 140, 50]

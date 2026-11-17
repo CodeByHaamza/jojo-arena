@@ -53,6 +53,15 @@ TRACKS = {
         motif=((0, 4, 3), (4, 5, 1), (5, 4, 3), (8, 1, 6), (14, 0, 2)),
         lead_wave="organ",
     ),
+    # The bridge at the end of the journey: the same mode as the mansion, faster, lower.
+    "cairo_bridge": Track(
+        tempo=118,
+        root=43,  # G
+        scale=PHRYGIAN_DOMINANT,
+        progression=(0, 5, 1, 0),
+        motif=((0, 2, 4), (2, 3, 2), (4, 4, 4), (6, 1, 2), (8, 0, 6), (14, 5, 2)),
+        lead_wave="organ",
+    ),
 }
 
 

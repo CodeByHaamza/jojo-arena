@@ -38,6 +38,10 @@ des corrections seules une patch.
   (« Lord DIO! ») et fait jaillir Cream du sol sous tes pieds. Vampire : le soleil et le
   Hamon le brûlent. Cinq couleurs (anime, manga, OVA, All-Star Battle, Eyes of Heaven), six
   poses tirées du manga, et ses répliques face à Avdol, Polnareff et DIO.
+- **Nouvelle arène : le pont du Caire**, la nuit, où tout se termine. DIO arrête le temps et
+  lance une volée de couteaux sur l'un de vous (sauf si c'est lui qui se bat, comme dans
+  All-Star Battle R) ; un trou béant dans le tablier, une voiture en feu, un camion-citerne
+  couché en travers.
 - **Nouvelle arène : le manoir de DIO.** Il fait grand jour dehors, mais les rideaux gardent le
   soleil à la porte : arrache-les et la lumière brûle les vampires qui se tiennent dessous.
   Et Nukesaku saute du plafond pile sur toi, encore et encore (comme dans All-Star Battle R).

@@ -5,7 +5,7 @@
 **Un arena fighter 1v1 en temps réel, en pixel art vu de dessus.**
 
 Fan game non officiel de JoJo's Bizarre Adventure — Python 3.12, pygame-ce
-**Parties 1 et 2 complètes** · 26 persos · 6 arènes · simulation déterministe à 60 images par seconde
+**Parties 1 et 2 complètes** · 26 persos · 7 arènes · simulation déterministe à 60 images par seconde
 
 [![CI](https://github.com/CodeByHaamza/jojo-arena/actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-1038-2ea24a.svg)](tests/)
@@ -110,7 +110,7 @@ chacun de leur côté. C'est ce qui rend les replays exacts et le rollback possi
 > *Un jeu qui tourne n'est pas un jeu juste.*
 
 <div align="center">
-<img src="docs/media/chiffres.svg" alt="26 persos, 6 arènes, 1650 tests, 94 % de couverture, 60 images par seconde" width="100%">
+<img src="docs/media/chiffres.svg" alt="26 persos, 7 arènes, 1656 tests, 94 % de couverture, 60 images par seconde" width="100%">
 </div>
 
 | Critère | Mesure | Comment |
