@@ -151,3 +151,21 @@ hand_l = [-3, -6]
 elbow_l = [-3, 1]
 foot_r = [4, 0]
 foot_l = [-4, 0]
+
+# Its colours ------------------------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ Jean Pierre Polnareff, "Costumes & Tints": Silver
+# Chariot's tint A is its anime appearance, its tint B "the Silver Chariot OVA color
+# scheme" (the concept art: gold on the joints and the trim).
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, Silver Chariot, couleur A : son apparence dans l'anime"
+
+[colors.ova]
+label = "OVA"
+label_en = "OVA"
+source = "ASBR, Silver Chariot, couleur B : les couleurs de l'OVA"
+
+[colors.ova.palette]
+trim = ["#5c4418", "#a07a2c", "#d2aa48", "#f2dc94"]

@@ -6,6 +6,10 @@ chest = 28
 height = 44
 directions = ["down", "up", "right"]
 
+[recolor]
+body = [[30, 122, 60], [46, 162, 74], [67, 197, 91], [133, 207, 142]]
+vein = [[86, 238, 95], [143, 240, 140], [196, 245, 191], [240, 251, 238]]
+
 [anims.idle]
 row = 0
 frames = 4
@@ -175,3 +179,19 @@ label_en = ""
 source = ""
 stand = false
 stand_offset = [-14.0, -8.0]
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, Hierophant Green, couleur A : les couleurs de l'anime"
+stand = ""
+
+[colors.sfr]
+label = "Super Figure Revolution"
+label_en = "Super Figure Revolution"
+source = "ASBR, Hierophant Green, couleur B : la deuxième couleur de la Super Figure Revolution"
+stand = ""
+
+[colors.sfr.palette]
+body = [[35, 48, 156], [52, 80, 196], [95, 124, 209], [160, 179, 220]]
+vein = [[84, 131, 244], [140, 180, 244], [192, 217, 248], [238, 245, 252]]

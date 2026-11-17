@@ -120,3 +120,22 @@ elbow_r = [3, -2]
 [[poses.rero_rero.right]]
 hand_r = [5, -16]
 hand_l = [-5, -16]
+
+# Its colours ------------------------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ Noriaki Kakyoin, "Costumes & Tints": Hierophant Green's
+# tint A is its anime colours, its tint B "the second colour from Super Figure
+# Revolution" (blue).
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, Hierophant Green, couleur A : les couleurs de l'anime"
+
+[colors.sfr]
+label = "Super Figure Revolution"
+label_en = "Super Figure Revolution"
+source = "ASBR, Hierophant Green, couleur B : la deuxième couleur de la Super Figure Revolution"
+
+[colors.sfr.palette]
+body = "#3450c4"
+vein = "#8cb4f4"

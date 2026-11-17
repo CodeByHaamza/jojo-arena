@@ -306,3 +306,13 @@ def test_a_stand_follows_the_colour_its_user_names():
         plain, dressed = FighterView(fighter, Loadout()), FighterView(fighter, Loadout(color=color))
         assert dressed.stand is not plain.stand  # another sheet: repainted
         assert FighterView(fighter, Loadout(color="anime")).stand is plain.stand
+
+
+def test_every_stand_user_of_part_three_can_be_told_apart_in_a_mirror_match():
+    """Each of them comes in two colours at least, and so does each Stand."""
+    for fighter in load_roster():
+        if fighter.part != 3 or not fighter.selectable:
+            continue
+        assert len(outfit_colors(fighter)) >= 2, fighter.id
+        if fighter.stand_sprite:
+            assert len(_sheet(fighter.stand_sprite).colors) >= 2, fighter.stand_sprite

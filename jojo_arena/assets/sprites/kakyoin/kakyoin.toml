@@ -6,6 +6,15 @@ chest = 28
 height = 45
 directions = ["down", "up", "right"]
 
+[costume]
+label = "Tenue de Stardust Crusaders"
+label_en = "Stardust Crusaders attire"
+source = "Sa tenue principale de Stardust Crusaders (ASBR, costume normal)"
+
+[recolor]
+hair = [[187, 79, 44], [207, 100, 80], [217, 135, 127], [230, 191, 189]]
+uniform = [[33, 48, 25], [62, 82, 47], [92, 115, 70], [133, 150, 112]]
+
 [anims.idle]
 row = 0
 frames = 4
@@ -221,3 +230,38 @@ label_en = "Rero rero rero"
 source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : la cerise qu'il fait rouler sur sa langue"
 stand = true
 stand_offset = [-8.0, 7.0]
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+stand = ""
+
+[colors.jump25]
+label = "Jump 1990 n° 25"
+label_en = "Jump 1990 #25"
+source = "ASBR, couleur B : le Catchphrase Grand Prix du Weekly Shonen Jump 1990 n° 25"
+stand = "sfr"
+
+[colors.jump25.palette]
+uniform = [[28, 44, 92], [46, 74, 130], [64, 105, 168], [118, 151, 190]]
+hair = [[142, 129, 151], [168, 164, 172], [196, 195, 197], [234, 234, 234]]
+
+[colors.jump9]
+label = "Jump 1990 n° 9"
+label_en = "Jump 1990 #9"
+source = "ASBR, couleur C : la couverture du Weekly Shonen Jump 1990 n° 9"
+stand = ""
+
+[colors.jump9.palette]
+uniform = [[98, 22, 65], [140, 36, 104], [181, 51, 144], [202, 107, 180]]
+
+[colors.jump7]
+label = "Jump 1992 n° 7"
+label_en = "Jump 1992 #7"
+source = "ASBR, couleur D : la page de titre A du Weekly Shonen Jump 1992 n° 7"
+stand = ""
+
+[colors.jump7.palette]
+uniform = [[51, 35, 87], [70, 56, 122], [89, 77, 157], [135, 130, 180]]
+hair = [[24, 24, 46], [46, 48, 80], [69, 74, 113], [110, 117, 148]]

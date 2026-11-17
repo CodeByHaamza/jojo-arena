@@ -6,6 +6,15 @@ chest = 28
 height = 45
 directions = ["down", "up", "right"]
 
+[costume]
+label = "Tenue de Stardust Crusaders"
+label_en = "Stardust Crusaders attire"
+source = "Sa tenue principale de Stardust Crusaders (ASBR, costume normal)"
+
+[recolor]
+hair = [[165, 170, 196], [201, 205, 216], [234, 236, 239], [244, 245, 245]]
+top = [[10, 9, 13], [36, 34, 44], [62, 60, 74], [105, 104, 106]]
+
 [anims.idle]
 row = 0
 frames = 4
@@ -214,3 +223,28 @@ label_en = "En garde!"
 source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : le duelliste qui défie son adversaire, Silver Chariot à ses côtés"
 stand = true
 stand_offset = [2.0, 9.0]
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+stand = ""
+
+[colors.jump9]
+label = "Jump 1990 n° 9"
+label_en = "Jump 1990 #9"
+source = "ASBR, couleur B : la couverture du Weekly Shonen Jump 1990 n° 9"
+stand = ""
+
+[colors.jump9.palette]
+hair = [[115, 52, 132], [138, 74, 166], [158, 110, 186], [189, 168, 204]]
+top = [[80, 27, 95], [106, 44, 134], [131, 61, 173], [161, 117, 194]]
+
+[colors.asb]
+label = "All-Star Battle"
+label_en = "All-Star Battle"
+source = "ASBR, couleur D : les couleurs d'All-Star Battle"
+stand = "ova"
+
+[colors.asb.palette]
+top = [[27, 33, 102], [44, 60, 142], [61, 88, 181], [120, 142, 198]]

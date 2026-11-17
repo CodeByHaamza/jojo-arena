@@ -24,7 +24,10 @@ faites et fusionnées dans `develop` ; **on reprend à l'étape 3**.
    DIO (dans l'ombre), Avdol (le « père d'Avdol ? »), et les couleurs de leurs Stands :
    7 costumes, 32 couleurs, toutes sourcées. Design :
    `docs/superpowers/specs/2026-11-15-costumes-couleurs-design.md`.
-   - [ ] Les seize autres persos, et les tenues du manga qui ne sont dans aucun jeu.
+   - [x] Les couleurs de toute la partie 3 (17/11/2026) : Kakyoin, Polnareff, Joseph âgé,
+     Hierophant Green, Silver Chariot.
+   - [ ] Les parties 1 et 2 (treize persos), les costumes de Kakyoin et Polnareff, et les
+     tenues du manga qui ne sont dans aucun jeu.
 4. [ ] **Partie 3**, dans l'ordre de [PARTIE3.md](PARTIE3.md) : ~~Joseph âgé~~ (fait le
    15/11/2026, avant les costumes, à la demande du propriétaire), le manoir de
    DIO (Nukesaku, rideaux), Iggy, Pet Shop, Vanilla Ice, Hol Horse (et Calcutta, J. Geil),

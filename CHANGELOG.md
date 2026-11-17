@@ -8,6 +8,9 @@ des corrections seules une patch.
 
 ### Ajouté
 
+- **Toute la partie 3 en couleurs.** Kakyoin (4 couleurs d'All-Star Battle R), Polnareff (3),
+  Joseph âgé (3), et Hierophant Green et Silver Chariot (2 chacun) : plus aucun match miroir
+  de la partie 3 où les deux joueurs se ressemblent.
 - **Costumes et couleurs.** À l'écran de sélection, juste après le perso : son costume, sa
   couleur, puis ses poses, avec l'aperçu en direct. Pour commencer, Jonathan (torse nu,
   *The Inherited Soul*), Jotaro (sans manteau, *The Inherited Soul*), DIO (dans l'ombre)

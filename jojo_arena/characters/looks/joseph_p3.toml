@@ -166,3 +166,41 @@ hand_r = [4, -14]
 elbow_r = [5, -4]
 hand_l = [3, -14]
 elbow_l = [4, -4]
+
+# The outfit and its colours ---------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ Old Joseph Joestar, "Costumes & Tints" (read 17/11/2026):
+# the normal costume is "his main Stardust Crusaders attire"; tint A is the anime's
+# colours, tint D "colors carried over from All-Star Battle". Its tint B (cover B of
+# chapter 205) and C (no origin) have no image on the page: left out. JoJo Wiki,
+# "Joseph Joestar", Color Schemes, gives the All-Star Battle colours in words (a bright
+# yellow shirt, brown fedora and trousers, white gloves, black arm-warmers, blue shoes)
+# and those of the coloured manga (a yellow shirt, brown fedora and trousers, purple
+# arm-warmers): the third colour here.
+
+[costume]
+label = "Tenue du voyage"
+label_en = "Travelling clothes"
+source = "Sa tenue de Calcutta à la fin de Stardust Crusaders (ASBR, costume normal)"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+
+[colors.asb]
+label = "All-Star Battle"
+label_en = "All-Star Battle"
+source = "ASBR, couleur D : les couleurs d'All-Star Battle (JoJo Wiki, Color Schemes)"
+
+[colors.asb.palette]
+shirt = "#e8c83a"
+shoes = "#3a5aa8"
+
+[colors.manga]
+label = "Manga en couleur"
+label_en = "Coloured manga"
+source = "JoJo Wiki, Joseph Joestar, Color Schemes : le manga en couleur"
+
+[colors.manga.palette]
+shirt = "#dcbc40"
+wristband = "#6a3a8e"
