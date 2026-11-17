@@ -157,3 +157,45 @@ elbow_r = [3, 0]
 bob = 1
 hand_r = [10, -11]
 hand_l = [-8, -11]
+
+# The outfit and its colours ---------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ Rudol von Stroheim, "Costumes & Tints" (read 17/11/2026):
+# https://jojowiki.com/All-Star_Battle_R/Rudol_von_Stroheim . Each colour below is one of the
+# game's tints, with the origin the page gives it; the tones were read off the game's render of each tint and brought to this sprite's brightness.
+
+[costume]
+label = "Uniforme de Battle Tendency"
+label_en = "Battle Tendency uniform"
+source = "Sa tenue principale (ASBR, costume normal)"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+
+[colors.j025]
+label = "Cartes J-025 et J-026"
+label_en = "Cards J-025 and J-026"
+source = "ASBR, couleur B : les cartes Adventure Battle J-025 et J-026"
+
+[colors.j025.palette]
+coat = "#6a8e48"
+coat_dark = "#52703a"
+
+[colors.episode12]
+label = "Épisode 12"
+label_en = "Episode 12"
+source = "ASBR, couleur C : les soldats de l'épisode 12 (changement de couleurs de l'anime)"
+
+[colors.episode12.palette]
+coat = "#7e2c3c"
+coat_dark = "#62222e"
+
+[colors.episode19]
+label = "Épisode 19"
+label_en = "Episode 19"
+source = "ASBR, couleur D : l'épisode 19 (changement de couleurs de l'anime)"
+
+[colors.episode19.palette]
+coat = "#2a8a9a"
+coat_dark = "#226c7a"

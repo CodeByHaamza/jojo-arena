@@ -6,6 +6,16 @@ chest = 29
 height = 47
 directions = ["down", "up", "right"]
 
+[costume]
+label = "Tenue de Battle Tendency"
+label_en = "Battle Tendency attire"
+source = "Sa tenue principale (ASBR, costume normal)"
+
+[recolor]
+hair = [[7, 6, 10], [26, 22, 34], [51, 46, 66], [89, 85, 103]]
+guard = [[117, 73, 153], [138, 106, 176], [164, 145, 193], [204, 198, 216]]
+cloth = [[66, 37, 87], [90, 58, 122], [113, 80, 156], [151, 133, 180]]
+
 [anims.idle]
 row = 0
 frames = 4
@@ -175,3 +185,31 @@ label_en = "\"Arm yourself!\""
 source = "Eyes of Heaven, « Arm yourself! » : « stationary defensive posture »"
 stand = false
 stand_offset = [-14.0, -8.0]
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+stand = ""
+
+[colors.agogo]
+label = "JOJO A-GO!GO!"
+label_en = "JOJO A-GO!GO!"
+source = "ASBR, couleur C : l'illustration intérieure de JOJO A-GO!GO!"
+stand = ""
+
+[colors.agogo.palette]
+cloth = [[25, 83, 59], [42, 122, 82], [60, 160, 104], [109, 188, 139]]
+guard = [[52, 126, 91], [74, 160, 112], [108, 182, 136], [166, 201, 177]]
+hair = [[24, 31, 68], [42, 58, 106], [61, 86, 143], [104, 131, 176]]
+
+[colors.asb]
+label = "All-Star Battle"
+label_en = "All-Star Battle"
+source = "ASBR, couleur D : les couleurs d'All-Star Battle"
+stand = ""
+
+[colors.asb.palette]
+cloth = [[77, 25, 83], [106, 42, 122], [134, 60, 160], [162, 109, 188]]
+guard = [[135, 53, 141], [160, 74, 176], [175, 115, 192], [199, 173, 210]]
+hair = [[65, 25, 83], [90, 42, 122], [114, 60, 160], [147, 109, 188]]

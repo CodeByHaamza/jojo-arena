@@ -26,7 +26,9 @@ foot_r = 2.3
 [palette]
 skin = "#f2cca6"
 hair = "#f2d860"
-band = "#f0eef4"
+# Four tones by hand: computed, its highlight was the trousers' too. Only that tone moved,
+# by one unit.
+band = ["#d3cae0", "#f0eef4", "#f4f3f7", "#f5f5f7"]
 mark = "#8a4ac8"
 feather = "#e89040"
 scarf = "#e88aa8"
@@ -159,3 +161,47 @@ elbow_r = [3, 1]
 hand_r = [13, -12]
 hand_l = [4, -9]
 elbow_l = [-1, 2]
+
+# The outfit and its colours ---------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ Caesar Anthonio Zeppeli, "Costumes & Tints" (read 17/11/2026):
+# https://jojowiki.com/All-Star_Battle_R/Caesar_Anthonio_Zeppeli . Each colour below is one of the
+# game's tints, with the origin the page gives it; the tones were read off the game's render of each tint and brought to this sprite's brightness.
+
+[costume]
+label = "Tenue de Battle Tendency"
+label_en = "Battle Tendency attire"
+source = "Sa tenue principale (ASBR, costume normal)"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+
+[colors.j020]
+label = "Cartes J-020 et J-111"
+label_en = "Cards J-020 and J-111"
+source = "ASBR, couleur B : les cartes Adventure Battle J-020 et J-111"
+
+[colors.j020.palette]
+jacket = "#8e9098"
+gloves = "#3c3c44"
+
+[colors.violet]
+label = "Violet"
+label_en = "Purple"
+source = "ASBR, couleur C (JoJo Wiki n'en note pas l'origine)"
+
+[colors.violet.palette]
+jacket = "#9a3cb2"
+gloves = "#8a34a6"
+scarf = "#36a8a0"
+
+[colors.sas]
+label = "Super Action Statue"
+label_en = "Super Action Statue"
+source = "ASBR, couleur D : la Super Action Statue, sa couleur d'All-Star Battle"
+
+[colors.sas.palette]
+jacket = "#3a8a5a"
+gloves = "#2f7a4c"
+trousers = "#7aaa86"

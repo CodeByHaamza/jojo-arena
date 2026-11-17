@@ -203,3 +203,48 @@ hand_r = [6, -20]
 elbow_r = [3, -1]
 hand_l = [1, -5]
 elbow_l = [-3, 0]
+
+# The outfit and its colours ---------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ Dio Brando, "Costumes & Tints" (read 17/11/2026):
+# https://jojowiki.com/All-Star_Battle_R/Dio_Brando . Each colour below is one of the
+# game's tints, with the origin the page gives it; the tones were read off the game's render of each tint and brought to this sprite's brightness.
+
+[costume]
+label = "Tenue de Phantom Blood"
+label_en = "Phantom Blood attire"
+source = "Sa tenue principale (ASBR, costume normal)"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+
+[colors.tranche2]
+label = "Tranche du tome 2"
+label_en = "Volume 2 spine"
+source = "ASBR, couleur B : la tranche du tome 2"
+
+[colors.tranche2.palette]
+jacket = "#9a6a2a"
+trousers = "#8a5a24"
+scarf = "#c89a3a"
+
+[colors.asb]
+label = "All-Star Battle"
+label_en = "All-Star Battle"
+source = "ASBR, couleur C : les couleurs d'All-Star Battle"
+
+[colors.asb.palette]
+jacket = "#3a3640"
+trousers = "#302c36"
+scarf = "#6a5aa8"
+
+[colors.bleu]
+label = "Bleu"
+label_en = "Blue"
+source = "ASBR, couleur D (JoJo Wiki n'en note pas l'origine)"
+
+[colors.bleu.palette]
+jacket = "#2c4cb0"
+trousers = "#28409a"
+scarf = "#2a9a9a"

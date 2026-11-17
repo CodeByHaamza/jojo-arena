@@ -6,6 +6,15 @@ chest = 30
 height = 48
 directions = ["down", "up", "right"]
 
+[costume]
+label = "Tenue de Battle Tendency"
+label_en = "Battle Tendency attire"
+source = "Sa tenue principale (ASBR, costume normal)"
+
+[recolor]
+vest = [[39, 58, 117], [58, 90, 154], [83, 123, 185], [145, 170, 200]]
+cloth = [[23, 31, 64], [42, 58, 102], [61, 87, 139], [104, 130, 173]]
+
 [anims.idle]
 row = 0
 frames = 4
@@ -175,3 +184,39 @@ label_en = "Divine Sandstorm"
 source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : Divine Sandstorm, les avant-bras qui tournent en sens contraire"
 stand = false
 stand_offset = [-14.0, -8.0]
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+stand = ""
+
+[colors.tome8]
+label = "Tome 8"
+label_en = "Volume 8"
+source = "ASBR, couleur B : la couverture du tome 8"
+stand = ""
+
+[colors.tome8.palette]
+vest = [[101, 52, 136], [122, 74, 170], [145, 112, 188], [184, 170, 207]]
+cloth = [[69, 33, 99], [90, 52, 136], [111, 71, 173], [150, 129, 191]]
+
+[colors.j152]
+label = "Carte J-152"
+label_en = "Card J-152"
+source = "ASBR, couleur C : la carte Adventure Battle J-152"
+stand = ""
+
+[colors.j152.palette]
+vest = [[34, 93, 178], [58, 134, 210], [106, 169, 218], [173, 207, 228]]
+cloth = [[178, 184, 214], [216, 220, 232], [242, 244, 247], [243, 244, 246]]
+
+[colors.asb]
+label = "All-Star Battle"
+label_en = "All-Star Battle"
+source = "ASBR, couleur D : la couleur A d'All-Star Battle"
+stand = ""
+
+[colors.asb.palette]
+vest = [[158, 124, 28], [200, 144, 42], [215, 160, 83], [223, 189, 151]]
+cloth = [[125, 86, 22], [168, 106, 36], [207, 125, 53], [214, 160, 123]]

@@ -6,6 +6,15 @@ chest = 29
 height = 47
 directions = ["down", "up", "right"]
 
+[costume]
+label = "Sa tenue"
+label_en = "His outfit"
+source = "JoJo Wiki, Straizo, Appearance"
+
+[recolor]
+coat = [[200, 193, 215], [230, 228, 236], [244, 243, 246], [244, 244, 245]]
+scarf = [[58, 53, 67], [85, 82, 94], [113, 112, 120], [154, 154, 154]]
+
 [anims.idle]
 row = 0
 frames = 4
@@ -182,3 +191,19 @@ label_en = "Arms wide open"
 source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : le vampire qui accueille sa jeunesse retrouvée"
 stand = false
 stand_offset = [-14.0, -8.0]
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "JoJo Wiki, Straizo, Color Schemes (Battle Tendency) : l'anime"
+stand = ""
+
+[colors.manga]
+label = "Manga en couleur"
+label_en = "Coloured manga"
+source = "JoJo Wiki, Straizo, Color Schemes (Battle Tendency) : le manga en couleur"
+stand = ""
+
+[colors.manga.palette]
+coat = [[91, 154, 227], [142, 192, 232], [190, 221, 240], [239, 247, 250]]
+scarf = [[40, 146, 135], [58, 184, 160], [97, 201, 175], [160, 214, 198]]

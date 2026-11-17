@@ -325,3 +325,45 @@ hand_r = [1, -24]
 elbow_r = [3, -4]
 hand_l = [-6, -10]
 foot_r = [1, -1]
+
+# The outfit and its colours ---------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ Lisa Lisa, "Costumes & Tints" (read 17/11/2026):
+# https://jojowiki.com/All-Star_Battle_R/Lisa_Lisa . Each colour below is one of the
+# game's tints, with the origin the page gives it; the tones were read off the game's render of each tint and brought to this sprite's brightness.
+
+[costume]
+label = "Tenue de Battle Tendency"
+label_en = "Battle Tendency attire"
+source = "Sa tenue principale (ASBR, costume normal)"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+
+[colors.jojo_d]
+label = "JOJO-D"
+label_en = "JOJO-D"
+source = "ASBR, couleur B : JOJO-D"
+
+[colors.jojo_d.palette]
+coat = "#8a2a5c"
+dress = "#c87aa4"
+
+[colors.statue]
+label = "Statue Legend"
+label_en = "Statue Legend"
+source = "ASBR, couleur C : la figurine Statue Legend"
+
+[colors.statue.palette]
+coat = "#4a3c9e"
+dress = "#8c84c8"
+
+[colors.jump7]
+label = "Jump n° 7"
+label_en = "Jump #7"
+source = "ASBR, couleur D : le Weekly Shonen Jump n° 7"
+
+[colors.jump7.palette]
+coat = "#2c2a32"
+dress = "#7a7684"

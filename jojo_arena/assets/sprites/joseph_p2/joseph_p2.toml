@@ -6,6 +6,16 @@ chest = 29
 height = 47
 directions = ["down", "up", "right"]
 
+[costume]
+label = "Tenue de Battle Tendency"
+label_en = "Battle Tendency attire"
+source = "Sa tenue principale (ASBR, costume normal)"
+
+[recolor]
+top = [[27, 70, 62], [47, 106, 90], [67, 142, 117], [113, 173, 149]]
+scarf = [[226, 209, 21], [232, 204, 72], [236, 210, 124], [242, 228, 194]]
+jeans = [[52, 73, 138], [74, 106, 172], [113, 142, 189], [171, 187, 208]]
+
 [anims.idle]
 row = 0
 frames = 4
@@ -175,3 +185,41 @@ label_en = "The volume 5 point"
 source = "Couverture du tome 5"
 stand = false
 stand_offset = [-14.0, -8.0]
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+stand = ""
+
+[colors.orange]
+label = "Orange"
+label_en = "Orange"
+source = "ASBR, couleur B (JoJo Wiki n'en note pas l'origine)"
+stand = ""
+
+[colors.orange.palette]
+top = [[158, 87, 28], [200, 100, 42], [215, 124, 83], [223, 169, 151]]
+jeans = [[151, 76, 29], [192, 88, 44], [211, 112, 81], [220, 161, 148]]
+scarf = [[215, 140, 19], [232, 150, 58], [235, 169, 111], [241, 206, 182]]
+
+[colors.bleu]
+label = "Bleu"
+label_en = "Blue"
+source = "ASBR, couleur C (JoJo Wiki n'en note pas l'origine)"
+stand = ""
+
+[colors.bleu.palette]
+top = [[28, 45, 116], [44, 76, 156], [61, 107, 195], [127, 159, 205]]
+jeans = [[26, 31, 94], [42, 58, 134], [59, 86, 173], [114, 138, 195]]
+
+[colors.sarcelle]
+label = "Sarcelle"
+label_en = "Teal"
+source = "ASBR, couleur D (JoJo Wiki n'en note pas l'origine)"
+stand = ""
+
+[colors.sarcelle.palette]
+top = [[26, 95, 98], [42, 138, 134], [59, 177, 165], [116, 197, 184]]
+jeans = [[32, 87, 91], [51, 128, 126], [71, 165, 157], [125, 187, 178]]
+scarf = [[146, 169, 43], [188, 200, 68], [207, 210, 114], [224, 222, 177]]

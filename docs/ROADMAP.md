@@ -26,7 +26,9 @@ faites et fusionnées dans `develop` ; **on reprend à l'étape 3**.
    `docs/superpowers/specs/2026-11-15-costumes-couleurs-design.md`.
    - [x] Les couleurs de toute la partie 3 (17/11/2026) : Kakyoin, Polnareff, Joseph âgé,
      Hierophant Green, Silver Chariot.
-   - [ ] Les parties 1 et 2 (treize persos), les costumes de Kakyoin et Polnareff, et les
+   - [x] Les couleurs des parties 1 et 2 (17/11/2026) : les teintes d'ASBR, et pour Bruford,
+     Tarkus, Straizo et Santana (dans aucun jeu) les « Color Schemes » de JoJo Wiki.
+   - [ ] D'autres costumes : ceux d'ASBR pour Kakyoin, Polnareff, Zeppeli, Joseph... et les
      tenues du manga qui ne sont dans aucun jeu.
 4. [ ] **Partie 3**, dans l'ordre de [PARTIE3.md](PARTIE3.md) : ~~Joseph âgé~~ (fait le
    15/11/2026, avant les costumes, à la demande du propriétaire), le manoir de

@@ -147,3 +147,41 @@ lean = -1.5
 hand_r = [1, -24]
 elbow_r = [2, -3]
 hand_l = [0, -24]
+
+# The outfit and its colours ---------------------------------------------------------------
+# Tarkus is in neither All-Star Battle R nor Eyes of Heaven: no game tint to take. His
+# JoJo Wiki page, "Color Schemes" (read 17/11/2026), gives the colours of each medium; the
+# page itself warns they "may or may not be canon". Each colour below is one of them.
+
+[costume]
+label = "Sa tenue"
+label_en = "His outfit"
+source = "JoJo Wiki, Tarkus, Appearance"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "JoJo Wiki, Tarkus, Color Schemes : l'anime"
+
+[colors.manga]
+label = "Manga en couleur"
+label_en = "Coloured manga"
+source = "JoJo Wiki, Tarkus, Color Schemes : le manga en couleur"
+
+[colors.manga.palette]
+hair = "#6a4a2a"
+armor = "#6a5a48"
+armor_light = "#a09a8e"
+cloth = "#2a2630"
+
+[colors.film]
+label = "Film"
+label_en = "Movie"
+source = "JoJo Wiki, Tarkus, Color Schemes : le film"
+
+[colors.film.palette]
+skin = "#5c5c64"
+hair = "#1e1c22"
+armor = "#4a3a2c"
+armor_light = "#c8a040"
+cloth = "#c8b48a"

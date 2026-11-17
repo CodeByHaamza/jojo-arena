@@ -178,3 +178,45 @@ hand_r = [11, -13]
 hand_l = [9, -6]
 foot_r = [3, 0]
 foot_l = [-3, 0]
+
+# The outfit and its colours ---------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ Wamuu, "Costumes & Tints" (read 17/11/2026):
+# https://jojowiki.com/All-Star_Battle_R/Wamuu . Each colour below is one of the
+# game's tints, with the origin the page gives it; the tones were read off the game's render of each tint and brought to this sprite's brightness.
+
+[costume]
+label = "Tenue de Battle Tendency"
+label_en = "Battle Tendency attire"
+source = "Sa tenue principale (ASBR, costume normal)"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+
+[colors.tome8]
+label = "Tome 8"
+label_en = "Volume 8"
+source = "ASBR, couleur B : la couverture du tome 8"
+
+[colors.tome8.palette]
+vest = "#7a4aaa"
+cloth = "#5a3488"
+
+[colors.j152]
+label = "Carte J-152"
+label_en = "Card J-152"
+source = "ASBR, couleur C : la carte Adventure Battle J-152"
+
+[colors.j152.palette]
+vest = "#3a86d2"
+cloth = "#d8dce8"
+
+[colors.asb]
+label = "All-Star Battle"
+label_en = "All-Star Battle"
+source = "ASBR, couleur D : la couleur A d'All-Star Battle"
+
+[colors.asb.palette]
+vest = "#c8902a"
+cloth = "#a86a24"

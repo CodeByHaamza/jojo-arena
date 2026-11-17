@@ -6,6 +6,17 @@ chest = 29
 height = 46
 directions = ["down", "up", "right"]
 
+[costume]
+label = "Tenue de Battle Tendency"
+label_en = "Battle Tendency attire"
+source = "Sa tenue principale (ASBR, costume normal)"
+
+[recolor]
+scarf = [[228, 86, 119], [232, 138, 168], [240, 186, 207], [250, 239, 244]]
+jacket = [[68, 138, 232], [122, 180, 234], [172, 211, 240], [238, 246, 251]]
+gloves = [[41, 80, 185], [74, 122, 208], [121, 161, 217], [185, 206, 230]]
+trousers = [[198, 196, 220], [232, 232, 240], [243, 243, 247], [244, 244, 246]]
+
 [anims.idle]
 row = 0
 frames = 4
@@ -175,3 +186,41 @@ label_en = "The volume 7 reach"
 source = "Couverture du tome 7"
 stand = false
 stand_offset = [-14.0, -8.0]
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+stand = ""
+
+[colors.j020]
+label = "Cartes J-020 et J-111"
+label_en = "Cards J-020 and J-111"
+source = "ASBR, couleur B : les cartes Adventure Battle J-020 et J-111"
+stand = ""
+
+[colors.j020.palette]
+jacket = [[107, 110, 130], [142, 144, 152], [174, 174, 176], [213, 213, 213]]
+gloves = [[33, 32, 40], [60, 60, 68], [89, 89, 95], [130, 130, 130]]
+
+[colors.violet]
+label = "Violet"
+label_en = "Purple"
+source = "ASBR, couleur C (JoJo Wiki n'en note pas l'origine)"
+stand = ""
+
+[colors.violet.palette]
+jacket = [[129, 41, 141], [154, 60, 178], [171, 97, 197], [195, 159, 211]]
+gloves = [[113, 35, 127], [138, 52, 166], [160, 79, 195], [184, 143, 207]]
+scarf = [[36, 128, 130], [54, 168, 160], [83, 195, 181], [147, 208, 196]]
+
+[colors.sas]
+label = "Super Action Statue"
+label_en = "Super Action Statue"
+source = "ASBR, couleur D : la Super Action Statue, sa couleur d'All-Star Battle"
+stand = ""
+
+[colors.sas.palette]
+jacket = [[38, 102, 69], [58, 138, 90], [78, 174, 111], [138, 190, 153]]
+gloves = [[29, 84, 55], [47, 122, 76], [66, 159, 96], [117, 185, 135]]
+trousers = [[86, 150, 108], [122, 170, 134], [159, 189, 165], [208, 217, 209]]

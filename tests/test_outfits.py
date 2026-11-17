@@ -308,11 +308,14 @@ def test_a_stand_follows_the_colour_its_user_names():
         assert FighterView(fighter, Loadout(color="anime")).stand is plain.stand
 
 
-def test_every_stand_user_of_part_three_can_be_told_apart_in_a_mirror_match():
-    """Each of them comes in two colours at least, and so does each Stand."""
+def test_every_fighter_can_be_told_apart_in_a_mirror_match():
+    """Each of them comes in two colours at least, every one sourced, and so does each
+    Stand that has a body."""
     for fighter in load_roster():
-        if fighter.part != 3 or not fighter.selectable:
+        if not fighter.selectable:
             continue
+        for color in _sheet(fighter.sprite).colors.values():
+            assert color.label and color.label_en and color.source, (fighter.id, color.id)
         assert len(outfit_colors(fighter)) >= 2, fighter.id
         if fighter.stand_sprite:
             assert len(_sheet(fighter.stand_sprite).colors) >= 2, fighter.stand_sprite

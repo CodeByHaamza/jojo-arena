@@ -6,6 +6,15 @@ chest = 28
 height = 45
 directions = ["down", "up", "right"]
 
+[costume]
+label = "Uniforme de Battle Tendency"
+label_en = "Battle Tendency uniform"
+source = "Sa tenue principale (ASBR, costume normal)"
+
+[recolor]
+coat = [[44, 58, 34], [74, 90, 58], [104, 121, 83], [143, 151, 129]]
+coat_dark = [[25, 34, 20], [54, 66, 44], [83, 97, 69], [123, 131, 112]]
+
 [anims.idle]
 row = 0
 frames = 4
@@ -175,3 +184,39 @@ label_en = "Ultraviolet"
 source = "Eyes of Heaven, rendu « UV Radiation Mode » (ch. 108)"
 stand = false
 stand_offset = [-14.0, -8.0]
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+stand = ""
+
+[colors.j025]
+label = "Cartes J-025 et J-026"
+label_en = "Cards J-025 and J-026"
+source = "ASBR, couleur B : les cartes Adventure Battle J-025 et J-026"
+stand = ""
+
+[colors.j025.palette]
+coat = [[73, 109, 49], [106, 142, 72], [138, 171, 99], [177, 190, 156]]
+coat_dark = [[51, 78, 36], [82, 112, 58], [113, 146, 81], [154, 172, 131]]
+
+[colors.episode12]
+label = "Épisode 12"
+label_en = "Episode 12"
+source = "ASBR, couleur C : les soldats de l'épisode 12 (changement de couleurs de l'anime)"
+stand = ""
+
+[colors.episode12.palette]
+coat = [[87, 27, 33], [126, 44, 60], [164, 62, 88], [189, 114, 137]]
+coat_dark = [[58, 18, 22], [98, 34, 46], [137, 51, 72], [177, 88, 115]]
+
+[colors.episode19]
+label = "Épisode 19"
+label_en = "Episode 19"
+source = "ASBR, couleur D : l'épisode 19 (changement de couleurs de l'anime)"
+stand = ""
+
+[colors.episode19.palette]
+coat = [[26, 93, 113], [42, 138, 154], [58, 183, 194], [123, 203, 205]]
+coat_dark = [[19, 65, 81], [34, 108, 122], [49, 151, 163], [95, 190, 193]]

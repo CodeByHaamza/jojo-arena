@@ -6,6 +6,16 @@ chest = 28
 height = 45
 directions = ["down", "up", "right"]
 
+[costume]
+label = "Tenue de Phantom Blood"
+label_en = "Phantom Blood attire"
+source = "Sa tenue principale (ASBR, costume normal)"
+
+[recolor]
+coat = [[12, 11, 15], [38, 36, 46], [64, 63, 75], [107, 107, 108]]
+vest = [[43, 37, 87], [60, 58, 122], [80, 82, 156], [133, 137, 180]]
+trousers = [[15, 14, 18], [42, 40, 48], [69, 68, 76], [110, 110, 110]]
+
 [anims.idle]
 row = 0
 frames = 4
@@ -175,3 +185,41 @@ label_en = "Speedwagon withdraws in style"
 source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : son ultime d'ASBR, « Speedwagon se retire avec style » : il salue avant de partir"
 stand = false
 stand_offset = [-14.0, -8.0]
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+stand = ""
+
+[colors.jojo_d]
+label = "JOJO-D"
+label_en = "JOJO-D"
+source = "ASBR, couleur B : sa première apparition dans JOJO-D"
+stand = ""
+
+[colors.jojo_d.palette]
+coat = [[98, 26, 67], [138, 42, 106], [177, 59, 145], [197, 116, 180]]
+trousers = [[83, 25, 56], [122, 42, 92], [160, 60, 129], [188, 109, 168]]
+
+[colors.j430]
+label = "Carte J-430"
+label_en = "Card J-430"
+source = "ASBR, couleur C : la carte Adventure Battle J-430"
+stand = ""
+
+[colors.j430.palette]
+coat = [[68, 37, 95], [90, 58, 130], [112, 79, 165], [152, 135, 185]]
+trousers = [[52, 29, 75], [74, 48, 112], [96, 68, 148], [133, 116, 177]]
+vest = [[37, 87, 54], [58, 122, 74], [80, 156, 94], [133, 180, 139]]
+
+[colors.j727]
+label = "Carte J-727"
+label_en = "Card J-727"
+source = "ASBR, couleur D : la carte Adventure Battle J-727"
+stand = ""
+
+[colors.j727.palette]
+coat = [[26, 25, 77], [42, 46, 116], [60, 71, 154], [107, 120, 184]]
+trousers = [[22, 21, 63], [38, 42, 102], [56, 66, 140], [96, 111, 176]]
+vest = [[121, 45, 173], [138, 74, 200], [160, 120, 210], [199, 182, 225]]

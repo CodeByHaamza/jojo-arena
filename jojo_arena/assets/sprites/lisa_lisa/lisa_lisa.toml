@@ -6,6 +6,15 @@ chest = 29
 height = 46
 directions = ["down", "up", "right"]
 
+[costume]
+label = "Tenue de Battle Tendency"
+label_en = "Battle Tendency attire"
+source = "Sa tenue principale (ASBR, costume normal)"
+
+[recolor]
+coat = [[64, 61, 77], [92, 90, 104], [121, 120, 130], [163, 163, 163]]
+dress = [[206, 188, 214], [230, 224, 234], [245, 243, 246], [245, 244, 246]]
+
 [anims.idle]
 row = 0
 frames = 4
@@ -189,3 +198,39 @@ label_en = "The ballerina"
 source = "ASBR, GHA : « twirls her scarf around her not unlike a ballerina »"
 stand = false
 stand_offset = [-14.0, -8.0]
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+stand = ""
+
+[colors.jojo_d]
+label = "JOJO-D"
+label_en = "JOJO-D"
+source = "ASBR, couleur B : JOJO-D"
+stand = ""
+
+[colors.jojo_d.palette]
+coat = [[98, 26, 57], [138, 42, 92], [177, 59, 128], [197, 116, 168]]
+dress = [[190, 76, 127], [200, 122, 164], [214, 164, 194], [235, 219, 230]]
+
+[colors.statue]
+label = "Statue Legend"
+label_en = "Statue Legend"
+source = "ASBR, couleur C : la figurine Statue Legend"
+stand = ""
+
+[colors.statue.palette]
+coat = [[59, 41, 121], [74, 60, 158], [96, 88, 187], [150, 149, 202]]
+dress = [[108, 87, 189], [140, 132, 200], [175, 173, 216], [226, 226, 238]]
+
+[colors.jump7]
+label = "Jump n° 7"
+label_en = "Jump #7"
+source = "ASBR, couleur D : le Weekly Shonen Jump n° 7"
+stand = ""
+
+[colors.jump7.palette]
+coat = [[17, 15, 20], [44, 42, 50], [71, 70, 78], [112, 112, 112]]
+dress = [[94, 87, 107], [122, 118, 132], [152, 150, 156], [191, 191, 191]]

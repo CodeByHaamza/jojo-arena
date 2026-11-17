@@ -31,7 +31,9 @@ vest = "#c8463c"
 bow = "#3cba78"
 shoes = "#26222c"
 hat = "#1e1c26"
-check = "#f2f0f6"
+# Four tones by hand: computed, its light tone was the suit's too, and a colour could not
+# tell them apart. Only that tone moved, by one unit.
+check = ["#d5cbe3", "#f2f0f6", "#f5f4f8", "#f4f3f6"]
 gold = "#e8c03a"
 eyes = "#3a9aa0"
 
@@ -147,3 +149,46 @@ elbow_l = [-4, 1]
 hand_r = [5, -12]
 elbow_r = [1, 2]
 hand_l = [-2, -4]
+
+# The outfit and its colours ---------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ Will Anthonio Zeppeli, "Costumes & Tints" (read 17/11/2026):
+# https://jojowiki.com/All-Star_Battle_R/Will_Anthonio_Zeppeli . Each colour below is one of the
+# game's tints, with the origin the page gives it; the tones were read off the game's render of each tint and brought to this sprite's brightness.
+
+[costume]
+label = "Tenue de Phantom Blood"
+label_en = "Phantom Blood attire"
+source = "Sa tenue principale (ASBR, costume normal)"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+
+[colors.film]
+label = "Film"
+label_en = "Movie"
+source = "ASBR, couleur B : le film Phantom Blood et la Super Figure Revolution"
+
+[colors.film.palette]
+suit = "#b0584e"
+vest = "#d07a34"
+
+[colors.j071]
+label = "Carte J-071"
+label_en = "Card J-071"
+source = "ASBR, couleur C : la carte Adventure Battle J-071"
+
+[colors.j071.palette]
+suit = "#8eb0d2"
+vest = "#2f9a96"
+check = "#d8403c"
+
+[colors.j436]
+label = "Carte J-436"
+label_en = "Card J-436"
+source = "ASBR, couleur D : la carte Adventure Battle J-436"
+
+[colors.j436.palette]
+vest = "#3a9a5a"
+trim = "#3a6a4a"

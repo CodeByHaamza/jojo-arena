@@ -155,3 +155,47 @@ hand_r = [13, -11]
 hand_l = [-3, -2]
 foot_l = [-3, 0]
 foot_r = [3, 0]
+
+# The outfit and its colours ---------------------------------------------------------------
+# JoJo Wiki, All-Star Battle R ★ Joseph Joestar, "Costumes & Tints" (read 17/11/2026):
+# https://jojowiki.com/All-Star_Battle_R/Joseph_Joestar . Each colour below is one of the
+# game's tints, with the origin the page gives it; the tones were read off the game's render of each tint and brought to this sprite's brightness.
+
+[costume]
+label = "Tenue de Battle Tendency"
+label_en = "Battle Tendency attire"
+source = "Sa tenue principale (ASBR, costume normal)"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "ASBR, couleur A : les couleurs de l'anime"
+
+[colors.orange]
+label = "Orange"
+label_en = "Orange"
+source = "ASBR, couleur B (JoJo Wiki n'en note pas l'origine)"
+
+[colors.orange.palette]
+top = "#c8642a"
+jeans = "#c0582c"
+scarf = "#e8963a"
+
+[colors.bleu]
+label = "Bleu"
+label_en = "Blue"
+source = "ASBR, couleur C (JoJo Wiki n'en note pas l'origine)"
+
+[colors.bleu.palette]
+top = "#2c4c9c"
+jeans = "#2a3a86"
+
+[colors.sarcelle]
+label = "Sarcelle"
+label_en = "Teal"
+source = "ASBR, couleur D (JoJo Wiki n'en note pas l'origine)"
+
+[colors.sarcelle.palette]
+top = "#2a8a86"
+jeans = "#33807e"
+scarf = "#bcc844"

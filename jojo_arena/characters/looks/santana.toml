@@ -137,3 +137,30 @@ head = [1, 1]
 hand_r = [4, -18]
 elbow_r = [2, 1]
 hand_l = [-1, 0]
+
+# The outfit and its colours ---------------------------------------------------------------
+# Santana is in neither All-Star Battle R nor Eyes of Heaven: no game tint to take. His
+# JoJo Wiki page, "Color Schemes" (read 17/11/2026), gives the colours of each medium; the
+# page itself warns they "may or may not be canon". Each colour below is one of them.
+
+[costume]
+label = "Sa tenue"
+label_en = "His outfit"
+source = "JoJo Wiki, Santana, Appearance"
+
+[colors.manga]
+label = "Manga en couleur"
+label_en = "Coloured manga"
+source = "JoJo Wiki, Santana, Color Schemes : le manga en couleur"
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "JoJo Wiki, Santana, Color Schemes : l'anime"
+
+[colors.anime.palette]
+skin = "#a89a5a"
+skin_dark = "#7c7040"
+hair = "#d07a3a"
+cloth = "#e8e4dc"
+horn = "#5a3a2a"

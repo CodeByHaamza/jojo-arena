@@ -6,6 +6,18 @@ chest = 28
 height = 46
 directions = ["down", "up", "right"]
 
+[costume]
+label = "Sa tenue"
+label_en = "His outfit"
+source = "JoJo Wiki, Santana, Appearance"
+
+[recolor]
+skin = [[191, 156, 65], [200, 168, 112], [213, 189, 155], [233, 223, 212]]
+skin_dark = [[117, 98, 53], [150, 121, 76], [175, 144, 107], [195, 179, 164]]
+hair = [[217, 193, 89], [224, 200, 138], [234, 217, 184], [250, 246, 240]]
+horn = [[219, 209, 157], [232, 224, 200], [248, 246, 240], [248, 246, 242]]
+cloth = [[138, 49, 40], [176, 58, 58], [197, 93, 99], [211, 156, 162]]
+
 [anims.idle]
 row = 0
 frames = 4
@@ -175,3 +187,22 @@ label_en = "Curious"
 source = "Inventée dans l'esprit du perso, à la demande du propriétaire (15/11/2026) : le Pilier qui découvre le monde des hommes et l'imite"
 stand = false
 stand_offset = [-14.0, -8.0]
+
+[colors.manga]
+label = "Manga en couleur"
+label_en = "Coloured manga"
+source = "JoJo Wiki, Santana, Color Schemes : le manga en couleur"
+stand = ""
+
+[colors.anime]
+label = "Anime"
+label_en = "Anime"
+source = "JoJo Wiki, Santana, Color Schemes : l'anime"
+stand = ""
+
+[colors.anime.palette]
+skin = [[137, 131, 65], [168, 154, 90], [184, 171, 130], [207, 200, 184]]
+skin_dark = [[90, 85, 42], [124, 112, 64], [157, 139, 87], [179, 167, 141]]
+hair = [[175, 107, 35], [208, 122, 58], [216, 146, 106], [227, 189, 172]]
+cloth = [[213, 205, 183], [232, 228, 220], [247, 245, 243], [246, 245, 244]]
+horn = [[54, 36, 22], [90, 58, 42], [125, 80, 63], [162, 115, 102]]
